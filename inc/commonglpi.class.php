@@ -151,10 +151,10 @@ class CommonGLPI {
          }
       }
 
-      // Single tab
-      if (empty($onglets)) {
-         $onglets['empty'] = $this->getTypeName(1);
-      }
+//       // Single tab
+//       if (empty($onglets)) {
+//          $onglets['empty'] = $this->getTypeName(1);
+//       }
 
       return $onglets;
    }
@@ -399,7 +399,7 @@ class CommonGLPI {
     * @return Nothing ()
    **/
    function showTabs($options=array()) {
-      $this->showNavigationHeader($options);
+      $this->showNavigationHeaderOld($options);
    }
 
    /**
@@ -477,7 +477,6 @@ class CommonGLPI {
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType());
       }
    }
-
 
    /**
     * Show onglets
@@ -626,12 +625,158 @@ class CommonGLPI {
    }
    
    /**
+    * Show onglets
+    *
+    * @param $options array of parameters to add to URLs and ajax
+    *     - withtemplate is a template view ?
+    * @deprecated  Only for compatibility usage
+    * @return Nothing ()
+   **/
+   function showNavigationHeaderOld($options=array()) {
+      global $CFG_GLPI;
+
+      // for objects not in table like central
+      if (isset($this->fields['id'])) {
+         $ID = $this->fields['id'];
+      } else {
+         $ID = 0;
+      }
+      $target         = $_SERVER['PHP_SELF'];
+      $extraparamhtml = "";
+      $extraparam     = "";
+      $withtemplate   = "";
+
+      if (is_array($options) && count($options)) {
+         if (isset($options['withtemplate'])) {
+            $withtemplate = $options['withtemplate'];
+         }
+         foreach ($options as $key => $val) {
+            // Do not include id options
+            if (($key[0] != '_') && ($key != 'id')) {
+               $extraparamhtml .= "&amp;$key=$val";
+               $extraparam     .= "&$key=$val";
+            }
+         }
+      }
+
+      if (empty($withtemplate)
+          && !$this->isNewID($ID)
+          && $this->getType()
+          && $this->displaylist) {
+
+         $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
+         $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
+         $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
+
+         if (empty($glpilisturl)) {
+            $glpilisturl = $this->getSearchURL();
+         }
+
+         echo "<div id='menu_navigate'>";
+
+         $next = $prev = $first = $last = -1;
+         $current = false;
+         if (is_array($glpilistitems)) {
+            $current = array_search($ID,$glpilistitems);
+            if ($current !== false) {
+
+               if (isset($glpilistitems[$current+1])) {
+                  $next = $glpilistitems[$current+1];
+               }
+
+               if (isset($glpilistitems[$current-1])) {
+                  $prev = $glpilistitems[$current-1];
+               }
+
+               $first = $glpilistitems[0];
+               if ($first == $ID) {
+                  $first = -1;
+               }
+
+               $last = $glpilistitems[count($glpilistitems)-1];
+               if ($last == $ID) {
+                  $last = -1;
+               }
+
+            }
+         }
+         $cleantarget = HTML::cleanParametersURL($target);
+         echo "<ul>";
+//          echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"].
+//                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
+//          echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
+//          echo "</a></li>";
+         echo "<li><a href=\"javascript:toggleTableDisplay('mainformtable','tabsbodyimg','".$CFG_GLPI["root_doc"].
+                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
+         echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
+         echo "</a></li>";
+
+         echo "<li><a href=\"".$glpilisturl."\">";
+
+         if ($glpilisttitle) {
+            if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
+               $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
+                                                $_SESSION['glpidropdown_chars_limit'])
+                                . "&hellip;";
+            }
+            echo $glpilisttitle;
+
+         } else {
+            _e('List');
+         }
+         echo "</a></li>";
+
+         if ($first >= 0) {
+            echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
+                       "\" title=\"".__s('First')."\"></a></li>";
+         } else {
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
+                       __s('First')."\" title=\"".__s('First')."\"></li>";
+         }
+
+         if ($prev >= 0) {
+            echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+                       "\" title=\"".__s('Previous')."\"></a></li>";
+         } else {
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
+                       __s('Previous')."\" title=\"".__s('Previous')."\"></li>";
+         }
+
+         if ($current !== false) {
+            echo "<li>".($current+1) . "/" . count($glpilistitems)."</li>";
+         }
+
+         if ($next >= 0) {
+            echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+                       "\" title=\"".__s('Next')."\"></a></li>";
+         } else {
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
+                       __s('Next')."\" title=\"".__s('Next')."\"></li>";
+         }
+
+         if ($last >= 0) {
+            echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
+                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
+                       "\" title=\"".__s('Last')."\"></a></li>";
+         } else {
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
+                       __s('Last')."\" title=\"".__s('Last')."\"></li>";
+         }
+         echo "</ul></div>";
+         echo "<div class='sep'></div>";
+      }
+   }
+   
+   /**
     * @param $options   array
    **/
    function show($options=array()) {
 
       $this->showTabs($options);
-      $this->addDivForTabs();
+      $this->addDivForTabs($options);
    }
 
 

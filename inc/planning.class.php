@@ -74,31 +74,31 @@ class Planning extends CommonGLPI {
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 : // all
-               Planning::showSelectionForm($_POST['type'], $_POST['date'], 'my', 0,
-                                           $_POST["limititemtype"]);
-               Planning::showPlanning($_SESSION['glpiID'], $_POST["gID"], $_POST["date"],
-                                      $_POST["type"], $_POST["limititemtype"]);
+               Planning::showSelectionForm($_GET['type'], $_GET['date'], 'my', 0,
+                                           $_GET["limititemtype"]);
+               Planning::showPlanning($_SESSION['glpiID'], $_GET["gID"], $_GET["date"],
+                                      $_GET["type"], $_GET["limititemtype"]);
                break;
 
             case 2 :
-               Planning::showSelectionForm($_POST['type'], $_POST['date'], 'mygroups', 0,
-                                           $_POST["limititemtype"]);
-               Planning::showPlanning($_SESSION['glpiID'], 'mine', $_POST["date"],
-                                      $_POST["type"], $_POST["limititemtype"]);
+               Planning::showSelectionForm($_GET['type'], $_GET['date'], 'mygroups', 0,
+                                           $_GET["limititemtype"]);
+               Planning::showPlanning($_SESSION['glpiID'], 'mine', $_GET["date"],
+                                      $_GET["type"], $_GET["limititemtype"]);
                break;
 
             case 3 :
-               Planning::showSelectionForm($_POST['type'], $_POST['date'], 'users',
-                                           $_POST["uID"], $_POST["limititemtype"]);
-               Planning::showPlanning($_POST['uID'], 0, $_POST["date"], $_POST["type"],
-                                      $_POST["limititemtype"]);
+               Planning::showSelectionForm($_GET['type'], $_GET['date'], 'users',
+                                           $_GET["uID"], $_GET["limititemtype"]);
+               Planning::showPlanning($_GET['uID'], 0, $_GET["date"], $_GET["type"],
+                                      $_GET["limititemtype"]);
                break;
 
             case 4 :
-               Planning::showSelectionForm($_POST['type'], $_POST['date'], 'groups',
-                                           $_POST["gID"], $_POST["limititemtype"]);
-               Planning::showPlanning(0, $_POST['gID'], $_POST["date"], $_POST["type"],
-                                      $_POST["limititemtype"]);
+               Planning::showSelectionForm($_GET['type'], $_GET['date'], 'groups',
+                                           $_GET["gID"], $_GET["limititemtype"]);
+               Planning::showPlanning(0, $_GET['gID'], $_GET["date"], $_GET["type"],
+                                      $_GET["limititemtype"]);
                break;
          }
       }
