@@ -3958,9 +3958,10 @@ class Html {
       $out .= "<span id='".$param['contentid']."' class='invisible'>$content</span>";
 
       $out .= "<script type='text/javascript' >\n";
-      // Set title attribute : permit to use several object type (img a...)
-      $out .= Html::jsGetElementbyID($param['applyto']).".attr('title', $('#".$param['contentid']."').html());";
-      $out .= Html::jsGetElementbyID($param['applyto']).".tooltip();";
+      $out .= Html::jsGetElementbyID($param['applyto']).".tooltip({
+         content: function() {return $('#".$param['contentid']."').html()},
+         items: 'img, a'
+      });";
       $out .= "</script>";
 
       if ($param['display']) {
