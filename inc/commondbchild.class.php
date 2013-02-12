@@ -688,8 +688,8 @@ abstract class CommonDBChild extends CommonDBConnexity {
          echo "&nbsp;<script type='text/javascript'>var $child_count_js_var=1; </script>";
          echo "<span id='add".$lower_name."button'>".
               "<img title=\"".__s('Add')."\" alt=\"". __s('Add').
-                "\" onClick=\"var row = Ext.get('$div_id');
-                             row.createChild('<br>" .
+                "\" onClick=\"var row = ".Html::jsGetElementByID($div_id).";
+                             row.append('<br>" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var)."');
                             $child_count_js_var++;\"
                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";

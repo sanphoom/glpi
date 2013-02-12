@@ -4152,7 +4152,7 @@ class Ticket extends CommonITILObject {
       printf(__('%1$s%2$s'), __('Associated element'), $tt->getMandatoryMark('itemtype'));
       if ($ID && $canupdate) {
          echo "&nbsp;<img title='".__s('Update')."' alt='".__s('Update')."'
-                      onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
+                      onClick=\"".Html::jsShow("tickethardwareselection$ID")."\"
                       class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
       }
       echo $tt->getEndHiddenFieldText('itemtype');
@@ -4300,7 +4300,7 @@ class Ticket extends CommonITILObject {
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showName$rand() {\n";
-         echo "Ext.get('name$rand').setDisplayed('none');";
+         echo Html::jsHide("name$rand");
          $params = array('maxlength' => 250,
                          'size'      => 90,
                          'name'      => 'name',
@@ -4347,7 +4347,7 @@ class Ticket extends CommonITILObject {
          $rand = mt_rand();
          echo "<script type='text/javascript' >\n";
          echo "function showDesc$rand() {\n";
-         echo "Ext.get('desc$rand').setDisplayed('none');";
+         echo Html::jsHide("desc$rand");
          $params = array('rows'  => 6,
                          'cols'  => 90,
                          'name'  => 'content',
@@ -4407,7 +4407,7 @@ class Ticket extends CommonITILObject {
          $rand_linked_ticket = mt_rand();
          if ($canupdate) {
             echo "&nbsp;";
-            echo "<img onClick=\"Ext.get('linkedticket$rand_linked_ticket').setDisplayed('block')\"
+            echo "<img onClick=\"".Html::jsShow("linkedticket$rand_linked_ticket")."\"
                    title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
                    class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          }
@@ -4427,8 +4427,9 @@ class Ticket extends CommonITILObject {
 
             if (isset($values["_link"])
                 && !empty($values["_link"]['tickets_id_2'])) {
-               echo "<script language='javascript'>Ext.get('linkedticket$rand_linked_ticket').
-                      setDisplayed('block');</script>";
+               echo "<script language='javascript'>";
+               echo Html::jsShow("linkedticket$rand_linked_ticket");
+               echo "</script>";
             }
          }
 
@@ -4508,11 +4509,11 @@ class Ticket extends CommonITILObject {
       echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
       echo "<span id='addfilebutton'><img title=\"".__s('Add')."\" alt=\"".
              __s('Add')."\" onClick=\"if (nbfiles<maxfiles){
-                           var row = Ext.get('uploadfiles');
-                           row.createChild('<br><input type=\'file\' name=\'filename[]\' size=\'$size\'>');
+                           var row = ".Html::jsGetElementbyID('uploadfiles').";
+                           row.append('<br><input type=\'file\' name=\'filename[]\' size=\'$size\'>');
                            nbfiles++;
                            if (nbfiles==maxfiles) {
-                              Ext.get('addfilebutton').hide();
+                              ".Html::jsHide('addfilebutton')."
                            }
                         }\"
               class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";

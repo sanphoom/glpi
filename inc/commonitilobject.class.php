@@ -2970,7 +2970,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;";
          echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\"
+                onClick=\"".Html::jsShow("itilactor$rand_requester")."\"
                 class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          $candeleterequester = true;
       }
@@ -2990,7 +2990,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          echo "&nbsp;&nbsp;";
          echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"Ext.get('itilactor$rand_observer').setDisplayed('block')\"
+                onClick=\"".Html::jsShow("itilactor$rand_observer")."\"
                 class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
 
          $candeleteobserver = true;
@@ -3025,7 +3025,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          echo "&nbsp;&nbsp;";
          echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"Ext.get('itilactor$rand_assign').setDisplayed('block')\"
+                onClick=\"".Html::jsShow("itilactor$rand_assign")."\"
                 class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       }
 

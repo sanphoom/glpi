@@ -723,7 +723,7 @@ class Reminder extends CommonDBTM {
       if ($canedit) {
          echo "<script type='text/javascript' >\n";
          echo "function showPlan() {\n";
-            echo "Ext.get('plan').setDisplayed('none');";
+         echo Html::jsHide('plan');
             $params = array('form'     => 'remind',
                             'users_id' => $this->fields["users_id"],
                             'itemtype' => $this->getType(),

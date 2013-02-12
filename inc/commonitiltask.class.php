@@ -974,7 +974,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (Session::haveRight('show_planning', 1)) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlan".$ID."() {\n";
-            echo "Ext.get('plan').setDisplayed('none');";
+            echo Html::jsHide('plan');
             $params = array('form'     => 'followups',
                             'users_id' => $this->fields["users_id_tech"],
                             'id'       => $this->fields["id"],
@@ -1008,7 +1008,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (Session::haveRight('show_planning', 1)) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlanUpdate() {\n";
-            echo "Ext.get('plan').setDisplayed('none');";
+            echo Html::jsHide('plan');
             $params = array('form'     => 'followups',
                             'users_id' => Session::getLoginUserID(),
                             'entity'   => $_SESSION["glpiactive_entity"],

@@ -882,7 +882,7 @@ class Change extends CommonITILObject {
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showName$rand() {\n";
-      echo "Ext.get('name$rand').setDisplayed('none');";
+      echo Html::jsHide("name$rand");
       $params = array('maxlength' => 250,
                       'size'      => 50,
                       'name'      => 'name',
@@ -913,7 +913,7 @@ class Change extends CommonITILObject {
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showDesc$rand() {\n";
-      echo "Ext.get('desc$rand').setDisplayed('none');";
+      echo Html::jsHide("desc$rand");
       $params = array('rows'  => 6,
                       'cols'  => 50,
                       'name'  => 'content',
