@@ -41,17 +41,17 @@ define("GLPI_CSRF_MAX_TOKENS","100");
 
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
-$CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce|english names|
-      array('ar_SA' => array('العَرَبِيَّةُ',        'ar_SA.mo','en',    'ar','arabic'),
+$CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |jqeury| tinymce|english names|
+      array('ar_SA' => array('العَرَبِيَّةُ',        'ar_SA.mo','en-GB', 'ar','arabic'),
             'bg_BG' => array('Български',            'bg_BG.mo','bg',    'bg','bulgarian'),
             'id_ID' => array('Bahasa Indonesia',     'id_ID.mo','id',    'id','indonesian'),
             'ca_ES' => array('Català',               'ca_ES.mo','ca',    'ca','catalan'), // ca_CA
             'cs_CZ' => array('Čeština',              'cs_CZ.mo','cs',    'cs','czech'),
             'de_DE' => array('Deutsch',              'de_DE.mo','de',    'de','german'),
             'da_DK' => array('Dansk',                'da_DK.mo','da',    'da','danish'), // dk_DK
-            'et_EE' => array('Eesti',                'et_EE.mo','en',    'et','estonian'), // ee_ET
-            'en_GB' => array('English',              'en_GB.mo','en',    'en','english'),
-            'en_US' => array('English (US)',         'en_US.mo','en',    'en','english'),
+            'et_EE' => array('Eesti',                'et_EE.mo','en-GB', 'et','estonian'), // ee_ET
+            'en_GB' => array('English',              'en_GB.mo','en-GB', 'en','english'),
+            'en_US' => array('English (US)',         'en_US.mo','en-GB', 'en','english'),
             'es_AR' => array('Español (Argentina)',  'es_AR.mo','es',    'es','spanish'),
             'es_CO' => array('Español (Colombia)',   'es_CO.mo','es',    'es','spanish'),
             'es_ES' => array('Español (España)',     'es_ES.mo','es',    'es','spanish'),
@@ -60,7 +60,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'eu_ES' => array('Euskara',              'eu_ES.mo','en',    'en','basque'),
             'fr_FR' => array('Français',             'fr_FR.mo','fr',    'fr','french'),
             'gl_ES' => array('Galego',               'gl_ES.mo','es',    'gl','galician'),
-            'el_GR' => array('Ελληνικά',             'el_GR.mo','el_GR', 'el','greek'), // el_EL
+            'el_GR' => array('Ελληνικά',             'el_GR.mo','el',    'el','greek'), // el_EL
             'he_IL' => array('עברית',                 'he_IL.mo','he',    'he','hebrew'), // he_HE
             'hr_HR' => array('Hrvatski',             'hr_HR.mo','hr',    'hr','croatian'),
             'hu_HU' => array('Magyar',               'hu_HU.mo','hu',    'hu','hungarian'),
@@ -68,24 +68,24 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |extjs| tinymce
             'lv_LV' => array('Latviešu',             'lv_LV.mo','lv',    'lv','latvian'),
             'lt_LT' => array('Lietuvių',             'lt_LT.mo','lt',    'lt','lithuanian'),
             'nl_NL' => array('Nederlands',           'nl_NL.mo','nl',    'nl','dutch'),
-            'nb_NO' => array('Norsk (Bokmål)',       'nb_NO.mo','no_NB', 'nb','norwegian'), // no_NB
-            'nn_NO' => array('Norsk (Nynorsk)',      'nn_NO.mo','no_NN', 'nn','norwegian'), // no_NN
+            'nb_NO' => array('Norsk (Bokmål)',       'nb_NO.mo','no',    'nb','norwegian'), // no_NB
+            'nn_NO' => array('Norsk (Nynorsk)',      'nn_NO.mo','no',    'nn','norwegian'), // no_NN
             'fa_IR' => array('فارسی',                'fa_IR.mo','fa',    'fa','persian'),
             'pl_PL' => array('Polski',               'pl_PL.mo','pl',    'pl','polish'),
             'pt_PT' => array('Português',            'pt_PT.mo','pt',    'pt','portuguese'),
-            'pt_BR' => array('Português do Brasil',  'pt_BR.mo','pt_BR', 'pt','brazilian portuguese'),
+            'pt_BR' => array('Português do Brasil',  'pt_BR.mo','pt-BR', 'pt','brazilian portuguese'),
             'ro_RO' => array('Română',               'ro_RO.mo','ro',    'en','romanian'),
             'ru_RU' => array('Pусский',              'ru_RU.mo','ru',    'ru','russian'),
             'sk_SK' => array('Slovenčina',           'sk_SK.mo','sk',    'sk','slovak'),
             'sl_SI' => array('Slovenščina',          'sl_SI.mo','sl',    'sl','slovenian slovene'),
             'fi_FI' => array('Suomi',                'fi_FI.mo','fi',    'fi','finish'),
-            'sv_SE' => array('Svenska',              'sv_SE.mo','sv_SE', 'sv','swedish'),
-            'vi_VN' => array('Tiếng Việt',           'vi_VN.mo','vn',    'vi','vietnamese'),
+            'sv_SE' => array('Svenska',              'sv_SE.mo','sv',    'sv','swedish'),
+            'vi_VN' => array('Tiếng Việt',           'vi_VN.mo','vi',    'vi','vietnamese'),
             'tr_TR' => array('Türkçe',               'tr_TR.mo','tr',    'tr','turkish'),
-            'uk_UA' => array('Українська',           'uk_UA.mo','ukr',   'en','ukrainian'), // ua_UA
+            'uk_UA' => array('Українська',           'uk_UA.mo','uk',    'en','ukrainian'), // ua_UA
             'ja_JP' => array('日本語',                'ja_JP.mo','ja',    'ja','japanese'),
-            'zh_CN' => array('简体中文',              'zh_CN.mo','zh_CN', 'zh','chinese'),
-            'zh_TW' => array('繁體中文',              'zh_TW.mo','zh_TW', 'zh','chinese'),);
+            'zh_CN' => array('简体中文',              'zh_CN.mo','zh-CN', 'zh','chinese'),
+            'zh_TW' => array('繁體中文',              'zh_TW.mo','zh-TW', 'zh','chinese'),);
 
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables'] = array();

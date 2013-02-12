@@ -686,17 +686,17 @@ class Html {
     **/
     static function createProgressBar($msg="&nbsp;") {
 
-       echo "<div class='doaction_cadre'>".
-            "<div class='doaction_progress' id='doaction_progress'></div>".
-            "</div><br>";
+      echo "<div class='doaction_cadre'>";
+      echo "<div class='doaction_progress' id='doaction_progress'>";
+      echo "<div class='doaction_progress_text' id='doaction_progress_text' >";
+      echo $msg.'</div>';
+      echo "</div>";
+      echo "</div><br>";
 
        echo "<script type='text/javascript'>";
-       echo "var glpi_progressbar=new Ext.ProgressBar({
-          text:\"".addslashes($msg)."\",
-          id:'progress_bar',
-          applyTo:'doaction_progress'
-       });";
+       echo self::jsGetElementbyID('doaction_progress').".progressbar();";
        echo "</script>\n";
+       self::changeProgressBarMessage($msg);
     }
 
     /**
@@ -708,8 +708,9 @@ class Html {
     **/
     static function changeProgressBarMessage($msg="&nbsp;") {
 
-       echo "<script type='text/javascript'>glpi_progressbar.updateText(\"".addslashes($msg)."\")".
+       echo "<script type='text/javascript'>".self::jsGetElementbyID('doaction_progress_text').".text(\"".addslashes($msg)."\")".
             "</script>\n";
+       self::glpi_flush();
     }
 
 
@@ -728,13 +729,16 @@ class Html {
           $pct = 0;
 
        } else if ($crt>$tot) {
-          $pct = 1;
+          $pct = 100;
 
        } else {
-          $pct = $crt/$tot;
+          $pct = 100*$crt/$tot;
        }
-       echo "<script type='text/javascript'>glpi_progressbar.updateProgress(\"$pct\",\"".addslashes($msg)."\");".
-            "</script>\n";
+       echo "<script type='text/javascript'>".self::jsGetElementbyID('doaction_progress').".progressbar('option', 'value', $pct ); ";
+       echo "</script>\n";
+       if (!empty($msg)) {
+         self::changeProgressBarMessage($msg);
+       }
        self::glpi_flush();
     }
 
@@ -837,66 +841,58 @@ class Html {
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
       // AJAX library
-      echo "<script type=\"text/javascript\" src='".
-             $CFG_GLPI["root_doc"]."/lib/extjs/adapter/ext/ext-base.js'></script>\n";
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/extjs/ext-all-debug.js'></script>\n";
+                $CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.js'></script>\n";
+         echo "<script type='text/javascript' src='".
+                $CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.js'></script>\n";
       } else {
          echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/extjs/ext-all.js'></script>\n";
+                $CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.min.js'></script>\n";
+         echo "<script type='text/javascript' src='".
+                $CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.min.js'></script>\n";
       }
 
       echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/lib/extjs/resources/css/ext-all.css' media='screen' >\n";
+             $CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.9.2.custom.min.css' media='screen' >\n";
       echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/lib/extrajs/starslider/slider.css' media='screen' >\n";
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/themes/classic/style.css' media='screen' >\n";
       echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/css/tab-scroller-menu.css' media='screen' >\n";
-
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css' media='screen' >\n";
+      echo "<link rel='stylesheet' type='text/css' href='".
+            $CFG_GLPI["root_doc"]."/css/jquery-glpi.css' media='screen' >\n";
 
       echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
             "/lib/tiny_mce/tiny_mce.js'></script>";
+            
+      // Add default tooltip system for all titles
+// echo "<script type='text/javascript'>
+//          $(function() {
+//          $( document ).tooltip();
+//          });
+//          </script>";
 
-      echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/css/ext-all-glpi.css' media='screen' >\n";
+//       echo "<link rel='stylesheet' type='text/css' href='".
+//              $CFG_GLPI["root_doc"]."/css/ext-all-glpi.css' media='screen' >\n";
 
+      // PLugins jquery
+         echo "<script type='text/javascript' src='".
+                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js'></script>\n";
+         echo "<script type='text/javascript' src='".
+                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js'></script>\n";
+         echo "<script type='text/javascript' src='".
+                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'></script>\n";
+                
       if (isset($_SESSION['glpilanguage'])) {
          echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/extjs/locale/ext-lang-".
+                $CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
+                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js'></script>\n";
+         echo "<script type='text/javascript' src='".
+                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/localization/jquery-ui-timepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js'></script>\n";
       }
 
-      // EXTRA EXTJS
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/extrajs/xdatefield.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/extrajs/TabScrollerMenu.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/extrajs/datetime.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/extrajs/spancombobox.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/extrajs/starslider/slider.js'></script>\n";
-
-      echo "<script type='text/javascript'>\n";
-      echo "//<![CDATA[ \n";
-      // DO not get it from extjs website
-      echo "Ext.BLANK_IMAGE_URL = '".$CFG_GLPI["root_doc"]."/lib/extjs/s.gif';\n";
-      echo " Ext.Updater.defaults.loadScripts = true;\n";
-      // JMD : validator doesn't accept html in script , must escape html element to validate
-      echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator center\">".
-            addslashes(__('Loading...'))."<\/span>';\n";
-      echo "//]]> \n";
-      echo "</script>\n";
-
-      echo "<!--[if IE]>" ;
-      echo "<script type='text/javascript'>\n";
-      echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".
-            addslashes(__('Loading...'))."<\/span>';\n";
-      echo "</script>\n";
-      echo "<![endif]-->";
 
       // Some Javascript-Functions which we may need later
       echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
@@ -2300,7 +2296,7 @@ class Html {
       // Add common items
       echo "<li>";
       // Display MENU ALL
-      echo "<div id='show_all_menu' onmouseover=\"completecleandisplay('show_all_menu');\">";
+      echo "<div id='show_all_menu' class='invisible'>";
       $items_per_columns = 15;
       $i                 = -1;
       echo "<table><tr><td class='top'><table>";
@@ -2347,6 +2343,14 @@ class Html {
       echo "</table></td></tr></table>";
 
       echo "</div>";
+      echo "<script type='text/javascript'>
+       var show_all_menu_modal = ".self::jsGetElementbyID('show_all_menu').".dialog({
+         height: 'auto',
+         width: 'auto',
+         modal: true,
+         autoOpen: false
+         });
+      </script>";
       echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       echo "</li>";
 
@@ -2362,7 +2366,7 @@ class Html {
       /// MENU ALL
       echo "<li >";
       echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' ".
-             "onclick=\"completecleandisplay('show_all_menu')\">";
+             "onclick='show_all_menu_modal.dialog(\"open\");'";
       echo "</li>";
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -3132,6 +3136,7 @@ class Html {
       $p['specific_actions']  = array();
       $p['confirm']           = '';
       $p['rand']              = '';
+      $p['container']         = '';      
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3140,6 +3145,9 @@ class Html {
       }
       $p['extraparams']['itemtype'] = $itemtype;
       $url                          = $CFG_GLPI['root_doc']."/ajax/massiveaction.php";
+      if ($p['container']) {
+         $p['extraparams']['container'] = $p['container'];
+      }      
       if ($p['is_deleted']) {
          $p['extraparams']['is_deleted'] = 1;
       }
@@ -3201,9 +3209,9 @@ class Html {
          echo "<td width='100%' class='left'>";
          echo "<a class='vsubmit' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
-            echo self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.show();");
+            echo self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
          }  else {
-            echo "onclick='massiveaction_window$identifier.show();'";
+            echo "onclick='massiveaction_window$identifier.dialog(\"open\");'";
          }
          echo "href='#modal_massaction_content$identifier' title=\""._sn('Action', 'Actions',2)."\">";
          echo _n('Action', 'Actions',2)."</a>";
@@ -4552,6 +4560,58 @@ class Html {
       }
       return $out;
    }
+   
+   /**
+    * Get javascript code for hide an item
+    *
+    * @param $id string id of the dom element
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function jsHide($id){
+      return self::jsGetElementbyID($id).".hide();\n";
+   }
 
+   /**
+    * Get javascript code for hide an item
+    *
+    * @param $id string id of the dom element
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function jsShow($id){
+      return self::jsGetElementbyID($id).".show();\n";
+   }
+
+   /**
+    * Clean ID used for HTML elements
+    *
+    * @param $id string id of the dom element
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function cleanId($id) {
+      return str_replace(array('[',']'), '_', $id);
+
+   }
+
+   /**
+    * Get javascript code to get item by id
+    *
+    * @param $id string id of the dom element
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function jsGetElementbyID($id) {
+      return "$('#$id')";
+   }
 }
 ?>
