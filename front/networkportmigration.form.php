@@ -96,7 +96,7 @@ if (isset($_POST["delete"])) {
    Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], "utils",
                 "migration", "networkportmigration");
 
-   $np->showForm($_GET["id"]);
+   $np->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

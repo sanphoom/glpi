@@ -99,7 +99,8 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "inventory","printer");
-   $print->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   $print->display(array('id'           => $_GET["id"],
+                         'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

@@ -40,11 +40,11 @@ if (isset($_GET['full_page_tab'])) {
    Html::header_nocache();
 }
 
-if (!isset($_GET['glpi_tab'])) {
+if (!isset($_GET['_glpi_tab'])) {
    exit();
 }
 
-if (!isset($_GET['itemtype']) || empty($_GET['itemtype'])) {
+if (!isset($_GET['_itemtype']) || empty($_GET['_itemtype'])) {
    exit();
 }
 
@@ -60,7 +60,7 @@ if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
-if ($item = getItemForItemtype($_GET['itemtype'])) {
+if ($item = getItemForItemtype($_GET['_itemtype'])) {
    if ($item instanceof CommonDBTM) {
       if (!isset($_GET["id"])
             || ($item->isNewID($_GET["id"]) && !$item->can(-1, 'w', $_GET))) {
@@ -71,7 +71,7 @@ if ($item = getItemForItemtype($_GET['itemtype'])) {
    }
 }
 
-$notvalidoptions = array('glpi_tab', 'itemtype', 'sort', 'order', 'withtemplate');
+$notvalidoptions = array('_glpi_tab', '_itemtype', 'sort', 'order', 'withtemplate');
 $options = $_GET;
 foreach ($notvalidoptions as $key) {
    if (isset($options[$key])) {
@@ -79,7 +79,7 @@ foreach ($notvalidoptions as $key) {
    }
 }
 
-CommonGLPI::displayStandardTab($item, $_GET['glpi_tab'],$_GET["withtemplate"], $options);
+CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'],$_GET["withtemplate"], $options);
 
 
 if (isset($_GET['full_page_tab'])) {

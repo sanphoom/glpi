@@ -110,8 +110,6 @@ class NotificationMailSetting extends CommonDBTM {
       }
 
       $this->getFromDB($ID);
-      $this->showTabs($options);
-      $this->addDivForTabs();
       return true;
    }
 

@@ -156,6 +156,7 @@ class MailCollector  extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -171,7 +172,7 @@ class MailCollector  extends CommonDBTM {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               return self::getTypeName(1);
+               return _n('Action', 'Actions',2);
          }
       }
       return '';
@@ -207,7 +208,6 @@ class MailCollector  extends CommonDBTM {
 
       $this->initForm($ID, $options);
       $options['colspan'] = 1;
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       if (!function_exists('mb_list_encodings')
@@ -286,7 +286,6 @@ class MailCollector  extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 

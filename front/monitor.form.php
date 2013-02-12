@@ -100,7 +100,8 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Monitor::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "monitor");
-   $monitor->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   $monitor->display(array('id'           => $_GET["id"],
+                           'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

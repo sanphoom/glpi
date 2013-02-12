@@ -77,6 +77,7 @@ class NetworkEquipment extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -202,7 +203,6 @@ class NetworkEquipment extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -369,7 +369,6 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

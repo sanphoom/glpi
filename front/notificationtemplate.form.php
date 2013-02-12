@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing",
                 "notificationtemplate");
-   $notificationtemplate->showForm($_GET["id"]);
+   $notificationtemplate->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

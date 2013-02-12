@@ -241,7 +241,8 @@ class Ajax {
             if ($key == $active_tabs) {
                $selected_tab = $current;
             }
-            echo "<li><a href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
+            echo "<li><a title=\"".$val['title']."\" ";
+            echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
             $title = '';
             $limit = 20;

@@ -112,6 +112,7 @@ class Notification extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NotificationTarget', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -123,7 +124,6 @@ class Notification extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
@@ -180,7 +180,6 @@ class Notification extends CommonDBTM {
       echo "</span></td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 

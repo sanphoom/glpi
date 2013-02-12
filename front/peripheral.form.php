@@ -100,7 +100,8 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Peripheral::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "peripheral");
-   $peripheral->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   $peripheral->display(array('id'           => $_GET["id"],
+                              'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

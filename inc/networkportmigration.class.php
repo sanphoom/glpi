@@ -111,7 +111,17 @@ class NetworkPortMigration extends CommonDBChild {
       parent::post_deleteItem();
    }
 
+   /**
+    * @see CommonGLPI::defineTabs()
+   **/
+   function defineTabs($options=array()) {
 
+      $ong = array();
+      $this->addDefaultFormTab($ong);
+
+      return $ong;
+   }
+   
    static function getMotives() {
 
       return array( 'unknown_interface_type'
@@ -317,7 +327,6 @@ class NetworkPortMigration extends CommonDBChild {
       echo "<$interface_cell></$interface_cell></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
    }
 
 

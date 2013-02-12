@@ -80,7 +80,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $ong['empty'] = $this->getTypeName(1); // History as single tab seems "strange"
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -108,7 +108,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       Html::initEditorSystem('content_html');
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -159,7 +158,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
              $template->getField('id')."'>";
       echo "</td></tr>";
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 
@@ -391,7 +389,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          switch ($item->getType()) {
             case 'NotificationTemplate' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2),
+                  return self::createTabEntry(_n('Translation', 'Translations',2),
                                               countElementsInTable($this->getTable(),
                                                                    "notificationtemplates_id
                                                                         = '".$item->getID()."'"));

@@ -78,6 +78,7 @@ class Printer  extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
@@ -266,7 +267,6 @@ class Printer  extends CommonDBTM {
 
       $target       = $this->getFormURL();
       $withtemplate = $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -477,7 +477,6 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

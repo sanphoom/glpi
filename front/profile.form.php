@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
 
 Html::header(Profile::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "profile");
 
-$prof->showForm($_GET["id"]);
+$prof->display(array('id' => $_GET["id"]));
 
 Html::footer();
 ?>

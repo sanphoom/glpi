@@ -107,7 +107,7 @@ if (isset($_POST["add"])) {
    Session::checkRight("internet","w");
    Html::header(Network::getTypeName(2), $_SERVER['PHP_SELF'], "inventory");
 
-   $nn->showForm($_GET["id"], $_GET);
+   $nn->display($_GET);
    Html::footer();
 }
 ?>

@@ -140,7 +140,7 @@ if (isset($_POST["add"])) {
    Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", 'networking',
                 'networkport');
 
-   $np->showForm($_GET["id"], $_GET);
+   $np->display($_GET);
    Html::footer();
 }
 ?>

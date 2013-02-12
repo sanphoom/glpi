@@ -472,16 +472,16 @@ class CommonGLPI {
          foreach ($onglets as $key => $val ) {
             $tabs[$key] = array('title'  => $val,
                                 'url'    => $tabpage,
-                                'params' => "target=$target&itemtype=".$this->getType().
-                                            "&glpi_tab=$key&id=$ID$extraparam");
+                                'params' => "_target=$target&_itemtype=".$this->getType().
+                                            "&_glpi_tab=$key&id=$ID$extraparam");
          }
 
          // Not all tab for templates and if only 1 tab
          if ($display_all && empty($withtemplate) && count($tabs)>1) {
             $tabs[-1] = array('title'  => __('All'),
                               'url'    => $tabpage,
-                              'params' => "target=$target&itemtype=".$this->getType().
-                                          "&glpi_tab=-1&id=$ID$extraparam");
+                              'params' => "_target=$target&_itemtype=".$this->getType().
+                                          "&_glpi_tab=-1&id=$ID$extraparam");
          }
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $this->taborientation);
       }

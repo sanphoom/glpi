@@ -94,6 +94,7 @@ class NetworkName extends FQDNLabel {
    function defineTabs($options=array()) {
 
       $ong  = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NetworkAlias', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -155,8 +156,6 @@ class NetworkName extends FQDNLabel {
          $options['entities_id'] = $lastItem->getField('entities_id');
       }
 
-      $this->showTabs();
-
      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>";
@@ -213,7 +212,6 @@ class NetworkName extends FQDNLabel {
 
       
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

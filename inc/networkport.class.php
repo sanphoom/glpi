@@ -391,6 +391,7 @@ class NetworkPort extends CommonDBChild {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('NetworkPort_Vlan', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -766,8 +767,6 @@ class NetworkPort extends CommonDBChild {
          $lastItem_entities_id = $_SESSION['glpiactive_entity'];
       }
 
-      $this->showTabs();
-
       $options['entities_id'] = $lastItem_entities_id;
       $this->showFormHeader($options);
 
@@ -829,7 +828,6 @@ class NetworkPort extends CommonDBChild {
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
    }
 
 

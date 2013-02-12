@@ -98,9 +98,6 @@ class NetworkAlias extends FQDNLabel {
       }
 
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
-      if (!$showsimple) {
-         $this->showTabs();
-      }
 
       $options['entities_id'] = $lastItem->getField('entities_id');
       $this->showFormHeader($options);
@@ -132,9 +129,6 @@ class NetworkAlias extends FQDNLabel {
       echo "</tr>\n";
 
       $this->showFormButtons($options);
-      if (!$showsimple) {
-         $this->addDivForTabs();
-      }
       return true;
    }
 

@@ -75,7 +75,8 @@ if (isset($_POST["add"])) {
    } else {
       $options = array();
    }
-   $language->showForm($_GET["id"], $options);
+   $options['id'] = $_GET["id"];
+   $language->display($options);
    Html::footer();
 }
 ?>

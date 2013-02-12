@@ -76,7 +76,7 @@ if (isset($_GET['popup'])) {
 } else {
    Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'inventory', 'networkalias');
 
-   $alias->showForm($_GET["id"],$_GET);
+   $alias->display($_GET);
    Html::footer();
 }
 ?>

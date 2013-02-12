@@ -93,6 +93,7 @@ class Profile extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Profile_User', $ong, $options);
       $this->addStandardTab('Log',$ong, $options);
@@ -465,7 +466,6 @@ class Profile extends CommonDBTM {
 
       $rand = mt_rand();
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
@@ -502,7 +502,6 @@ class Profile extends CommonDBTM {
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

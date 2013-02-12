@@ -74,6 +74,7 @@ class Phone extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -162,7 +163,6 @@ class Phone extends CommonDBTM {
 
       $target       = $this->getFormURL();
       $withtemplate = $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -350,7 +350,6 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

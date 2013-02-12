@@ -239,7 +239,8 @@ class Problem extends CommonITILObject {
    function defineTabs($options=array()) {
 
       // show related tickets and changes
-      $ong['empty'] = $this->getTypeName(1);
+      $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Ticket', $ong, $options);
 //       $this->addStandardTab('Change', $ong, $options);
       $this->addStandardTab('ProblemTask', $ong, $options);
@@ -1177,7 +1178,6 @@ class Problem extends CommonITILObject {
          $showuserlink = 1;
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -1359,7 +1359,6 @@ class Problem extends CommonITILObject {
 
       $options['colspan'] = 2;
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
 

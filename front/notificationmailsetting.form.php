@@ -48,7 +48,7 @@ if (!empty($_POST["test_smtp_send"])) {
 
 Html::header(Notification::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing", "config");
 
-$notificationmail->showForm(1);
+$notificationmail->display(array('id' => 1));
 
 Html::footer();
 ?>

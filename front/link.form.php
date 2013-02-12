@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(Link::getTypeName(2), $_SERVER['PHP_SELF'], "config", "link");
 
-   $link->showForm($_GET["id"]);
+   $link->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

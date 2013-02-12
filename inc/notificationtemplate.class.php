@@ -56,6 +56,7 @@ class NotificationTemplate extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -101,7 +102,6 @@ class NotificationTemplate extends CommonDBTM {
          }
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
@@ -125,7 +125,6 @@ class NotificationTemplate extends CommonDBTM {
       echo "<textarea cols='60' rows='5' name='css' >".$this->fields["css"]."</textarea></td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 
