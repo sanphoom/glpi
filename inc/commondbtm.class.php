@@ -64,6 +64,9 @@ class CommonDBTM extends CommonGLPI {
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield = "";
 
+   /// Tab orientation : horizontal or vertical
+   public $taborientation = 'vertical';
+   
    ///Forward entity to plugins itemtypes
    static protected $plugins_forward_entity = array();
 

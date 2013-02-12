@@ -41,12 +41,16 @@ if (!defined('GLPI_ROOT')) {
 class CommonGLPI {
 
    /// GLPI Item type cache : set dynamically calling getType
-
    protected $type        = -1;
+
+   /// Display list on Navigation Header
    protected $displaylist = true;
 
+   /// Show Debug 
    public $showdebug      = false;
 
+   /// Tab orientation : horizontal or vertical
+   public $taborientation = 'horizontal';
    static protected $othertabs = array();
 
 
@@ -480,7 +484,7 @@ class CommonGLPI {
                               'params' => "target=$target&itemtype=".$this->getType().
                                           "&glpi_tab=-1&id=$ID$extraparam");
          }
-         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType());
+         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $this->taborientation);
       }
    }
 

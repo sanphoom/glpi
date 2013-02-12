@@ -226,7 +226,7 @@ class Ajax {
     * @return nothing
    **/
    static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type, $size=950) {
+                              $type, $orientation = 'vertical', $size=950) {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
@@ -257,8 +257,9 @@ class Ajax {
 
          echo "<script type='text/javascript'>";
          echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'}});";
-         /// TODO : permit to create vertical or horizontal tabs (depending of where) : need to add a param
-         echo "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
+         if ($orientation=='vertical') {
+            echo "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
+         }
          echo "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
 
          /// TODO : add new parameters to default URL !!

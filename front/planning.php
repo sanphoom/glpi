@@ -136,9 +136,8 @@ if (isset($_GET['checkavailability'])) {
    if (!isset($_GET["type"])) {
       $_GET["type"] = "week";
    }
-
    $planning = new Planning();
-   $planning->show($_GET);
+   $planning->display($_GET);
 
    Html::footer();
 }
