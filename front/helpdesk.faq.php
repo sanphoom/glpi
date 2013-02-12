@@ -68,7 +68,7 @@ if (isset($_GET["id"])) {
    }
 
    $kb = new Knowbase();
-   $kb->show($_GET);
+   $kb->display($_GET);
 }
 
 Html::helpFooter();

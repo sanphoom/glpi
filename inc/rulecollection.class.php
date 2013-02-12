@@ -56,7 +56,9 @@ class RuleCollection extends CommonDBTM {
 
    var $entity                                = 0;
 
-
+   /// Tab orientation : horizontal or vertical
+   public $taborientation = 'horizontal';
+   
    // Temproray hack for this class
    static function getTable() {
       return 'glpi_rules';

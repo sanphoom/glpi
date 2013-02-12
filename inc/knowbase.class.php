@@ -103,26 +103,26 @@ class Knowbase extends CommonGLPI {
    **/
    static function showSearchView() {
       // Search a solution
-      if (!isset($_POST["contains"])
-          && isset($_POST["itemtype"])
-          && isset($_POST["items_id"])) {
+      if (!isset($_GET["contains"])
+          && isset($_GET["itemtype"])
+          && isset($_GET["items_id"])) {
 
-         if ($item = getItemForItemtype($_POST["itemtype"])) {
-            if ($item->getFromDB($_POST["items_id"])) {
-               $_POST["contains"] = addslashes($item->getField('name'));
+         if ($item = getItemForItemtype($_GET["itemtype"])) {
+            if ($item->getFromDB($_GET["items_id"])) {
+               $_GET["contains"] = addslashes($item->getField('name'));
             }
          }
       }
 
-      if (isset($_POST["contains"])) {
-         $_SESSION['kbcontains'] = $_POST["contains"];
+      if (isset($_GET["contains"])) {
+         $_SESSION['kbcontains'] = $_GET["contains"];
       } else if (isset($_SESSION['kbcontains'])) {
-         $_POST['contains'] = $_SESSION["kbcontains"];
+         $_GET['contains'] = $_SESSION["kbcontains"];
       }
       $ki = new KnowbaseItem();
-      $ki->searchForm($_POST);
+      $ki->searchForm($_GET);
 
-      if (!isset($_POST['contains']) || empty($_POST['contains'])) {
+      if (!isset($_GET['contains']) || empty($_GET['contains'])) {
          echo "<div><table class='center-h' width='950px'><tr><td class='center top'>";
          KnowbaseItem::showRecentPopular("recent");
          echo "</td><td class='center top'>";
@@ -132,7 +132,7 @@ class Knowbase extends CommonGLPI {
          echo "</td></tr>";
          echo "</table></div>";
       } else {
-         KnowbaseItem::showList($_POST, 'search');
+         KnowbaseItem::showList($_GET, 'search');
       }
    }
 
@@ -141,19 +141,19 @@ class Knowbase extends CommonGLPI {
     * Show the knowbase browse view
    **/
    static function showBrowseView() {
-      if (isset($_POST["knowbaseitemcategories_id"])) {
-         $_SESSION['kbknowbaseitemcategories_id'] = $_POST["knowbaseitemcategories_id"];
+      if (isset($_GET["knowbaseitemcategories_id"])) {
+         $_SESSION['kbknowbaseitemcategories_id'] = $_GET["knowbaseitemcategories_id"];
       } else if (isset($_SESSION['kbknowbaseitemcategories_id'])) {
-         $_POST["knowbaseitemcategories_id"] = $_SESSION['kbknowbaseitemcategories_id'];
+         $_GET["knowbaseitemcategories_id"] = $_SESSION['kbknowbaseitemcategories_id'];
       }
 
       $ki = new KnowbaseItem();
-      $ki->showBrowseForm($_POST);
-      if (!isset($_POST["itemtype"])
-          || !isset($_POST["items_id"])) {
-         KnowbaseItemCategory::showFirstLevel($_POST);
+      $ki->showBrowseForm($_GET);
+      if (!isset($_GET["itemtype"])
+          || !isset($_GET["items_id"])) {
+         KnowbaseItemCategory::showFirstLevel($_GET);
       }
-      KnowbaseItem::showList($_POST, 'browse');
+      KnowbaseItem::showList($_GET, 'browse');
    }
 
 
@@ -162,17 +162,17 @@ class Knowbase extends CommonGLPI {
    **/
    static function showManageView() {
 
-      if (isset($_POST["unpublished"])) {
-         $_SESSION['kbunpublished'] = $_POST["unpublished"];
+      if (isset($_GET["unpublished"])) {
+         $_SESSION['kbunpublished'] = $_GET["unpublished"];
       } else if (isset($_SESSION['kbunpublished'])) {
-         $_POST["unpublished"] = $_SESSION['kbunpublished'];
+         $_GET["unpublished"] = $_SESSION['kbunpublished'];
       }
-      if (!isset($_POST["unpublished"])) {
-         $_POST["unpublished"] = 'myunpublished';
+      if (!isset($_GET["unpublished"])) {
+         $_GET["unpublished"] = 'myunpublished';
       }
       $ki = new KnowbaseItem();
-      $ki->showManageForm($_POST);
-      KnowbaseItem::showList($_POST, $_POST["unpublished"]);
+      $ki->showManageForm($_GET);
+      KnowbaseItem::showList($_GET, $_GET["unpublished"]);
    }
 }
 ?>

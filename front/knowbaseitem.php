@@ -61,7 +61,7 @@ if (isset($_GET['forcetab'])) {
 }
 
 $kb = new Knowbase();
-$kb->show($_GET);
+$kb->display($_GET);
 
 
 Html::footer();

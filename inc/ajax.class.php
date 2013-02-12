@@ -245,10 +245,15 @@ class Ajax {
             // extract sup information
             $title = '';
             $limit = 20;
-            if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
-               $title = Html::resume_text($regs[1],$limit).$regs[2];
+            // No title strip for horizontal menu
+            if ($orientation=='vertical') {
+               if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
+                  $title = Html::resume_text($regs[1],$limit).$regs[2];
+               } else {
+                  $title = Html::resume_text($val['title'],$limit);
+               }
             } else {
-               $title = Html::resume_text($val['title'],$limit);
+               $title = $val['title'];
             }
             echo $title."</a></li>";
             $current ++;

@@ -113,6 +113,6 @@ if (isset($_POST["action"])) {
 Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], 'admin', $rulecollection->menu_type,
              $rulecollection->menu_option);
 
-$rulecollection->show();
+$rulecollection->display();
 Html::footer();
 ?>

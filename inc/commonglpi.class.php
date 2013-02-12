@@ -450,7 +450,6 @@ class CommonGLPI {
       echo "<div id='tabspanel' class='center-h'></div>";
       $current_tab = 0;
       $onglets     = $this->defineAllTabs($options);
-
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
          $display_all = false;
