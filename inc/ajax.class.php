@@ -231,6 +231,7 @@ class Ajax {
 
       /// TODO need to clean params !!
       $active_tabs = Session::getActiveTab($type);
+
       $rand = mt_rand();
       if (count($tabs)>0) {
          echo "<div id='tabs$rand' class='center'>";
@@ -241,7 +242,7 @@ class Ajax {
             if ($key == $active_tabs) {
                $selected_tab = $current;
             }
-            echo "<li><a title=\"".$val['title']."\" ";
+            echo "<li><a title=\"".str_replace(array('<sup>', '</sup>'),'',$val['title'])."\" ";
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
             $title = '';
@@ -262,7 +263,13 @@ class Ajax {
          echo "</ul></div>";
 
          echo "<script type='text/javascript'>";
-         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'}});";
+         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'},
+    activate : function( event, ui ){
+            //  Get future value
+            var newIndex = ui.newTab.parent().children().index(ui.newTab);
+            $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
+            { itemtype: '$type', tab: newIndex });
+            }});";
          if ($orientation=='vertical') {
             echo "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
          }

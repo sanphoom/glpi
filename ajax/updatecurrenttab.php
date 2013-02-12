@@ -31,17 +31,27 @@
 * @brief
 */
 
-define('GLPI_ROOT', dirname(__DIR__));
-include_once (GLPI_ROOT . "/config/based_config.php");
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+include ('../inc/includes.php');
 
-Session::setPath();
-Session::start();
 
 // Manage tabs
-if (isset($_GET['glpi_tab']) && isset($_GET['itemtype'])) {
-   Session::setActiveTab($_GET['itemtype'], $_GET['glpi_tab']);
+if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
+   if ($item = getItemForItemtype($_GET['itemtype'])) {
+      $tabs = $item->defineTabs();
+
+      $selected_tab = '';
+      $current = 0;
+      foreach ($tabs as $key => $val) {
+         if ($current == $_GET['tab']) {
+            $selected_tab = $key;
+         }
+         $current++;
+      }
+      if (!empty($selected_tab)) {
+         Toolbox::logDebug($selected_tab);
+         Session::setActiveTab($_GET['itemtype'], $selected_tab);
+      }
+      
+   }
 }
 ?>
