@@ -499,7 +499,7 @@ class Ticket extends CommonITILObject {
                   $satisfaction = new TicketSatisfaction();
                   if (($item->fields['status'] == self::CLOSED)
                       && $satisfaction->getFromDB($_POST["id"])) {
-                     $satisfaction->showSatisfactionForm($item);
+                     $satisfaction->showForm($item);
                   } else {
                      echo "<p class='center b'>".__('No generated survey')."</p>";
                   }

@@ -1122,7 +1122,7 @@ class RuleCollection extends CommonDBTM {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item instanceof RuleCollection) {
-         $options = $_POST;
+         $options = $_GET;
          switch ($tabnum) {
             case 1:
                $options['inherited'] = 1;
@@ -1142,7 +1142,7 @@ class RuleCollection extends CommonDBTM {
          }
          $item->title();
          $item->showEngineSummary();
-         $item->showListRules($_POST['target'], $options);
+         $item->showListRules($_GET['target'], $options);
          return true;
       }
       return false;

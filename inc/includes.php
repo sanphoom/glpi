@@ -153,7 +153,7 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER')
        || !isset($url['path'])
        || (!empty($CFG_GLPI['root_doc'])
            && strpos($url['path'], $CFG_GLPI['root_doc']) !== 0)) {
-      Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."), true);
+      Html::displayErrorAndDie(__("hhhThe action you have requested is not allowed. Reload previous page before doing action again."), true);
    }
 }
 
@@ -165,7 +165,7 @@ if (GLPI_USE_CSRF_CHECK
    // No ajax pages
    if (!preg_match(':'.$CFG_GLPI['root_doc'].'(/plugins/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI'])) {
       if (!Session::validateCSRF($_POST)) {
-         Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."), true);
+         Html::displayErrorAndDie(__("ggThe action you have requested is not allowed. Reload previous page before doing action again."), true);
       }
    }
 }

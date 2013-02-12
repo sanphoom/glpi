@@ -1526,7 +1526,7 @@ class Dropdown {
 
       } else {
 
-         $field_id = "dropdown_".$name.$param['rand'];
+         $field_id = Html::cleanId("dropdown_".$name.$param['rand']);
          $output  .= "<select name='$field_name' id='$field_id'";
 
          if (!empty($param["on_change"])) {

@@ -920,7 +920,8 @@ class Search {
                   Html::openMassiveActionsForm('massform'.$itemtype);
                   $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
                                                'fixed'         => false,
-                                               'is_deleted'    => $p['is_deleted']);
+                                               'is_deleted'    => $p['is_deleted'],
+                                               'container'     => 'massform'.$itemtype);
                   Html::showMassiveActions($itemtype, $massiveactionparams);
                }
             }

@@ -3047,7 +3047,7 @@ class Html {
       if (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id])) {
          $sel = "checked";
       }
-      return "<input type='checkbox' name='item[".$id."]' value='1' $sel>";
+      return "<input type='checkbox' id='massaction_item_$id' name='item[".$id."]' value='1' $sel>";
    }
 
 
@@ -3194,9 +3194,6 @@ class Html {
          if ($p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             echo "<div id='massiveactioncontent$identifier'></div>";
-//             echo "<script type='text/javascript' >\n";
-//             echo "Ext.DomHelper.append(document.body, {tag: 'div', id: 'massiveactioncontent$identifier'});";
-//             echo "</script>";
 
             Ajax::createModalWindow('massiveaction_window'.$identifier,
                                     $url,

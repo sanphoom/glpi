@@ -103,7 +103,7 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
 
       echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
    }
+   Html::closeForm();
    echo "</div>";
-   Html::closeForm();   
 }
 ?>

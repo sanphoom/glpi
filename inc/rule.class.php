@@ -588,7 +588,8 @@ class Rule extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.$this->ruleactionclass.$rand);
          $paramsma = array('num_displayed' => $nb,
                            'check_itemtype' => get_class($this),
-                           'check_items_id' => $rules_id);
+                           'check_items_id' => $rules_id,
+                           'container'  => 'mass'.$this->ruleactionclass.$rand);
          Html::showMassiveActions($this->ruleactionclass, $paramsma);
       }
 
@@ -750,7 +751,8 @@ class Rule extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.$this->rulecriteriaclass.$rand);
          $paramsma = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
-                           'check_items_id' => $rules_id);
+                           'check_items_id' => $rules_id,
+                           'container'  => 'mass'.$this->ruleactionclass.$rand);
          Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
       }
 
