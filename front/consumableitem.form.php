@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(_n('Consumable', 'Consumables', 2), $_SERVER['PHP_SELF'], "inventory", "consumable");
-   $constype->showForm($_GET["id"]);
+   $constype->display(array('id' =>$_GET["id"]));
    Html::footer();
 }
 ?>

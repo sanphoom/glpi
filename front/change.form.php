@@ -115,7 +115,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Change::getTypeName(2), $_SERVER['PHP_SELF'], "maintain", "change");
-   $change->showForm($_GET["id"], $_GET);
+   $change->display($_GET);
    Html::footer();
 }
 ?>

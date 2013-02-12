@@ -64,6 +64,7 @@ abstract class CommonDropdown extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       if ($this->dohistory) {
          $this->addStandardTab('Log',$ong, $options);
       }
@@ -155,7 +156,6 @@ abstract class CommonDropdown extends CommonDBTM {
          // Create item
          $this->check(-1,'w');
       }
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       $fields = $this->getAdditionalFields();
@@ -300,7 +300,6 @@ abstract class CommonDropdown extends CommonDBTM {
          $options['candel'] = false;
       }
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

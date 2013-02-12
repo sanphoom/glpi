@@ -132,7 +132,8 @@ if (isset($_POST["add"])) {
    if (!isset($options)) {
       $options = array();
    }
-   $dropdown->showForm($_GET["id"],$options);
+   $options['id'] = $_GET["id"];
+   $dropdown->display($options);
    Html::footer();
 }
 ?>

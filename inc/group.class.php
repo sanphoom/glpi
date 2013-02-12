@@ -115,7 +115,7 @@ class Group extends CommonTreeDropdown {
                   $nb = countElementsInTable($this->getTable(),
                                              "`groups_id` = '".$item->getID()."'");
                }
-               $ong[4] = self::createTabEntry($this->getTypeName(2), $nb);
+               $ong[4] = self::createTabEntry(__('Child groups'), $nb);
 
                if ($item->getField('is_itemgroup')) {
                   $ong[1] = __('Used items');
@@ -167,6 +167,7 @@ class Group extends CommonTreeDropdown {
 
       $ong = array();
 
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Group', $ong, $options);
       if ($this->fields['is_usergroup']) {
          $this->addStandardTab('Group_User', $ong, $options);
@@ -195,7 +196,6 @@ class Group extends CommonTreeDropdown {
    function showForm($ID, $options=array()) {
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $options['colspan'] = 4;
       $this->showFormHeader($options);
 
@@ -262,7 +262,6 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

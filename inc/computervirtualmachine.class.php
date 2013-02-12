@@ -69,7 +69,17 @@ class ComputerVirtualMachine extends CommonDBChild {
       return '';
    }
 
+   /**
+    * @see CommonGLPI::defineTabs()
+   **/
+   function defineTabs($options=array()) {
 
+      $ong = array();
+      $this->addDefaultFormTab($ong);
+
+      return $ong;
+   }
+   
    /**
     * @param $item         CommonGLPI object
     * @param $tabnum       (default 1)
@@ -118,7 +128,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          $comp->getFromDB($options['computers_id']);
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       if ($this->isNewID($ID)) {
@@ -193,7 +202,6 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "</tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

@@ -104,7 +104,8 @@ if (isset($_POST["add"])) {
    } else {
       Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "financial", "budget");
    }
-   $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   $budget->display(array('id'           => $_GET["id"],
+                          'withtemplate' => $_GET["withtemplate"]));
 
    if (isset($_GET['popup'])) {
       echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";

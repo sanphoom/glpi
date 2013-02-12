@@ -2046,7 +2046,7 @@ class CommonDBTM extends CommonGLPI {
          _e('Template name');
          Html::autocompletionTextField($this, "template_name", array('size' => 25));
       } else if ($this->isNewID($ID)) {
-         _e('New item');
+         printf(__('%1$s - %2$s'), __('New item'), $this->getTypeName(1));
       } else {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
          printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);

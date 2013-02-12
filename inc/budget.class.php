@@ -62,6 +62,7 @@ class Budget extends CommonDropdown{
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__,$ong, $options);
       $this->addStandardTab('Document_Item',$ong, $options);
       $this->addStandardTab('Link',$ong, $options);
@@ -120,7 +121,6 @@ class Budget extends CommonDropdown{
       }
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -161,7 +161,6 @@ class Budget extends CommonDropdown{
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
       return true;
    }
 

@@ -74,6 +74,7 @@ class CronTask extends CommonDBTM{
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('CronTaskLog', $ong, $options);
 
       return $ong;
@@ -377,7 +378,6 @@ class CronTask extends CommonDBTM{
          return false;
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -522,7 +522,6 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

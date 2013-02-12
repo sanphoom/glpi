@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Cartridge::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "cartridge");
-   $cartype->showForm($_GET["id"]);
+   $cartype->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

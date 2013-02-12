@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Group::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "group");
-   $group->showForm($_GET["id"]);
+   $group->display(array('id' =>$_GET["id"]));
    Html::footer();
 }
 ?>

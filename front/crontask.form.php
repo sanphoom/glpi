@@ -76,7 +76,7 @@ if (isset($_POST['execute'])) {
       exit();
    }
    Html::header(Crontask::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'crontask');
-   $crontask->showForm($_GET["id"]);
+   $crontask->display(array('id' =>$_GET["id"]));
    Html::footer();
 }
 Html::displayErrorAndDie('Lost');

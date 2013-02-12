@@ -389,7 +389,6 @@ class AuthLDAP extends CommonDBTM {
       }
 
       if (Toolbox::canUseLdap()) {
-         $this->showTabs($options);
          $this->showFormHeader($options);
          if (empty($ID)) {
             $target = $_SERVER['PHP_SELF'];
@@ -474,7 +473,6 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
 
          $this->showFormButtons($options);
-         $this->addDivForTabs();
 
       } else {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
@@ -833,6 +831,7 @@ class AuthLDAP extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -3041,7 +3040,7 @@ class AuthLDAP extends CommonDBTM {
       if (!$withtemplate
           && $item->can($item->getField('id'),'r')) {
          $ong     = array();
-         $ong[1]  = __('Main');                     // test connexion
+         $ong[1]  = _sx('button','Test');                     // test connexion
          $ong[2]  = _n('User', 'Users', 2);
          $ong[3]  = _n('Group', 'Groups', 2);
          $ong[4]  = __('Entity');                  // params for entity config

@@ -115,6 +115,7 @@ class Document extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -273,7 +274,6 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
@@ -347,7 +347,6 @@ class Document extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

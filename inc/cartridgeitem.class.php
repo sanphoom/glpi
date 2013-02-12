@@ -102,6 +102,7 @@ class CartridgeItem extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('CartridgeItem_PrinterModel', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -175,7 +176,6 @@ class CartridgeItem extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -236,7 +236,6 @@ class CartridgeItem extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

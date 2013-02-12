@@ -77,7 +77,8 @@ class AuthMail extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('authMail', $ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab('AuthMail', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -158,7 +159,6 @@ class AuthMail extends CommonDBTM {
 
       if (Toolbox::canUseImapPop()) {
          $options['colspan'] = 1;
-         $this->showTabs($options);
          $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
@@ -190,7 +190,6 @@ class AuthMail extends CommonDBTM {
          echo "</td></tr>";
 
          $this->showFormButtons($options);
-         $this->addDivForTabs();
 
       } else {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
@@ -327,7 +326,7 @@ class AuthMail extends CommonDBTM {
 
       if (!$withtemplate && $item->can($item->getField('id'),'r')) {
          $ong = array();
-         $ong[1] = __('Main');    // test connexion
+         $ong[1] = _sx('button','Test');    // test connexion
 
          return $ong;
       }
