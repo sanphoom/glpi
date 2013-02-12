@@ -628,6 +628,22 @@ class CommonGLPI {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
                        __s('Last')."\" title=\"".__s('Last')."\"></li>";
          }
+
+         $name = $this->getTypeName(1);
+         if ($this instanceof CommonDBTM) {
+
+            $name = sprintf('%1$s - %2$s', $name,
+                        sprintf(__('%1$s - ID %2$d'),
+                                            $this->getName(), $this->fields['id']));
+         }
+         if (isset($this->fields["entities_id"])
+               && Session::isMultiEntitiesMode()
+               && $this->isEntityAssign()) {
+            $name = sprintf('%1$s (%2$s)', $name, Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]));
+
+         }
+         echo "<li class='info b'>".$name."</li>";
+         
          echo "</ul></div>";
          echo "<div class='sep'></div>";
       }
