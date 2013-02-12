@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(SoftwareVersion::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
-   $version->showForm($_GET["id"], array('softwares_id' => $_GET["softwares_id"]));
+   $version->display(array('id' => $_GET["id"], 'softwares_id' => $_GET["softwares_id"]));
    Html::footer();
 }
 ?>

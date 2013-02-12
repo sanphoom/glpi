@@ -61,14 +61,25 @@ if (!isset($_GET["withtemplate"])) {
 }
 
 if ($item = getItemForItemtype($_GET['itemtype'])) {
-   if ($item instanceof CommonDBTM
-       && $item->isNewItem()
-       && (!isset($_GET["id"]) || !$item->can($_GET["id"],'r'))) {
-      exit();
+   if ($item instanceof CommonDBTM) {
+      if (!isset($_GET["id"])
+            || ($item->isNewID($_GET["id"]) && !$item->can(-1, 'w', $_GET))) {
+         exit();
+      } else if (!$item->can($_GET["id"],'r')){
+         exit();
+      }
    }
 }
 
-CommonGLPI::displayStandardTab($item, $_GET['glpi_tab'],$_GET["withtemplate"]);
+$notvalidoptions = array('glpi_tab', 'itemtype', 'sort', 'order', 'withtemplate');
+$options = $_GET;
+foreach ($notvalidoptions as $key) {
+   if (isset($options[$key])) {
+      unset($options[$key]);
+   }
+}
+
+CommonGLPI::displayStandardTab($item, $_GET['glpi_tab'],$_GET["withtemplate"], $options);
 
 
 if (isset($_GET['full_page_tab'])) {

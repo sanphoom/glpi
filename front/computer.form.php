@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
 } else {//print computer information
    Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
    //show computer form to add
-   $computer->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   $computer->display(array('id' => $_GET["id"], 'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

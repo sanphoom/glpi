@@ -64,6 +64,7 @@ class SoftwareVersion extends CommonDBChild {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Computer_SoftwareVersion',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
 
@@ -112,7 +113,6 @@ class SoftwareVersion extends CommonDBChild {
          $this->check(-1, 'w', $options);
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>"._n('Software', 'Software', 2)."</td>";
@@ -147,7 +147,6 @@ class SoftwareVersion extends CommonDBChild {
          $options['candel'] = false;
       }
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

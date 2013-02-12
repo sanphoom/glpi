@@ -135,11 +135,12 @@ class CommonGLPI {
    **/
    final function defineAllTabs($options=array()) {
 
+      $onglets = array();
       // Tabs known by the object
       if ($this->isNewItem()) {
-         $onglets  = array();
+         $this->addDefaultFormTab($onglets);
       } else {
-         $onglets  = $this->defineTabs($options);
+         $onglets = $this->defineTabs($options);
       }
 
       // Object with class with 'addtabon' attribute
@@ -201,6 +202,9 @@ class CommonGLPI {
       }
    }
 
+   function addDefaultFormTab(array &$ong) {
+      $ong[$this->getType().'$main'] = __('Main');
+   }
 
    /**
     * Get Tab Name used for itemtype
@@ -242,10 +246,11 @@ class CommonGLPI {
     * @param $item                  CommonGLPI object for which the tab need to be displayed
     * @param $tab          string   tab name
     * @param $withtemplate boolean  is a template object ? (default 0)
+    * @param $options      array    additional options to pass
     *
     * @return true
    **/
-   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0) {
+   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0, $options = array()) {
 
       switch ($tab) {
          // All tab
@@ -278,8 +283,10 @@ class CommonGLPI {
             if (isset($data[1])) {
                $tabnum = $data[1];
             }
-
-            if (!is_integer($itemtype) && ($itemtype != 'empty')
+            if ($tabnum =='main') {
+               $options['withtemplate'] = $withtemplate;
+               return $item->showForm($item->getID(), $options);
+            } else if (!is_integer($itemtype) && ($itemtype != 'empty')
                 && ($obj = getItemForItemtype($itemtype))) {
                return $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
             }
@@ -436,7 +443,6 @@ class CommonGLPI {
             }
          }
       }
-
       echo "<div id='tabspanel' class='center-h'></div>";
       $current_tab = 0;
       $onglets     = $this->defineAllTabs($options);
@@ -658,7 +664,7 @@ class CommonGLPI {
             }
          }
       }
-
+      
       if (empty($withtemplate)
           && !$this->isNewID($ID)
           && $this->getType()
@@ -779,7 +785,18 @@ class CommonGLPI {
       $this->addDivForTabs($options);
    }
 
-
+   /** Display item with tabs
+    * @param $options   array
+   **/
+   function display($options=array()) {
+      if (isset($options['id'])) {
+         $this->getFromDB($options['id']);
+      }
+      
+      $this->showNavigationHeader($options);
+      $this->showTabsContent($options);
+   }
+   
    /**
     * to list infos in debug tab
    **/

@@ -87,6 +87,7 @@ class Computer extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('ComputerDisk', $ong, $options);
       $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
@@ -393,7 +394,6 @@ class Computer extends CommonDBTM {
       global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -592,7 +592,6 @@ class Computer extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
