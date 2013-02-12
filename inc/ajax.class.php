@@ -41,8 +41,7 @@ class Ajax {
 
    /**
     * Create modal window
-    * After display it using $name.show()
-    * May be constraint to a predefined html item setting renderTo options
+    * After display it using $name.dialog("open");
     *
     * @since version 0.84
     *
@@ -71,33 +70,33 @@ class Ajax {
             }
          }
       }
-      echo "<script type='text/javascript'>";
-      echo "var $name=new Ext.Window({
-         layout:'fit',
-         width:".$param['width'].",
-         height:".$param['height'].",
-         closeAction:'hide',
-         modal: ".($param['modal']?'true':'false').",
-         ".(!empty($param['container'])?"renderTo: '".$param['container']."',":'')."
-         autoScroll: true,
-         title: \"".addslashes($param['title'])."\",
-         autoLoad: {url: '$url',
-                    scripts: true,
-                    nocache: true";
-         if (is_array($param['extraparams']) && count($param['extraparams'])) {
-            echo ", params: '".Toolbox::append_params($param['extraparams'])."'";
-         }
-         echo "},";
-
-     echo " }); ";
+      echo "<script type='text/javascript'>\n";
+      echo "var $name=";
+      if (!empty($param['container'])) {
+         echo Html::jsGetElementbyID(Html::cleanId($param['container']));
+      } else {
+         echo "$('<div></div>')";
+      }
+      echo ".dialog({\n
+         width:".$param['width'].",\n
+         autoOpen: false,\n
+         height:".$param['height'].",\n
+         modal: ".($param['modal']?'true':'false').",\n
+         title: \"".addslashes($param['title'])."\",\n
+         open: function (){\n
+            $(this).load('$url'";
+            if (is_array($param['extraparams']) && count($param['extraparams'])) {
+               echo ", ".json_encode($param['extraparams'],JSON_FORCE_OBJECT);
+            }
+      echo ");\n}\n
+         });\n";
       echo "</script>";
    }
 
 
    /**
     * Create fixed modal window
-    * After display it using $name.show()
-    * May be constraint to a predefined html item setting container options
+    * After display it using $name.dialog("open");
     *
     * @since version 0.84
     *
@@ -124,17 +123,20 @@ class Ajax {
             }
          }
       }
-      echo "<script type='text/javascript'>";
-      echo "var $name=new Ext.Window({
-         layout:'fit',
-         width:".$param['width'].",
-         height:".$param['height'].",
-         closeAction:'hide',
-         modal: ".($param['modal']?'true':'false').",
-         ".(!empty($param['container'])?"applyTo: '".$param['container']."',":'')."
-         autoScroll: true,
-         title: \"".addslashes($param['title'])."\"
-         }); ";
+      echo "<script type='text/javascript'>\n";
+      echo "var $name=";
+      if (!empty($param['container'])) {
+         echo Html::jsGetElementbyID(Html::cleanId($param['container']));
+      } else {
+         echo "$('<div></div>')";
+      }
+      echo ".dialog({\n
+         width:".$param['width'].",\n
+         autoOpen: false,\n
+         height:".$param['height'].",\n
+         modal: ".($param['modal']?'true':'false').",\n
+         title: \"".addslashes($param['title'])."\"\n
+         });\n";
       echo "</script>";
    }
 
@@ -227,94 +229,46 @@ class Ajax {
                               $type, $size=950) {
       global $CFG_GLPI;
 
+      /// TODO need to clean params !!
       $active_tabs = Session::getActiveTab($type);
-
+      $rand = mt_rand();
       if (count($tabs)>0) {
-         echo "<script type='text/javascript'>
+         echo "<div id='tabs$rand' class='center'>";
+         echo "<ul>";
+         $current = 0;
+         $selected_tab = 0;
+         foreach ($tabs as $key => $val) {
+            if ($key == $active_tabs) {
+               $selected_tab = $current;
+            }
+            echo "<li><a href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
+            // extract sup information
+            $title = '';
+            $limit = 20;
+            if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
+               $title = Html::resume_text($regs[1],$limit).$regs[2];
+            } else {
+               $title = Html::resume_text($val['title'],$limit);
+            }
+            echo $title."</a></li>";
+            $current ++;
+         }
+         echo "</ul></div>";
 
-               var tabpanel = new Ext.TabPanel({
-               applyTo: '$tabdiv_id',
-               width:$size,
-               enableTabScroll: true,
-               resizeTabs: false,
-               collapsed: true,
-               plain: true,
-               plugins: [{
-                   ptype: 'tabscrollermenu',
-                   maxText  : 50,
-                   pageSize : 30
-               }],
-               items: [";
-               $first = true;
-               $default_tab = $active_tabs;
+         echo "<script type='text/javascript'>";
+         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'}});";
+         /// TODO : permit to create vertical or horizontal tabs (depending of where) : need to add a param
+         echo "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
+         echo "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
 
-               if (!isset($tabs[$active_tabs])) {
-                  $default_tab = key($tabs);
-               }
-
-               foreach ($tabs as $key => $val) {
-                  if ($first) {
-                     $first = false;
-                  } else {
-                     echo ",";
-                  }
-
-                  echo "{
-                     title: \"".addslashes($val['title'])."\",
-                     id: '$key',";
-                  if (!empty($key) && $key != 'empty') {
-                     echo "autoLoad: {url: '".$val['url']."',
-                           scripts: true,
-                           nocache: true";
-                           if (isset($val['params'])) {
-                              echo ", params: '".$val['params']."'";
-                           }
-                     echo "},";
-                  }
-
-                  echo "  listeners:{ // Force glpi_tab storage
-                          beforeshow : function(panel) {
-                           /* clean content because append data instead of replace it : no more problem */
-                           /* Problem with IE6... But clean data for tabpanel before show. Do it on load default tab ?*/
-                           /*tabpanel.body.update('');*/
-                           /* update active tab*/
-                           Ext.Ajax.request({
-                              url : '".$CFG_GLPI['root_doc'].
-                                     "/ajax/updatecurrenttab.php?itemtype=$type&glpi_tab=".
-                                     urlencode($key)."',
-                              success: function(objServerResponse) {
-                              //alert(objServerResponse.responseText);
-                           }
-                           });
-                        }
-                     }";
-                  echo "}";
-               } // Foreach tabs
-            echo "]});";
-
-            echo "/// Define view point";
-            echo "tabpanel.expand();";
-
-            echo "// force first load
-               function loadDefaultTab() {
-                  tabpanel.body=Ext.get('$tabdivcontent_id');
-                  // See before
-                  tabpanel.body.update('');
-                  tabpanel.setActiveTab('$default_tab');";
-            echo "}";
-
-            echo "// force reload
-               function reloadTab(add) {
-                  var tab = tabpanel.getActiveTab();
-                  var opt = tab.autoLoad;
-                  if (add) {
-                     if (opt.params)
-                        opt.params = opt.params + '&' + add;
-                     else
-                        opt.params = add;
-                  }
-                  tab.getUpdater().update(opt);";
-            echo "}";
+         /// TODO : add new parameters to default URL !!
+         echo "// force reload
+            function reloadTab(add) {
+               var current_index = $('#tabs$rand').tabs('option','selected');
+               $('#tabs$rand').tabs('option', 'ajaxOptions', { data: add });
+               $('#tabs$rand').tabs( 'load' , current_index);
+               $('#tabs$rand').tabs('option', 'ajaxOptions', { data: {} });
+            }";
          echo "</script>";
       }
    }
@@ -426,20 +380,31 @@ class Ajax {
       $output = '';
       foreach ($zones as $zone) {
          foreach ($events as $event) {
-            $output .= "
-               Ext.get('$zone').on(
+            if ($buffertime > 0) {
+               $output .= "var last$zone$event = 0;";
+            }
+            $output .= Html::jsGetElementbyID(Html::cleanId($zone)).".on(
                 '$event',
-                function() {";
+                function(event) {";
+                  /// TODO manage buffer time !! ?
+                  if ($buffertime > 0) {
+//                      $output.= "var elapsed = new Date().getTime() - last$zone$event;
+//                            last$zone$event = new Date().getTime();
+//                            if (elapsed < $buffertime) {
+//                               return;
+//                            }";
+                  }
+
                   $condition = '';
                   if ($minsize >= 0) {
-                     $condition = " Ext.get('$zone').getValue().length >= $minsize ";
+                     $condition = Html::jsGetElementbyID(Html::cleanId($zone)).".val().length >= $minsize ";
                   }
                   if (count($forceloadfor)) {
                      foreach ($forceloadfor as $value) {
                         if (!empty($condition)) {
                            $condition .= " || ";
                         }
-                        $condition .= "Ext.get('$zone').getValue() == '$value'";
+                        $condition .= Html::jsGetElementbyID(Html::cleanId($zone)).".val() == '$value'";
                      }
                   }
                   if (!empty($condition)) {
@@ -449,11 +414,7 @@ class Ajax {
                   if (!empty($condition)) {
                      $output .= "}";
                   }
-
                $output .=  "}";
-               if ($buffertime > 0) {
-                  $output.= ", this, { buffer : $buffertime }";
-               }
             $output .=");\n";
          }
       }
@@ -526,43 +487,32 @@ class Ajax {
    static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="",
                                     $display=true) {
 
-      // Get it from a Ext.Element object
-      $out = "Ext.get('$toupdate').load({
-          url: '$url',
-          scripts: true";
-
+      $out = Html::jsGetElementbyID($toupdate).".load('$url'\n";
       if (count($parameters)) {
-         $out .= ",
-             params:'";
+         $out .= ",{";
          $first = true;
          foreach ($parameters as $key => $val) {
             if ($first) {
                $first = false;
             } else {
-               $out .= "&";
+               $out .= ",";
             }
 
-            $out .= $key."=";
-            if (is_array($val)) {
-               $out .=  rawurlencode(serialize($val));
+            $out .= $key.":";
+            if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
+               $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])).".val()";
 
-            } else if (preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
-               $out .=  "'+Ext.get('".$toobserve[$regs[1]]."').getValue()+'";
-
-            } else if ($val==="__VALUE__") {
-               $out .=  "'+Ext.get('$toobserve').getValue()+'";
+            } else if (!is_array($val) && $val==="__VALUE__") {
+               $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)).".val()";
 
             } else {
-               if (preg_match("/['\"]/",$val)) {
-                  $out .=  rawurlencode($val);
-               } else {
-                  $out .=  $val;
-               }
+               $out .=  json_encode($val);
             }
          }
-         $out .= "'\n";
+         $out .= "}\n";
+
       }
-      $out .= "});";
+      $out.= ")\n";
       if ($display) {
          echo $out;
       } else {
@@ -623,19 +573,19 @@ class Ajax {
       }
 
       $locoutput .=  "</span>\n";
-      $locoutput .=  "<script type='text/javascript'>";
-      $locoutput .=  "function update_results_$rand() {";
-      if ($use_ajax) {
-         $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl,
-                                              $initparams, "search_$rand", false);
-      } else {
-         $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
-         $locoutput               .= self::updateItemJsCode("results_$rand",
-                                                            $CFG_GLPI['root_doc'].$relativeurl,
-                                                            $initparams, '', false);
-      }
-      $locoutput .=  "}";
-      $locoutput .=  "</script>";
+//       $locoutput .=  "<script type='text/javascript'>";
+//       $locoutput .=  "function update_results_$rand() {";
+//       if ($use_ajax) {
+//          $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl,
+//                                               $initparams, "search_$rand", false);
+//       } else {
+//          $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
+//          $locoutput               .= self::updateItemJsCode("results_$rand",
+//                                                             $CFG_GLPI['root_doc'].$relativeurl,
+//                                                             $initparams, '', false);
+//       }
+//       $locoutput .=  "}";
+//       $locoutput .=  "</script>";
 
       if ($display) {
          echo $locoutput;

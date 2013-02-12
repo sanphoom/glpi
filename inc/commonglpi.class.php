@@ -353,6 +353,131 @@ class CommonGLPI {
       return true;
    }
 
+   /**
+    * Get the search page URL for the current classe
+    *
+    * @param $full path or relative one (true by default)
+   **/
+   static function getTabsURL($full=true) {
+      return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
+   }
+
+
+   /**
+    * Get the search page URL for the current classe
+    *
+    * @param $full path or relative one (true by default)
+   **/
+   static function getSearchURL($full=true) {
+      return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
+   }
+
+
+   /**
+    * Get the search page URL for the current classe
+    *
+    * @param $full path or relative one (true by default)
+   **/
+   static function getFormURL($full=true) {
+      return Toolbox::getItemTypeFormURL(get_called_class(), $full);
+   }
+
+
+   /**
+    * Add div to display form's tabs
+   **/
+   function addDivForTabs($options = array()) {
+      $this->showTabsContent($options);
+   }
+
+  /**
+    * Show header of forms : navigation headers
+    *
+    * @param $options array of parameters to add to URLs and ajax
+    *     - withtemplate is a template view ?
+    *
+    * @return Nothing ()
+   **/
+   function showTabs($options=array()) {
+      $this->showNavigationHeader($options);
+   }
+
+   /**
+    * Show tabs content
+    *
+    * @param $options array of parameters to add to URLs and ajax
+    *     - withtemplate is a template view ?
+    *
+    * @return Nothing ()
+   **/
+   function showTabsContent($options=array()) {
+      global $CFG_GLPI;
+
+      // for objects not in table like central
+      if (isset($this->fields['id'])) {
+         $ID = $this->fields['id'];
+      } else {
+         $ID = 0;
+      }
+      $target         = $_SERVER['PHP_SELF'];
+      $extraparamhtml = "";
+      $extraparam     = "";
+      $withtemplate   = "";
+
+      if (is_array($options) && count($options)) {
+         if (isset($options['withtemplate'])) {
+            $withtemplate = $options['withtemplate'];
+         }
+         foreach ($options as $key => $val) {
+            // Do not include id options
+            if (($key[0] != '_') && ($key != 'id')) {
+               $extraparamhtml .= "&amp;$key=$val";
+               $extraparam     .= "&$key=$val";
+            }
+         }
+      }
+
+      echo "<div id='tabspanel' class='center-h'></div>";
+      $current_tab = 0;
+      $onglets     = $this->defineAllTabs($options);
+
+      $display_all = true;
+      if (isset($onglets['no_all_tab'])) {
+         $display_all = false;
+         unset($onglets['no_all_tab']);
+      }
+
+      $class = $this->getType();
+      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+          && (($ID > 0) || $this->showdebug)
+          && (method_exists($class, 'showDebug')
+              || in_array($class, $CFG_GLPI["infocom_types"])
+              || in_array($class, $CFG_GLPI["reservation_types"]))) {
+
+            $onglets[-2] = __('Debug');
+      }
+      if (count($onglets)) {
+         $tabpage = $this->getTabsURL();
+         $tabs    = array();
+
+         foreach ($onglets as $key => $val ) {
+            $tabs[$key] = array('title'  => $val,
+                                'url'    => $tabpage,
+                                'params' => "target=$target&itemtype=".$this->getType().
+                                            "&glpi_tab=$key&id=$ID$extraparam");
+         }
+
+         // Not all tab for templates and if only 1 tab
+         if ($display_all && empty($withtemplate) && count($tabs)>1) {
+            $tabs[-1] = array('title'  => __('All'),
+                              'url'    => $tabpage,
+                              'params' => "target=$target&itemtype=".$this->getType().
+                                          "&glpi_tab=-1&id=$ID$extraparam");
+         }
+         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType());
+      }
+   }
+
 
    /**
     * Show onglets
@@ -362,7 +487,7 @@ class CommonGLPI {
     *
     * @return Nothing ()
    **/
-   function showTabs($options=array()) {
+   function showNavigationHeader($options=array()) {
       global $CFG_GLPI;
 
       // for objects not in table like central
@@ -498,88 +623,8 @@ class CommonGLPI {
          echo "</ul></div>";
          echo "<div class='sep'></div>";
       }
-      echo "<div id='tabspanel' class='center-h'></div>";
-
-      $onglets     = $this->defineAllTabs($options);
-
-      $display_all = true;
-      if (isset($onglets['no_all_tab'])) {
-         $display_all = false;
-         unset($onglets['no_all_tab']);
-      }
-
-      $class = $this->getType();
-      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-          && (($ID > 0) || $this->showdebug)
-          && (method_exists($class, 'showDebug')
-              || in_array($class, $CFG_GLPI["infocom_types"])
-              || in_array($class, $CFG_GLPI["reservation_types"]))) {
-
-            $onglets[-2] = __('Debug');
-      }
-      if (count($onglets)) {
-         $tabpage = $this->getTabsURL();
-         $tabs    = array();
-
-         foreach ($onglets as $key => $val ) {
-            $tabs[$key] = array('title'  => $val,
-                                'url'    => $tabpage,
-                                'params' => "target=$target&itemtype=".$this->getType().
-                                            "&glpi_tab=$key&id=$ID$extraparam");
-         }
-
-         // Not all tab for templates and if only 1 tab
-         if ($display_all && empty($withtemplate) && count($tabs)>1) {
-            $tabs[-1] = array('title'  => __('All'),
-                              'url'    => $tabpage,
-                              'params' => "target=$target&itemtype=".$this->getType().
-                                          "&glpi_tab=-1&id=$ID$extraparam");
-         }
-         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType());
-      }
    }
-
-
-   /**
-    * Get the search page URL for the current classe
-    *
-    * @param $full path or relative one (true by default)
-   **/
-   static function getTabsURL($full=true) {
-      return Toolbox::getItemTypeTabsURL(get_called_class(), $full);
-   }
-
-
-   /**
-    * Get the search page URL for the current classe
-    *
-    * @param $full path or relative one (true by default)
-   **/
-   static function getSearchURL($full=true) {
-      return Toolbox::getItemTypeSearchURL(get_called_class(), $full);
-   }
-
-
-   /**
-    * Get the search page URL for the current classe
-    *
-    * @param $full path or relative one (true by default)
-   **/
-   static function getFormURL($full=true) {
-      return Toolbox::getItemTypeFormURL(get_called_class(), $full);
-   }
-
-
-   /**
-    * Add div to display form's tabs
-   **/
-   function addDivForTabs() {
-
-      echo "<div id='tabcontent'>&nbsp;</div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
-   }
-
-
+   
    /**
     * @param $options   array
    **/

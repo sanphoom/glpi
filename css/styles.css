@@ -184,6 +184,9 @@ hr {
    cursor:pointer;
  }
 
+.invisible {
+   display: none;
+}
 
 /* ################--------------- Tabs ---------------#################### */
 
@@ -1640,10 +1643,10 @@ div#c_ssmenu2  a.here {
 
 
 div#show_all_menu {
-   display: none;
-   position: absolute;
-   top:20px; 
-   left:5px;
+/*   display: none;*/
+/*   position: absolute;*/
+/*   top:20px;*/ 
+/*   left:5px;*/
    border: 1px solid  #CC9900;
    background: url("../pics/fd_hoverlink.png") 0 0 repeat;
    -moz-border-radius: 5px;
@@ -1652,10 +1655,10 @@ div#show_all_menu {
    -moz-box-shadow: 0px 0px 4px #000000;
    -webkit-box-shadow: 0px 0px 4px #000000;
    box-shadow: 0px 0px 4px #000000;
-   padding: 5px;
+/*   padding: 5px;*/
    font-size: 11px;
    text-align: left;
-   z-index:1000;
+/*   z-index:1000;*/
 }
 
 

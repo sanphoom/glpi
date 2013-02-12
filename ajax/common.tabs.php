@@ -33,45 +33,45 @@
 
 include ('../inc/includes.php');
 
-if (isset($_POST['full_page_tab'])) {
+if (isset($_GET['full_page_tab'])) {
    Html::header('Only tab for debug', $_SERVER['PHP_SELF']);
 } else {
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
 }
 
-if (!isset($_POST['glpi_tab'])) {
+if (!isset($_GET['glpi_tab'])) {
    exit();
 }
 
-if (!isset($_POST['itemtype']) || empty($_POST['itemtype'])) {
+if (!isset($_GET['itemtype']) || empty($_GET['itemtype'])) {
    exit();
 }
 
-if (!isset($_POST["sort"])) {
-   $_POST["sort"] = "";
+if (!isset($_GET["sort"])) {
+   $_GET["sort"] = "";
 }
 
-if (!isset($_POST["order"])) {
-   $_POST["order"] = "";
+if (!isset($_GET["order"])) {
+   $_GET["order"] = "";
 }
 
-if (!isset($_POST["withtemplate"])) {
-   $_POST["withtemplate"] = "";
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
 }
 
-if ($item = getItemForItemtype($_POST['itemtype'])) {
+if ($item = getItemForItemtype($_GET['itemtype'])) {
    if ($item instanceof CommonDBTM
        && $item->isNewItem()
-       && (!isset($_POST["id"]) || !$item->can($_POST["id"],'r'))) {
+       && (!isset($_GET["id"]) || !$item->can($_GET["id"],'r'))) {
       exit();
    }
 }
 
-CommonGLPI::displayStandardTab($item, $_POST['glpi_tab'],$_POST["withtemplate"]);
+CommonGLPI::displayStandardTab($item, $_GET['glpi_tab'],$_GET["withtemplate"]);
 
 
-if (isset($_POST['full_page_tab'])) {
+if (isset($_GET['full_page_tab'])) {
    Html::footer();
 
    // I think that we should display this warning, because tabs are not prepare

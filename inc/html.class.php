@@ -888,9 +888,12 @@ class Html {
          echo "<script type='text/javascript' src='".
                 $CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js'></script>\n";
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/localization/jquery-ui-timepicker-".
-                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js'></script>\n";
+         $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/localization/jquery-ui-timepicker-".
+                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+         if (file_exists(GLPI_ROOT.$filename)) {
+            echo "<script type='text/javascript' src='".
+                  $CFG_GLPI["root_doc"]."$filename'></script>\n";
+         }
       }
 
 
@@ -3944,7 +3947,7 @@ class Html {
             }
             $out .= '>';
          }
-         $out .= "<img id='tooltip$rand' alt='' src='".$param['img']."'>";
+         $out .= "<img id='tooltip$rand' alt='ffff' src='".$param['img']."'>";
 
          if (!empty($param['link'])) {
             $out .= "</a>";
@@ -3956,31 +3959,12 @@ class Html {
          $param['contentid'] = "content".$param['applyto'];
       }
 
-      $out .= "<span id='".$param['contentid']."' class='x-hidden'>$content</span>";
+      $out .= "<span id='".$param['contentid']."' class='invisible'>$content</span>";
 
       $out .= "<script type='text/javascript' >\n";
-
-      $out .= "new Ext.ToolTip({
-               target: '".$param['applyto']."',
-               anchor: 'left',
-               autoShow: true,
-               ";
-
-      if ($param['autoclose']) {
-         $out .= "autoHide: true,
-
-                  dismissDelay: 0";
-      } else {
-         $out .= "autoHide: false,
-                  closable: true,
-                  autoScroll: true";
-      }
-
-      if (!empty($param['title'])) {
-         $out .= ",title: \"".addslashes($param['title'])."\"";
-      }
-      $out .= ",contentEl: '".$param['contentid']."'";
-      $out .= "});";
+      // Set title attribute : permit to use several object type (img a...)
+      $out .= "$('#".$param['applyto']."').attr('title', $('#".$param['contentid']."').html());";
+      $out .= "$('#".$param['applyto']."').tooltip();";
       $out .= "</script>";
 
       if ($param['display']) {
