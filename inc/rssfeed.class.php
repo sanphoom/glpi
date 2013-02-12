@@ -481,7 +481,7 @@ class RSSFeed extends CommonDBTM {
          switch ($item->getType()) {
             case 'RSSFeed' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return array(1 => self::getTypeName(1),
+                  return array(1 => __('Content'),
                                2 => self::createTabEntry(__('Targets'),
                                                          $item->countVisibilities()));
                }
@@ -498,6 +498,7 @@ class RSSFeed extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
 
       return $ong;
@@ -602,7 +603,6 @@ class RSSFeed extends CommonDBTM {
 
       $canedit = $this->can($ID,'w');
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       $rowspan = 4;
@@ -683,7 +683,6 @@ class RSSFeed extends CommonDBTM {
       }
       echo "</tr>";
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

@@ -72,7 +72,8 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(SoftwareLicense::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
-   $license->showForm($_GET["id"], array('softwares_id' => $_GET["softwares_id"]));
+   $license->display(array('id'           => $_GET["id"],
+                           'softwares_id' => $_GET["softwares_id"]));
    Html::footer();
 }
 ?>

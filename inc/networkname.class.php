@@ -716,14 +716,14 @@ class NetworkName extends FQDNLabel {
 
       if (($item->getType() == 'FQDN')
           || ($item->getType() == 'NetworkEquipment')) {
-         if (isset($_POST["start"])) {
-            $start = $_POST["start"];
+         if (isset($_GET["start"])) {
+            $start = $_GET["start"];
          } else {
             $start = 0;
          }
 
-         if (!empty($_POST["order"])) {
-            $table_options['order'] = $_POST["order"];
+         if (!empty($_GET["order"])) {
+            $table_options['order'] = $_GET["order"];
          } else {
             $table_options['order'] = 'name';
          }

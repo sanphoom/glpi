@@ -129,7 +129,7 @@ if (isset($_POST["update"])) {
 } else if (isset($_GET["id"]) && ($_GET["id"] > 0)) { //print computer information
    Html::header(SlaLevel::getTypeName(2), $_SERVER['PHP_SELF'], "config", "sla");
    //show computer form to add
-   $item->showForm($_GET["id"]);
+   $item->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 Html::displayErrorAndDie('Lost');

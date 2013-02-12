@@ -111,6 +111,7 @@ class SoftwareLicense extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Computer_SoftwareLicense', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
@@ -155,7 +156,6 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -231,7 +231,6 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
@@ -513,21 +512,21 @@ class SoftwareLicense extends CommonDBTM {
       if (!$software->can($softwares_id,"r")) {
          return false;
       }
-      if (isset($_POST["start"])) {
-         $start = $_POST["start"];
+      if (isset($_GET["start"])) {
+         $start = $_GET["start"];
       } else {
          $start = 0;
       }
 
 
-      if (isset($_POST["order"]) && ($_POST["order"] == "DESC")) {
+      if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
       }
 
-      if (isset($_POST["sort"]) && !empty($_POST["sort"])) {
-         $sort = "`".$_POST["sort"]."`";
+      if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
+         $sort = "`".$_GET["sort"]."`";
       } else {
          $sort = "`entity` $order, `name`";
       }

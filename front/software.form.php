@@ -90,7 +90,8 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
-   $soft->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+   $soft->display(array('id'           => $_GET["id"],
+                        'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>

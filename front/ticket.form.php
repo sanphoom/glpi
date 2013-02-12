@@ -179,12 +179,13 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
          $options[$key] = $_GET[$key];
       }
    }
-   $track->showForm($_GET["id"],$options);
+   $options['id'] = $_GET["id"];
+   $track->display($options);
 
 } else {
    Html::header(__('New ticket'),'',"maintain","ticket");
 
-   $track->showForm(0);
+   $track->display();
 }
 
 

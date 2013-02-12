@@ -522,6 +522,7 @@ class Reminder extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Reminder', $ong, $options);
 
@@ -672,7 +673,6 @@ class Reminder extends CommonDBTM {
          Html::initEditorSystem('text');
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'><td>".__('Title')."</td>";
@@ -804,7 +804,6 @@ class Reminder extends CommonDBTM {
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

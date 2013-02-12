@@ -224,6 +224,7 @@ class User extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('Profile_User', $ong, $options);
       $this->addStandardTab('Group_User', $ong, $options);
       $this->addStandardTab('Config', $ong, $options);
@@ -1631,7 +1632,6 @@ class User extends CommonDBTM {
                            || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                                && !empty($this->fields["password"])));
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -1831,7 +1831,6 @@ class User extends CommonDBTM {
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

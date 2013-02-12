@@ -207,7 +207,7 @@ class CommonGLPI {
    }
 
    function addDefaultFormTab(array &$ong) {
-      $ong[$this->getType().'$main'] = __('Main');
+      $ong[$this->getType().'$main'] = $this->getTypeName(1);
    }
 
    /**

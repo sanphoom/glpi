@@ -100,7 +100,7 @@ if (isset($_GET['getvcard'])) {
 
 } else {
    Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contact");
-   $contact->showForm($_GET["id"]);
+   $contact->display(array('id' => $_GET["id"]));
    Html::footer();
 }
 ?>

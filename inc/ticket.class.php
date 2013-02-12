@@ -523,6 +523,7 @@ class Ticket extends CommonITILObject {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('TicketFollowup',$ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('TicketTask', $ong, $options);
@@ -3739,12 +3740,6 @@ class Ticket extends CommonITILObject {
          $showuserlink = 1;
       }
 
-
-
-      if (!$options['template_preview']) {
-         $this->showTabs($options);
-      }
-
       // In percent
       $colsize1 = '13';
       $colsize2 = '29';
@@ -4493,7 +4488,6 @@ class Ticket extends CommonITILObject {
 
       if (!$options['template_preview']) {
          Html::closeForm();
-         $this->addDivForTabs();
       }
 
       return true;

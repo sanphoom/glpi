@@ -76,6 +76,7 @@ class SLA extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('SlaLevel', $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
@@ -142,7 +143,6 @@ class SLA extends CommonDBTM {
       }
 
       $this->initForm($ID, $options);
-      $this->showTabs($options);
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
@@ -186,7 +186,6 @@ class SLA extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

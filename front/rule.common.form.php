@@ -123,6 +123,6 @@ if (isset($_POST["delete_criteria"])) {
 Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], 'admin',
              $rulecollection->menu_type, $rulecollection->menu_option);
 
-$rule->showForm($_GET["id"]);
+$rule->display(array('id' => $_GET["id"]));
 Html::footer();
 ?>

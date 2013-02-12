@@ -169,7 +169,7 @@ if (isset($_GET['getvcard'])) {
    } else {
       Session::checkRight("user", "r");
       Html::header(User::getTypeName(2), '', "admin", "user");
-      $user->showForm($_GET["id"]);
+      $user->display(array('id' => $_GET["id"]));
       Html::footer();
 
    }
