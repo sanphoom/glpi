@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 if (isset($_POST['searchtype'])) {
-   $searchopt      = unserialize(stripslashes($_POST['searchopt']));
+   $searchopt      = $_POST['searchopt'];
    $_POST['value'] = rawurldecode($_POST['value']);
 
    $addmeta        = "";

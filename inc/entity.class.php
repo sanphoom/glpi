@@ -794,38 +794,49 @@ class Entity extends CommonTreeDropdown {
 
       echo "<div class='left' style='width:100%'>";
 
-      echo "<script type='javascript'>";
-      echo "var Tree_Category_Loader$rand = new Ext.tree.TreeLoader({
-         dataUrl:'".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php'
-      });";
+      echo "<script type='text/javascript'>";
+      echo Html::jsGetElementbyID("tree_projectcategory$rand")."
+              // call `.jstree` with the options object
+              .jstree({
+                  // the `plugins` array allows you to configure the active plugins on this instance
+                  'plugins' : ['themes','json_data'],
+                  'core' : {'load_open': true,
+                            'html_titles': true},
+                  'themes' : {
+                     'theme' : 'classic',
+                  },
+                  'json_data' : {
+                'ajax' : {
+                'type': 'POST',
+                'url': function (node) {
+                    var nodeId = '';
+                    var url = ''
+                    if (node == -1)
+                    {
+                        url = '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node=-1';
+                    }
+                    else
+                    {
+                        nodeId = node.attr('id');
+                        url = '".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php?node='+nodeId;
+                    }
 
-      echo "var Tree_Category$rand = new Ext.tree.TreePanel({
-         collapsible      : false,
-         animCollapse     : false,
-         border           : false,
-         id               : 'tree_projectcategory$rand',
-         el               : 'tree_projectcategory$rand',
-         autoScroll       : true,
-         animate          : false,
-         enableDD         : true,
-         containerScroll  : true,
-         height           : 320,
-         width            : 770,
-         loader           : Tree_Category_Loader$rand,
-         rootVisible      : false
-      });";
+                    return url;
+                },
+                'success': function (new_data) {
+                    //where new_data = node children
+                    //e.g.: [{'data':'Hardware','attr':{'id':'child2'}}, {'data':'Software','attr':{'id':'child3'}}]
+                    return new_data;
+                },
+                'progressive_render' : true
+               }
+        }
+              }).bind(
+        'select_node.jstree',
+        function (e, data) {
+            document.location.href = data.rslt.obj.children('a').attr('href');
+        });";
 
-      // SET the root node.
-      echo "var Tree_Category_Root$rand = new Ext.tree.AsyncTreeNode({
-         text     : '',
-         draggable   : false,
-         id    : '-1'                  // this IS the id of the startnode
-      });
-      Tree_Category$rand.setRootNode(Tree_Category_Root$rand);";
-
-      // Render the tree.
-      echo "Tree_Category$rand.render();
-            Tree_Category_Root$rand.expand();";
 
       echo "</script>";
 

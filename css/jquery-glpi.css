@@ -26,12 +26,25 @@
 
 /* css styles for progress bar */
 
- .ui-progressbar .ui-progressbar-value { background-image: url('../pics/jquery/pbar-ani.gif'); }
- .doaction_progress_text {
+.ui-progressbar .ui-progressbar-value { background-image: url('../pics/jquery/pbar-ani.gif'); }
+.doaction_progress_text {
    float:left;
    color:black;
    text-align:center;
    width:100%;
    padding-top:3px;
    font-weight:bold;
+}
+
+.ui-autocomplete {
+   max-height: 200px;
+   overflow-y: auto;
+   /* prevent horizontal scrollbar */
+   overflow-x: hidden;
+}
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+*/
+html .ui-autocomplete {
+   height: 100px;
 }

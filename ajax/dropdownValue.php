@@ -197,8 +197,9 @@ if ($item instanceof CommonTreeDropdown) {
              $LIMIT";
 
    if ($result = $DB->query($query)) {
-      echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'
-             size='1'";
+      echo "<select id='".Html::cleanId("dropdown_".$_POST["myname"].$_POST["rand"])."'
+             name='".$_POST['myname']."' size='1'";
+   
 
       if (isset($_POST["on_change"]) && !empty($_POST["on_change"])) {
          echo " onChange='".stripslashes($_POST["on_change"])."'";
@@ -446,9 +447,9 @@ if ($item instanceof CommonTreeDropdown) {
    }
 
    if ($result = $DB->query($query)) {
-      echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'
-             size='1'";
-
+      echo "<select id='".Html::cleanId("dropdown_".$_POST["myname"].$_POST["rand"])."'
+             name='".$_POST['myname']."' size='1'";
+             
       if (isset($_POST["on_change"]) && !empty($_POST["on_change"])) {
          echo " onChange='".stripslashes($_POST["on_change"])."'";
       }

@@ -3291,52 +3291,56 @@ class Html {
          }
       }
 
-      $output = "<input id='showdate".$p['rand']."' type='text' size='10' name='$name'>";
+      $output = "<input id='_showdate".$p['rand']."' type='text' size='10' name='_$name' value='".self::convDate($p['value'])."'>";
+      $output .= "<input type='hidden' id='showdate".$p['rand']."' type='text' size='10' name='$name'  value='".$p['value']."'>";
+      if ($p['maybeempty']) {
+         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
+      }
 
       $output .= "<script type='text/javascript'>\n";
-      $output .= "Ext.onReady(function() {
-         var md".$p['rand']." = new Ext.ux.form.XDateField({
-            name: '$name'
-            ,value: '".self::convDate($p['value'])."'
-            ,applyTo: 'showdate".$p['rand']."'
-            ,id: 'date".$p['rand']."'
-            ,submitFormat:'Y-m-d'
-            ,startDay: 1";
-
-      switch ($_SESSION['glpidate_format']) {
-         case 1 :
-            $p['showyear'] ? $format='d-m-Y' : $format='d-m';
-            break;
-
-         case 2 :
-            $p['showyear'] ? $format='m-d-Y' : $format='m-d';
-            break;
-
-         default :
-            $p['showyear'] ? $format='Y-m-d' : $format='m-d';
-      }
-      $output .= ",format: '".$format."'";
-
       if ($p['maybeempty']) {
-         $output .= ",allowBlank: true";
-      } else {
-         $output .= ",allowBlank: false";
+         $output .= "$('#resetdate".$p['rand']."').click(function(){
+                  $('#_showdate".$p['rand']."').val('');
+                  $('#showdate".$p['rand']."').val('');
+                  });";
       }
-
-      if (!$p['canedit']) {
-         $output .= ",disabled: true";
-      }
-
+      $output .= "$( '#_showdate".$p['rand']."' ).datepicker({
+                  altField: '#showdate".$p['rand']."',
+                  altFormat: 'yy-mm-dd',
+                  firstDay: 1,
+                  showOtherMonths: true,
+                  selectOtherMonths: true,
+                  showButtonPanel: true,
+                  changeMonth: true,
+                  changeYear: true,
+                  showOn: 'button',
+                  showWeek: true,
+                  buttonImage: '../pics/calendar.png',
+                  buttonImageOnly: true  ";
       if (!empty($p['min'])) {
-         $output .= ",minValue: '".self::convDate($p['min'])."'";
+         $output .= ",minDate: '".self::convDate($p['min'])."'";
       }
 
       if (!empty($p['max'])) {
-         $output .= ",maxValue: '".self::convDate($p['max'])."'";
+         $output .= ",maxDate: '".self::convDate($p['max'])."'";
       }
 
-      $output .= " });
-      });";
+      switch ($_SESSION['glpidate_format']) {
+         case 1 :
+            $p['showyear'] ? $format='dd-mm-yy' : $format='dd-mm';
+            break;
+
+         case 2 :
+            $p['showyear'] ? $format='mm-dd-yy' : $format='mm-dd';
+            break;
+
+         default :
+            $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
+      }
+      $output .= ",dateFormat: '".$format."'";
+
+      $output .= "});";
+
       $output .= "</script>\n";
 
       if ($p['display']) {
@@ -3346,6 +3350,7 @@ class Html {
          return $output;
       }
    }
+
 
 
    /**
@@ -3379,6 +3384,7 @@ class Html {
    }
 
 
+
    /**
     * Display DateTime form with calendar
     *
@@ -3394,6 +3400,7 @@ class Html {
     *   - maxdate    : maximum allowed date (default '')
     *   - mintime    : minimum allowed time (default '')
     *   - maxtime    : maximum allowed time (default '')
+    *   - showyear   : should we set/diplay the year? (true by default)
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
     *
@@ -3410,6 +3417,7 @@ class Html {
       $p['mintime']    = '';
       $p['maxtime']    = '';
       $p['timestep']   = -1;
+      $p['showyear']   = true;
       $p['display']    = true;
       $p['rand']       = mt_rand();
 
@@ -3423,7 +3431,11 @@ class Html {
          $p['timestep'] = $CFG_GLPI['time_step'];
       }
 
-      $output = "<input type='hidden' id='showdate".$p['rand']."' value=''>";
+      $output = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".self::convDateTime($p['value'])."'>";
+      $output .= "<input type='hidden' id='showdate".$p['rand']."' type='text' name='$name'  value='".$p['value']."'>";
+      if ($p['maybeempty']) {
+         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
+      }
 
       $minHour   = 0;
       $maxHour   = 23;
@@ -3462,66 +3474,54 @@ class Html {
       }
 
       $output .= "<script type='text/javascript'>";
-      $output .= "Ext.onReady(function() {
-         var md".$p['rand']." = new Ext.ux.form.DateTime({
-            hiddenName: '$name'
-            ,id: 'date".$p['rand']."'
-            ,value: '".$p['value']."'
-            ,hiddenFormat:'Y-m-d H:i:s'
-            ,applyTo: 'showdate".$p['rand']."'
-            ,timeFormat:'H:i'
-            ,timeWidth: 55
-            ,dateWidth: 90
-            ,startDay: 1";
-
-      $empty = "";
       if ($p['maybeempty']) {
-         $empty = "allowBlank: true";
-      } else {
-         $empty = "allowBlank: false";
-      }
-      $output .= ",$empty";
-      $output .= ",timeConfig: {
-         altFormats:'H:i:s',increment: ".$p['timestep'].",$empty";
-
-      if (!empty($p['mintime']) && ($p['mintime'] != '00:00:00')) {
-         $output .= ",minValue: '".$p['mintime']."'";
-      }
-      if (!empty($p['maxtime']) && ($p['maxtime'] != '24:00:00')) {
-         $output .= ",maxValue: '".$p['maxtime']."'";
+         $output .= "$('#resetdate".$p['rand']."').click(function(){
+                  $('#_showdate".$p['rand']."').val('');
+                  $('#showdate".$p['rand']."').val('');
+                  });";
       }
 
-      $output .= "}";
+      $output .= "$( '#_showdate".$p['rand']."' ).datetimepicker({
+                  altField: '#showdate".$p['rand']."',
+                  altFormat: 'yy-mm-dd',
+                  altTimeFormat: 'HH:mm:ss',
+                  altFieldTimeOnly: false,
+                  firstDay: 1,
+                  showOtherMonths: true,
+                  selectOtherMonths: true,
+                  showButtonPanel: true,
+                  changeMonth: true,
+                  changeYear: true,
+                  showOn: 'button',
+                  showWeek: true,
+                  controlType: 'select',
+                  buttonImage: '../pics/calendar.png',
+                  buttonImageOnly: true";
+      if (!empty($p['min'])) {
+         $output .= ",minDate: '".self::convDate($p['min'])."'";
+      }
+
+      if (!empty($p['max'])) {
+         $output .= ",maxDate: '".self::convDate($p['max'])."'";
+      }
 
       switch ($_SESSION['glpidate_format']) {
          case 1 :
-            $output .= ",dateFormat: 'd-m-Y',dateConfig: {
-               altFormats:'d-m-Y|d-n-Y',$empty";
+            $p['showyear'] ? $format='dd-mm-yy' : $format='dd-mm';
             break;
 
          case 2 :
-            $output .= ",dateFormat: 'm-d-Y',dateConfig: {
-               altFormats:'m-d-Y|n-d-Y',$empty";
+            $p['showyear'] ? $format='mm-dd-yy' : $format='mm-dd';
             break;
 
          default :
-            $output .= ",dateFormat: 'Y-m-d',dateConfig: {
-               altFormats:'Y-m-d|Y-n-d',$empty";
+            $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
       }
+      $output .= ",dateFormat: '".$format."'";
+      $output .= ",timeFormat: 'HH:mm'";
 
-      if (!empty($p['mindate'])) {
-         $output .= ",minValue: '".self::convDate($p['mindate'])."'";
-      }
-      if (!empty($p['maxdate'])) {
-         $output .= ",maxValue: '".self::convDate($p['maxdate'])."'";
-      }
-      $output .= "}";
+      $output .= "});";
 
-      if (!$p['canedit']) {
-         $output .= ",disabled: true";
-      }
-      $output .= " });
-      });";
       $output .= "</script>\n";
 
 
@@ -3531,7 +3531,6 @@ class Html {
       }
       return $output;
    }
-
 
    /**
     * Show generic date search
@@ -3867,7 +3866,7 @@ class Html {
                                  array('title'       => __('Select the desired entity'),
                                        'extraparams' => array('target' => $target)));
 
-         echo "<a onclick='entity_window.show();' href='#modal_entity_content' title=\"".
+         echo "<a onclick='entity_window.dialog(\"open\");' href='#modal_entity_content' title=\"".
                 addslashes($_SESSION["glpiactive_entity_name"]).
                 "\" class='entity_select' id='global_entity_select'>".
                 $_SESSION["glpiactive_entity_shortname"]."</a>";
@@ -3963,8 +3962,8 @@ class Html {
 
       $out .= "<script type='text/javascript' >\n";
       // Set title attribute : permit to use several object type (img a...)
-      $out .= "$('#".$param['applyto']."').attr('title', $('#".$param['contentid']."').html());";
-      $out .= "$('#".$param['applyto']."').tooltip();";
+      $out .= Html::jsGetElementbyID($param['applyto']).".attr('title', $('#".$param['contentid']."').html());";
+      $out .= Html::jsGetElementbyID($param['applyto']).".tooltip();";
       $out .= "</script>";
 
       if ($param['display']) {
@@ -3975,7 +3974,7 @@ class Html {
    }
 
 
-   /**
+    /**
     * Show div with auto completion
     *
     * @param $item            item object used for create dropdown
@@ -4023,48 +4022,23 @@ class Html {
          $output .=  "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
                        "' value=\"".self::cleanInputText($params['value']).
                        "\" size='".$params['size']."'>\n";
+
          $output .= "<script type='text/javascript' >\n";
 
-         $output .= "var text$name = new Ext.data.Store({
-            proxy: new Ext.data.HttpProxy(
-            new Ext.data.Connection ({
-               url: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',
-               extraParams : {
-                  itemtype: '".$item->getType()."',
-                  field: '$field'";
+         $parameters['itemtype'] = $item->getType();
+         $parameters['field']    = $field;
 
                if ($params['entity'] >= 0) {
-                  $output .= ",entity_restrict: ".$params['entity'];
+                  $parameters['entity_restrict']    = $params['entity'];
                }
                if ($params['user'] >= 0) {
-                  $output .= ",user_restrict: ".$params['user'];
+                  $parameters['user_restrict']    = $params['user'];
                }
-               $output .= "
-               },
-               method: 'POST'
-               })
-            ),
-            reader: new Ext.data.JsonReader({
-               totalProperty: 'totalCount',
-               root: 'items',
-               id: 'value'
-            }, [
-            {name: 'value', mapping: 'value'}
-            ])
-         });
-         ";
 
-         $output .= "var search$name = new Ext.ux.form.SpanComboBox({
-            store: text$name,
-            displayField:'value',
-            pageSize:20,
-            hideTrigger:true,
-            minChars:3,
-            resizable:true,
-            width: ".($params['size']*7).",
-            minListWidth:".($params['size']*5).", // IE problem : wrong computation of the width of the ComboBox field
-            applyTo: 'text$name'
-         });";
+         $output .= "  $( '#text$name' ).autocomplete({
+                        source: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php?".Toolbox::append_params($parameters,'&')."',
+                        minLength: 3,
+                        });";
 
          $output .= "</script>";
 

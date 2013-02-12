@@ -40,7 +40,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 
-if (isset($_POST['itemtype'])) {
+if (isset($_POST['itemtype']) && isset($_POST['container'])) {
    if (!($item = getItemForItemtype($_POST['itemtype']))) {
       exit();
    }
@@ -55,7 +55,18 @@ if (isset($_POST['itemtype'])) {
       }
    }
    echo "<div width='90%' class='center'><br>";
-
+   $formname = 'massform'.$_POST['itemtype'].mt_rand();
+   Html::openMassiveActionsForm($formname);
+   echo "<script type='text/javascript'>";
+   echo "var items = $('[id=".$_POST['container']."] [id*=massaction_item_]:checked').each(function( index ) {
+                     $('<input>').attr({
+                     type: 'hidden',
+                     name: $(this).attr('name'),
+                     value: 1
+                     }).appendTo('#$formname');
+         });";
+   echo "</script>";
+   
    $params = array('action' => '__VALUE__');
    foreach ($_POST as $key => $val) {
       $params[$key] = $val;
@@ -93,5 +104,6 @@ if (isset($_POST['itemtype'])) {
       echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
    }
    echo "</div>";
+   Html::closeForm();   
 }
 ?>
