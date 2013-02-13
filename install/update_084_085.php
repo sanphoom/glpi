@@ -117,7 +117,55 @@ function update084to085() {
       }
    }
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_rules'));
+    
+   $migration->addField("glpi_rules", 'uuid', "string");
+   $migration->migrationOneTable('glpi_rules');
+   
+   
+   //generate uuid for the basic rules of glpi
+   // we use a complete sql where for cover all migration case (0.78 -> 0.84)
+   $rules = array(array('sub_type' => 'RuleImportEntity', 'name' => 'Root', 'match' => 'AND',
+                         'description' => ''),
+                   array('sub_type' => 'RuleRight', 'name' => 'Root', 'match' => 'AND',
+                         'description' => ''),
+                   array('sub_type' => 'RuleMailCollector', 'name' => 'Root', 'match' => 'AND',
+                         'description' => ''),
+                   array('sub_type' => 'RuleMailCollector',
+                         'name' => 'Auto-Reply X-Auto-Response-Suppress', 'match' => 'AND',
+                         'description' => 'Exclude Auto-Reply emails using X-Auto-Response-Suppress header'),
+                  array('sub_type' => 'RuleMailCollector',
+                         'name' => 'Auto-Reply Auto-Submitted', 'match' => 'AND',
+                         'description' => 'Exclude Auto-Reply emails using Auto-Submitted header'),
+                  array('sub_type' => 'RuleTicket', 'name' => 'Ticket location from item', 'match' => 'AND',
+                         'description' => ''),
+                  array('sub_type' => 'RuleTicket', 'name' => 'Ticket location from user', 'match' => 'AND',
+                         'description' => ''));
 
+   $i = 0;
+   foreach ($rules as $rule) {
+      $query  = "UPDATE `glpi_rules`
+                 SET `uuid` = 'STATIC-UUID-$i'
+                 WHERE `entities_id` = 0
+                    AND `is_recursive` = 0
+                    AND `sub_type` = '".$rule['sub_type']."'
+                    AND `name` = '".$rule['name']."'
+                    AND `description` = '".$rule['description']."'
+                    AND `match` = '".$rule['match']."'
+                 ORDER BY id ASC
+                 LIMIT 1";
+      $DB->queryOrDie($query, "0.85 add uuid to basic rules (STATIC-UUID-$i)");
+      $i++;
+   }
+   
+   //generate uuid for the rules of user
+   foreach ($DB->request('glpi_rules', array('uuid' => NULL)) as $data) {
+      $uuid = Rule::getUuid();
+      $query  = "UPDATE `glpi_rules`
+      SET `uuid` = '$uuid'
+      WHERE `id` = '".$data['id']."'";
+      $DB->queryOrDie($query, "0.85 add uuid to existing rules");
+   }
    // must always be at the end
    $migration->executeMigration();
 

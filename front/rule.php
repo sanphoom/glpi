@@ -37,6 +37,8 @@ Session::checkCentralAccess();
 
 Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "rule", -1);
 
+RuleCollection::titleBackup();
+
 echo "<table class='tab_cadre'>";
 echo "<tr><th>" . __('Rule type') . "</th></tr>";
 

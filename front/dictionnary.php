@@ -38,6 +38,8 @@ Session::checkSeveralRightsOr(array('rule_dictionnary_dropdown' => 'r',
 
 Html::header(__('Administration'), $_SERVER['PHP_SELF'], "admin", "dictionnary", -1);
 
+RuleCollection::titleBackup();
+
 echo "<div class='center'><table class='tab_cadre'>";
 echo "<tr><th colspan='4'>" . __('Dictionaries') . "</th></tr>";
 echo "<tr class='tab_bg_1'><td class='top'><table class='tab_cadre'>";

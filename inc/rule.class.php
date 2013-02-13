@@ -184,6 +184,9 @@ class Rule extends CommonDBTM {
          }
       }
 
+      $actions['duplicate'] = __('Duplicate');
+      $actions['export']    = __('Export');
+      
       return $actions;
    }
 
@@ -212,6 +215,22 @@ class Rule extends CommonDBTM {
                            _sx('button', 'Move')."'>\n";
             return true;
 
+            break;
+         case "duplicate" :
+            if ($this->isEntityAssign()) {
+               Entity::dropdown();
+            }
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Duplicate')."'>";
+               return true;
+               break;
+
+         case "export" :
+            echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+                         __s('Export')."'>";
+               return true;
+               break;
+            
          default :
             return parent::showSpecificMassiveActionsParameters($input);
 
@@ -249,7 +268,25 @@ class Rule extends CommonDBTM {
                $res['noright']++;
             }
             break;
-
+         case 'duplicate':
+            $rulecollection = new RuleCollection();
+            if (isset($input["item"]) && count($input["item"])) {
+               foreach ($input["item"] as $key => $val) {
+                  if ($rulecollection->duplicateRule($key)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                  }
+               }
+            }
+            break;
+         case 'export':
+            if (isset($input["item"]) && count($input["item"])) {
+               $_SESSION['exportitems'] = $input["item"];
+               $res['ok'] = -1; //processed after redirection
+               $res['REDIRECT'] = 'rule.backup.php?action=download&itemtype='.$this->getType();
+            }
+         break;
          default :
             return parent::doSpecificMassiveActions($input);
       }
@@ -1389,6 +1426,11 @@ class Rule extends CommonDBTM {
 
       // Before adding, add the ranking of the new rule
       $input["ranking"] = $this->getNextRanking();
+      //If no uuid given, generate a new one
+      if (!isset($input['uuid'])) {
+         $input["uuid"] = self::getUuid();
+      }
+      
       return $input;
    }
 
@@ -2481,6 +2523,30 @@ class Rule extends CommonDBTM {
       }
 
       return true;
+   }
+
+   /**
+    * Generate unique id for rule based on server name, glpi directory and basetime
+    *
+    * @return uuid
+   **/
+   static function getUuid() {
+      //encode uname -a, ex Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686
+      $serverSubSha1 = substr(sha1(php_uname('a')), 0, 8); 
+      // encode script current dir, ex : /var/www/glpi_X
+      $dirSubSha1 = substr(sha1(__FILE__), 0, 8);
+      return uniqid("$serverSubSha1-$dirSubSha1-", true);
+
+   }
+
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+      echo "<div class='spaced'>";
+      echo "<b>UUID</b> : ".$this->fields['uuid'];
+      echo "</div>";
+      
    }
 
 }
