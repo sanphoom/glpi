@@ -809,8 +809,8 @@ class Html {
 
       // Send UTF8 Headers
       header("Content-Type: text/html; charset=UTF-8");
-      // No frame to prevent click-jacking
-      header('x-frame-options:DENY');
+      // Allow only frame from same server to prevent click-jacking
+      header('x-frame-options:SAMEORIGIN');
 
       // Send extra expires header
       self::header_nocache();
@@ -865,7 +865,7 @@ class Html {
 
       echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
             "/lib/tiny_mce/tiny_mce.js'></script>";
-            
+
       // Add default tooltip system for all titles
 // echo "<script type='text/javascript'>
 //          $(function() {
@@ -883,7 +883,7 @@ class Html {
                 $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js'></script>\n";
          echo "<script type='text/javascript' src='".
                 $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'></script>\n";
-                
+
       if (isset($_SESSION['glpilanguage'])) {
          echo "<script type='text/javascript' src='".
                 $CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
@@ -3139,7 +3139,7 @@ class Html {
       $p['specific_actions']  = array();
       $p['confirm']           = '';
       $p['rand']              = '';
-      $p['container']         = '';      
+      $p['container']         = '';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3150,7 +3150,7 @@ class Html {
       $url                          = $CFG_GLPI['root_doc']."/ajax/massiveaction.php";
       if ($p['container']) {
          $p['extraparams']['container'] = $p['container'];
-      }      
+      }
       if ($p['is_deleted']) {
          $p['extraparams']['is_deleted'] = 1;
       }
@@ -4516,7 +4516,7 @@ class Html {
       }
       return $out;
    }
-   
+
    /**
     * Get javascript code for hide an item
     *
