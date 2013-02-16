@@ -46,7 +46,7 @@ class CommonGLPI {
    /// Display list on Navigation Header
    protected $displaylist = true;
 
-   /// Show Debug 
+   /// Show Debug
    public $showdebug      = false;
 
    /// Tab orientation : horizontal or vertical
@@ -396,10 +396,13 @@ class CommonGLPI {
 
    /**
     * Add div to display form's tabs
+    *
+    * @param $options   array
    **/
-   function addDivForTabs($options = array()) {
+   function addDivForTabs($options=array()) {
       $this->showTabsContent($options);
    }
+
 
   /**
     * Show header of forms : navigation headers
@@ -413,8 +416,11 @@ class CommonGLPI {
       $this->showNavigationHeaderOld($options);
    }
 
+
    /**
     * Show tabs content
+    *
+    * @since version 0.85
     *
     * @param $options array of parameters to add to URLs and ajax
     *     - withtemplate is a template view ?
@@ -487,8 +493,9 @@ class CommonGLPI {
       }
    }
 
+
    /**
-    * Show onglets
+    * Show tabs
     *
     * @param $options array of parameters to add to URLs and ajax
     *     - withtemplate is a template view ?
@@ -643,14 +650,15 @@ class CommonGLPI {
 
          }
          echo "<li class='info b'>".$name."</li>";
-         
+
          echo "</ul></div>";
          echo "<div class='sep'></div>";
       }
    }
-   
+
+
    /**
-    * Show onglets
+    * Show tabs
     *
     * @param $options array of parameters to add to URLs and ajax
     *     - withtemplate is a template view ?
@@ -683,7 +691,7 @@ class CommonGLPI {
             }
          }
       }
-      
+
       if (empty($withtemplate)
           && !$this->isNewID($ID)
           && $this->getType()
@@ -794,7 +802,7 @@ class CommonGLPI {
          echo "<div class='sep'></div>";
       }
    }
-   
+
    /**
     * @param $options   array
    **/
@@ -811,11 +819,11 @@ class CommonGLPI {
       if (isset($options['id'])) {
          $this->getFromDB($options['id']);
       }
-      
+
       $this->showNavigationHeader($options);
       $this->showTabsContent($options);
    }
-   
+
    /**
     * to list infos in debug tab
    **/

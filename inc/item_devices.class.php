@@ -135,7 +135,7 @@ class Item_Devices extends CommonDBRelation {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      self::showForItem($item, $withtemplate);
+      self::showForItem($item, '', $withtemplate);
       return true;
    }
 
