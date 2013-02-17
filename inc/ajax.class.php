@@ -454,11 +454,7 @@ class Ajax {
       if (isset($options["update_item"])
           && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))) {
 
-         if (!is_array($options["update_item"])) {
-            $datas = unserialize(stripslashes($options["update_item"]));
-         } else {
-            $datas = $options["update_item"];
-         }
+         $datas = $options["update_item"];
          if (is_array($datas) && count($datas)) {
             // Put it in array
             if (isset($datas['to_update'])) {
