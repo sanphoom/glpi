@@ -542,7 +542,7 @@ class CommonGLPI {
             $glpilisturl = $this->getSearchURL();
          }
 
-         echo "<div id='menu_navigate'>";
+//          echo "<div id='menu_navigate'>";
 
          $next = $prev = $first = $last = -1;
          $current = false;
@@ -571,18 +571,28 @@ class CommonGLPI {
             }
          }
          $cleantarget = HTML::cleanParametersURL($target);
-         echo "<ul>";
-//          echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"].
-//                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
-//          echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
-//          echo "</a></li>";
-         echo "<li><a href=\"javascript:toggleTableDisplay('mainformtable','tabsbodyimg','".$CFG_GLPI["root_doc"].
-                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
-         echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
-         echo "</a></li>";
+         echo "<div><table class='tab_cadre_pager'>";
+         echo "<tr  class='tab_bg_2'>";
 
-         echo "<li><a href=\"".$glpilisturl."\">";
+         if ($first >= 0) {
+            echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
+                       "\" title=\"".__s('First')."\"></a></td>";
+         } else {
+            echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
+                       __s('First')."\" title=\"".__s('First')."\"></td>";
+         }
 
+         if ($prev >= 0) {
+            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+                       "\" title=\"".__s('Previous')."\"></a></td>";
+         } else {
+            echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
+                       __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
+         }
+         
+         echo "<td><a href=\"".$glpilisturl."\">";
          if ($glpilisttitle) {
             if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
                $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
@@ -594,47 +604,8 @@ class CommonGLPI {
          } else {
             _e('List');
          }
-         echo "</a></li>";
+         echo "</a></td>";
 
-         if ($first >= 0) {
-            echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                       "\" title=\"".__s('First')."\"></a></li>";
-         } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                       __s('First')."\" title=\"".__s('First')."\"></li>";
-         }
-
-         if ($prev >= 0) {
-            echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                       "\" title=\"".__s('Previous')."\"></a></li>";
-         } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                       __s('Previous')."\" title=\"".__s('Previous')."\"></li>";
-         }
-
-         if ($current !== false) {
-            echo "<li>".($current+1) . "/" . count($glpilistitems)."</li>";
-         }
-
-         if ($next >= 0) {
-            echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                       "\" title=\"".__s('Next')."\"></a></li>";
-         } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                       __s('Next')."\" title=\"".__s('Next')."\"></li>";
-         }
-
-         if ($last >= 0) {
-            echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                       "\" title=\"".__s('Last')."\"></a></li>";
-         } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                       __s('Last')."\" title=\"".__s('Last')."\"></li>";
-         }
 
          $name = $this->getTypeName(1);
          if ($this instanceof CommonDBTM) {
@@ -649,9 +620,33 @@ class CommonGLPI {
             $name = sprintf('%1$s (%2$s)', $name, Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]));
 
          }
-         echo "<li class='info b'>".$name."</li>";
+         echo "<td class='info b'>".$name."</td>";
 
-         echo "</ul></div>";
+         if ($current !== false) {
+            echo "<td>".($current+1) . "/" . count($glpilistitems)."</td>";
+         }         
+
+         if ($next >= 0) {
+            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
+                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+                       "\" title=\"".__s('Next')."\"></a></td>";
+         } else {
+            echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
+                       __s('Next')."\" title=\"".__s('Next')."\"></td>";
+         }
+
+         if ($last >= 0) {
+            echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
+                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
+                       "\" title=\"".__s('Last')."\"></a></td>";
+         } else {
+            echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
+                       __s('Last')."\" title=\"".__s('Last')."\"></td>";
+         }
+         
+//          echo "</ul></div>";
+         // End pager
+         echo "</tr></table></div>";
          echo "<div class='sep'></div>";
       }
    }
