@@ -93,11 +93,11 @@ if (isset($_POST["itemtype"])
       $options = array();
       $values  = array();
       // For ticket template or aditional options of massive actions
-      if (isset($_POST['options']) && strlen($_POST['options'])) {
-         $options = unserialize(stripslashes($_POST['options']));
+      if (isset($_POST['options'])) {
+         $options = $_POST['options'];
       }
-      if (isset($_POST['additionalvalues']) && strlen($_POST['additionalvalues'])) {
-         $values = unserialize(stripslashes($_POST['additionalvalues']));
+      if (isset($_POST['additionalvalues'])) {
+         $values = $_POST['additionalvalues'];
       }
       $values[$search["field"]] = '';
       echo $item->getValueToSelect($search, $fieldname, $values, $options);

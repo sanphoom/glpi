@@ -53,10 +53,6 @@ $table = $item->getTable();
 
 $displaywith = false;
 if (isset($_POST['displaywith'])) {
-
-   if (!is_array($_POST['displaywith'])) {
-       $_POST['displaywith'] = unserialize(stripslashes($_POST["displaywith"]));
-   }
    if (is_array($_POST['displaywith'])
        && count($_POST['displaywith'])) {
       $displaywith = true;
@@ -79,13 +75,6 @@ if (isset($_POST['condition']) && !empty($_POST['condition'])) {
 
 if (!isset($_POST['emptylabel']) || ($_POST['emptylabel'] == '')) {
    $_POST['emptylabel'] = Dropdown::EMPTY_VALUE;
-}
-
-if (isset($_POST["entity_restrict"])
-    && !is_numeric($_POST["entity_restrict"])
-    && !is_array($_POST["entity_restrict"])) {
-
-   $_POST["entity_restrict"] = unserialize(stripslashes($_POST["entity_restrict"]));
 }
 
 // Make a select box with preselected values
@@ -112,12 +101,7 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
 $where .=" AND `$table`.`id` NOT IN ('".$_POST['value']."'";
 
 if (isset($_POST['used'])) {
-
-   if (is_array($_POST['used'])) {
-      $used = $_POST['used'];
-   } else {
-      $used = unserialize(stripslashes($_POST['used']));
-   }
+   $used = $_POST['used'];
 
    if (count($used)) {
       $where .= ",'".implode("','",$used)."'";
@@ -125,11 +109,7 @@ if (isset($_POST['used'])) {
 }
 
 if (isset($_POST['toadd'])) {
-   if (is_array($_POST['toadd'])) {
-      $toadd = $_POST['toadd'];
-   } else {
-      $toadd = unserialize(stripslashes($_POST['toadd']));
-   }
+   $toadd = $_POST['toadd'];
 } else {
    $toadd = array();
 }

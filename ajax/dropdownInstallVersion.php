@@ -48,11 +48,7 @@ if ($_POST['softwares_id'] > 0) {
    $where = '';
    if (isset($_POST['used'])) {
 
-      if (is_array($_POST['used'])) {
-         $used = $_POST['used'];
-      } else {
-         $used = unserialize(stripslashes($_POST['used']));
-      }
+      $used = $_POST['used'];
 
       if (count($used)) {
          $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','",$used)."')";
