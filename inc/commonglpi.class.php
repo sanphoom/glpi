@@ -138,7 +138,8 @@ class CommonGLPI {
     * @return array containing the onglets
    **/
    final function defineAllTabs($options=array()) {
-
+      global $CFG_GLPI;
+      
       $onglets = array();
       // Tabs known by the object
       if ($this->isNewItem()) {
@@ -156,6 +157,15 @@ class CommonGLPI {
          }
       }
 
+      $class = $this->getType();
+      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+          && (!$this->isNewItem() || $this->showdebug)
+          && (method_exists($class, 'showDebug')
+              || in_array($class, $CFG_GLPI["infocom_types"])
+              || in_array($class, $CFG_GLPI["reservation_types"]))) {
+
+            $onglets[-2] = __('Debug');
+      }      
 //       // Single tab
 //       if (empty($onglets)) {
 //          $onglets['empty'] = $this->getTypeName(1);
@@ -462,15 +472,6 @@ class CommonGLPI {
          unset($onglets['no_all_tab']);
       }
 
-      $class = $this->getType();
-      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-          && (($ID > 0) || $this->showdebug)
-          && (method_exists($class, 'showDebug')
-              || in_array($class, $CFG_GLPI["infocom_types"])
-              || in_array($class, $CFG_GLPI["reservation_types"]))) {
-
-            $onglets[-2] = __('Debug');
-      }
       if (count($onglets)) {
          $tabpage = $this->getTabsURL();
          $tabs    = array();
@@ -489,7 +490,7 @@ class CommonGLPI {
                               'params' => "_target=$target&amp;_itemtype=".$this->getType().
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml");
          }
-         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $this->taborientation);
+         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID, $this->taborientation);
       }
    }
 

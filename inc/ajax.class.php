@@ -220,13 +220,14 @@ class Ajax {
     *                                  tabs is array('key' => array('title'=> 'x',
     *                                                                url    => 'url_toload',
     *                                                                params => 'url_params')...
-    * @param $type                     for active tab
+    * @param $type                     itemtype for active tab
+    * @param $ID                       ID of element for active tab
     * @param $size                     width of tabs panel (default 950)
     *
     * @return nothing
    **/
    static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type, $orientation = 'vertical', $size=950) {
+                              $type, $ID = 0, $orientation = 'vertical', $size=950) {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
@@ -268,7 +269,7 @@ class Ajax {
             //  Get future value
             var newIndex = ui.newTab.parent().children().index(ui.newTab);
             $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-            { itemtype: '$type', tab: newIndex });
+            { itemtype: '$type', id: '$ID', tab: newIndex });
             }});";
          if ($orientation=='vertical') {
             echo "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";

@@ -37,8 +37,13 @@ include ('../inc/includes.php');
 // Manage tabs
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
    if ($item = getItemForItemtype($_GET['itemtype'])) {
-      $tabs = $item->defineTabs();
-
+      if (isset($_GET['id']) && $_GET['id']) {
+         $item->getFromDB($_GET['id']);
+      }
+      
+      $tabs = $item->defineAllTabs();
+      // Add all tab
+      $tabs[-1] = 'All';
       $selected_tab = '';
       $current = 0;
       foreach ($tabs as $key => $val) {
