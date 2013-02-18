@@ -2367,9 +2367,9 @@ class Html {
       echo "</a></li>";
 
       /// MENU ALL
-      echo "<li >";
+      echo "<li>";
       echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' ".
-             "onclick='show_all_menu_modal.dialog(\"open\");'";
+             "onclick=\"show_all_menu_modal.dialog('open');\">";
       echo "</li>";
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -3858,11 +3858,9 @@ class Html {
 
       if (Session::isMultiEntitiesMode()) {
          echo "<li>";
-
          Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
                                  array('title'       => __('Select the desired entity'),
                                        'extraparams' => array('target' => $target)));
-
          echo "<a onclick='entity_window.dialog(\"open\");' href='#modal_entity_content' title=\"".
                 addslashes($_SESSION["glpiactive_entity_name"]).
                 "\" class='entity_select' id='global_entity_select'>".
