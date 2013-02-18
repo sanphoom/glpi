@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-if (isset($_GET['full_page_tab'])) {
+if (isset($_POST['full_page_tab'])) {
    Html::header('Only tab for debug', $_SERVER['PHP_SELF']);
 } else {
    header("Content-Type: text/html; charset=UTF-8");
@@ -82,7 +82,7 @@ foreach ($notvalidoptions as $key) {
 CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'],$_GET["withtemplate"], $options);
 
 
-if (isset($_GET['full_page_tab'])) {
+if (isset($_POST['full_page_tab'])) {
    Html::footer();
 
    // I think that we should display this warning, because tabs are not prepare
