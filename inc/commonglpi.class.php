@@ -572,7 +572,7 @@ class CommonGLPI {
          }
          $cleantarget = HTML::cleanParametersURL($target);
          echo "<div><table class='tab_cadre_pager'>";
-         echo "<tr  class='tab_bg_2'>";
+         echo "<tr class='tab_bg_2'>";
 
          if ($first >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
@@ -647,7 +647,7 @@ class CommonGLPI {
 //          echo "</ul></div>";
          // End pager
          echo "</tr></table></div>";
-         echo "<div class='sep'></div>";
+//          echo "<div class='sep'></div>";
       }
    }
 

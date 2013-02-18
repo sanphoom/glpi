@@ -23,13 +23,13 @@
 
 .ui-tabs-vertical {
    width: 98%;
-   border: 1;
+   border: 0;
    vertical-align:top;
 }
 .ui-tabs-vertical .ui-tabs-nav {
    padding: .2em .1em .2em .2em;
    float: left;
-   width: 12em;
+   width: 150px;
    background: #cccccc;
 }
 .ui-tabs-vertical .ui-tabs-nav li {
@@ -40,7 +40,9 @@
    margin: 0 -1px .1em -1px;
 }
 .ui-tabs-vertical .ui-tabs-nav li a {
-   display:block;
+   display: block;
+   width: 128px;
+   text-align: left;
 }
 
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
@@ -50,8 +52,10 @@
 }
 .ui-tabs-vertical .ui-tabs-panel {
    padding: 1em;
-   float: left;
-   width: 40em;
+   margin: auto 0 0 0;
+/*   position: relative;*/
+   float: center;
+   /*width: 40em;*/
 }
 
 /* css styles for progress bar */

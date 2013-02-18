@@ -264,7 +264,7 @@ class Ajax {
 
          echo "<script type='text/javascript'>";
          echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'},
-    activate : function( event, ui ){
+         activate : function( event, ui ){
             //  Get future value
             var newIndex = ui.newTab.parent().children().index(ui.newTab);
             $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
