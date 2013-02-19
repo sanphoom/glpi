@@ -55,12 +55,6 @@ class ReservationItem extends CommonDBChild {
    static function getMenuName() {
       return Reservation::getTypeName(2);
    }
-   /**
-    * @see CommonGLPI::getMenuIndex()
-   **/
-   static function getMenuIndex() {
-      return 'reservation';
-   }
 
    /**
     * @see CommonGLPI::getForbiddenActionsForMenu()

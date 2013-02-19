@@ -40,7 +40,7 @@ if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
 }
 
-Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbase");
+Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseiem");
 
 // Search a solution
 if (!isset($_GET["contains"])

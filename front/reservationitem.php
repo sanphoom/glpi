@@ -39,7 +39,7 @@ Session::checkSeveralRightsOr(array("reservation_central"  => "r",
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
-   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "reservation");
+   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
 if (!Session::haveRight("reservation_central","r")) {

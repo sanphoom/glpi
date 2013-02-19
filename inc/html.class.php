@@ -955,12 +955,16 @@ class Html {
       }
       $HEADER_LOADED = true;
 
+      // Force lower case for sector and item
+      $sector = strtolower($sector);
+      $item   = strtolower($item);
+
       self::includeHeader($title);
       // Body
       echo "<body>";
       // Generate array for menu and check right
 
-      if (1 || !isset($_SESSION['glpimenu'])
+      if (!isset($_SESSION['glpimenu'])
       || !is_array($_SESSION['glpimenu'])
       || count($_SESSION['glpimenu']) == 0) {
 
@@ -1003,7 +1007,7 @@ class Html {
          $menu['preference']['default'] = '/front/preference.php';
 
 
-         /// TODO permit to plugins to add entry to others sector !
+         // Permit to plugins to add entry to others sector !
          if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
 
             foreach  ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
@@ -1027,7 +1031,7 @@ class Html {
                      if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
                         $menu[$category]['content'] += $data;
                      } else {
-                        $menu[$category]['content'][$type::getMenuIndex()] = $data;
+                        $menu[$category]['content'][strtolower($type)] = $data;
                      }
                   }
                }
@@ -1047,7 +1051,7 @@ class Html {
                             'NetworkEquipment', 'Phone', 'Printer');
 
          foreach ($allassets as $type) {
-            if (isset($menu['inventory']['content'][$type::getMenuIndex()])) {
+            if (isset($menu['inventory']['content'][strtolower($type)])) {
                $menu['inventory']['content']['state']['title']            = __('Global');
                $menu['inventory']['content']['state']['shortcut']         = '';
                $menu['inventory']['content']['state']['page']             = '/front/allassets.php';

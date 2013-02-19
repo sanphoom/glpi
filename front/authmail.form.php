@@ -67,7 +67,7 @@ if (isset($_POST["update"])) {
    Html::back();
 }
 
-Html::header(AuthMail::getTypeName(1), $_SERVER['PHP_SELF'], "config", "extauth", "imap");
+Html::header(AuthMail::getTypeName(1), $_SERVER['PHP_SELF'], "config", "auth", "imap");
 
 $config_mail->display(array('id' => $_GET["id"]));
 

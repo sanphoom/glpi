@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", "r");
 
-Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing",
+Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'], "config", "notification",
              "notificationtemplate");
 
 Search::show('NotificationTemplate');

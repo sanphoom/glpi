@@ -76,13 +76,6 @@ class Auth extends CommonGLPI {
    }
 
    /**
-    * @see CommonGLPI::getMenuIndex()
-   **/
-   static function getMenuIndex() {
-      return 'extauth';
-   }
-
-   /**
     *  @see CommonGLPI::getMenuContent()
    **/
    static function getMenuContent() {

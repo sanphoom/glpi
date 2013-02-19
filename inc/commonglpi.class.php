@@ -233,6 +233,8 @@ class CommonGLPI {
       $item = new $type();
       $forbidden = $type::getForbiddenActionsForMenu();
 
+      $debug = false;
+
       if ($item instanceof CommonDBTM) {
          if ($type::canView()) {
             $menu['title']           = static::getMenuName();
@@ -316,18 +318,6 @@ class CommonGLPI {
    **/
    static function getMenuShorcut() {
       return '';
-   }
-
-   /**
-    * Get menu shortcut
-    *
-    * @since version 0.85
-    *
-    * @return character menu shortcut key
-   **/
-   /// TODO clean this function : no more use
-   static function getMenuIndex() {
-      return strtolower(static::getType());
    }
 
    /**

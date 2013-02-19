@@ -51,13 +51,6 @@ class ConsumableItem extends CommonDBTM {
    }
 
    /**
-    * @see CommonGLPI::getMenuIndex()
-   **/
-   static function getMenuIndex() {
-      return 'consumable';
-   }
-
-   /**
     * @see CommonGLPI::getMenuName()
    **/
    static function getMenuName() {

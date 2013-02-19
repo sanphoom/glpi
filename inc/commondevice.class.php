@@ -54,13 +54,6 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
    /**
-    * @see CommonGLPI::getMenuIndex()
-   **/
-   static function getMenuIndex() {
-      return 'device';
-   }
-
-   /**
     *  @see CommonGLPI::getMenuContent()
    **/
    static function getMenuContent() {
@@ -135,7 +128,7 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    function displayHeader() {
-      Html::header($this->getTypeName(1), '', "config", "device", get_class($this));
+      Html::header($this->getTypeName(1), '', "config", "commondevice", get_class($this));
    }
 
 

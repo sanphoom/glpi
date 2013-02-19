@@ -43,7 +43,7 @@ if (isset($_POST["update"])) {
    Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }
 
-Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'],"config","extauth","others");
+Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", "others");
 
 Auth::showOtherAuthList();
 

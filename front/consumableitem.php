@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("consumable", "r");
 
-Html::header(Consumable::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "consumable");
+Html::header(Consumable::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "consumableitem");
 
 if (isset($_GET["synthese"])) {
    Consumable::showSummary();

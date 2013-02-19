@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("internet","r");
 
-Html::header(Network::getTypeName(2), $_SERVER['PHP_SELF'], "config", "dropdowns", "NetworkAlias");
+Html::header(Network::getTypeName(2), $_SERVER['PHP_SELF'], "config", "commondropdown", "NetworkAlias");
 
 Search::show('NetworkAlias');
 

@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
    }
 
    Session::checkRight("internet","w");
-   Html::header(Network::getTypeName(2), $_SERVER['PHP_SELF'], "config", "dropdowns", "NetworkName");
+   Html::header(Network::getTypeName(2), $_SERVER['PHP_SELF'], "config", "commondropdown", "NetworkName");
 
    $nn->display($_GET);
    Html::footer();

@@ -109,13 +109,6 @@ class Notification extends CommonDBTM {
    }
 
    /**
-    * @see CommonGLPI::getMenuIndex()
-   **/
-   static function getMenuIndex() {
-      return 'mailing';
-   }
-
-   /**
     *  @see CommonGLPI::getMenuContent()
    **/
    static function getMenuContent() {

@@ -66,14 +66,7 @@ class NetworkEquipment extends CommonDBTM {
    }
 
    /**
-    * @see CommonGLPI::getMenuIndex()
-   **/
-   static function getMenuIndex() {
-      return 'networking';
-   }
-
-   /**
-    * @see CommonGLPI::getMenuIndex()
+    * @see CommonGLPI::getMenuName()
    **/
    static function getMenuName() {
       return _n('Network', 'Networks', 2);

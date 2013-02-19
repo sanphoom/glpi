@@ -63,13 +63,6 @@ class CartridgeItem extends CommonDBTM {
    }
 
    /**
-    * @see CommonGLPI::getMenuIndex()
-   **/
-   static function getMenuIndex() {
-      return 'cartridge';
-   }
-
-   /**
     * @see CommonGLPI::getMenuName()
    **/
    static function getMenuName() {

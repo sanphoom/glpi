@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("device", "w");
 
-Html::header(_n('Component', 'Components', 2), $_SERVER['PHP_SELF'], "config", "device");
+Html::header(_n('Component', 'Components', 2), $_SERVER['PHP_SELF'], "config", "commondevice");
 echo "<div class='center'>";
 
 $optgroup = Dropdown::getDeviceItemTypes();

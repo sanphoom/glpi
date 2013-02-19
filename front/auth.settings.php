@@ -37,7 +37,7 @@ Session::checkRight("config", "w");
 
 $config = new Config();
 
-Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "extauth",
+Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth",
              "settings");
 $config->showFormAuthentication();
 

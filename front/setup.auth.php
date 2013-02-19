@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", "r");
 
-Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "extauth", -1);
+Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", -1);
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>&nbsp;" . __('External authentications') . "</th></tr>";
