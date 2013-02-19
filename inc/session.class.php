@@ -435,7 +435,7 @@ class Session {
    static function initEntityProfiles($userID) {
       global $DB;
 
-      $query = "SELECT DISTINCT `glpi_profiles`.*
+      $query = "SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
                 FROM `glpi_profiles_users`
                 INNER JOIN `glpi_profiles`
                      ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)

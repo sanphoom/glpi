@@ -2627,7 +2627,8 @@ class User extends CommonDBTM {
          $entity_restrict = $_SESSION["glpiactiveentities"];
       }
 
-      $joinprofile = false;
+      $joinprofile      = false;
+      $joinprofileright = false;
       switch ($right) {
          case "interface" :
             $joinprofile = true;
@@ -2677,6 +2678,7 @@ class User extends CommonDBTM {
 
          default :
             $joinprofile = true;
+            $joinprofileright = true;
             if (!is_array($right)) {
                $right = array($right);
             }
@@ -2684,7 +2686,8 @@ class User extends CommonDBTM {
             $where        = array();
             foreach ($right as $r) {
                // Check read or active for rights
-               $where[] = " (`glpi_profiles`.`".$r."` IN ('1', 'r', 'w') ".
+               $where[]= " (`glpi_profilerights`.`name` = '".$right."'
+                        AND `glpi_profilerights`.`right` IN ('1', 'r', 'w') ".
                            getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                       $entity_restrict, 1).") ";
 
@@ -2740,7 +2743,11 @@ class User extends CommonDBTM {
 
       if ($joinprofile) {
          $query .= " LEFT JOIN `glpi_profiles`
-                        ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`) ";
+                        ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)";
+         if ($joinprofileright) {
+            $query .= " LEFT JOIN `glpi_profilerights`
+                           ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`)";
+         }
       }
 
       if ($count) {

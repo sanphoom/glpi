@@ -636,8 +636,11 @@ class Profile_User extends CommonDBRelation {
                 FROM `glpi_profiles_users`
                 INNER JOIN `glpi_profiles`
                   ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
+                INNER JOIN `glpi_profilerights`
+                  ON (`glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`)
                 WHERE `glpi_profiles_users`.`users_id` = '$user_ID'
-                      AND `glpi_profiles`.`$right` IN ('1','r','w')";
+                  AND `glpi_profilerights`.`name` = '$right'
+                  AND `glpi_profilerights`.`right` IN ('1','r','w')";
       $result = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {

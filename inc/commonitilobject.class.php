@@ -4191,6 +4191,8 @@ abstract class CommonITILObject extends CommonDBTM {
                   ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                 LEFT JOIN `glpi_profiles`
                   ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
+                LEFT JOIN `glpi_profilerights`
+                  ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 
@@ -4200,7 +4202,8 @@ abstract class CommonITILObject extends CommonDBTM {
                           OR ".getDateRequest("`".$this->getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
-      $query .="     AND `glpi_profiles`.`own_ticket` = 1
+      $query .="     AND `glpi_profilerights`.`name` = 'own_ticket'
+                     AND `glpi_profilerights`.`right` = 1
                      AND `$tasktable`.`users_id` <> '0'
                      AND `$tasktable`.`users_id` IS NOT NULL
                ORDER BY realname, firstname, name";

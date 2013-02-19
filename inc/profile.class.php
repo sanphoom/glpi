@@ -160,6 +160,12 @@ class Profile extends CommonDBTM {
    function post_updateItem($history=1) {
       global $DB;
 
+      if (count($this->profileRight) > 0) {
+         $profile_right = new ProfileRight();
+         $profile_right->updateProfileRights($this->getID(), $this->profileRight);
+         unset($this->profileRight);
+      }
+
       if (in_array('is_default',$this->updates) && ($this->input["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
@@ -172,6 +178,11 @@ class Profile extends CommonDBTM {
    function post_addItem() {
       global $DB;
 
+      if (count($this->profileRight) > 0) {
+         $profile_right = new ProfileRight();
+         $profile_right->updateProfileRights($this->getID(), $this->profileRight);
+         unset($this->profileRight);
+      }
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
@@ -184,10 +195,12 @@ class Profile extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_profiles_users`
-                WHERE `profiles_id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $gpr = new ProfileRight();
+      $gpr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $gpu = new Profile_User();
+      $gpu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
 
       Rule::cleanForItemAction($this);
       // PROFILES and UNIQUE_PROFILE in RuleMailcollector
@@ -204,7 +217,7 @@ class Profile extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
-
+      
       // Check for faq
       if (isset($input["interface"]) && ($input["interface"] == 'helpdesk')) {
          if (isset($input["faq"]) && ($input["faq"] == 'w')) {
@@ -262,6 +275,14 @@ class Profile extends CommonDBTM {
 //          $input["change_status"] = exportArrayToDB($cycle);
 //       }
 
+      $this->profileRight = array();
+      foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
+         if (isset($input[$right])) {
+            $this->profileRight[$right] = $input[$right];
+            unset($input[$right]);
+         }
+      }
+
       return $input;
    }
 
@@ -271,6 +292,15 @@ class Profile extends CommonDBTM {
       if (isset($input["helpdesk_item_type"])) {
          $input["helpdesk_item_type"] = exportArrayToDB($input["helpdesk_item_type"]);
       }
+
+      $this->profileRight = array();
+      foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
+         if (isset($input[$right])) {
+            $this->profileRight[$right] = $input[$right];
+            unset($input[$right]);
+         }
+      }
+
       return $input;
    }
 
@@ -324,7 +354,7 @@ class Profile extends CommonDBTM {
     *
     * @return SQL restrict string
    **/
-   static function getUnderActiveProfileRetrictRequest($separator="AND") {
+   static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
       $query = $separator ." ";
 
@@ -342,42 +372,47 @@ class Profile extends CommonDBTM {
          $query .= " (`glpi_profiles`.`interface` = 'helpdesk') " ;
       }
 
-      $query .= " OR (`glpi_profiles`.`interface` = '".$_SESSION['glpiactiveprofile']['interface']."' ";
-      foreach ($_SESSION['glpiactiveprofile'] as $key => $val) {
+      $query .= " OR (`glpi_profiles`.`interface` = '" .
+                $_SESSION['glpiactiveprofile']['interface'] . "' ";
+
+      // First, get all possible rights
+      $right_subqueries = array();
+      foreach (ProfileRight::getAllPossibleRights() as $key => $default) {
+         $val = $_SESSION['glpiactiveprofile'][$key];
+
          if (!is_array($val) // Do not include entities field added by login
-             && !in_array($key,self::$common_fields)
-             && !in_array($key,self::$noright_fields)
              && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
                  || in_array($key,self::$helpdesk_rights))) {
 
             switch ($val) {
                case '0' :
-                  $query .= " AND (`glpi_profiles`.`$key` IS NULL
-                                   OR `glpi_profiles`.`$key` IN ('0', '')) ";
+                  $possible_rights = "('0', '')";
                   break;
 
                case '1' :
-                  $query .= " AND (`glpi_profiles`.`$key` IS NULL
-                                   OR `glpi_profiles`.`$key` IN ('0', '1', '')) ";
+                  $possible_rights = "('0', '1', '')";
                   break;
 
                case 'r' :
-                  $query .= " AND (`glpi_profiles`.`$key` IS NULL
-                                   OR `glpi_profiles`.`$key` IN ('r', '')) ";
+                  $possible_rights = "('r', '')";
                   break;
 
                case 'w' :
-                  $query .= " AND (`glpi_profiles`.`$key` IS NULL
-                                   OR `glpi_profiles`.`$key` IN ('w', 'r', '')) ";
+                  $possible_rights = "('w', 'r', '')";
                   break;
 
                default :
-                  $query .= " AND (`glpi_profiles`.`$key` IS NULL
-                                   OR `glpi_profiles`.`$key` IN ('0', '')) ";
+                  $possible_rights = "('0', '')";
             }
+            $right_subqueries[] = "(`glpi_profilerights`.`name` = '$key'
+                                   AND `glpi_profilerights`.`right` IN $possible_rights)";
          }
       }
-      $query .= ")";
+      $query .= " AND ".count($right_subqueries)." = (
+                    SELECT count(*)
+                    FROM `glpi_profilerights`
+                    WHERE `glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`
+                     AND (".implode(' OR ', $right_subqueries).")))";
       return $query;
    }
 
@@ -396,12 +431,12 @@ class Profile extends CommonDBTM {
          // Check all profiles (means more right than all possible profiles)
          return (countElementsInTable('glpi_profiles')
                      == countElementsInTable('glpi_profiles',
-                                             self::getUnderActiveProfileRetrictRequest('')));
+                                             self::getUnderActiveProfileRestrictRequest('')));
       }
       $under_profiles = array();
       $query          = "SELECT *
                          FROM `glpi_profiles` ".
-                         self::getUnderActiveProfileRetrictRequest("WHERE");
+                         self::getUnderActiveProfileRestrictRequest("WHERE");
       $result         = $DB->query($query);
 
       while ($data = $DB->fetch_assoc($result)) {
@@ -436,8 +471,12 @@ class Profile extends CommonDBTM {
 
       $this->fields["interface"] = "helpdesk";
       $this->fields["name"]      = __('Without name');
+      unset($_SESSION['all_possible_rights']);
+      $this->fields = array_merge($this->fields, ProfileRight::getAllPossibleRights());
    }
-
+   function post_getFromDB() {
+      $this->fields = array_merge($this->fields, ProfileRight::getProfileRights($this->getID()));
+   }
 
    /**
     * Print the profile form headers
@@ -2072,7 +2111,7 @@ class Profile extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `glpi_profiles` ".
-                self::getUnderActiveProfileRetrictRequest("WHERE")."
+                self::getUnderActiveProfileRestrictRequest("WHERE")."
                 ORDER BY `name`";
       $res = $DB->query($query);
 

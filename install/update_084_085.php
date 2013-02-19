@@ -68,43 +68,90 @@ function update084to085() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'config table'));
    
-  if (FieldExists('glpi_configs', 'version')) {
-     $migration->copyTable('glpi_configs', 'origin_glpi_configs');
-     
-     $query  = "SELECT * FROM `glpi_configs` WHERE `id` = '1'";
-     $result_of_configs = $DB->query($query);
+   if (FieldExists('glpi_configs', 'version')) {
+      if (!TableExists('origin_glpi_configs')) {
+         $migration->copyTable('glpi_configs', 'origin_glpi_configs');
+      }
 
-     // Update glpi_configs
-     $migration->addField('glpi_configs', 'context', 'VARCHAR(150) COLLATE utf8_unicode_ci',
-                          array('update' => "'core'"));
-     $migration->addField('glpi_configs', 'name',    'VARCHAR(150) COLLATE utf8_unicode_ci',
-                          array('update' => "'version'"));
-     $migration->addField('glpi_configs', 'value',   'text',   array('update' => "'0.85'"));
-     $migration->addKey('glpi_configs', array('context', 'name'), 'unicity', 'UNIQUE');
+      $query  = "SELECT * FROM `glpi_configs` WHERE `id` = '1'";
+      $result_of_configs = $DB->query($query);
 
-     $migration->migrationOneTable('glpi_configs');
+      // Update glpi_configs
+      $migration->addField('glpi_configs', 'context', 'VARCHAR(150) COLLATE utf8_unicode_ci',
+                           array('update' => "'core'"));
+      $migration->addField('glpi_configs', 'name',    'VARCHAR(150) COLLATE utf8_unicode_ci',
+                           array('update' => "'version'"));
+      $migration->addField('glpi_configs', 'value',   'text',   array('update' => "'0.85'"));
+      $migration->addKey('glpi_configs', array('context', 'name'), 'unicity', 'UNIQUE');
 
-     $fields = array();
-     if ($DB->numrows($result_of_configs) == 1) {
-        $configs = $DB->fetch_assoc($result_of_configs);
-        unset($configs['id']);
-        unset($configs['version']);
-        // First drop fields not to have constraint on insert
-        foreach ($configs as $name => $value) {
-           $migration->dropField('glpi_configs', $name);
-        }
-        $migration->migrationOneTable('glpi_configs');
-        // Then insert new values
-        foreach ($configs as $name => $value) {
-           $query = "INSERT INTO `glpi_configs` (`context`, `name`, `value`)
-                                         VALUES ('core', '$name', '$value');";
-           $DB->query($query);
-        }
-     }
-     $migration->dropField('glpi_configs', 'version');
-     $migration->migrationOneTable('glpi_configs');
-  }
+      $migration->migrationOneTable('glpi_configs');
+
+      $fields = array();
+      if ($DB->numrows($result_of_configs) == 1) {
+         $configs = $DB->fetch_assoc($result_of_configs);
+         unset($configs['id']);
+         unset($configs['version']);
+         // First drop fields not to have constraint on insert
+         foreach ($configs as $name => $value) {
+            $migration->dropField('glpi_configs', $name);
+         }
+         $migration->migrationOneTable('glpi_configs');
+         // Then insert new values
+         foreach ($configs as $name => $value) {
+            $query = "INSERT INTO `glpi_configs` (`context`, `name`, `value`)
+                                          VALUES ('core', '$name', '$value');";
+            $DB->query($query);
+         }
+      }
+      $migration->dropField('glpi_configs', 'version');
+      $migration->migrationOneTable('glpi_configs');
+   }
    
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'profile table'));
+
+   if (!TableExists('glpi_profilerights')) {
+      if (!TableExists('origin_glpi_profiles')) {
+         $migration->copyTable('glpi_profiles', 'origin_glpi_profiles');
+      }
+
+      /// TODO : right using char(1) ? not able to store others configs... But interesting to change it ?
+
+      $query = "CREATE TABLE `glpi_profilerights` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `profiles_id` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) DEFAULT NULL,
+                  `right` char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`profiles_id`, `name`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_profilerights");
+
+      $query = "DESCRIBE `origin_glpi_profiles`";
+
+      $rights = array();
+      foreach ($DB->request($query) as $field) {
+         if ($field['Type'] == 'char(1)') {
+            $rights[$field['Field']] = $field['Field'];
+            $migration->dropField('glpi_profiles', $field['Field']);
+         }
+      }
+      $query = "SELECT * FROM `origin_glpi_profiles`";
+      foreach ($DB->request($query) as $profile) {
+         $profiles_id = $profile['id'];
+         foreach ($rights as $right) {
+            if ($profile[$right] == NULL) {
+               $new_right = '';
+            } else {
+               $new_right = $profile[$right];
+            }
+            $query = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`, `right`)
+                              VALUES ('$profiles_id', '$right', '".$profile[$right]."')";
+            $DB->query($query);
+         }
+      }
+      $migration->migrationOneTable('glpi_profiles');
+      $migration->dropTable('origin_glpi_profiles');
+   }
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
