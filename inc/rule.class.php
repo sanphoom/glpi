@@ -391,9 +391,9 @@ class Rule extends CommonDBTM {
                               = '/front/ruledictionnaryprinter.form.php';
             }
          }
-      $menu['is_multi_entries'] = true;
 
       if (count($menu)) {
+         $menu['is_multi_entries'] = true;
          return $menu;
       }
       return false;

@@ -5423,8 +5423,10 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
 
          case self::PDF_OUTPUT_PORTRAIT :
-            global $PDF_HEADER;
-            $PDF_HEADER[$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
+            global $PDF_TABLE;
+            $PDF_TABLE .= "<th>";
+            $PDF_TABLE .= Html::clean($value);
+            $PDF_TABLE .= "</th>\n";
             break;
 
          case self::SYLK_OUTPUT : //sylk
@@ -5477,9 +5479,11 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
-            global $PDF_ARRAY,$PDF_HEADER;
-            $value                 = Html::weblink_extract($value);
-            $PDF_ARRAY[$row][$num] = Toolbox::decodeFromUtf8(Html::clean($value), 'windows-1252');
+            global $PDF_TABLE;
+            $PDF_TABLE .= "<td valign='top'>";
+            $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
+            $PDF_TABLE .= "</td>\n";
+
             break;
 
          case self::SYLK_OUTPUT : //sylk
@@ -5564,43 +5568,46 @@ class Search {
       $out = "";
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
-            global $PDF_HEADER,$PDF_ARRAY;
-            $pdf     = new Cezpdf('a4','landscape');
-            $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-            $nb      = count($PDF_ARRAY);
+         case self::PDF_OUTPUT_PORTRAIT :          
 
-            $tmptxt  = sprintf(_n('%s item', '%s items', $nb), $nb);
-            $pdf->ezStartPageNumbers(750, 10, 10, 'left',
-                                     "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-                                       " - ".Toolbox::decodeFromUtf8($tmptxt, 'windows-1252').
-                                       " - {PAGENUM}/{TOTALPAGENUM}");
-            $options = array('fontSize'      => 8,
-                             'colGap'        => 2,
-                             'maxWidth'      => 800,
-                             'titleFontSize' => 8);
-            $pdf->ezTable($PDF_ARRAY, $PDF_HEADER, Toolbox::decodeFromUtf8($title, 'windows-1252'),
-                          $options);
-            $pdf->ezStream();
-            break;
+            global $PDF_TABLE;
 
-         case self::PDF_OUTPUT_PORTRAIT : //pdf
-            global $PDF_HEADER,$PDF_ARRAY;
-            $pdf     = new Cezpdf('a4','portrait');
-            $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-            $nb      = count($PDF_ARRAY);
+            if ($type == self::PDF_OUTPUT_LANDSCAPE) {
+               $pdf = new GLPIPDF('L', 'mm', 'A4', true, 'UTF-8', false);
+            } else {
+               $pdf = new GLPIPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+            }
+            $pdf->SetCreator('GLPI');
+            $pdf->SetAuthor('GLPI');
+            $pdf->SetTitle($title);
+            $pdf->SetHeaderData('', '', $title, '');
+            $font = 'helvetica';
+            $subsetting = true;
+            $fonsize = 8;
+            if (isset($_SESSION['glpiuse_unicodefont']) && $_SESSION['glpiuse_unicodefont']) {
+               $font = 'unifont';
+               $subsetting = false;
+            }
+            $pdf->setHeaderFont(Array($font, 'B', 8));
+            $pdf->setFooterFont(Array($font, 'B', 8));
 
-            $tmptxt  = sprintf(_n('%s item', '%s items', $nb), $nb);
-            $pdf->ezStartPageNumbers(550, 10, 10, 'left',
-                                     "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
-                                       " - ".Toolbox::decodeFromUtf8($tmptxt, 'windows-1252').
-                                       " - {PAGENUM}/{TOTALPAGENUM}");
-            $options = array('fontSize'      => 8,
-                             'colGap'        => 2,
-                             'maxWidth'      => 565,
-                             'titleFontSize' => 8);
-            $pdf->ezTable($PDF_ARRAY, $PDF_HEADER, Toolbox::decodeFromUtf8($title, 'windows-1252'),
-                          $options);
-            $pdf->ezStream();
+            //set margins
+            $pdf->SetMargins(10, 15, 10);
+            $pdf->SetHeaderMargin(10);
+            $pdf->SetFooterMargin(10);
+
+            //set auto page breaks
+            $pdf->SetAutoPageBreak(TRUE, 15);
+           
+
+            // For standard language
+            $pdf->setFontSubsetting($subsetting);
+            // set font
+            $pdf->SetFont($font, '', 8);
+            $pdf->AddPage();
+            $PDF_TABLE.='</table>';
+            $pdf->writeHTML($PDF_TABLE, true, false, false, false, '');
+            $pdf->Output('glpi.pdf', 'I');
             break;
 
          case self::SYLK_OUTPUT : //sylk
@@ -5652,9 +5659,8 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
-            global $PDF_ARRAY, $PDF_HEADER;
-            $PDF_ARRAY  = array();
-            $PDF_HEADER = array();
+            global $PDF_TABLE;
+            $PDF_TABLE = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\">";
             break;
 
          case self::SYLK_OUTPUT : // Sylk
@@ -5723,6 +5729,13 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            $style = "";
+            if ($odd) {
+               $style = " style=\"background-color:#DDDDDD;\" ";
+            }
+            $PDF_TABLE .= "<tr $style>";
+            break;
          case self::SYLK_OUTPUT : //sylk
          case self::CSV_OUTPUT : //csv
             break;
@@ -5751,6 +5764,9 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            $PDF_TABLE.= '</tr>';
+            break;
          case self::SYLK_OUTPUT : //sylk
             break;
 

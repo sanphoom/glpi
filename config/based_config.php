@@ -128,6 +128,14 @@ if (!defined("GLPI_PHPMAILER_DIR")) {
    # define("GLPI_PHPMAILER_DIR", "/usr/share/php/phpmailer");
 }
 
+// Default tcpdf installation dir
+if (!defined("GLPI_TCPDF_DIR")) {
+   define("GLPI_TCPDF_DIR", GLPI_ROOT."/lib/tcpdf");
+
+   # if PHPMailer installed, use (in config_path.php)
+   # define("GLPI_TCPDF_DIR", "/usr/share/php/tcpdf");
+}
+
 // Default EZ Components path to base.php
 if (!defined("GLPI_EZC_BASE")) {
    define("GLPI_EZC_BASE", GLPI_ROOT."/lib/ezcomponents/Base/src/base.php");

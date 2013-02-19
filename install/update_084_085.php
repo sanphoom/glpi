@@ -46,13 +46,13 @@ function update084to085() {
    $migration->displayTitle(sprintf(__('Update to %s'), '0.85'));
    $migration->setVersion('0.85');
 
-
-
    $backup_tables = false;
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_suppliers',
                           'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_profilerights');
+                          'glpi_changetasks'
+                          // Only do profilerights once : so not delete it
+                          /*, 'glpi_profilerights'*/);
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -69,6 +69,7 @@ function update084to085() {
                                  true);
    }
 
+   
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'config table'));
    
    if (FieldExists('glpi_configs', 'version')) {
@@ -395,6 +396,10 @@ function update084to085() {
       WHERE `id` = '".$data['id']."'";
       $DB->queryOrDie($query, "0.85 add uuid to existing rules");
    }                        
+
+   Config::setConfigurationValues('core', array('use_unicodefont' => 0));
+   $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
+
    
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

@@ -761,6 +761,10 @@ class Config extends CommonDBTM {
       }
 
       echo "<form name='form' action='$url' method='post'>";
+      // Only set id for user prefs
+      if ($userpref) {
+         echo "<input type='hidden' name='id' value='".$data['id']."'>";
+      }
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -871,6 +875,13 @@ class Config extends CommonDBTM {
       }
       echo "</tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('PDF export using unicode font') . "</td><td>";
+      Dropdown::showYesNo("use_unicodefont", $data["use_unicodefont"]);
+      echo "</td>";
+      echo "<td colspan='2'>&nbsp;</td>";
+      echo "</tr>";
+      
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
 
@@ -1694,16 +1705,16 @@ class Config extends CommonDBTM {
     * @param $names array of config names to set
     * @return array of config values
    **/
-   function setConfigurationValues($context, array $values = array()) {
-
+   static function setConfigurationValues($context, array $values = array()) {
+      $config = new self();
       foreach ($values as $name => $value) {
-         if ($this->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
+         if ($config->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
 
             $input = array('id'      => $this->getID(),
                            'context' => $context,
                            'value'   => $value);
 
-            $this->update($input);
+            $config->update($input);
 
          } else {
 
@@ -1711,7 +1722,7 @@ class Config extends CommonDBTM {
                            'name'    => $name,
                            'value'   => $value);
 
-            $this->add($input);
+            $config->add($input);
          }
       }
    }
@@ -1723,11 +1734,11 @@ class Config extends CommonDBTM {
     * @param $names array of config names to delete
     * @return array of config values
    **/
-   function deleteConfigurationValues($context, array $values = array()) {
-
+   static function deleteConfigurationValues($context, array $values = array()) {
+      $config = new self();
       foreach ($values as $name => $value) {
-         if ($this->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
-            $this->delete(array('id' => $this->getID()));
+         if ($config->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
+            $config->delete(array('id' => $this->getID()));
          }
       }
 

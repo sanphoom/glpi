@@ -788,7 +788,7 @@ class CommonDBTM extends CommonGLPI {
                }
 
                 // Auto create infocoms
-               if ($CFG_GLPI["auto_create_infocoms"]
+               if (isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
                    && in_array($this->getType(), $CFG_GLPI["infocom_types"])) {
 
                   $ic = new Infocom();
