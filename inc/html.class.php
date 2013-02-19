@@ -1006,6 +1006,23 @@ class Html {
          $menu['preference']['title']   = __('My settings');
          $menu['preference']['default'] = '/front/preference.php';
 
+
+         /// TODO permit to plugins to add entry to others sector !
+         if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
+
+            foreach  ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
+               if (count($items)) {
+                  foreach ($items as $key => $val) {
+                     if (isset($menu[$key])) {
+                        $menu[$key]['types'][] = $val;
+                     }
+                  }
+               }
+            }
+         }
+         
+
+         
          foreach ($menu as $category => $datas) {
             if (isset($datas['types']) && count($datas['types'])) {
                foreach ($datas['types'] as $type) {
@@ -1043,51 +1060,50 @@ class Html {
             }
          }
 
-
-         // PLUGINS
+         
+         //  PLUGINS
 //          if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
-//             $menu['plugins']['title'] = __('Plugins');
 //             $plugins = array();
-//
+// 
 //             foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
 //                if ($active) { // true or a string
 //                   $plugins[$plugin] = Plugin::getInfo($plugin);
 //                }
 //             }
-//
+// 
 //             if (count($plugins)) {
 //                $list = array();
-//
+// 
 //                foreach ($plugins as $key => $val) {
 //                   $list[$key] = $val["name"];
 //                }
 //                asort($list);
-//
+// 
 //                foreach ($list as $key => $val) {
 //                   $menu['plugins']['content'][$key]['title'] = $val;
 //                   $menu['plugins']['content'][$key]['page']  = '/plugins/'.$key.'/';
-//
+// 
 //                   if (is_string($PLUGIN_HOOKS["menu_entry"][$key])) {
 //                      $menu['plugins']['content'][$key]['page'] .= $PLUGIN_HOOKS["menu_entry"][$key];
 //                   }
-//
+// 
 //                   // Set default link for plugins
 //                   if (!isset($menu['plugins']['default'])) {
 //                      $menu['plugins']['default'] = $menu['plugins']['content'][$key]['page'];
 //                   }
-//
+// 
 //                   if (($sector == "plugins")
 //                      && ($item == $key)) {
-//
+// 
 //                      if (isset($PLUGIN_HOOKS["submenu_entry"][$key])
 //                         && is_array($PLUGIN_HOOKS["submenu_entry"][$key])) {
-//
+// 
 //                         foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link) {
 //                            // New complete option management
 //                            if ($name == "options") {
 //                               $menu['plugins']['content'][$key]['options'] = $link;
 //                            } else { // Keep it for compatibility
-//
+// 
 //                               if (is_array($link)) {
 //                                  // Simple link option
 //                                  if (isset($link[$option])) {

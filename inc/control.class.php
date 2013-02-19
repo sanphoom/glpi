@@ -53,7 +53,6 @@ class Control extends CommonGLPI {
     * @see CommonGLPI::getAdditionalMenuOptions()
    **/
    static function getAdditionalMenuOptions() {
-         echo "ii";
       if (static::canView()) {
          $options['FieldUnicity']['title'] = __('Fields unicity');
          $options['FieldUnicity']['page'] = '/front/fieldunicity.php';

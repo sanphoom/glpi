@@ -691,6 +691,10 @@ class Plugin extends CommonDBTM {
                }
             }
          }  // exists _check_config
+         // reset menu
+         if (isset($_SESSION['glpimenu'])) {
+            unset($_SESSION['glpimenu']);
+         }
       } // getFromDB
    }
 
