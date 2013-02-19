@@ -551,6 +551,7 @@ class Bookmark extends CommonDBTM {
 
          echo "<div class='center' id='tabsbody' >";
          $massiveactionparams = array('num_displayed'  => $numrows,
+                                      'container'     => 'mass'.__CLASS__.$rand,
                                       'width'          => 600,
                                       'height'         => 200);
 

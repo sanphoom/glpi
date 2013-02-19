@@ -456,6 +456,7 @@ class Consumable extends CommonDBTM {
          }
          $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
+                           'container'        => 'mass'.__CLASS__.$rand,
                            'extraparams'      => array('entities_id' => $consitem->getEntityID()));
          Html::showMassiveActions(__CLASS__, $paramsma);
          echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";

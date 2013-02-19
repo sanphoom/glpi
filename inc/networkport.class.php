@@ -721,6 +721,7 @@ class NetworkPort extends CommonDBChild {
           && $showmassiveactions) {
          $massiveactionparams = array('num_displayed'  => $number_port,
                                       'check_itemtype' => $itemtype,
+                                      'container'      => 'mass'.__CLASS__.$rand,
                                       'check_items_id' => $items_id);
 
          Html::showMassiveActions('NetworkPort', $massiveactionparams);

@@ -397,7 +397,8 @@ class RuleCollection extends CommonDBTM {
 
       if ($canedit && $nb) {
          $massiveactionparams = array('num_displayed' => min($p['limit'], $nb),
-                                      'extraparams'   => array('entity_restrict' => $this->entity));
+                                      'extraparams'   => array('entity_restrict' => $this->entity),
+                                      'container'     => 'mass'.__CLASS__.$rand);
 
          Html::showMassiveActions($this->getRuleClassName(), $massiveactionparams);
       }
@@ -1753,7 +1754,7 @@ static function processImportRules() {
          }
          $item->title();
          $item->showEngineSummary();
-         $item->showListRules($_GET['target'], $options);
+         $item->showListRules($_GET['_target'], $options);
          return true;
       }
       return false;

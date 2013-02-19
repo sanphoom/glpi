@@ -183,7 +183,8 @@ class Group_User extends CommonDBRelation{
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          echo "<input type='hidden' name='users_id' value='".$user->fields['id']."'>";
-         $paramsma = array('num_displayed' => count($used));
+         $paramsma = array('num_displayed' => count($used),
+                           'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixehov'><tr>";
@@ -451,7 +452,8 @@ class Group_User extends CommonDBRelation{
 
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']));
+            $paramsma = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']),
+                              'container'     => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
 

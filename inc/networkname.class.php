@@ -786,6 +786,7 @@ class NetworkName extends FQDNLabel {
             if ($canedit && $number) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $paramsma = array('num_displayed'    => $number,
+                                 'container'        => 'mass'.__CLASS__.$rand,
                                  'specific_actions' => array('purge'    => _x('button',
                                                                               'Delete permanently'),
                                                              'unaffect' => __('Dissociate')));

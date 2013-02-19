@@ -708,6 +708,7 @@ class Group extends CommonTreeDropdown {
          $paramsma = array('num_displayed'    => $nb,
                            'check_itemtype'   => 'Group',
                            'check_items_id'   => $ID,
+                           'container'        => 'mass'.__CLASS__.$rand,
                            'extraparams'      => array('is_tech' => $tech),
                            'specific_actions' => array('changegroup' => __('Move')) );
          Html::showMassiveActions(__CLASS__, $paramsma);

@@ -146,7 +146,7 @@ class Item_Problem extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array();
+         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";

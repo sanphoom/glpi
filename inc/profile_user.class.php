@@ -157,7 +157,8 @@ class Profile_User extends CommonDBRelation {
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
       if ($canedit && $num) {
-         $paramsma = array('num_displayed' => $num);
+         $paramsma = array('num_displayed' => $num,
+                           'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
 
@@ -298,7 +299,8 @@ class Profile_User extends CommonDBRelation {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('specific_actions' => array('purge' => _x('button',
+         $paramsma = array('container'        => 'mass'.__CLASS__.$rand,
+                           'specific_actions' => array('purge' => _x('button',
                                                                      'Delete permanently')));
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
@@ -447,7 +449,8 @@ class Profile_User extends CommonDBRelation {
 
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed' => $nb);
+         $paramsma = array('num_displayed' => $nb,
+                           'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixe'><tr>";

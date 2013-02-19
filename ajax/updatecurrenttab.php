@@ -53,7 +53,6 @@ if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
          $current++;
       }
       if (!empty($selected_tab)) {
-         Toolbox::logDebug($selected_tab);
          Session::setActiveTab($_GET['itemtype'], $selected_tab);
       }
       

@@ -877,6 +877,7 @@ class Software extends CommonDBTM {
          $link = Toolbox::getItemTypeFormURL('Software');
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
+                           'container'        => 'mass'.__CLASS__.$rand,
                            'specific_actions' => array('mergesoftware' => __('Merge')) );
          Html::showMassiveActions(__CLASS__, $paramsma);
 

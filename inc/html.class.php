@@ -2212,6 +2212,8 @@ class Html {
     *
     * @param $itemtype  string itemtype for massive actions
     * @param $options   array    of parameters
+    * must contains :
+    *    - container       : DOM ID of the container of the item checkboxes (since version 0.85)
     * may contains :
     *    - num_displayed   : integer number of displayed items. Permit to check suhosin limit. (default -1 not to check)
     *    - ontop           : boolean true if displayed on top (default true)

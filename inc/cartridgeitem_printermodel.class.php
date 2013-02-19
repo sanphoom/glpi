@@ -167,7 +167,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          if ($canedit) {
             $rand     = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $paramsma = array('num_displayed' => count($used));
+            $paramsma = array('num_displayed' => count($used),
+                              'container'     => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
 

@@ -597,6 +597,7 @@ class DisplayPreference extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('width'            => 400,
                            'height'           => 200,
+                           'container'        => 'mass'.__CLASS__.$rand,
                            'specific_actions' => array('delete_for_user'
                                                          => _x('button', 'Delete permanently')));
 

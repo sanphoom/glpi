@@ -133,7 +133,8 @@ class Change_Problem extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'  => $numrows);
+         $massiveactionparams = array('num_displayed' => $numrows,
+                                      'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
 
@@ -244,7 +245,8 @@ class Change_Problem extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed'  => $numrows);
+         $massiveactionparams = array('num_displayed' => $numrows,
+                                      'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";

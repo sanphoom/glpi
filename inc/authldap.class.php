@@ -569,7 +569,8 @@ class AuthLDAP extends CommonDBTM {
          $canedit = Session::haveRight("config", "w");
          Html::openMassiveActionsForm('massAuthLdapReplicate'.$rand);
          echo "<div class='center'>";
-         $massiveactionparams = array('num_displayed'  => $nb);
+         $massiveactionparams = array('num_displayed'  => $nb,
+                                      'container'     => 'massAuthLdapReplicate'.$rand);
 
          Html::showMassiveActions('AuthLdapReplicate', $massiveactionparams);
          echo "<table class='tab_cadre_fixe'>";
@@ -1292,6 +1293,7 @@ class AuthLDAP extends CommonDBTM {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => min(count($ldap_users),
                                                         $_SESSION['glpilist_limit']),
+                              'container'        => 'mass'.__CLASS__.$rand,
                               'specific_actions' => array($form_action => $textbutton));
             Html::showMassiveActions(__CLASS__, $paramsma);
 
@@ -1661,6 +1663,7 @@ class AuthLDAP extends CommonDBTM {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => min($_SESSION['glpilist_limit'],
                                                         count($ldap_groups)),
+                              'container'        => 'mass'.__CLASS__.$rand,
                               'specific_actions' => array('import_group' => _sx('button','Import')));
             Html::showMassiveActions(__CLASS__, $paramsma);
 

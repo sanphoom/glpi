@@ -469,6 +469,7 @@ class Cartridge extends CommonDBChild {
                              'restore' => __('Back to stock'));
             $paramsma = array('num_displayed'    => $number,
                               'specific_actions' => $actions,
+                              'container'        => 'mass'.__CLASS__.$rand,
                               'rand'             => $rand);
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
@@ -708,6 +709,7 @@ class Cartridge extends CommonDBChild {
          }
          $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
+                           'container'        => 'mass'.__CLASS__.$rand,
                            'rand'             => $rand);
          Html::showMassiveActions(__CLASS__, $paramsma);
       }

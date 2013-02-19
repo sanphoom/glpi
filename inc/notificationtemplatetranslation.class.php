@@ -189,7 +189,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if ($canedit) {
          $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array();
+         $paramsma = array('container' => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
 

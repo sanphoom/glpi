@@ -1179,6 +1179,7 @@ class Reminder extends CommonDBTM {
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
+                           'container'        => 'mass'.__CLASS__.$rand,
                            'specific_actions' => array('deletevisibility'
                                                          => _x('button', 'Delete permanently')) );
 
