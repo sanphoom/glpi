@@ -57,7 +57,7 @@ class Profile extends CommonDBTM {
 
 
    /// Fields not related to a basic right
-   static public $noright_fields = array('comment', /*'change_status',*/ 'date_mod',
+   static public $noright_fields = array('comment', 'change_status', 'date_mod',
                                          'helpdesk_hardware','helpdesk_item_type', 'own_ticket',
                                          'problem_status', 'show_group_hardware',
                                          'show_group_ticket', 'ticket_status');
@@ -261,19 +261,19 @@ class Profile extends CommonDBTM {
          $input["problem_status"] = exportArrayToDB($cycle);
       }
 
-//       if (isset($input["_cycles_change"])) {
-//          $tab   = Change::getAllStatusArray();
-//          $cycle = array();
-//          foreach ($tab as $from => $label) {
-//             foreach ($tab as $dest => $label) {
-//                if (($from != $dest)
-//                    && ($input["_cycle_change"][$from][$dest] == 0)) {
-//                   $cycle[$from][$dest] = 0;
-//                }
-//             }
-//          }
-//          $input["change_status"] = exportArrayToDB($cycle);
-//       }
+      if (isset($input["_cycles_change"])) {
+         $tab   = Change::getAllStatusArray();
+         $cycle = array();
+         foreach ($tab as $from => $label) {
+            foreach ($tab as $dest => $label) {
+               if (($from != $dest)
+                   && ($input["_cycle_change"][$from][$dest] == 0)) {
+                  $cycle[$from][$dest] = 0;
+               }
+            }
+         }
+         $input["change_status"] = exportArrayToDB($cycle);
+      }
 
       $this->profileRight = array();
       foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
@@ -334,7 +334,7 @@ class Profile extends CommonDBTM {
       }
 
       // Decode status array
-      $fields_to_decode = array('ticket_status','problem_status'/*,'change_status'*/);
+      $fields_to_decode = array('ticket_status', 'problem_status', 'change_status');
       foreach ($fields_to_decode as $val) {
          if (isset($this->fields[$val]) && !is_array($this->fields[$val])) {
             $this->fields[$val] = importArrayFromDB($this->fields[$val]);
@@ -1017,17 +1017,17 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
-//       echo "<tr class='tab_bg_2'>";
-//       echo "<td>".__('Update all changes')."</td><td>";
-//       Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
-//       echo "</td>";
-//       echo "<td>".__('See all changes')."</td><td>";
-//       Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
-//       echo "</td>";
-//       echo "<td>".__('See changes (author)')."</td><td>";
-//       Dropdown::showYesNo("show_my_change", $this->fields["show_my_change"]);
-//       echo "</td>";
-//       echo "</tr>\n";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Update all changes')."</td><td>";
+      Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
+      echo "</td>";
+      echo "<td>".__('See all changes')."</td><td>";
+      Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
+      echo "</td>";
+      echo "<td>".__('See changes (author)')."</td><td>";
+      Dropdown::showYesNo("show_my_change", $this->fields["show_my_change"]);
+      echo "</td>";
+      echo "</tr>\n";
 
       if ($canedit
           && $closeform) {
@@ -1125,29 +1125,29 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $tabstatus = Change::getAllStatusArray();
 
-//       echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of changes')."</th>";
-//       echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
-//       echo "<input type='hidden' name='_cycles_change' value='1'</td>";
-//       foreach ($tabstatus as $label) {
-//          echo "<td class='center'>$label</td>";
-//       }
-//       echo "</tr>\n";
-//
-//       foreach ($tabstatus as $from => $label) {
-//          echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
-//          foreach ($tabstatus as $dest => $label) {
-//             echo "<td class='center'>";
-//             if ($dest == $from) {
-//                echo Dropdown::getYesNo(1);
-//             } else {
-//                Dropdown::showYesNo("_cycle_change[$from][$dest]",
-//                                    (!isset($this->fields['change_status'][$from][$dest])
-//                                     || $this->fields['change_status'][$from][$dest]));
-//             }
-//             echo "</td>";
-//          }
-//          echo "</tr>\n";
-//       }
+      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of changes')."</th>";
+      echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
+      echo "<input type='hidden' name='_cycles_change' value='1'</td>";
+      foreach ($tabstatus as $label) {
+         echo "<td class='center'>$label</td>";
+      }
+      echo "</tr>\n";
+
+      foreach ($tabstatus as $from => $label) {
+         echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
+         foreach ($tabstatus as $dest => $label) {
+            echo "<td class='center'>";
+            if ($dest == $from) {
+               echo Dropdown::getYesNo(1);
+            } else {
+               Dropdown::showYesNo("_cycle_change[$from][$dest]",
+                                   (!isset($this->fields['change_status'][$from][$dest])
+                                    || $this->fields['change_status'][$from][$dest]));
+            }
+            echo "</td>";
+         }
+         echo "</tr>\n";
+      }
 
       if ($canedit
           && $closeform) {
@@ -1906,27 +1906,27 @@ class Profile extends CommonDBTM {
       $tab[114]['name']          = __('Update all problems');
       $tab[114]['datatype']      = 'bool';
 
-//       $tab[111]['table']         = $this->getTable();
-//       $tab[111]['field']         = 'change_status';
-//       $tab[111]['name']          = __('Life cycle of changes');
-//       $tab[111]['nosearch']      = true;
-//       $tab[111]['datatype']      = 'text';
-//       $tab[111]['massiveaction'] = false;
-//
-//       $tab[115]['table']         = $this->getTable();
-//       $tab[115]['field']         = 'show_my_change';
-//       $tab[115]['name']          =__('See changes (author)');
-//       $tab[115]['datatype']      = 'bool';
-//
-//       $tab[116]['table']         = $this->getTable();
-//       $tab[116]['field']         = 'show_all_change';
-//       $tab[116]['name']          = __('See all changes');
-//       $tab[116]['datatype']      = 'bool';
-//
-//       $tab[117]['table']         = $this->getTable();
-//       $tab[117]['field']         = 'edit_all_change';
-//       $tab[117]['name']          = __('Update all changes');
-//       $tab[117]['datatype']      = 'bool';
+      $tab[111]['table']         = $this->getTable();
+      $tab[111]['field']         = 'change_status';
+      $tab[111]['name']          = __('Life cycle of changes');
+      $tab[111]['nosearch']      = true;
+      $tab[111]['datatype']      = 'text';
+      $tab[111]['massiveaction'] = false;
+
+      $tab[115]['table']         = $this->getTable();
+      $tab[115]['field']         = 'show_my_change';
+      $tab[115]['name']          =__('See changes (author)');
+      $tab[115]['datatype']      = 'bool';
+
+      $tab[116]['table']         = $this->getTable();
+      $tab[116]['field']         = 'show_all_change';
+      $tab[116]['name']          = __('See all changes');
+      $tab[116]['datatype']      = 'bool';
+
+      $tab[117]['table']         = $this->getTable();
+      $tab[117]['field']         = 'edit_all_change';
+      $tab[117]['name']          = __('Update all changes');
+      $tab[117]['datatype']      = 'bool';
 
       $tab['other']              = __('Other');
 

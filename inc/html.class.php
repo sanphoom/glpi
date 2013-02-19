@@ -977,7 +977,8 @@ class Html {
                                           'ConsumableItem', 'Phone' );
 
          $menu['helpdesk']['title'] = __('Assistance');
-         $menu['helpdesk']['types'] = array('Ticket', 'Problem', 'Planning',
+         $menu['helpdesk']['types'] = array('Ticket', 'Problem', 'Change',
+                                            'Planning',
                                             'Stat', 'TicketRecurrent');
 
          $menu['management']['title'] = __('Management');

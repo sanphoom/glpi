@@ -84,30 +84,58 @@ class ProfileRight extends CommonDBChild {
    static function addProfileRights(array $rights) {
       global $DB;
 
+      $ok = true;
+      $_SESSION['glpi_all_possible_rights'] = array();
       $query = "SELECT `id`
                   FROM `glpi_profiles`;";
       foreach ($DB->request($query) as $profile) {
          $profiles_id = $profile['id'];
          foreach ($rights as $name) {
             $query = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`)
-                              VALUES ('$profiles_id', '$name')";
-            $DB->query($query);
+                              VALUES ('$profiles_id', '$name');";
+            if (!$DB->query($query)) {
+               $ok = false;
+            }
          }
       }
-      $_SESSION['glpi_all_possible_rights'] = array();
+      return $ok;
    }
 
    static function deleteProfileRights(array $rights) {
       global $DB;
 
+      $_SESSION['glpi_all_possible_rights'] = array();
+      $ok = true;
       foreach ($rights as $name) {
          $query = "DELETE FROM `glpi_profilerights`
                      WHERE `name` = '$name'";
-         $DB->query($query);
+         if (!$DB->query($query)) {
+            $ok = false;
+         }
       }
-      $_SESSION['glpi_all_possible_rights'] = array();
+      return $ok;
    }
 
+   static function updateProfileRightAsOtherRight($right, $value, $condition) {
+      global $DB;
+
+      $profiles = array();
+      $ok = true;
+      foreach ($DB->request('glpi_profilerights', $condition) as $data) {
+         $profiles[] = $data['profiles_id'];
+      }
+      if (count($profiles)) {
+         $query = "UPDATE `glpi_profilerights`
+                     SET `right` = '$value'
+                     WHERE `name`='$right'
+                           AND `profiles_id` IN ('".implode("', '",$profiles)."');";
+         if (!$DB->query($query)) {
+            $ok = false;
+         }
+      }
+      return $ok;
+   }
+   
    static function fillProfileRights($profiles_id) {
       global $DB;
 
