@@ -4350,36 +4350,9 @@ class Ticket extends CommonITILObject {
       echo "<td width='".(100-$colsize1)."%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldText('name');
-
-         $rand = mt_rand();
-         echo "<script type='text/javascript' >\n";
-         echo "function showName$rand() {\n";
-         echo Html::jsHide("name$rand");
-         $params = array('maxlength' => 250,
-                         'size'      => 90,
-                         'name'      => 'name',
-                         'data'      => rawurlencode($this->fields["name"]));
-         Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php",
-                                $params);
-         echo "}";
-         echo "</script>\n";
-         echo "<div id='name$rand' class='tracking left' onClick='showName$rand()'>\n";
-         if (empty($this->fields["name"])) {
-            _e('Without title');
-         } else {
-            echo $this->fields["name"];
-         }
-         echo "</div>\n";
-
-         echo "<div id='viewname$rand'>\n";
-         echo "</div>\n";
-         if (!$ID) {
-            echo "<script type='text/javascript' >\n
-            showName$rand();
-            </script>";
-         }
+         echo "<input type='text' size='90' maxlength=250 name='name' ".
+                  " value=\"".Html::cleanInputText($this->fields["name"])."\">";
          echo $tt->getEndHiddenFieldText('name');
-
       } else {
          if (empty($this->fields["name"])) {
             _e('Without title');
@@ -4393,37 +4366,17 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
+      if (!$ID || $canupdate_descr) {
+         Html::showTooltip(nl2br($this->fields["content"]));
+      }
       echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td width='".(100-$colsize1)."%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          echo $tt->getBeginHiddenFieldText('content');
 
-         $rand = mt_rand();
-         echo "<script type='text/javascript' >\n";
-         echo "function showDesc$rand() {\n";
-         echo Html::jsHide("desc$rand");
-         $params = array('rows'  => 6,
-                         'cols'  => 90,
-                         'name'  => 'content',
-                         'data'  => rawurlencode($this->fields["content"]));
-         Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php",
-                                $params);
-         echo "}";
-         echo "</script>\n";
-         echo "<div id='desc$rand' class='tracking' onClick='showDesc$rand()'>\n";
-         if (!empty($this->fields["content"])) {
-            echo nl2br($this->fields["content"]);
-         } else {
-            _e('Empty description');
-         }
-         echo "</div>\n";
-
-         echo "<div id='viewdesc$rand'></div>\n";
-         if (!$ID) {
-            echo "<script type='text/javascript' >\n
-            showDesc$rand();
-            </script>";
-         }
+         echo "<textarea cols='90' rows='6' name='content' >";
+         echo $this->fields["content"];
+         echo "</textarea>\n";
          echo $tt->getEndHiddenFieldText('content');
 
       } else {
