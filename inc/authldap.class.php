@@ -241,7 +241,7 @@ class AuthLDAP extends CommonDBTM {
                                                   sprintf(__('%1$s/%2$s'),
                                                           $i, $input["ldap_process_count"]));
                   $key = key($input["item"]);
-                  array_pop($input["item"]);
+                  unset($input["item"][$key]);
                   if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
                                                                'value'  => $key),
                                                          $input["mode"],
@@ -298,7 +298,7 @@ class AuthLDAP extends CommonDBTM {
                                                   sprintf(__('%1$s/%2$s'),
                                                           $i, $input["ldap_process_count"]));
                   $key = key($input["item"]);
-                  array_pop($input["item"]);
+                  unset($input["item"][$key]);
                   if (isset($input["ldap_import_entities"][$key])) {
                      $entity = $input["ldap_import_entities"][$key];
                   } else {
