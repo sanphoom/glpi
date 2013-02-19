@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Computer::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
+   Html::header(Computer::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "computer");
    $disk->display(array('id'           => $_GET["id"],
                         'computers_id' => $_GET["computers_id"]));
    Html::footer();

@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("printer", "r");
 
-Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "printer");
+Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "printer");
 
 Search::show('Printer');
 

@@ -116,7 +116,7 @@ if (isset($_POST["add"])) {
    // on affiche le formulaire de saisie de l'item
    $kb->check(-1,'w');
 
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbase");
    $available_options = array('item_itemtype', 'item_items_id');
    $options           = array();
    foreach ($available_options as $key) {
@@ -136,7 +136,7 @@ if (isset($_POST["add"])) {
    // modifier un item dans la base de connaissance
    $kb->check($_GET["id"],'r');
 
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbase");
    $kb->showForm($_GET["id"]);
    Html::footer();
 
@@ -144,7 +144,7 @@ if (isset($_POST["add"])) {
    // Affiche un item de la base de connaissances
    $kb->check($_GET["id"],'r');
 
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbase");
 
    $kb->showFull(true);
 

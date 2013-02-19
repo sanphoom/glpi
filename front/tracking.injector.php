@@ -54,7 +54,7 @@ if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
 } else if ($_POST["_from_helpdesk"]) {
    Html::helpHeader(__('Simplified interface'), '', $_SESSION["glpiname"]);
 } else {
-   Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "maintain", "tracking");
+   Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "helpdesk", "tracking");
 }
 
 if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {

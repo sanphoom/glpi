@@ -37,7 +37,7 @@ include ('../inc/includes.php');
 Session::checkSeveralRightsOr(array('show_all_change' => '1',
                                     'show_my_change'  => '1'));
 
-Html::header(Change::getTypeName(2), '', "maintain", "change");
+Html::header(Change::getTypeName(2), '', "helpdesk", "change");
 
 Search::show('Change');
 

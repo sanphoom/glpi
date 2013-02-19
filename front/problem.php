@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 Session::checkSeveralRightsOr(array('show_all_problem' => '1',
                                     'show_my_problem'  => '1'));
 
-Html::header(Problem::getTypeName(2), '', "maintain", "problem");
+Html::header(Problem::getTypeName(2), '', "helpdesk", "problem");
 
 Search::show('Problem');
 

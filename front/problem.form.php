@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_POST['problems_id']);
 
 } else {
-   Html::header(Problem::getTypeName(2), $_SERVER['PHP_SELF'], "maintain", "problem");
+   Html::header(Problem::getTypeName(2), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    $problem->display($_GET);
    Html::footer();
 }

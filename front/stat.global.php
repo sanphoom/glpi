@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "maintain", "stat");
+Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
 
 Session::checkRight("statistic", "1");
 

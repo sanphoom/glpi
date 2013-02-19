@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Document::getTypeName(2), $_SERVER['PHP_SELF'], "financial"," document");
+   Html::header(Document::getTypeName(2), $_SERVER['PHP_SELF'], "management"," document");
    $doc->display(array('id' =>$_GET["id"]));
    Html::footer();
 }

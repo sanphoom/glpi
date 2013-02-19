@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("contact_enterprise", "r");
 
-Html::header(Supplier::getTypeName(2), '', "financial", "supplier");
+Html::header(Supplier::getTypeName(2), '', "management", "supplier");
 
 Search::show('Supplier');
 

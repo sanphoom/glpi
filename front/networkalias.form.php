@@ -74,7 +74,7 @@ if (isset($_GET['popup'])) {
    Html::popFooter();
 
 } else {
-   Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'inventory', 'networkalias');
+   Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'assets', 'networkalias');
 
    $alias->display($_GET);
    Html::footer();

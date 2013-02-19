@@ -40,7 +40,7 @@ if (!TableExists('glpi_networkportmigrations')) {
    Html::displayNotFoundError();
 }
 
-Html::header(NetworkPortMigration::getTypeName(2), $_SERVER['PHP_SELF'], "utils",
+Html::header(NetworkPortMigration::getTypeName(2), $_SERVER['PHP_SELF'], "tools",
              "migration", "networkportmigration");
 
 Search::show('NetworkPortMigration');

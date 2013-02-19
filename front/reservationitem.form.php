@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
 
 } else {
    $ri->check($_GET["id"], 'r');
-   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "reservation");
+   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "reservation");
    $ri->showForm($_GET["id"]);
 }
 

@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Supplier::getTypeName(2), '', "financial", "supplier");
+   Html::header(Supplier::getTypeName(2), '', "management", "supplier");
    $ent->display(array('id' => $_GET["id"]));
    Html::footer();
 }

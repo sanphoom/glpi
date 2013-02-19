@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpHeader(Reminder::getTypeName(2),'',$_SESSION["glpiname"]);
    } else {
-      Html::header(Reminder::getTypeName(2),'',"utils","reminder");
+      Html::header(Reminder::getTypeName(2),'',"tools","reminder");
    }
 
    $remind->display(array('id' =>$_GET["id"]));

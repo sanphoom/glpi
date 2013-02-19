@@ -114,7 +114,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
 
 } else {
-   Html::header(Change::getTypeName(2), $_SERVER['PHP_SELF'], "maintain", "change");
+   Html::header(Change::getTypeName(2), $_SERVER['PHP_SELF'], "helpdesk", "change");
    $change->display($_GET);
    Html::footer();
 }

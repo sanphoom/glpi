@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Cartridge::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "cartridge");
+   Html::header(Cartridge::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "cartridge");
    $cartype->display(array('id' => $_GET["id"]));
    Html::footer();
 }

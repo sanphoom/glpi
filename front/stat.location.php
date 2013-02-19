@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Html::header(__('Statistics'), '', "maintain", "stat");
+Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", "1");
 

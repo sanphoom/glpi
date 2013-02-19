@@ -169,7 +169,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpHeader(Ticket::getTypeName(2), '', $_SESSION["glpiname"]);
    } else {
-      Html::header(Ticket::getTypeName(2), '', "maintain", "ticket");
+      Html::header(Ticket::getTypeName(2), '', "helpdesk", "ticket");
    }
 
    $available_options = array('load_kb_sol');
@@ -183,7 +183,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    $track->display($options);
 
 } else {
-   Html::header(__('New ticket'),'',"maintain","ticket");
+   Html::header(__('New ticket'),'',"helpdesk","ticket");
 
    $track->display();
 }

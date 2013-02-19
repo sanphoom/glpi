@@ -93,7 +93,7 @@ if (isset($_POST["delete"])) {
 
 } else {
    Session::checkRight("networking", "w");
-   Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], "utils",
+   Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], "tools",
                 "migration", "networkportmigration");
 
    $np->display(array('id' => $_GET["id"]));

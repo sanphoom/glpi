@@ -97,7 +97,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contract");
+   Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "management", "contract");
    $contract->display(array('id'           => $_GET["id"],
                             'withtemplate' => $_GET["withtemplate"]));
    Html::footer();

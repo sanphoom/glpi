@@ -960,34 +960,30 @@ class Html {
       echo "<body>";
       // Generate array for menu and check right
 
-      if (!isset($_SESSION['glpimenu'])
+      if (1 || !isset($_SESSION['glpimenu'])
       || !is_array($_SESSION['glpimenu'])
       || count($_SESSION['glpimenu']) == 0) {
 
          // INVENTORY
          $showallassets              = false;
-         /// TODO inventory -> assets
-         $menu['inventory']['title'] = __('Assets');
-         $menu['inventory']['types'] = array('Computer', 'Monitor', 'Software',
-                                             'NetworkEquipment', 'Peripheral',
-                                             'Printer', 'CartridgeItem',
-                                             'ConsumableItem', 'Phone' );
+         $menu['assets']['title'] = __('Assets');
+         $menu['assets']['types'] = array('Computer', 'Monitor', 'Software',
+                                          'NetworkEquipment', 'Peripheral',
+                                          'Printer', 'CartridgeItem',
+                                          'ConsumableItem', 'Phone' );
 
-         /// TODO maintain -> helpdesk
-         $menu['maintain']['title'] = __('Assistance');
-         $menu['maintain']['types'] = array('Ticket', 'Problem', 'Planning',
+         $menu['helpdesk']['title'] = __('Assistance');
+         $menu['helpdesk']['types'] = array('Ticket', 'Problem', 'Planning',
                                             'Stat', 'TicketRecurrent');
 
-         /// TODO financial -> management
-         $menu['financial']['title'] = __('Management');
-         $menu['financial']['types'] = array('Budget', 'Supplier', 'Contact',
+         $menu['management']['title'] = __('Management');
+         $menu['management']['types'] = array('Budget', 'Supplier', 'Contact',
                                              'Contract', 'Document');
 
-         /// TODO utils -> tools
-         $menu['utils']['title'] = __('Tools');
-         $menu['utils']['types'] = array('Reminder', 'RSSFeed', 'KnowbaseItem',
-                                          'ReservationItem', 'Report',
-                                          'MigrationCleaner');
+         $menu['tools']['title'] = __('Tools');
+         $menu['tools']['types'] = array('Reminder', 'RSSFeed', 'KnowbaseItem',
+                                         'ReservationItem', 'Report',
+                                         'MigrationCleaner');
 
          $menu['plugins']['title'] = __('Plugins');
          $menu['plugins']['types'] = array();

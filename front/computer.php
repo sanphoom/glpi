@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("computer", "r");
 
-Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
+Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "assets", "computer");
 
 Search::show('Computer');
 

@@ -99,7 +99,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else {
-   Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contact");
+   Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "management", "contact");
    $contact->display(array('id' => $_GET["id"]));
    Html::footer();
 }
