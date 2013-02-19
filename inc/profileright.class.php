@@ -46,17 +46,18 @@ class ProfileRight extends CommonDBChild {
    static function getAllPossibleRights() {
       global $DB;
 
-      if (!isset($_SESSION['all_possible_rights'])) {
-         $_SESSION['all_possible_rights'] = array();
+      if (!isset($_SESSION['glpi_all_possible_rights'])
+         || count($_SESSION['glpi_all_possible_rights']) == 0) {
+         $_SESSION['glpi_all_possible_rights'] = array();
          $rights = array();
          $query  = "SELECT DISTINCT `name`
                     FROM `".self::getTable()."`";
          foreach ($DB->request($query) as $right) {
             // By default, all rights are NULL ...
-            $_SESSION['all_possible_rights'][$right['name']] = '';
+            $_SESSION['glpi_all_possible_rights'][$right['name']] = '';
          }
       }
-      return $_SESSION['all_possible_rights'];
+      return $_SESSION['glpi_all_possible_rights'];
    }
 
 
@@ -80,30 +81,31 @@ class ProfileRight extends CommonDBChild {
       return $rights;
    }
 
-
-   static function addOrRemoveProfileRights(array $rights, $add) {
+   static function addProfileRights(array $rights) {
       global $DB;
 
-      $profile_right = new self();
-
-      if ($add) {
-         $query = "SELECT `id`
-                   FROM `glpi_profiles`;";
-         foreach ($DB->request($query) as $profile) {
-            $profiles_id = $profile['id'];
-            foreach ($rights as $name) {
-               $query = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`)
-                               VALUES ('$profiles_id', '$name')";
-               $DB->query($query);
-            }
-         }
-      } else {
+      $query = "SELECT `id`
+                  FROM `glpi_profiles`;";
+      foreach ($DB->request($query) as $profile) {
+         $profiles_id = $profile['id'];
          foreach ($rights as $name) {
-            $query = "DELETE FROM `glpi_profilerights`
-                      WHERE `name` = '$name'";
+            $query = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`)
+                              VALUES ('$profiles_id', '$name')";
             $DB->query($query);
          }
       }
+      $_SESSION['glpi_all_possible_rights'] = array();
+   }
+
+   static function deleteProfileRights(array $rights) {
+      global $DB;
+
+      foreach ($rights as $name) {
+         $query = "DELETE FROM `glpi_profilerights`
+                     WHERE `name` = '$name'";
+         $DB->query($query);
+      }
+      $_SESSION['glpi_all_possible_rights'] = array();
    }
 
    static function fillProfileRights($profiles_id) {
