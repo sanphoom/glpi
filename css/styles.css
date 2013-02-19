@@ -695,7 +695,10 @@ td.nopadding {
 }
 
 
-
+.navigationheader {
+   margin-left: 170px;
+   float: center;
+}
 
 
 /* ################--------------- Autocompletion  ---------------#################### */

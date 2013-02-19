@@ -52,7 +52,7 @@
 }
 .ui-tabs-vertical .ui-tabs-panel {
    padding: 1em;
-   margin: auto 0 0 0;
+   margin-left: 170px;
 /*   position: relative;*/
    float: center;
    /*width: 40em;*/

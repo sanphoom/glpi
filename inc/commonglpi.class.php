@@ -683,7 +683,7 @@ class CommonGLPI {
             }
          }
          $cleantarget = HTML::cleanParametersURL($target);
-         echo "<div><table class='tab_cadre_pager'>";
+         echo "<div class='navigationheader'><table class='tab_cadre_pager'>";
          echo "<tr class='tab_bg_2'>";
 
          if ($first >= 0) {
