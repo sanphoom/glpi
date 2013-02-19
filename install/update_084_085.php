@@ -49,7 +49,7 @@ function update084to085() {
 
 
    $backup_tables = false;
-   $newtables     = array();
+   $newtables     = array('glpi_profilerights');
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -66,6 +66,45 @@ function update084to085() {
                                  true);
    }
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'config table'));
+   
+  if (FieldExists('glpi_configs', 'version')) {
+     $migration->copyTable('glpi_configs', 'origin_glpi_configs');
+     
+     $query  = "SELECT * FROM `glpi_configs` WHERE `id` = '1'";
+     $result_of_configs = $DB->query($query);
+
+     // Update glpi_configs
+     $migration->addField('glpi_configs', 'context', 'VARCHAR(150) COLLATE utf8_unicode_ci',
+                          array('update' => "'core'"));
+     $migration->addField('glpi_configs', 'name',    'VARCHAR(150) COLLATE utf8_unicode_ci',
+                          array('update' => "'version'"));
+     $migration->addField('glpi_configs', 'value',   'text',   array('update' => "'0.85'"));
+     $migration->addKey('glpi_configs', array('context', 'name'), 'unicity', 'UNIQUE');
+
+     $migration->migrationOneTable('glpi_configs');
+
+     $fields = array();
+     if ($DB->numrows($result_of_configs) == 1) {
+        $configs = $DB->fetch_assoc($result_of_configs);
+        unset($configs['id']);
+        unset($configs['version']);
+        // First drop fields not to have constraint on insert
+        foreach ($configs as $name => $value) {
+           $migration->dropField('glpi_configs', $name);
+        }
+        $migration->migrationOneTable('glpi_configs');
+        // Then insert new values
+        foreach ($configs as $name => $value) {
+           $query = "INSERT INTO `glpi_configs` (`context`, `name`, `value`)
+                                         VALUES ('core', '$name', '$value');";
+           $DB->query($query);
+        }
+     }
+     $migration->dropField('glpi_configs', 'version');
+     $migration->migrationOneTable('glpi_configs');
+  }
+   
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

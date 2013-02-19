@@ -56,7 +56,7 @@ if (!isset($item->fields[$_GET['field']]) || !$item->canView()) {
 // Security : blacklist fields
 if (in_array($table.'.'.$_GET['field'],
              array('glpi_authldaps.rootdn', 'glpi_authldaps.rootdn_passwd',
-                   'glpi_configs.proxy_passwd', 'glpi_mailcollectors.login',
+                   'glpi_configs.value', 'glpi_mailcollectors.login',
                    'glpi_mailcollectors.passwd', 'glpi_users.name', 'glpi_users.password'))) {
    exit();
 }

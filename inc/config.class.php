@@ -88,6 +88,29 @@ class Config extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
 
+      // Update only an item
+      if (isset($input['context'])) {
+         return $input;
+      }
+
+      // Process configuration for plugins
+      if (!empty($input['config_context'])) {
+         $config_context = $input['config_context'];
+         unset($input['id']);
+         unset($input['_glpi_csrf_token']);
+         unset($input['update']);
+         unset($input['config_context']);
+         if ((!empty($input['config_class']))
+             && (class_exists($input['config_class']))
+             && (method_exists ($input['config_class'], 'configUpdate'))) {
+            $config_method = $input['config_class'].'::configUpdate';
+            unset($input['config_class']);
+            $input = call_user_func($config_method, $input);
+         }
+         $this->setConfigurationValues($config_context, $input);
+         return false;
+      }
+
       if (isset($input['allow_search_view']) && !$input['allow_search_view']) {
          // Global search need "view"
          $input['allow_search_global'] = 0;
@@ -168,7 +191,13 @@ class Config extends CommonDBTM {
             }
          }
       }
-      return $input;
+      // Beware : with new management system, we must update each value
+      unset($input['id']);
+      unset($input['_glpi_csrf_token']);
+      unset($input['update']);
+      $this->setConfigurationValues('core', $input);
+
+      return false;
    }
 
 
@@ -186,7 +215,6 @@ class Config extends CommonDBTM {
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
@@ -328,7 +356,6 @@ class Config extends CommonDBTM {
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>" . __('Assets') . "</th></tr>";
@@ -457,7 +484,6 @@ class Config extends CommonDBTM {
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
@@ -500,7 +526,6 @@ class Config extends CommonDBTM {
 
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       echo "<div class='center' id='tabsbody'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<input type='hidden' name='_dbslave_status' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
       $active = DBConnection::isDBSlaveActive();
@@ -688,7 +713,6 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='7' class='center'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
       echo "</td></tr>";
 
@@ -723,7 +747,6 @@ class Config extends CommonDBTM {
 
       echo "<form name='form' action='$url' method='post'>";
       echo "<div class='center' id='tabsbody'>";
-      echo "<input type='hidden' name='id' value='" . $data["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>" . __('Personalization') . "</th></tr>";
@@ -1109,7 +1132,6 @@ class Config extends CommonDBTM {
 
       echo "<div class='center' id='tabsbody'>";
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
@@ -1407,7 +1429,7 @@ class Config extends CommonDBTM {
       global $CFG_GLPI;
 
       $unicity = new FieldUnicity();
-      $unicity->showForm($CFG_GLPI["id"], -1);
+      $unicity->showForm(1, -1);
    }
 
 
@@ -1593,6 +1615,107 @@ class Config extends CommonDBTM {
          $error = 1;
       }
       return $error;
+   }
+
+   /**
+    * Get current DB version (compatible with all version of GLPI)
+    *
+    * @return DB version
+   **/   
+   static function getCurrentDBVersion() {
+      global $DB;
+
+      if (!TableExists('glpi_configs')) {
+         $query = "SELECT `version`
+                   FROM `glpi_config`
+                   WHERE `id` = '1'";
+      } else if (FieldExists('glpi_configs', 'version')) {
+         $query = "SELECT `version`
+                   FROM `glpi_configs`
+                   WHERE `id` = '1'";
+      } else {
+         $query = "SELECT `value` as version
+                   FROM `glpi_configs`
+                   WHERE 'context' = 'core'
+                     AND 'name' = 'version'";
+      }
+
+      $result = $DB->query($query);
+      $config = $DB->fetch_assoc($result);
+      return trim($config['version']);
+   }
+
+   /**
+    * Get config values
+    *
+    * @param $context string context to get values (default for glpi is core)
+    * @param $names array of config names to get
+    * @return array of config values
+   **/      
+   static function getConfigurationValues($context, array $names = array()) {
+      global $DB;
+
+      if (count($names) == 0) {
+         $query = "SELECT *
+                   FROM `glpi_configs`
+                   WHERE `context` = '$context'";
+      } else {
+         $query = "SELECT *
+                   FROM `glpi_configs`
+                   WHERE `context` = '$context'
+                     AND `name` IN ('".implode("', '", $names)."')";
+      }
+      $result = array();
+      foreach ($DB->request($query) as $line) {
+         $result[$line['name']] = $line['value'];
+      }
+      return $result;
+   }
+
+   /**
+    * Set config values : create or update entry
+    *
+    * @param $context string context to get values (default for glpi is core)
+    * @param $names array of config names to set
+    * @return array of config values
+   **/
+   function setConfigurationValues($context, array $values = array()) {
+
+      foreach ($values as $name => $value) {
+         if ($this->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
+
+            $input = array('id'      => $this->getID(),
+                           'context' => $context,
+                           'value'   => $value);
+
+            $this->update($input);
+
+         } else {
+
+            $input = array('context' => $context,
+                           'name'    => $name,
+                           'value'   => $value);
+
+            $this->add($input);
+         }
+      }
+   }
+
+   /**
+    * Delete config entries
+    *
+    * @param $context string context to get values (default for glpi is core)
+    * @param $names array of config names to delete
+    * @return array of config values
+   **/
+   function deleteConfigurationValues($context, array $values = array()) {
+
+      foreach ($values as $name => $value) {
+         if ($this->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
+            $this->delete(array('id' => $this->getID()));
+         }
+      }
+
    }
 }
 ?>

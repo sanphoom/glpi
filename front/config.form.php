@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", "w");
 $config = new Config();
-
+$_POST['id'] = 1;
 if (!empty($_POST["update_auth"])) {
    $config->update($_POST);
    Html::back();
