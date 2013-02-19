@@ -76,7 +76,18 @@ class MailCollector  extends CommonDBTM {
    static function getTypeName($nb=0) {
       return _n('Receiver', 'Receivers', $nb);
    }
-
+   
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+   **/
+   static function getAdditionalMenuOptions() {
+      if (static::canView()) {
+         $options['options']['notimportedemail']['links']['search']
+                                          = '/front/notimportedemail.php';
+         return $options;
+      }
+      return false;
+   }
 
    static function canCreate() {
       return Session::haveRight('config', 'w');

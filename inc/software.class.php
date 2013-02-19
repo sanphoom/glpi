@@ -48,6 +48,13 @@ class Software extends CommonDBTM {
    static function getTypeName($nb=0) {
       return _n('Software', 'Software', $nb);
    }
+   
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 's';
+   }
 
 
    static function canCreate() {

@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2013 by the INDEPNET Development Team.
+ Copyright (C) 2003-2012 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
@@ -31,14 +31,38 @@
 * @brief
 */
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
-Session::checkRight("config", "r");
+/**
+ * Control class
+**/
+/// TODO move function to class
+class Control extends CommonGLPI {
 
-Html::header(NotImportedEmail::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailcollector",
-             "notimportedemails");
+   static function getTypeName($nb=0) {
+      return _n('Check', 'Checks', $nb);
+   }
 
-Search::show('NotImportedEmail');
+   static function canView() {
+      return Session::haveRight('config', 'w');
+   }
 
-Html::footer();
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+   **/
+   static function getAdditionalMenuOptions() {
+         echo "ii";
+      if (static::canView()) {
+         $options['FieldUnicity']['title'] = __('Fields unicity');
+         $options['FieldUnicity']['page'] = '/front/fieldunicity.php';
+         $options['FieldUnicity']['links']['add'] = '/front/fieldunicity.form.php';
+         $options['FieldUnicity']['links']['search'] = '/front/fieldunicity.php';
+
+         return $options;
+      }
+      return false;
+   }
+}
 ?>

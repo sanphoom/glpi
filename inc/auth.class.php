@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Identification class used to login
 **/
-class Auth {
+class Auth extends CommonGLPI {
    //! Error string
    var $err ='';
    /** User class variable
@@ -75,6 +75,45 @@ class Auth {
       $this->user = new User();
    }
 
+   /**
+    * @see CommonGLPI::getMenuIndex()
+   **/
+   static function getMenuIndex() {
+      return 'extauth';
+   }
+
+   /**
+    *  @see CommonGLPI::getMenuContent()
+   **/
+   static function getMenuContent() {
+
+      $menu = array();
+      if (Session::haveRight("config","w")) {
+            $menu['title'] = __('Authentication');
+            $menu['page']  = '/front/setup.auth.php';
+
+            $menu['options']['ldap']['title'] = AuthLDAP::getTypeName(2);
+            $menu['options']['ldap']['page']  = '/front/authldap.php';
+            $menu['options']['ldap']['links']['search'] = '/front/authldap.php';
+            $menu['options']['ldap']['links']['add'] = '' .'/front/authldap.form.php';
+
+            $menu['options']['imap']['title'] = AuthMail::getTypeName(2);
+            $menu['options']['imap']['page']  = '/front/authmail.php';
+            $menu['options']['imap']['links']['search'] = '/front/authmail.php';
+            $menu['options']['imap']['links']['add']    = '' .'/front/authmail.form.php';
+
+            $menu['options']['others']['title'] = __('Others');
+            $menu['options']['others']['page']  = '/front/auth.others.php';
+
+            $menu['options']['settings']['title'] = __('Setup');
+            $menu['options']['settings']['page'] = '/front/auth.settings.php';
+
+      }
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
+   }
 
    /**
     * Is the user exists in the DB

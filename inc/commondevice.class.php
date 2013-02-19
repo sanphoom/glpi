@@ -49,6 +49,51 @@ abstract class CommonDevice extends CommonDropdown {
       return Session::haveRight('device', 'r');
    }
 
+   static function getTypeName($nb=0) {
+      return _n('Component', 'Components', $nb);
+   }
+
+   /**
+    * @see CommonGLPI::getMenuIndex()
+   **/
+   static function getMenuIndex() {
+      return 'device';
+   }
+
+   /**
+    *  @see CommonGLPI::getMenuContent()
+   **/
+   static function getMenuContent() {
+
+      $menu = array();
+      if (static::canCreate()) {
+         $menu['title'] = static::getTypeName(2);
+         $menu['page']  = '/front/device.php';
+
+         $dps = Dropdown::getDeviceItemTypes();
+
+         foreach ($dps as $tab) {
+            foreach ($tab as $key => $val) {
+               if ($tmp = getItemForItemtype($key)) {
+                  $menu['options'][$key]['title'] = $val;
+                  $menu['options'][$key]['page']
+                              = $tmp->getSearchURL(false);
+                  $menu['options'][$key]['links']['search']
+                              = $tmp->getSearchURL(false);
+                  if ($tmp->canCreate()) {
+                     $menu['options'][$key]['links']['add']
+                              = $tmp->getFormURL(false);
+                  }
+               }
+            }
+         }
+      }
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
+   }
+
    function getAdditionalFields() {
 
       return array(array('name'  => 'manufacturers_id',

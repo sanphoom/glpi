@@ -419,6 +419,9 @@ class Session {
          }
       }
       // Clean specific datas
+      if (isset($_SESSION['glpimenu'])) {
+         unset($_SESSION['glpimenu']);
+      }
       if (isset($_SESSION['glpi_faqcategories'])) {
          unset($_SESSION['glpi_faqcategories']);
       }

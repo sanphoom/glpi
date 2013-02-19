@@ -96,6 +96,65 @@ class Ticket extends CommonITILObject {
       return _n('Ticket','Tickets',$nb);
    }
 
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 't';
+   }
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+   **/
+   static function getAdditionalMenuOptions() {
+      if (TicketTemplate::canView()) {
+         $menu['TicketTemplate']['title'] = TicketTemplate::getTypeName(2);
+         $menu['TicketTemplate']['page'] = TicketTemplate::getSearchURL(false);
+         $menu['TicketTemplate']['links']['search'] = TicketTemplate::getSearchURL(false);
+         if (TicketTemplate::canCreate()) {
+            $menu['TicketTemplate']['links']['add'] = TicketTemplate::getFormURL(false);
+         }
+         return $menu;
+      }
+      return false;
+   }
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuLinks()
+   **/
+   static function getAdditionalMenuLinks() {
+      global $CFG_GLPI;
+      $links = array();
+      if (TicketTemplate::canView()) {
+         $links['template'] = TicketTemplate::getSearchURL(false);
+      }
+      if (Session::haveRight('validate_incident', 1)
+         || Session::haveRight('validate_request', 1)) {
+         $opt = array();
+         $opt['reset']         = 'reset';
+         $opt['field'][0]      = 55; // validation status
+         $opt['searchtype'][0] = 'equals';
+         $opt['contains'][0]   = CommonITILObject::WAITING;
+         $opt['link'][0]       = 'AND';
+
+         $opt['field'][1]      = 59; // validation aprobator
+         $opt['searchtype'][1] = 'equals';
+         $opt['contains'][1]   = Session::getLoginUserID();
+         $opt['link'][1]       = 'AND';
+
+         $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
+                           __s('Ticket waiting for your approval')."\" src='".
+                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
+
+         $links[$pic_validate] = '/front/ticket.php?'.Toolbox::append_params($opt, '&amp;');
+      }
+      if (count($links)) {
+         return $links;
+      }
+      return false;
+   }
+
+
 
    function canAdminActors() {
       return Session::haveRight('update_ticket', 1);

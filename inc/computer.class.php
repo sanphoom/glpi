@@ -80,6 +80,12 @@ class Computer extends CommonDBTM {
       return false;
    }
 
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 'o';
+   }
 
    /**
     * @see CommonGLPI::defineTabs()

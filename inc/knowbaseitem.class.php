@@ -50,6 +50,19 @@ class KnowbaseItem extends CommonDBTM {
       return __('Knowledge base');
    }
 
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 'b';
+   }
+
+   /**
+    * @see CommonGLPI::getMenuIndex()
+   **/
+   static function getMenuIndex() {
+      return 'knowbase';
+   }
 
    static function canCreate() {
       return (Session::haveRight('knowbase', 'w') || Session::haveRight('faq', 'w'));

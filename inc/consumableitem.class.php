@@ -50,6 +50,29 @@ class ConsumableItem extends CommonDBTM {
       return _n('Consumable model', 'Consumable models', $nb);
    }
 
+   /**
+    * @see CommonGLPI::getMenuIndex()
+   **/
+   static function getMenuIndex() {
+      return 'consumable';
+   }
+
+   /**
+    * @see CommonGLPI::getMenuName()
+   **/
+   static function getMenuName() {
+      return Consumable::getTypeName(2);
+   }
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuLinks()
+   **/
+   static function getAdditionalMenuLinks() {
+      if (static::canView()) {
+         return array('summary' => '/front/consumableitem.php?synthese=yes');
+      }
+      return false;
+   }
 
    static function canCreate() {
       return Session::haveRight('consumable', 'w');

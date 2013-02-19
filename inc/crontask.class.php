@@ -55,6 +55,12 @@ class CronTask extends CommonDBTM{
    const MODE_INTERNAL = 1;
    const MODE_EXTERNAL = 2;
 
+   /**
+    * @see CommonGLPI::getForbiddenActionsForMenu()
+   **/
+   static function getForbiddenActionsForMenu() {
+      return array('add');
+   }
 
    function getForbiddenStandardMassiveAction() {
 

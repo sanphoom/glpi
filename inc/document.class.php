@@ -50,6 +50,12 @@ class Document extends CommonDBTM {
       return _n('Document', 'Documents', $nb);
    }
 
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 'd';
+   }
 
    static function canCreate() {
 

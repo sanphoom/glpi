@@ -38,8 +38,18 @@ if (!defined('GLPI_ROOT')) {
 /**
  *  Stat class
 **/
-class Stat {
+class Stat extends CommonGLPI {
 
+   static function getTypeName($nb=0) {
+      return __('Statistics');
+   }
+
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 'a';
+   }
 
    /**
     * @param $itemtype
@@ -324,7 +334,7 @@ class Stat {
     * @param $value     array
     * @param $value2          (default '')
    **/
-   static function show($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
+   static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
       global $CFG_GLPI;
 
       // Set display type for export if define

@@ -960,1054 +960,159 @@ class Html {
       echo "<body>";
       // Generate array for menu and check right
 
+      if (!isset($_SESSION['glpimenu'])
+      || !is_array($_SESSION['glpimenu'])
+      || count($_SESSION['glpimenu']) == 0) {
+
+         // INVENTORY
+         $showallassets              = false;
+         /// TODO inventory -> assets
+         $menu['inventory']['title'] = __('Assets');
+         $menu['inventory']['types'] = array('Computer', 'Monitor', 'Software',
+                                             'NetworkEquipment', 'Peripheral',
+                                             'Printer', 'CartridgeItem',
+                                             'ConsumableItem', 'Phone' );
+
+         /// TODO maintain -> helpdesk
+         $menu['maintain']['title'] = __('Assistance');
+         $menu['maintain']['types'] = array('Ticket', 'Problem', 'Planning',
+                                            'Stat', 'TicketRecurrent');
+
+         /// TODO financial -> management
+         $menu['financial']['title'] = __('Management');
+         $menu['financial']['types'] = array('Budget', 'Supplier', 'Contact',
+                                             'Contract', 'Document');
+
+         /// TODO utils -> tools
+         $menu['utils']['title'] = __('Tools');
+         $menu['utils']['types'] = array('Reminder', 'RSSFeed', 'KnowbaseItem',
+                                          'ReservationItem', 'Report',
+                                          'MigrationCleaner');
 
-      // INVENTORY
-      $showallassets              = false;
-      $menu['inventory']['title'] = __('Assets');
-
-      if (Session::haveRight("computer","r")) {
-         $menu['inventory']['default'] = '/front/computer.php';
-
-         $menu['inventory']['content']['computer']['title']           = _n('Computer', 'Computers', 2);
-         $menu['inventory']['content']['computer']['shortcut']        = 'o';
-         $menu['inventory']['content']['computer']['page']            = '/front/computer.php';
-         $menu['inventory']['content']['computer']['links']['search'] = '/front/computer.php';
-
-         if (Session::haveRight("computer","w")) {
-            $menu['inventory']['content']['computer']['links']['add']
-                              = '/front/setup.templates.php?'.'itemtype=Computer&amp;add=1';
-            $menu['inventory']['content']['computer']['links']['template']
-                              = '/front/setup.templates.php?'.'itemtype=Computer&amp;add=0';
-         }
-         $showallassets = true;
-      }
-
-
-      if (Session::haveRight("monitor","r")) {
-         $menu['inventory']['content']['monitor']['title']           = _n('Monitor', 'Monitors', 2);
-         $menu['inventory']['content']['monitor']['shortcut']        = '';
-         $menu['inventory']['content']['monitor']['page']            = '/front/monitor.php';
-         $menu['inventory']['content']['monitor']['links']['search'] = '/front/monitor.php';
-
-         if (Session::haveRight("monitor","w")) {
-            $menu['inventory']['content']['monitor']['links']['add']
-                              = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=1';
-            $menu['inventory']['content']['monitor']['links']['template']
-                              = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=0';
-         }
-         $showallassets = true;
-      }
-
-
-      if (Session::haveRight("software","r")) {
-         $menu['inventory']['content']['software']['title']           = _n('Software', 'Software', 2);
-         $menu['inventory']['content']['software']['shortcut']        = 's';
-         $menu['inventory']['content']['software']['page']            = '/front/software.php';
-         $menu['inventory']['content']['software']['links']['search'] = '/front/software.php';
-
-         if (Session::haveRight("software","w")) {
-            $menu['inventory']['content']['software']['links']['add']
-                              = '/front/setup.templates.php?'.'itemtype=Software&amp;add=1';
-            $menu['inventory']['content']['software']['links']['template']
-                              = '/front/setup.templates.php?'.'itemtype=Software&amp;add=0';
-         }
-      }
-
-
-      if (Session::haveRight("networking","r")) {
-         $menu['inventory']['content']['networking']['title']     = _n('Network', 'Networks', 2);
-         $menu['inventory']['content']['networking']['shortcut']  = '';
-         $menu['inventory']['content']['networking']['page']      = '/front/networkequipment.php';
-         $menu['inventory']['content']['networking']['links']['search']
-                                                                  = '/front/networkequipment.php';
-
-         $menu['inventory']['content']['networking']['options']['networkport']['title']
-                                                   = _n('Network port', 'Network ports', 2);
-         $menu['inventory']['content']['networking']['options']['networkport']['page']
-                                                   = '/front/networkport.form.php';
-         $menu['inventory']['content']['networking']['options']['networkport']['links']
-                                                   = array();
-
-         if (Session::haveRight("networking","w")) {
-            $menu['inventory']['content']['networking']['links']['add']
-                              = '/front/setup.templates.php?'.'itemtype=NetworkEquipment&amp;add=1';
-            $menu['inventory']['content']['networking']['links']['template']
-                              = '/front/setup.templates.php?'.'itemtype=NetworkEquipment&amp;add=0';
-         }
-         $showallassets = true;
-      }
-
-
-      if (Session::haveRight("peripheral","r")) {
-         $menu['inventory']['content']['peripheral']['title']           = _n('Device', 'Devices', 2);
-         $menu['inventory']['content']['peripheral']['shortcut']        = '';
-         $menu['inventory']['content']['peripheral']['page']            = '/front/peripheral.php';
-         $menu['inventory']['content']['peripheral']['links']['search'] = '/front/peripheral.php';
-
-         if (Session::haveRight("peripheral","w")) {
-            $menu['inventory']['content']['peripheral']['links']['add']
-                              = '/front/setup.templates.php?'.'itemtype=Peripheral&amp;add=1';
-            $menu['inventory']['content']['peripheral']['links']['template']
-                              = '/front/setup.templates.php?'.'itemtype=Peripheral&amp;add=0';
-         }
-         $showallassets = true;
-      }
-
-
-      if (Session::haveRight("printer","r")) {
-         $menu['inventory']['content']['printer']['title']           = _n('Printer', 'Printers', 2);
-         $menu['inventory']['content']['printer']['shortcut']        = '';
-         $menu['inventory']['content']['printer']['page']            = '/front/printer.php';
-         $menu['inventory']['content']['printer']['links']['search'] = '/front/printer.php';
-
-         if (Session::haveRight("printer","w")) {
-            $menu['inventory']['content']['printer']['links']['add']
-                              = '/front/setup.templates.php?'.'itemtype=Printer&amp;add=1';
-            $menu['inventory']['content']['printer']['links']['template']
-                              = '/front/setup.templates.php?'.'itemtype=Printer&amp;add=0';
-         }
-         $showallassets = true;
-      }
-
-
-      if (Session::haveRight("cartridge","r")) {
-         $menu['inventory']['content']['cartridge']['title']      = _n('Cartridge', 'Cartridges', 2);
-         $menu['inventory']['content']['cartridge']['shortcut']   = '';
-         $menu['inventory']['content']['cartridge']['page']       = '/front/cartridgeitem.php';
-         $menu['inventory']['content']['cartridge']['links']['search']
-                                                                  = '/front/cartridgeitem.php';
-
-         if (Session::haveRight("cartridge","w")) {
-            $menu['inventory']['content']['cartridge']['links']['add']
-                                                                  = '/front/cartridgeitem.form.php';
-         }
-      }
-
-
-      if (Session::haveRight("consumable","r")) {
-         $menu['inventory']['content']['consumable']['title']           = _n('Consumable',
-                                                                             'Consumables', 2);
-         $menu['inventory']['content']['consumable']['shortcut']        = '';
-         $menu['inventory']['content']['consumable']['page']            = '/front/consumableitem.php';
-         $menu['inventory']['content']['consumable']['links']['search'] = '/front/consumableitem.php';
-
-         if (Session::haveRight("consumable","w")) {
-            $menu['inventory']['content']['consumable']['links']['add']
-                                                                  = '/front/consumableitem.form.php';
-         }
-
-         $menu['inventory']['content']['consumable']['links']['summary']
-                              = '/front/consumableitem.php?'.'synthese=yes';
-      }
-
-
-      if (Session::haveRight("phone","r")) {
-         $menu['inventory']['content']['phone']['title']           = _n('Phone', 'Phones', 2);
-         $menu['inventory']['content']['phone']['shortcut']        = '';
-         $menu['inventory']['content']['phone']['page']            = '/front/phone.php';
-         $menu['inventory']['content']['phone']['links']['search'] = '/front/phone.php';
-
-         if (Session::haveRight("phone","w")) {
-            $menu['inventory']['content']['phone']['links']['add']
-                              = '/front/setup.templates.php?'.'itemtype=Phone&amp;add=1';
-            $menu['inventory']['content']['phone']['links']['template']
-                              = '/front/setup.templates.php?'.'itemtype=Phone&amp;add=0';
-         }
-         $showallassets = true;
-      }
-
-      if ($showallassets) {
-         $menu['inventory']['content']['allassets']['title']            = __('Global');
-         $menu['inventory']['content']['allassets']['shortcut']         = '';
-         $menu['inventory']['content']['allassets']['page']             = '/front/allassets.php';
-         $menu['inventory']['content']['allassets']['links']['search']  = '/front/allassets.php';
-      }
-
-      // ASSISTANCE
-      $menu['maintain']['title'] = __('Assistance');
-
-      if (Session::haveRight("observe_ticket","1")
-          || Session::haveRight("show_all_ticket","1")
-          || Session::haveRight("create_ticket","1")) {
-
-         $menu['maintain']['default'] = '/front/ticket.php';
-
-         $menu['maintain']['content']['ticket']['title']           = _n('Ticket', 'Tickets', 2);
-         $menu['maintain']['content']['ticket']['shortcut']        = 't';
-         $menu['maintain']['content']['ticket']['page']            = '/front/ticket.php';
-         $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
-
-         if (Session::haveRight('tickettemplate', 'r')) {
-            $menu['maintain']['content']['ticket']['options']['TicketTemplate']['title']
-                              = _n('Ticket template', 'Ticket templates', 2);
-            $menu['maintain']['content']['ticket']['options']['TicketTemplate']['page']
-                              = '/front/tickettemplate.php';
-            $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['search']
-                              = '/front/tickettemplate.php';
-
-            if (Session::haveRight('tickettemplate', 'w')) {
-               $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['add']
-                              = '/front/tickettemplate.form.php';
-            }
-
-            $menu['maintain']['content']['ticket']['links']['template']
-                              = '/front/tickettemplate.php';
-         }
-
-
-         if (Session::haveRight('validate_incident', 1)
-             || Session::haveRight('validate_request', 1)) {
-            $opt = array();
-            $opt['reset']         = 'reset';
-            $opt['field'][0]      = 55; // validation status
-            $opt['searchtype'][0] = 'equals';
-            $opt['contains'][0]   = CommonITILObject::WAITING;
-            $opt['link'][0]       = 'AND';
-
-            $opt['field'][1]      = 59; // validation aprobator
-            $opt['searchtype'][1] = 'equals';
-            $opt['contains'][1]   = Session::getLoginUserID();
-            $opt['link'][1]       = 'AND';
-
-
-            $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
-                              __s('Ticket waiting for your approval')."\" src='".
-                              $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
-
-            $menu['maintain']['content']['ticket']['links'][$pic_validate]
-                              = '/front/ticket.php?'.Toolbox::append_params($opt, '&amp;');
-         }
-      }
-
-      if (Session::haveRight("create_ticket","1")) {
-         $menu['maintain']['content']['ticket']['links']['add'] = '/front/ticket.form.php';
-      }
-
-      if (Session::haveRight("show_all_problem","1")
-          || Session::haveRight("show_my_problem","1")) {
-         $menu['maintain']['content']['problem']['title']           = _n('Problem', 'Problems', 2);
-         $menu['maintain']['content']['problem']['shortcut']        = '';
-         $menu['maintain']['content']['problem']['page']            = '/front/problem.php';
-         $menu['maintain']['content']['problem']['links']['search'] = '/front/problem.php';
-         if (Session::haveRight("edit_all_problem","1")) {
-            $menu['maintain']['content']['problem']['links']['add'] = '/front/problem.form.php';
-         }
-      }
-
-//       if (Session::haveRight("show_all_change","1")
-//           || Session::haveRight("show_my_change","1")) {
-//          $menu['maintain']['content']['change']['title']           = _n('Change', 'Changes', 2);
-//          $menu['maintain']['content']['change']['shortcut']        = '';
-//          $menu['maintain']['content']['change']['page']            = '/front/change.php';
-//          $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
-//          if (Session::haveRight("edit_all_change","1")) {
-//             $menu['maintain']['content']['change']['links']['add'] = '/front/change.form.php';
-//          }
-//       }
-
-      if (Session::haveRight("show_planning","1")
-         || Session::haveRight("show_all_planning","1")
-         || Session::haveRight("show_group_planning","1")) {
-         $menu['maintain']['content']['planning']['title']           = __('Planning');
-         $menu['maintain']['content']['planning']['shortcut']        = 'p';
-         $menu['maintain']['content']['planning']['page']            = '/front/planning.php';
-         $menu['maintain']['content']['planning']['links']['search'] = '/front/planning.php';
-      }
-
-      if (Session::haveRight("statistic","1")) {
-         $menu['maintain']['content']['stat']['title']    = __('Statistics');
-         $menu['maintain']['content']['stat']['shortcut'] = 'a';
-         $menu['maintain']['content']['stat']['page']     = '/front/stat.php';
-      }
-
-
-      if (Session::haveRight("ticketrecurrent","r")) {
-         $menu['maintain']['content']['ticketrecurrent']['title']    = __('Recurrent tickets');
-         $menu['maintain']['content']['ticketrecurrent']['shortcut'] = '';
-         $menu['maintain']['content']['ticketrecurrent']['page']     = '/front/ticketrecurrent.php';
-         $menu['maintain']['content']['ticketrecurrent']['links']['search']
-                                                                     = '/front/ticketrecurrent.php';
-         if (Session::haveRight("ticketrecurrent","w")) {
-            $menu['maintain']['content']['ticketrecurrent']['links']['add']
-                              = '/front/ticketrecurrent.form.php';
-         }
-      }
-
-
-      // FINANCIAL
-      $menu['financial']['title'] = __('Management');
-
-      if (Session::haveRight("budget", "r")) {
-         $menu['financial']['default'] = '/front/budget.php';
-
-         $menu['financial']['content']['budget']['title']           = _n('Budget', 'Budgets', 2);
-         $menu['financial']['content']['budget']['shortcut']        = '';
-         $menu['financial']['content']['budget']['page']            = '/front/budget.php';
-         $menu['financial']['content']['budget']['links']['search'] = '/front/budget.php';
-
-         if (Session::haveRight("budget","w")) {
-            $menu['financial']['content']['budget']['links']['add']
-                              = '/front/setup.templates.php?'.'itemtype=Budget&amp;add=1';
-            $menu['financial']['content']['budget']['links']['template']
-                              = '/front/setup.templates.php?'.'itemtype=Budget&amp;add=0';
-         }
-      }
-
-      if (Session::haveRight("contact_enterprise", "r")) {
-         $menu['financial']['content']['supplier']['title']           = _n('Supplier',
-                                                                           'Suppliers', 2);
-         $menu['financial']['content']['supplier']['shortcut']        = '';
-         $menu['financial']['content']['supplier']['page']            = '/front/supplier.php';
-         $menu['financial']['content']['supplier']['links']['search'] = '/front/supplier.php';
-
-
-         $menu['financial']['content']['contact']['title']           = _n('Contact', 'Contacts', 2);
-         $menu['financial']['content']['contact']['shortcut']        = '';
-         $menu['financial']['content']['contact']['page']            = '/front/contact.php';
-         $menu['financial']['content']['contact']['links']['search'] = '/front/contact.php';
-
-         if (Session::haveRight("contact_enterprise", "w")) {
-            $menu['financial']['content']['contact']['links']['add']  = '/front/contact.form.php';
-            $menu['financial']['content']['supplier']['links']['add'] = '/front/supplier.form.php';
-         }
-      }
-
-
-      if (Session::haveRight("contract", "r")) {
-         $menu['financial']['content']['contract']['title']           = _n('Contract',
-                                                                           'Contracts', 2);
-         $menu['financial']['content']['contract']['shortcut']        = '';
-         $menu['financial']['content']['contract']['page']            = '/front/contract.php';
-         $menu['financial']['content']['contract']['links']['search'] = '/front/contract.php';
-
-         if (Session::haveRight("contract", "w")) {
-            $menu['financial']['content']['contract']['links']['add']
-                              = '/front/setup.templates.php?itemtype=Contract&amp;add=1';
-            $menu['financial']['content']['contract']['links']['template']
-                              = '/front/setup.templates.php?itemtype=Contract&amp;add=0';
-         }
-      }
-
-
-      if (Session::haveRight("document", "r")) {
-         $menu['financial']['content']['document']['title']           = _n('Document',
-                                                                           'Documents', 2);
-         $menu['financial']['content']['document']['shortcut']        = 'd';
-         $menu['financial']['content']['document']['page']            = '/front/document.php';
-         $menu['financial']['content']['document']['links']['search'] = '/front/document.php';
-
-         if (Session::haveRight("document","w")) {
-            $menu['financial']['content']['document']['links']['add'] = '/front/document.form.php';
-         }
-      }
-
-
-
-      // UTILS
-      $menu['utils']['title'] = __('Tools');
-
-      $menu['utils']['default'] = '/front/reminder.php';
-
-      if (Session::haveRight('reminder_public', 'r')) {
-         $menu['utils']['content']['reminder']['title']        = _n('Reminder', 'Reminders', 2);
-      } else {
-         $menu['utils']['content']['reminder']['title']        = _n('Personal reminder',
-                                                                    'Personal reminders', 2);
-      }
-      $menu['utils']['content']['reminder']['page']            = '/front/reminder.php';
-      $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
-      $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
-
-      $menu['utils']['content']['rssfeed']['title']           = _n('RSS feed', 'RSS feeds', 2);
-      $menu['utils']['content']['rssfeed']['page']            = '/front/rssfeed.php';
-      $menu['utils']['content']['rssfeed']['links']['search'] = '/front/rssfeed.php';
-      $menu['utils']['content']['rssfeed']['links']['add']    = '/front/rssfeed.form.php';
-
-      if (Session::haveRight("knowbase","r") || Session::haveRight("faq","r")) {
-         if (Session::haveRight("knowbase","r")) {
-            $menu['utils']['content']['knowbase']['title']        = __('Knowledge base');
-         } else {
-            $menu['utils']['content']['knowbase']['title']        = __('FAQ');
-         }
-         $menu['utils']['content']['knowbase']['shortcut']        = 'b';
-
-         $menu['utils']['content']['knowbase']['page']            = '/front/knowbaseitem.php';
-         $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbaseitem.php';
-
-         if (Session::haveRight("knowbase","w") || Session::haveRight("faq","w")) {
-            $menu['utils']['content']['knowbase']['links']['add']
-                           = '/front/knowbaseitem.form.php?id=new';
-         }
-      }
-
-
-      if (Session::haveRight("reservation_helpdesk","1")
-          || Session::haveRight("reservation_central","r")) {
-         $menu['utils']['content']['reservation']['title']            = _n('Reservation',
-                                                                           'Reservations', 2);
-         $menu['utils']['content']['reservation']['shortcut']         = 'r';
-
-         $menu['utils']['content']['reservation']['page']             = '/front/reservationitem.php';
-         $menu['utils']['content']['reservation']['links']['search']  = '/front/reservationitem.php';
-         $menu['utils']['content']['reservation']['links']['showall'] = '/front/reservation.php';
-      }
-
-
-      if (Session::haveRight("reports","r")) {
-         $menu['utils']['content']['report']['title']    = _n('Report', 'Reports', 2);
-         $menu['utils']['content']['report']['shortcut'] = 'e';
-         $menu['utils']['content']['report']['page']     = '/front/report.php';
-      }
-
-      if (!isset($_SESSION['glpishowmigrationcleaner'])) {
-
-         if (TableExists('glpi_networkportmigrations')
-             && (countElementsInTable('glpi_networkportmigrations') > 0)) {
-	    $_SESSION['glpishowmigrationcleaner'] = true;
-	 } else {
-	    $_SESSION['glpishowmigrationcleaner'] = false;
-         }
-      }
-
-      if ($_SESSION['glpishowmigrationcleaner']) {
-         $menu['utils']['content']['migration']['title']    = __('Migration cleaner');
-         $menu['utils']['content']['migration']['page']     = '/front/migration_cleaner.php';
-
-         $menu['utils']['content']['migration']['options']['networkportmigration']['title']
-                                                = __('Network port migration');
-         $menu['utils']['content']['migration']['options']['networkportmigration']['page']
-                                                = '/front/networkportmigration.php';
-         $menu['utils']['content']['migration']['options']['networkportmigration']['links']['search']
-                                                = '/front/networkportmigration.php';
-
-      }
-
-      // PLUGINS
-      if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
          $menu['plugins']['title'] = __('Plugins');
-         $plugins = array();
+         $menu['plugins']['types'] = array();
 
-         foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
-            if ($active) { // true or a string
-               $plugins[$plugin] = Plugin::getInfo($plugin);
-            }
-         }
+         $menu['admin']['title'] = __('Administration');
+         $menu['admin']['types'] = array('User', 'Group', 'Entity', 'Rule',
+                                         'Profile', 'Backup', 'Event');
 
-         if (count($plugins)) {
-            $list = array();
+         $menu['config']['title'] = __('Setup');
+         $menu['config']['types'] = array('CommonDropdown', 'CommonDevice',
+                                          'Notification', 'SLA', 'Config',
+                                          'Control', 'Crontask', 'Auth',
+                                          'MailCollector', 'Link', 'Plugin');
 
-            foreach ($plugins as $key => $val) {
-               $list[$key] = $val["name"];
-            }
-            asort($list);
+         // Special items
+         $menu['preference']['title']   = __('My settings');
+         $menu['preference']['default'] = '/front/preference.php';
 
-            foreach ($list as $key => $val) {
-               $menu['plugins']['content'][$key]['title'] = $val;
-               $menu['plugins']['content'][$key]['page']  = '/plugins/'.$key.'/';
-
-               if (is_string($PLUGIN_HOOKS["menu_entry"][$key])) {
-                  $menu['plugins']['content'][$key]['page'] .= $PLUGIN_HOOKS["menu_entry"][$key];
-               }
-
-               // Set default link for plugins
-               if (!isset($menu['plugins']['default'])) {
-                  $menu['plugins']['default'] = $menu['plugins']['content'][$key]['page'];
-               }
-
-               if (($sector == "plugins")
-                   && ($item == $key)) {
-
-                  if (isset($PLUGIN_HOOKS["submenu_entry"][$key])
-                      && is_array($PLUGIN_HOOKS["submenu_entry"][$key])) {
-
-                     foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link) {
-                        // New complete option management
-                        if ($name == "options") {
-                           $menu['plugins']['content'][$key]['options'] = $link;
-                        } else { // Keep it for compatibility
-
-                           if (is_array($link)) {
-                              // Simple link option
-                              if (isset($link[$option])) {
-                                 $menu['plugins']['content'][$key]['links'][$name]
-                                                ='/plugins/'.$key.'/'.$link[$option];
-                              }
-                           } else {
-                              $menu['plugins']['content'][$key]['links'][$name]
-                                                ='/plugins/'.$key.'/'.$link;
-                           }
-                        }
+         foreach ($menu as $category => $datas) {
+            if (isset($datas['types']) && count($datas['types'])) {
+               foreach ($datas['types'] as $type) {
+                  if ($data = $type::getMenuContent()) {
+                     // Multi menu entries management
+                     if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
+                        $menu[$category]['content'] += $data;
+                     } else {
+                        $menu[$category]['content'][$type::getMenuIndex()] = $data;
                      }
                   }
                }
             }
-         }
-      }
-
-
-      /// ADMINISTRATION
-      $menu['admin']['title'] = __('Administration');
-
-      if (Session::haveRight("user","r")) {
-         $menu['admin']['default'] = '/front/user.php';
-
-         $menu['admin']['content']['user']['title']           = _n('User', 'Users', 2);
-         $menu['admin']['content']['user']['shortcut']        = 'u';
-         $menu['admin']['content']['user']['page']            = '/front/user.php';
-         $menu['admin']['content']['user']['links']['search'] = '/front/user.php';
-
-         if (Session::haveRight("user","w")) {
-            $menu['admin']['content']['user']['links']['add'] = "/front/user.form.php";
-         }
-
-        $menu['admin']['content']['user']['options']['ldap']['title'] = _n('LDAP directory',
-                                                                           'LDAP directories', 2);
-        $menu['admin']['content']['user']['options']['ldap']['page']  = "/front/ldap.php";
-      }
-
-
-      if (Session::haveRight("group","r")) {
-         $menu['admin']['content']['group']['title']           = _n('Group', 'Groups', 2);
-         $menu['admin']['content']['group']['shortcut']        = 'g';
-         $menu['admin']['content']['group']['page']            = '/front/group.php';
-         $menu['admin']['content']['group']['links']['search'] = '/front/group.php';
-
-         if (Session::haveRight("group","w")) {
-            $menu['admin']['content']['group']['links']['add']             = "/front/group.form.php";
-            $menu['admin']['content']['group']['options']['ldap']['title'] = _n('LDAP directory',
-                                                                                'LDAP directories', 2);
-            $menu['admin']['content']['group']['options']['ldap']['page']  = "/front/ldap.group.php";
-         }
-      }
-
-
-      if (Session::haveRight("entity","r")) {
-         $menu['admin']['content']['entity']['title']           = _n('Entity', 'Entities', 2);
-         $menu['admin']['content']['entity']['shortcut']        = '';
-         $menu['admin']['content']['entity']['page']            = '/front/entity.php';
-         $menu['admin']['content']['entity']['links']['search'] = '/front/entity.php';
-         $menu['admin']['content']['entity']['links']['add']    = "/front/entity.form.php";
-      }
-
-
-      if (Session::haveRight("rule_ldap","r")
-          || Session::haveRight("rule_import","r")
-          || Session::haveRight("entity_rule_ticket","r")
-          || Session::haveRight("rule_softwarecategories","r")
-          || Session::haveRight("rule_mailcollector","r")) {
-
-         $menu['admin']['content']['rule']['title']    = _n('Rule', 'Rules', 2);
-         $menu['admin']['content']['rule']['shortcut'] = '';
-         $menu['admin']['content']['rule']['page']     = '/front/rule.php';
-
-         if (($sector == 'admin')
-             && ($item == 'rule')) {
-            foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
-               $rulecollection = new $rulecollectionclass();
-               if ($rulecollection->canList()) {
-                  $ruleclassname = $rulecollection->getRuleClassName();
-                  $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['title']
-                                 = $rulecollection->getRuleClass()->getTitle();
-                  $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['page']
-                                 = Toolbox::getItemTypeSearchURL($ruleclassname, false);
-                  $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['search']
-                                 = Toolbox::getItemTypeSearchURL($ruleclassname, false);
-                  if ($rulecollection->canCreate()) {
-                     $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['add']
-                                 = Toolbox::getItemTypeFormURL($ruleclassname, false);
+            // Define default link :
+            if (isset($menu[$category]['content'])
+                  && count($menu[$category]['content'])) {
+               foreach ($menu[$category]['content'] as $val) {
+                  if (isset($val['page'])) {
+                     $menu[$category]['default'] = $val['page'];
                   }
                }
             }
          }
-      }
 
-
-      if (Session::haveRight("transfer","r" )
-          && Session::isMultiEntitiesMode()) {
-         $menu['admin']['content']['rule']['options']['transfer']['title'] = __('Transfer');
-         $menu['admin']['content']['rule']['options']['transfer']['page']  = "/front/transfer.php";
-         $menu['admin']['content']['rule']['options']['transfer']['links']['search']
-                                                                           = "/front/transfer.php";
-
-         if (Session::haveRight("transfer","w")) {
-            $menu['admin']['content']['rule']['options']['transfer']['links']['summary']
-                                                                        = "/front/transfer.action.php";
-            $menu['admin']['content']['rule']['options']['transfer']['links']['add']
-                                                                        = "/front/transfer.form.php";
-         }
-      }
-
-
-      if (Session::haveRight("rule_dictionnary_dropdown","r")
-          || Session::haveRight("rule_dictionnary_software","r")
-          || Session::haveRight("rule_dictionnary_printer","r")) {
-
-         $menu['admin']['content']['dictionnary']['title']    = __('Dictionaries');
-         $menu['admin']['content']['dictionnary']['shortcut'] = '';
-         $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';
-
-         if (($sector == 'admin')
-             && ($item == 'dictionnary')) {
-            $menu['admin']['content']['dictionnary']['options']['manufacturers']['title']
-                           = _n('Manufacturer', 'Manufacturers', 2);
-            $menu['admin']['content']['dictionnary']['options']['manufacturers']['page']
-                           = '/front/ruledictionnarymanufacturer.php';
-            $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['search']
-                           = '/front/ruledictionnarymanufacturer.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['add']
-                              = '/front/ruledictionnarymanufacturer.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['software']['title']
-                           = _n('Software', 'Software', 2);
-            $menu['admin']['content']['dictionnary']['options']['software']['page']
-                           = '/front/ruledictionnarysoftware.php';
-            $menu['admin']['content']['dictionnary']['options']['software']['links']['search']
-                           = '/front/ruledictionnarysoftware.php';
-
-            if (Session::haveRight("rule_dictionnary_software","w")) {
-               $menu['admin']['content']['dictionnary']['options']['software']['links']['add']
-                              = '/front/ruledictionnarysoftware.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['model.computer']['title']
-                           = _n('Computer model', 'Computer models', 2);
-            $menu['admin']['content']['dictionnary']['options']['model.computer']['page']
-                           = '/front/ruledictionnarycomputermodel.php';
-            $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['search']
-                           = '/front/ruledictionnarycomputermodel.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['add']
-                              = '/front/ruledictionnarycomputermodel.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['model.monitor']['title']
-                           = _n('Monitor model', 'Monitor models', 2);
-            $menu['admin']['content']['dictionnary']['options']['model.monitor']['page']
-                           = '/front/ruledictionnarymonitormodel.php';
-            $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['search']
-                           = '/front/ruledictionnarymonitormodel.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['add']
-                              = '/front/ruledictionnarymonitormodel.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['model.printer']['title']
-                           = _n('Printer model', 'Printer models', 2);
-            $menu['admin']['content']['dictionnary']['options']['model.printer']['page']
-                           = '/front/ruledictionnaryprintermodel.php';
-            $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['search']
-                           = '/front/ruledictionnaryprintermodel.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['add']
-                              = '/front/ruledictionnaryprintermodel.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['model.peripheral']['title']
-                           = _n('Peripheral model', 'Peripheral models', 2);
-            $menu['admin']['content']['dictionnary']['options']['model.peripheral']['page']
-                           = '/front/ruledictionnaryperipheralmodel.php';
-            $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['search']
-                           = '/front/ruledictionnaryperipheralmodel.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['add']
-                              = '/front/ruledictionnaryperipheralmodel.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['model.networking']['title']
-                           = _n('Networking equipment model', 'Networking equipment models', 2);
-            $menu['admin']['content']['dictionnary']['options']['model.networking']['page']
-                           = '/front/ruledictionnarynetworkequipmentmodel.php';
-            $menu['admin']['content']['dictionnary']['options']['model.networking']['links']['search']
-                           = '/front/ruledictionnarynetworkequipmentmodel.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['model.networking']['links']['add']
-                              = '/front/ruledictionnarynetworkequipmentmodel.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['model.phone']['title']
-                           = _n('Phone model', 'Phone models', 2);
-            $menu['admin']['content']['dictionnary']['options']['model.phone']['page']
-                           = '/front/ruledictionnaryphonemodel.php';
-            $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['search']
-                           = '/front/ruledictionnaryphonemodel.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['add']
-                              = '/front/ruledictionnaryphonemodel.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['type.computer']['title']
-                           = _n('Computer type', 'Computer types', 2);
-            $menu['admin']['content']['dictionnary']['options']['type.computer']['page']
-                           = '/front/ruledictionnarycomputertype.php';
-            $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['search']
-                           = '/front/ruledictionnarycomputertype.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['add']
-                              = '/front/ruledictionnarycomputertype.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['type.monitor']['title']
-                           = _n('Monitor type', 'Monitors types', 2);
-            $menu['admin']['content']['dictionnary']['options']['type.monitor']['page']
-                           = '/front/ruledictionnarymonitortype.php';
-            $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['search']
-                           = '/front/ruledictionnarymonitortype.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['add']
-                              = '/front/ruledictionnarymonitortype.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['type.printer']['title']
-                           = _n('Printer type', 'Printer types', 2);
-            $menu['admin']['content']['dictionnary']['options']['type.printer']['page']
-                           = '/front/ruledictionnaryprintertype.php';
-            $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['search']
-                           = '/front/ruledictionnaryprintertype.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['add']
-                              = '/front/ruledictionnaryprintertype.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['type.peripheral']['title']
-                           = _n('Peripheral type', 'Peripheral types', 2);
-            $menu['admin']['content']['dictionnary']['options']['type.peripheral']['page']
-                           = '/front/ruledictionnaryperipheraltype.php';
-            $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['search']
-                           = '/front/ruledictionnaryperipheraltype.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['add']
-                              = '/front/ruledictionnaryperipheraltype.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['type.networking']['title']
-                           = _n('Networking equipment type', 'Networking equipment types', 2);
-            $menu['admin']['content']['dictionnary']['options']['type.networking']['page']
-                           = '/front/ruledictionnarynetworkequipmenttype.php';
-            $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['search']
-                           = '/front/ruledictionnarynetworkequipmenttype.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['add']
-                              = '/front/ruledictionnarynetworkequipmenttype.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['type.phone']['title']
-                           = _n('Phone type', 'Phone types', 2);
-            $menu['admin']['content']['dictionnary']['options']['type.phone']['page']
-                           = '/front/ruledictionnaryphonetype.php';
-            $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['search']
-                           = '/front/ruledictionnaryphonetype.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['add']
-                              = '/front/ruledictionnaryphonetype.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['os']['title']
-                           = __('Operating system');
-            $menu['admin']['content']['dictionnary']['options']['os']['page']
-                           = '/front/ruledictionnaryoperatingsystem.php';
-            $menu['admin']['content']['dictionnary']['options']['os']['links']['search']
-                           = '/front/ruledictionnaryoperatingsystem.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['os']['links']['add']
-                              = '/front/ruledictionnaryoperatingsystem.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['os_sp']['title']
-                           = __('Service pack');
-            $menu['admin']['content']['dictionnary']['options']['os_sp']['page']
-                           = '/front/ruledictionnaryoperatingsystemservicepack.php';
-            $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['search']
-                           = '/front/ruledictionnaryoperatingsystemservicepack.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['add']
-                              = '/front/ruledictionnaryoperatingsystemservicepack.form.php';
-            }
-
-
-            $menu['admin']['content']['dictionnary']['options']['os_version']['title']
-                           = __('Version of the operating system');
-            $menu['admin']['content']['dictionnary']['options']['os_version']['page']
-                           = '/front/ruledictionnaryoperatingsystemversion.php';
-            $menu['admin']['content']['dictionnary']['options']['os_version']['links']['search']
-                           = '/front/ruledictionnaryoperatingsystemversion.php';
-
-            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
-               $menu['admin']['content']['dictionnary']['options']['os_version']['links']['add']
-                              = '/front/ruledictionnaryoperatingsystemversion.form.php';
-            }
-
-            $menu['admin']['content']['dictionnary']['options']['printer']['title']
-                           = _n('Printer', 'Printers', 2);
-            $menu['admin']['content']['dictionnary']['options']['printer']['page']
-                           = '/front/ruledictionnaryprinter.php';
-            $menu['admin']['content']['dictionnary']['options']['printer']['links']['search']
-                           = '/front/ruledictionnaryprinter.php';
-
-            if (Session::haveRight("rule_dictionnary_printer","w")) {
-               $menu['admin']['content']['dictionnary']['options']['printer']['links']['add']
-                              = '/front/ruledictionnaryprinter.form.php';
-            }
-
-         }
-      }
-
-
-      if (Session::haveRight("profile","r")) {
-         $menu['admin']['content']['profile']['title']           = _n('Profile', 'Profiles', 2);
-         $menu['admin']['content']['profile']['shortcut']        = '';
-         $menu['admin']['content']['profile']['page']            = '/front/profile.php';
-         $menu['admin']['content']['profile']['links']['search'] = "/front/profile.php";
-
-         if (Session::haveRight("profile","w")) {
-            $menu['admin']['content']['profile']['links']['add'] = "/front/profile.form.php";
-         }
-      }
-
-      if (Session::haveRight("backup","w")) {
-         $menu['admin']['content']['backup']['title']    = __('Maintenance');
-         $menu['admin']['content']['backup']['shortcut'] = '';
-         $menu['admin']['content']['backup']['page']     = '/front/backup.php';
-      }
-
-
-      if (Session::haveRight("logs","r")) {
-         $menu['admin']['content']['log']['title']    = _n('Log', 'Logs', 2);
-         $menu['admin']['content']['log']['shortcut'] = '';
-         $menu['admin']['content']['log']['page']     = '/front/event.php';
-      }
-
-
-
-      /// CONFIG
-      $config    = array();
-      $addconfig = array();
-      $menu['config']['title'] = __('Setup');
-
-      if (Session::haveRight("dropdown","r")
-          || Session::haveRight("entity_dropdown","r")
-          || Session::haveRight("internet","r")) {
-         $menu['config']['content']['dropdowns']['title']    = _n('Dropdown', 'Dropdowns', 2);
-         $menu['config']['content']['dropdowns']['shortcut'] = 'n';
-         $menu['config']['content']['dropdowns']['page']     = '/front/dropdown.php';
-
-         $menu['config']['default'] = '/front/dropdown.php';
-
-         if ($item == "dropdowns") {
-            $dps = Dropdown::getStandardDropdownItemTypes();
-
-            foreach ($dps as $tab) {
-               foreach ($tab as $key => $val) {
-                  if ($key == $option) {
-                     if ($tmp = getItemForItemtype($key)) {
-                        $menu['config']['content']['dropdowns']['options'][$option]['title']
-                                    = $val;
-                        $menu['config']['content']['dropdowns']['options'][$option]['page']
-                                    = $tmp->getSearchURL(false);
-                        $menu['config']['content']['dropdowns']['options'][$option]['links']['search']
-                                    = $tmp->getSearchURL(false);
-                        if ($tmp->canCreate()) {
-                           $menu['config']['content']['dropdowns']['options'][$option]['links']['add']
-                                    = $tmp->getFormURL(false);
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-
-      if (Session::haveRight("device","w")) {
-         $menu['config']['content']['device']['title'] = _n('Component', 'Components', 2);
-         $menu['config']['content']['device']['page']  = '/front/device.php';
-
-         if ($item == "device") {
-            $dps = Dropdown::getDeviceItemTypes();
-
-            foreach ($dps as $tab) {
-               foreach ($tab as $key => $val) {
-                  if ($key == $option) {
-                     if ($tmp = getItemForItemtype($key)) {
-                        $menu['config']['content']['device']['options'][$option]['title'] = $val;
-                        $menu['config']['content']['device']['options'][$option]['page']
-                                    = $tmp->getSearchURL(false);
-                        $menu['config']['content']['device']['options'][$option]['links']['search']
-                                    = $tmp->getSearchURL(false);
-                        if ($tmp->canCreate()) {
-                           $menu['config']['content']['device']['options'][$option]['links']['add']
-                                    = $tmp->getFormURL(false);
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-
-      if (($CFG_GLPI['use_mailing'] && Session::haveRight("notification","r"))
-          || Session::haveRight("config","w")) {
-         $menu['config']['content']['mailing']['title'] = _n('Notification', 'Notifications', 2);
-         $menu['config']['content']['mailing']['page']  = '/front/setup.notification.php';
-         $menu['config']['content']['mailing']['options']['notification']['title']
-                                                        = _n('Notification', 'Notifications', 2);
-         $menu['config']['content']['mailing']['options']['notification']['page']
-                                                        = '/front/notification.php';
-         $menu['config']['content']['mailing']['options']['notification']['links']['add']
-                                                        = '/front/notification.form.php';
-         $menu['config']['content']['mailing']['options']['notification']['links']['search']
-                                                        = '/front/notification.php';
-      }
-
-
-      if (Session::haveRight("sla","r")) {
-         $menu['config']['content']['sla']['title']           = _n('SLA', 'SLA', 2);
-         $menu['config']['content']['sla']['page']            = '/front/sla.php';
-         $menu['config']['content']['sla']['links']['search'] = "/front/sla.php";
-         if (Session::haveRight("sla","w")) {
-            $menu['config']['content']['sla']['links']['add']    = "/front/sla.form.php";
-         }
-      }
-
-      if (Session::haveRight("config","w")) {
-
-         //TRANS: menu title for "General setup""
-         $menu['config']['content']['config']['title']   = _x('setup', 'General');
-         $menu['config']['content']['config']['page']    = '/front/config.form.php';
-
-         $menu['config']['content']['control']['title']  = _n('Check', 'Checks', 2);
-         $menu['config']['content']['control']['page']   = '/front/control.php';
-
-         $menu['config']['content']['control']['options']['FieldUnicity']['title']
-                                                         = __('Fields unicity');
-         $menu['config']['content']['control']['options']['FieldUnicity']['page']
-                                                         = '/front/fieldunicity.php';
-         $menu['config']['content']['control']['options']['FieldUnicity']['links']['add']
-                                                         = '/front/fieldunicity.form.php';
-         $menu['config']['content']['control']['options']['FieldUnicity']['links']['search']
-                                                         = '/front/fieldunicity.php';
-
-         $menu['config']['content']['crontask']['title']           = _n('Automatic action',
-                                                                        'Automatic actions', 2);
-         $menu['config']['content']['crontask']['page']            = '/front/crontask.php';
-         $menu['config']['content']['crontask']['links']['search'] = "/front/crontask.php";
-
-         $menu['config']['content']['mailing']['options']['config']['title'] = __('Email');
-         $menu['config']['content']['mailing']['options']['config']['page']
-                        = '/front/notificationmailsetting.form.php';
-
-         $menu['config']['content']['mailing']['options']['notificationtemplate']['title']
-                        = _n('Notification template', 'Notification templates', 2);
-         $menu['config']['content']['mailing']['options']['notificationtemplate']['page']
-                        = '/front/notificationtemplate.php';
-         $menu['config']['content']['mailing']['options']['notificationtemplate']['links']['add']
-                        = '/front/notificationtemplate.form.php';
-         $menu['config']['content']['mailing']['options']['notificationtemplate']['links']['search']
-                        = '/front/notificationtemplate.php';
-
-         $menu['config']['content']['extauth']['title'] = __('Authentication');
-         $menu['config']['content']['extauth']['page']  = '/front/setup.auth.php';
-
-         $menu['config']['content']['extauth']['options']['ldap']['title'] = _n('LDAP directory',
-                                                                                'LDAP directories', 2);
-         $menu['config']['content']['extauth']['options']['ldap']['page']  = '/front/authldap.php';
-
-         $menu['config']['content']['extauth']['options']['imap']['title'] = _n('Mail server', 'Mail servers', 2);
-         $menu['config']['content']['extauth']['options']['imap']['page']  = '/front/authmail.php';
-
-         $menu['config']['content']['extauth']['options']['others']['title'] = __('Others');
-         $menu['config']['content']['extauth']['options']['others']['page']  = '/front/auth.others.php';
-
-         $menu['config']['content']['extauth']['options']['settings']['title'] = __('Setup');
-         $menu['config']['content']['extauth']['options']['settings']['page']
-                        = '/front/auth.settings.php';
-
-         switch ($option) {
-            case "ldap" : // LDAP
-               $menu['config']['content']['extauth']['options']['ldap']['links']['search']
-                              = '/front/authldap.php';
-               $menu['config']['content']['extauth']['options']['ldap']['links']['add']
-                              = '' .'/front/authldap.form.php';
+         $allassets = array('Computer', 'Monitor', 'Peripheral',
+                            'NetworkEquipment', 'Phone', 'Printer');
+
+         foreach ($allassets as $type) {
+            if (isset($menu['inventory']['content'][$type::getMenuIndex()])) {
+               $menu['inventory']['content']['state']['title']            = __('Global');
+               $menu['inventory']['content']['state']['shortcut']         = '';
+               $menu['inventory']['content']['state']['page']             = '/front/allassets.php';
+               $menu['inventory']['content']['state']['links']['search']  = '/front/allassets.php';
                break;
-
-            case "imap" : // IMAP
-               $menu['config']['content']['extauth']['links']['search'] = '/front/authmail.php';
-               $menu['config']['content']['extauth']['links']['add']    = '' .'/front/authmail.form.php';
-               break;
+            }
          }
 
-         $menu['config']['content']['mailcollector']['title'] = _n('Receiver', 'Receivers', 2);
-         $menu['config']['content']['mailcollector']['page']  = '/front/mailcollector.php';
 
-         if (Toolbox::canUseImapPop()) {
-            $menu['config']['content']['mailcollector']['links']['search']
-                                       = '/front/mailcollector.php';
-            $menu['config']['content']['mailcollector']['links']['add']
-                                       = '/front/mailcollector.form.php';
-            $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']
-                                       = '/front/notimportedemail.php';
-         }
+         // PLUGINS
+//          if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
+//             $menu['plugins']['title'] = __('Plugins');
+//             $plugins = array();
+//
+//             foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
+//                if ($active) { // true or a string
+//                   $plugins[$plugin] = Plugin::getInfo($plugin);
+//                }
+//             }
+//
+//             if (count($plugins)) {
+//                $list = array();
+//
+//                foreach ($plugins as $key => $val) {
+//                   $list[$key] = $val["name"];
+//                }
+//                asort($list);
+//
+//                foreach ($list as $key => $val) {
+//                   $menu['plugins']['content'][$key]['title'] = $val;
+//                   $menu['plugins']['content'][$key]['page']  = '/plugins/'.$key.'/';
+//
+//                   if (is_string($PLUGIN_HOOKS["menu_entry"][$key])) {
+//                      $menu['plugins']['content'][$key]['page'] .= $PLUGIN_HOOKS["menu_entry"][$key];
+//                   }
+//
+//                   // Set default link for plugins
+//                   if (!isset($menu['plugins']['default'])) {
+//                      $menu['plugins']['default'] = $menu['plugins']['content'][$key]['page'];
+//                   }
+//
+//                   if (($sector == "plugins")
+//                      && ($item == $key)) {
+//
+//                      if (isset($PLUGIN_HOOKS["submenu_entry"][$key])
+//                         && is_array($PLUGIN_HOOKS["submenu_entry"][$key])) {
+//
+//                         foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link) {
+//                            // New complete option management
+//                            if ($name == "options") {
+//                               $menu['plugins']['content'][$key]['options'] = $link;
+//                            } else { // Keep it for compatibility
+//
+//                               if (is_array($link)) {
+//                                  // Simple link option
+//                                  if (isset($link[$option])) {
+//                                     $menu['plugins']['content'][$key]['links'][$name]
+//                                                    ='/plugins/'.$key.'/'.$link[$option];
+//                                  }
+//                               } else {
+//                                  $menu['plugins']['content'][$key]['links'][$name]
+//                                                    ='/plugins/'.$key.'/'.$link;
+//                               }
+//                            }
+//                         }
+//                      }
+//                   }
+//                }
+//             }
+//          }
+
+
+         $_SESSION['glpimenu'] = $menu;
+//          echo 'menu load';
+      } else {
+         $menu = $_SESSION['glpimenu'];
       }
-
-      if (Session::haveRight("link","r")) {
-         $menu['config']['content']['link']['title']           = _n('External link',
-                                                                    'External links', 2);
-         $menu['config']['content']['link']['page']            = '/front/link.php';
-         $menu['config']['content']['link']['hide']            = true;
-         $menu['config']['content']['link']['links']['search'] = '/front/link.php';
-
-         if (Session::haveRight("link","w")) {
-            $menu['config']['content']['link']['links']['add'] = "/front/link.form.php";
-         }
-      }
-
-
-      if (Session::haveRight("config","w")) {
-         $menu['config']['content']['plugins']['title'] = __('Plugins');
-         $menu['config']['content']['plugins']['page']  = '/front/plugin.php';
-      }
-
-
-
-
-
-      // Special items
-      $menu['preference']['title']   = __('My settings');
-      $menu['preference']['default'] = '/front/preference.php';
-
-
+      
       $already_used_shortcut = array('1');
 
 

@@ -219,6 +219,127 @@ class CommonGLPI {
    function addDefaultFormTab(array &$ong) {
       $ong[$this->getType().'$main'] = $this->getTypeName(1);
    }
+   /**
+    * get menu content
+    *
+    * @since version 0.85
+    *
+    * @return array for menu
+   **/
+   static function getMenuContent() {
+      $menu = array();
+
+      $type = static::getType();
+      $item = new $type();
+      $forbidden = $type::getForbiddenActionsForMenu();
+
+      if ($item instanceof CommonDBTM) {
+         if ($type::canView()) {
+            $menu['title']           = static::getMenuName();
+            $menu['shortcut']        = static::getMenuShorcut();
+            $menu['page']            = static::getSearchURL(false);
+            $menu['links']['search'] = static::getSearchURL(false);
+
+
+            if (!in_array('add', $forbidden) && $type::canCreate()) {
+               if ($item->maybeTemplate()) {
+                  $menu['links']['add']
+                                    = '/front/setup.templates.php?'.'itemtype='.$type.'&amp;add=1';
+                  if (!in_array('template', $forbidden)) {
+                     $menu['links']['template']
+                                       = '/front/setup.templates.php?'.'itemtype='.$type.'&amp;add=0';
+                  }
+               } else {
+                  $menu['links']['add'] = static::getFormURL(false);
+               }
+            }
+
+            if ($data = static::getAdditionalMenuLinks()) {
+               $menu['links'] += $data;
+            }
+
+         }
+      } else {
+            $menu['title']           = static::getMenuName();
+            $menu['shortcut']        = static::getMenuShorcut();
+            $menu['page']            = static::getSearchURL(false);
+            $menu['links']['search'] = static::getSearchURL(false);
+      }
+      if ($data = static::getAdditionalMenuOptions()) {
+         $menu['options'] = $data;
+      }
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
+   }
+
+   /**
+    * Get forbidden actions for menu : may be add / template
+    *
+    * @since version 0.85
+    *
+    * @return array of forbidden actions
+   **/
+   static function getForbiddenActionsForMenu() {
+      return array();
+   }
+
+   /**
+    * Get additional menu options
+    *
+    * @since version 0.85
+    *
+    * @return array of additional options
+   **/
+   static function getAdditionalMenuOptions() {
+      return false;
+   }
+
+   /**
+    * Get additional menu links
+    *
+    * @since version 0.85
+    *
+    * @return array of additional options
+   **/
+   static function getAdditionalMenuLinks() {
+      return false;
+   }
+
+   /**
+    * Get menu shortcut
+    *
+    * @since version 0.85
+    *
+    * @return character menu shortcut key
+   **/
+   static function getMenuShorcut() {
+      return '';
+   }
+
+   /**
+    * Get menu shortcut
+    *
+    * @since version 0.85
+    *
+    * @return character menu shortcut key
+   **/
+   /// TODO clean this function : no more use
+   static function getMenuIndex() {
+      return strtolower(static::getType());
+   }
+
+   /**
+    * Get menu shortcut
+    *
+    * @since version 0.85
+    *
+    * @return character menu shortcut key
+   **/
+   static function getMenuName() {
+      return static::getTypeName(2);
+   }
 
    /**
     * Get Tab Name used for itemtype

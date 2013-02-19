@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @ since version 0.84
 **/
-class Report {
+class Report extends CommonGLPI{
 
    static protected $notable = false;
 
@@ -48,7 +48,12 @@ class Report {
    static function getTypeName($nb=0) {
       return _n('Report', 'Reports', $nb);
    }
-
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 'e';
+   }
 
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;

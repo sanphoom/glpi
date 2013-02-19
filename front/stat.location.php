@@ -157,7 +157,7 @@ Html::printPager($_GET['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat
                  'Stat', $params);
 
 if (!$_GET['showgraph']) {
-   Stat::show($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"], $_GET['start'], $val,
+   Stat::showTable($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"], $_GET['start'], $val,
               $_GET["dropdown"]);
 } else {
    $data = Stat::getDatas($_GET['itemtype'], $type, $_GET["date1"], $_GET["date2"], $_GET['start'],

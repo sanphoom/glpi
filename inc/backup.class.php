@@ -23,7 +23,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ along with GLPI. If not, see <http://www.gnu.org/licenses/.
  --------------------------------------------------------------------------
  */
 
@@ -31,14 +31,23 @@
 * @brief
 */
 
-include ('../inc/includes.php');
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
 
-Session::checkRight("config", "r");
+/**
+ * Backup class
+**/
+/// TODO move function to class
+class Backup extends CommonGLPI {
 
-Html::header(NotImportedEmail::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailcollector",
-             "notimportedemails");
 
-Search::show('NotImportedEmail');
+   static function getTypeName($nb=0) {
+      return __('Maintenance');
+   }
 
-Html::footer();
+   static function canView() {
+      return Session::haveRight('backup', 'w');
+   }
+}
 ?>

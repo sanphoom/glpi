@@ -48,6 +48,21 @@ class Plugin extends CommonDBTM {
    const NOTUPDATED     = 6;
 
 
+   static function getTypeName($nb=0) {
+      return _n('Plugin','Plugins',$nb);
+   }
+   
+   /**
+    * @see CommonGLPI::getMenuName()
+   **/
+   static function getMenuName() {
+      return static::getTypeName(2);
+   }
+   
+   static function canView() {
+      return Session::haveRight('config', 'w');
+   }
+
    /**
     * Retrieve an item from the database using its directory
     *

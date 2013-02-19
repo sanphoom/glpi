@@ -105,6 +105,301 @@ class Rule extends CommonDBTM {
 
 
    /**
+    *  @see CommonGLPI::getMenuContent()
+   **/
+   static function getMenuContent() {
+      global $CFG_GLPI;
+      $menu = array();
+
+      if (Session::haveRight("rule_ldap","r")
+         || Session::haveRight("rule_ocs","r")
+         || Session::haveRight("entity_rule_ticket","r")
+         || Session::haveRight("rule_softwarecategories","r")
+         || Session::haveRight("rule_mailcollector","r")) {
+
+         $menu['rule']['title']    = static::getTypeName(2);
+         $menu['rule']['page']     = static::getSearchURL(false);
+
+         foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+            $rulecollection = new $rulecollectionclass();
+            if ($rulecollection->canList()) {
+               $ruleclassname = $rulecollection->getRuleClassName();
+               $menu['rule']['options'][$rulecollection->menu_option]['title']
+                              = $rulecollection->getRuleClass()->getTitle();
+               $menu['rule']['options'][$rulecollection->menu_option]['page']
+                              = Toolbox::getItemTypeSearchURL($ruleclassname, false);
+               $menu['rule']['options'][$rulecollection->menu_option]['links']['search']
+                              = Toolbox::getItemTypeSearchURL($ruleclassname, false);
+               if ($rulecollection->canCreate()) {
+                  $menu['rule']['options'][$rulecollection->menu_option]['links']['add']
+                              = Toolbox::getItemTypeFormURL($ruleclassname, false);
+               }
+            }
+         }
+      }
+
+      if (Session::haveRight("transfer","r" )
+            && Session::isMultiEntitiesMode()) {
+            $menu['rule']['options']['transfer']['title'] = __('Transfer');
+            $menu['rule']['options']['transfer']['page']  = "/front/transfer.php";
+            $menu['rule']['options']['transfer']['links']['search'] = "/front/transfer.php";
+
+            if (Session::haveRight("transfer","w")) {
+               $menu['rule']['options']['transfer']['links']['summary'] = "/front/transfer.action.php";
+               $menu['rule']['options']['transfer']['links']['add'] = "/front/transfer.form.php";
+            }
+         }
+
+
+         if (Session::haveRight("rule_dictionnary_dropdown","r")
+            || Session::haveRight("rule_dictionnary_software","r")
+            || Session::haveRight("rule_dictionnary_printer","r")) {
+
+            $menu['dictionnary']['title']    = __('Dictionaries');
+            $menu['dictionnary']['shortcut'] = '';
+            $menu['dictionnary']['page']     = '/front/dictionnary.php';
+
+            $menu['dictionnary']['options']['manufacturers']['title']
+                           = _n('Manufacturer', 'Manufacturers', 2);
+            $menu['dictionnary']['options']['manufacturers']['page']
+                           = '/front/ruledictionnarymanufacturer.php';
+            $menu['dictionnary']['options']['manufacturers']['links']['search']
+                           = '/front/ruledictionnarymanufacturer.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['manufacturers']['links']['add']
+                              = '/front/ruledictionnarymanufacturer.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['software']['title']
+                           = _n('Software', 'Software', 2);
+            $menu['dictionnary']['options']['software']['page']
+                           = '/front/ruledictionnarysoftware.php';
+            $menu['dictionnary']['options']['software']['links']['search']
+                           = '/front/ruledictionnarysoftware.php';
+
+            if (Session::haveRight("rule_dictionnary_software","w")) {
+               $menu['dictionnary']['options']['software']['links']['add']
+                              = '/front/ruledictionnarysoftware.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['model.computer']['title']
+                           = _n('Computer model', 'Computer models', 2);
+            $menu['dictionnary']['options']['model.computer']['page']
+                           = '/front/ruledictionnarycomputermodel.php';
+            $menu['dictionnary']['options']['model.computer']['links']['search']
+                           = '/front/ruledictionnarycomputermodel.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['model.computer']['links']['add']
+                              = '/front/ruledictionnarycomputermodel.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['model.monitor']['title']
+                           = _n('Monitor model', 'Monitor models', 2);
+            $menu['dictionnary']['options']['model.monitor']['page']
+                           = '/front/ruledictionnarymonitormodel.php';
+            $menu['dictionnary']['options']['model.monitor']['links']['search']
+                           = '/front/ruledictionnarymonitormodel.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['model.monitor']['links']['add']
+                              = '/front/ruledictionnarymonitormodel.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['model.printer']['title']
+                           = _n('Printer model', 'Printer models', 2);
+            $menu['dictionnary']['options']['model.printer']['page']
+                           = '/front/ruledictionnaryprintermodel.php';
+            $menu['dictionnary']['options']['model.printer']['links']['search']
+                           = '/front/ruledictionnaryprintermodel.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['model.printer']['links']['add']
+                              = '/front/ruledictionnaryprintermodel.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['model.peripheral']['title']
+                           = _n('Peripheral model', 'Peripheral models', 2);
+            $menu['dictionnary']['options']['model.peripheral']['page']
+                           = '/front/ruledictionnaryperipheralmodel.php';
+            $menu['dictionnary']['options']['model.peripheral']['links']['search']
+                           = '/front/ruledictionnaryperipheralmodel.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['model.peripheral']['links']['add']
+                              = '/front/ruledictionnaryperipheralmodel.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['model.networking']['title']
+                           = _n('Networking equipment model', 'Networking equipment models', 2);
+            $menu['dictionnary']['options']['model.networking']['page']
+                           = '/front/ruledictionnarynetworkequipmentmodel.php';
+            $menu['dictionnary']['options']['model.networking']['links']['search']
+                           = '/front/ruledictionnarynetworkequipmentmodel.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['model.networking']['links']['add']
+                              = '/front/ruledictionnarynetworkequipmentmodel.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['model.phone']['title']
+                           = _n('Phone model', 'Phone models', 2);
+            $menu['dictionnary']['options']['model.phone']['page']
+                           = '/front/ruledictionnaryphonemodel.php';
+            $menu['dictionnary']['options']['model.phone']['links']['search']
+                           = '/front/ruledictionnaryphonemodel.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['model.phone']['links']['add']
+                              = '/front/ruledictionnaryphonemodel.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['type.computer']['title']
+                           = _n('Computer type', 'Computer types', 2);
+            $menu['dictionnary']['options']['type.computer']['page']
+                           = '/front/ruledictionnarycomputertype.php';
+            $menu['dictionnary']['options']['type.computer']['links']['search']
+                           = '/front/ruledictionnarycomputertype.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['type.computer']['links']['add']
+                              = '/front/ruledictionnarycomputertype.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['type.monitor']['title']
+                           = _n('Monitor type', 'Monitors types', 2);
+            $menu['dictionnary']['options']['type.monitor']['page']
+                           = '/front/ruledictionnarymonitortype.php';
+            $menu['dictionnary']['options']['type.monitor']['links']['search']
+                           = '/front/ruledictionnarymonitortype.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['type.monitor']['links']['add']
+                              = '/front/ruledictionnarymonitortype.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['type.printer']['title']
+                           = _n('Printer type', 'Printer types', 2);
+            $menu['dictionnary']['options']['type.printer']['page']
+                           = '/front/ruledictionnaryprintertype.php';
+            $menu['dictionnary']['options']['type.printer']['links']['search']
+                           = '/front/ruledictionnaryprintertype.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['type.printer']['links']['add']
+                              = '/front/ruledictionnaryprintertype.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['type.peripheral']['title']
+                           = _n('Peripheral type', 'Peripheral types', 2);
+            $menu['dictionnary']['options']['type.peripheral']['page']
+                           = '/front/ruledictionnaryperipheraltype.php';
+            $menu['dictionnary']['options']['type.peripheral']['links']['search']
+                           = '/front/ruledictionnaryperipheraltype.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['type.peripheral']['links']['add']
+                              = '/front/ruledictionnaryperipheraltype.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['type.networking']['title']
+                           = _n('Networking equipment type', 'Networking equipment types', 2);
+            $menu['dictionnary']['options']['type.networking']['page']
+                           = '/front/ruledictionnarynetworkequipmenttype.php';
+            $menu['dictionnary']['options']['type.networking']['links']['search']
+                           = '/front/ruledictionnarynetworkequipmenttype.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['type.networking']['links']['add']
+                              = '/front/ruledictionnarynetworkequipmenttype.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['type.phone']['title']
+                           = _n('Phone type', 'Phone types', 2);
+            $menu['dictionnary']['options']['type.phone']['page']
+                           = '/front/ruledictionnaryphonetype.php';
+            $menu['dictionnary']['options']['type.phone']['links']['search']
+                           = '/front/ruledictionnaryphonetype.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['type.phone']['links']['add']
+                              = '/front/ruledictionnaryphonetype.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['os']['title']
+                           = __('Operating system');
+            $menu['dictionnary']['options']['os']['page']
+                           = '/front/ruledictionnaryoperatingsystem.php';
+            $menu['dictionnary']['options']['os']['links']['search']
+                           = '/front/ruledictionnaryoperatingsystem.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['os']['links']['add']
+                              = '/front/ruledictionnaryoperatingsystem.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['os_sp']['title']
+                           = __('Service pack');
+            $menu['dictionnary']['options']['os_sp']['page']
+                           = '/front/ruledictionnaryoperatingsystemservicepack.php';
+            $menu['dictionnary']['options']['os_sp']['links']['search']
+                           = '/front/ruledictionnaryoperatingsystemservicepack.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['os_sp']['links']['add']
+                              = '/front/ruledictionnaryoperatingsystemservicepack.form.php';
+            }
+
+
+            $menu['dictionnary']['options']['os_version']['title']
+                           = __('Version of the operating system');
+            $menu['dictionnary']['options']['os_version']['page']
+                           = '/front/ruledictionnaryoperatingsystemversion.php';
+            $menu['dictionnary']['options']['os_version']['links']['search']
+                           = '/front/ruledictionnaryoperatingsystemversion.php';
+
+            if (Session::haveRight("rule_dictionnary_dropdown","w")) {
+               $menu['dictionnary']['options']['os_version']['links']['add']
+                              = '/front/ruledictionnaryoperatingsystemversion.form.php';
+            }
+
+            $menu['dictionnary']['options']['printer']['title']
+                           = _n('Printer', 'Printers', 2);
+            $menu['dictionnary']['options']['printer']['page']
+                           = '/front/ruledictionnaryprinter.php';
+            $menu['dictionnary']['options']['printer']['links']['search']
+                           = '/front/ruledictionnaryprinter.php';
+
+            if (Session::haveRight("rule_dictionnary_printer","w")) {
+               $menu['dictionnary']['options']['printer']['links']['add']
+                              = '/front/ruledictionnaryprinter.form.php';
+            }
+         }
+      $menu['is_multi_entries'] = true;
+
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
+   }
+
+   /**
     * @since versin 0.84
    **/
    function getRuleActionClass () {

@@ -47,7 +47,11 @@ class Reminder extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      return _n('Reminder', 'Reminders', $nb);
+      if (Session::haveRight('reminder_public', 'r')) {
+         return _n('Reminder', 'Reminders', $nb);
+      } else {
+         return _n('Personal reminder', 'Personal reminders', $nb);
+      }
    }
 
 

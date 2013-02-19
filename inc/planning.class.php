@@ -39,6 +39,17 @@ if (!defined('GLPI_ROOT')) {
 
 class Planning extends CommonGLPI {
 
+   static function getTypeName($nb=0) {
+      return __('Planning');
+   }
+
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 'p';
+   }
+
 
    function defineTabs($options=array()) {
 

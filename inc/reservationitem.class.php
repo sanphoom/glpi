@@ -48,6 +48,37 @@ class ReservationItem extends CommonDBChild {
    static function getTypeName($nb=0) {
       return _n('Reservable item', 'Reservable items',$nb);
    }
+   
+   /**
+    * @see CommonGLPI::getMenuName()
+   **/
+   static function getMenuName() {
+      return Reservation::getTypeName(2);
+   }
+   /**
+    * @see CommonGLPI::getMenuIndex()
+   **/
+   static function getMenuIndex() {
+      return 'reservation';
+   }
+
+   /**
+    * @see CommonGLPI::getForbiddenActionsForMenu()
+   **/
+   static function getForbiddenActionsForMenu() {
+      return array('add');
+   }
+
+   /**
+    * @see CommonGLPI::getAdditionalMenuLinks()
+   **/
+   static function getAdditionalMenuLinks() {
+      if (static::canView()) {
+         return array('showall' => Reservation::getSearchURL(false));
+      }
+      return false;
+   }
+
 
 
    /**

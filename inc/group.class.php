@@ -45,6 +45,24 @@ class Group extends CommonTreeDropdown {
       return _n('Group', 'Groups', $nb);
    }
 
+   /**
+    * @see CommonGLPI::getAdditionalMenuOptions()
+   **/
+   static function getAdditionalMenuOptions() {
+      if (Session::haveRight('user_authtype', 'w')) {
+         $options['ldap']['title'] = AuthLDAP::getTypeName(2);
+         $options['ldap']['page']  = "/front/ldap.group.php";
+         return $options;
+      }
+      return false;
+   }
+
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 'g';
+   }
 
    static function canCreate() {
       return Session::haveRight('group', 'w');

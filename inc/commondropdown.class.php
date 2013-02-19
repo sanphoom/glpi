@@ -52,6 +52,61 @@ abstract class CommonDropdown extends CommonDBTM {
 
    public $display_dropdowntitle  = true;
 
+   static function getTypeName($nb=0) {
+      return _n('Dropdown', 'Dropdowns', $nb);
+   }
+   /**
+    * @see CommonGLPI::getMenuIndex()
+   **/
+   static function getMenuIndex() {
+      return 'dropdowns';
+   }
+
+   /**
+    * @see CommonGLPI::getMenuShorcut()
+   **/
+   static function getMenuShorcut() {
+      return 'n';
+   }
+
+   /**
+    *  @see CommonGLPI::getMenuContent()
+   **/
+   static function getMenuContent() {
+      global $CFG_GLPI;
+      $menu = array();
+      if (Session::haveRight("dropdown","r")
+         || Session::haveRight("entity_dropdown","r")
+         || Session::haveRight("internet","r")) {
+         $menu['title']    = static::getTypeName(2);
+         $menu['shortcut'] = 'n';
+         $menu['page']     = '/front/dropdown.php';
+         $menu['config']['default'] = '/front/dropdown.php';
+
+         $dps = Dropdown::getStandardDropdownItemTypes();
+
+         foreach ($dps as $tab) {
+            foreach ($tab as $key => $val) {
+               if ($tmp = getItemForItemtype($key)) {
+                  $menu['options'][$key]['title']
+                              = $val;
+                  $menu['options'][$key]['page']
+                              = $tmp->getSearchURL(false);
+                  $menu['options'][$key]['links']['search']
+                              = $tmp->getSearchURL(false);
+                  if ($tmp->canCreate()) {
+                     $menu['options'][$key]['links']['add']
+                              = $tmp->getFormURL(false);
+                  }
+               }
+            }
+         }
+      }
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
+   }
 
    /**
     * Return Additional Fields for this type

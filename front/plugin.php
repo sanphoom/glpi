@@ -87,7 +87,7 @@ function haveRight() {
 
 $plugin = new Plugin();
 
-Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugins");
+Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
 $plugin->listPlugins();
 

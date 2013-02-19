@@ -43,6 +43,9 @@ class Event extends CommonDBTM {
       return _n('Log', 'Logs', $nb);
    }
 
+   static function canView() {
+      return Session::haveRight('logs', 'r');
+   }
 
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
