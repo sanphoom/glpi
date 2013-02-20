@@ -1676,6 +1676,16 @@ class Search {
          echo "</td><td class='left'>";
          echo "<div id='SearchSpan$itemtype$i'>\n";
 
+         $used_itemtype = $itemtype;
+
+         // Force Computer itemtype for AllAssets to permit to show specific items
+         if ($itemtype == 'AllAssets') {
+            $used_itemtype = 'Computer';
+         } 
+
+         $_POST['itemtype']   = $used_itemtype;
+
+
          $_POST['itemtype']   = $itemtype;
          $_POST['num']        = $i;
          $_POST['field']      = $selected;
@@ -1687,7 +1697,7 @@ class Search {
          echo "</div>\n";
 
          $params = array('field'      => '__VALUE__',
-                         'itemtype'   => $itemtype,
+                         'itemtype'   => $used_itemtype,
                          'num'        => $i,
                          'value'      => $_POST["value"],
                          'searchtype' => $_POST["searchtype"]);
