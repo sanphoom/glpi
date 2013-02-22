@@ -964,7 +964,7 @@ class Html {
       echo "<body>";
       // Generate array for menu and check right
 
-      if (!isset($_SESSION['glpimenu'])
+      if (1||!isset($_SESSION['glpimenu'])
       || !is_array($_SESSION['glpimenu'])
       || count($_SESSION['glpimenu']) == 0) {
 
@@ -1043,6 +1043,7 @@ class Html {
                foreach ($menu[$category]['content'] as $val) {
                   if (isset($val['page'])) {
                      $menu[$category]['default'] = $val['page'];
+                     break;
                   }
                }
             }
