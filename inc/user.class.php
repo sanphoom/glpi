@@ -50,7 +50,7 @@ class User extends CommonDBTM {
    static function getTypeName($nb=0) {
       return _n('User','Users',$nb);
    }
-   
+
    /**
     * @see CommonGLPI::getMenuShorcut()
    **/
@@ -2704,7 +2704,7 @@ class User extends CommonDBTM {
             $where        = array();
             foreach ($right as $r) {
                // Check read or active for rights
-               $where[]= " (`glpi_profilerights`.`name` = '".$right."'
+               $where[]= " (`glpi_profilerights`.`name` = '".$r."'
                         AND `glpi_profilerights`.`right` IN ('1', 'r', 'w') ".
                            getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                       $entity_restrict, 1).") ";
@@ -2721,6 +2721,7 @@ class User extends CommonDBTM {
             }
             $where .= ')';
       }
+
 
       $where .= " AND `glpi_users`.`is_deleted` = '0'
                   AND `glpi_users`.`is_active` = '1' ";
@@ -2872,7 +2873,7 @@ class User extends CommonDBTM {
       $use_ajax = false;
 
       if ($CFG_GLPI["use_ajax"]) {
-         $res = self::getSqlSearchResult (true, $p['right'], $p['entity'], $p['value'], $p['used']);
+         $res = self::getSqlSearchResult (true, 'all', $p['entity'], $p['value'], $p['used']);
          $nb  = ($res ? $DB->result($res,0,"CPT") : 0);
          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
             $use_ajax = true;
