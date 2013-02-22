@@ -247,7 +247,7 @@ class Ajax {
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
             $title = '';
-            $limit = 20;
+            $limit = 18;
             // No title strip for horizontal menu
             if ($orientation=='vertical') {
                if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
