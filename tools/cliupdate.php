@@ -288,8 +288,8 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
-   include("../install/update_0831_084.php");
-   update0831to084();
+   include("../install/update_084_085.php");
+   update084to085();
 
    $migration->displayWarning("\nForced migration Done.");
 
