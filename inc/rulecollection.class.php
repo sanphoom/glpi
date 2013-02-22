@@ -1589,7 +1589,7 @@ static function processImportRules() {
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          $params['rule_itemtype'] = $this->getType();
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (in_array($this->getType(), $val)) {
+            if (is_array($val) && in_array($this->getType(), $val)) {
                $results = Plugin::doOneHook($plugin, "preProcessRuleCollectionPreviewResults",
                                             array('output' => $output,
                                                   'params' => $params));
