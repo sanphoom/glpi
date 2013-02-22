@@ -5055,6 +5055,7 @@ class Ticket extends CommonITILObject {
       $items[__('Associated element')] = "glpi_tickets.itemtype, glpi_tickets.items_id";
       $items[__('Category')]           = "glpi_itilcategories.completename";
       $items[__('Title')]              = "glpi_tickets.name";
+      $items[__('Planification')]      = "glpi_tickettasks.begin";
 
       foreach ($items as $key => $val) {
          $issort = 0;
@@ -5274,7 +5275,7 @@ class Ticket extends CommonITILObject {
     */
    static function showShort($id, $followups, $output_type=Search::HTML_OUTPUT, $row_num=0,
                              $id_for_massaction=0) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $rand = mt_rand();
 
@@ -5494,7 +5495,28 @@ class Ticket extends CommonITILObject {
          }
 
          echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
-                               $align_desc."width='300'");
+                               $align_desc."width='200'");
+
+
+         //tenth column
+         $tenth_column = '';
+
+         $plan  = new TicketTask();
+         $items = array();
+         foreach ($DB->request("glpi_tickettasks",
+                               array('tickets_id' => $job->fields['id'])) as $plan) {
+            $i = $plan['id'];
+            $items[$i]['begin'] = $plan['begin'];
+            $items[$i]['end']   = $plan['end'];
+
+            $tenth_column = sprintf(__('From %1$s to %2$s'),
+                                       ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                          Html::convDateTime($items[$i]['begin']),
+                                       ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                          Html::convDateTime($items[$i]['end']));
+         }
+         echo Search::showItem($output_type, $tenth_column, $item_num, $row_num,
+                               $align_desc);
 
          // Finish Line
          echo Search::showEndLine($output_type);
@@ -5616,7 +5638,9 @@ class Ticket extends CommonITILObject {
       }
 
       return " DISTINCT `glpi_tickets`.*,
-                        `glpi_itilcategories`.`completename` AS catname
+                        `glpi_itilcategories`.`completename` AS catname,
+                        `glpi_tickettasks`.`begin` AS beginplan,
+                        `glpi_tickettasks`.`end` AS endplan
                         $SELECT";
    }
 
@@ -5637,6 +5661,8 @@ class Ticket extends CommonITILObject {
                   ON (`glpi_tickets`.`id` = `glpi_suppliers_tickets`.`tickets_id`)
                LEFT JOIN `glpi_itilcategories`
                   ON (`glpi_tickets`.`itilcategories_id` = `glpi_itilcategories`.`id`)
+               LEFT JOIN `glpi_tickettasks`
+                  ON (`glpi_tickets`.`id` = `glpi_tickettasks`.`tickets_id`)
                $FROM";
    }
 
