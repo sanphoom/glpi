@@ -881,7 +881,7 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
-      
+
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
 
@@ -1647,7 +1647,7 @@ class Config extends CommonDBTM {
     * Get current DB version (compatible with all version of GLPI)
     *
     * @return DB version
-   **/   
+   **/
    static function getCurrentDBVersion() {
       global $DB;
 
@@ -1677,7 +1677,7 @@ class Config extends CommonDBTM {
     * @param $context string context to get values (default for glpi is core)
     * @param $names array of config names to get
     * @return array of config values
-   **/      
+   **/
    static function getConfigurationValues($context, array $names = array()) {
       global $DB;
 
@@ -1698,26 +1698,29 @@ class Config extends CommonDBTM {
       return $result;
    }
 
+
    /**
     * Set config values : create or update entry
     *
-    * @param $context string context to get values (default for glpi is core)
-    * @param $names array of config names to set
+    * @since version 0.85
+    *
+    * @param $context  string context to get values (default for glpi is core)
+    * @param $values   array  of config names to set
     * @return array of config values
    **/
-   static function setConfigurationValues($context, array $values = array()) {
+   static function setConfigurationValues($context, array $values= array()) {
+
       $config = new self();
       foreach ($values as $name => $value) {
          if ($config->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
 
-            $input = array('id'      => $this->getID(),
+            $input = array('id'      => $config->getID(),
                            'context' => $context,
                            'value'   => $value);
 
             $config->update($input);
 
          } else {
-
             $input = array('context' => $context,
                            'name'    => $name,
                            'value'   => $value);
@@ -1726,6 +1729,7 @@ class Config extends CommonDBTM {
          }
       }
    }
+
 
    /**
     * Delete config entries
