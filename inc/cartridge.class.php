@@ -687,7 +687,8 @@ class Cartridge extends CommonDBChild {
          } else {
             _e('No cartridge available');
          }
-
+         echo "&nbsp;&nbsp;&nbsp;".__('Number to install');
+         echo "&nbsp;<input  name='nbcart' value='1' size='3'>";
          echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
                          ".($installok?'':'disabled')." class='submit'>";
          echo "</td></tr>";

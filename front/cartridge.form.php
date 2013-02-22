@@ -63,10 +63,12 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["install"])) {
    if ($_POST["cartridgeitems_id"]) {
       $cartype->check($_POST["cartridgeitems_id"],'w');
-      if ($cart->install($_POST["printers_id"],$_POST["cartridgeitems_id"])) {
-         Event::log($_POST["printers_id"], "printers", 5, "inventory",
-                    //TRANS: %s is the user login
-                    sprintf(__('%s installs a cartridge'), $_SESSION["glpiname"]));
+      for ($i=0 ; $i<$_POST["nbcart"] ; $i++) {
+         if ($cart->install($_POST["printers_id"],$_POST["cartridgeitems_id"])) {
+            Event::log($_POST["printers_id"], "printers", 5, "inventory",
+                       //TRANS: %s is the user login
+                       sprintf(__('%s installs a cartridge'), $_SESSION["glpiname"]));
+         }
       }
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["printers_id"]);
