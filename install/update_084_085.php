@@ -69,9 +69,9 @@ function update084to085() {
                                  true);
    }
 
-   
+
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'config table'));
-   
+
    if (FieldExists('glpi_configs', 'version')) {
       if (!TableExists('origin_glpi_configs')) {
          $migration->copyTable('glpi_configs', 'origin_glpi_configs');
@@ -110,9 +110,9 @@ function update084to085() {
       $migration->dropField('glpi_configs', 'version');
       $migration->migrationOneTable('glpi_configs');
       $migration->dropTable('origin_glpi_configs');
-      
+
    }
-   
+
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'profile table'));
 
    if (!TableExists('glpi_profilerights')) {
@@ -157,6 +157,16 @@ function update084to085() {
       }
       $migration->migrationOneTable('glpi_profiles');
       $migration->dropTable('origin_glpi_profiles');
+
+      ProfileRight::addProfileRights(array('show_my_change', 'show_all_change', 'edit_all_change'));
+
+      ProfileRight::updateProfileRightAsOtherRight('show_my_change', '1',
+                                                   "`name` = 'own_ticket' AND `right`='1'");
+      ProfileRight::updateProfileRightAsOtherRight('show_all_change', '1',
+                                                   "`name` = 'show_all_ticket' AND `right`='1'");
+      ProfileRight::updateProfileRightAsOtherRight('edit_all_change', '1',
+                                                   "`name` = 'update_ticket' AND `right`='1'");
+
    }
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
@@ -330,18 +340,18 @@ function update084to085() {
    /// TODO add changetasktypes table as dropdown
    /// TODO review users linked to changetask
    /// TODO add display prefs
-
+/*
    ProfileRight::addProfileRights(array('show_my_change',
                                         'show_all_change',
                                         'edit_all_change'));
-                                        
+
    ProfileRight::updateProfileRightAsOtherRight('show_my_change', '1',
                                  "`name` = 'own_ticket' AND `right`='1'");
    ProfileRight::updateProfileRightAsOtherRight('show_all_change', '1',
                                  "`name` = 'show_all_ticket' AND `right`='1'");
    ProfileRight::updateProfileRightAsOtherRight('edit_all_change', '1',
                                  "`name` = 'update_ticket' AND `right`='1'");
-
+*/
    $migration->addField('glpi_profiles', 'change_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
 
@@ -395,12 +405,12 @@ function update084to085() {
       SET `uuid` = '$uuid'
       WHERE `id` = '".$data['id']."'";
       $DB->queryOrDie($query, "0.85 add uuid to existing rules");
-   }                        
+   }
 
    Config::setConfigurationValues('core', array('use_unicodefont' => 0));
    $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
 
-   
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
