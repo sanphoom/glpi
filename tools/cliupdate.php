@@ -177,12 +177,13 @@ if (TableExists("glpi_configs")) {
    die("Bad schema\n");
 }
 
-$query = "SELECT `version`, `language`
-          FROM `glpi_configs`";
+$query = "SELECT `name`, `value`
+          FROM `glpi_configs`
+          WHERE `name` IN ('version', 'language')";
 
 $result          = $DB->query($query) or die("get current version ".$DB->error());
-$current_version = trim($DB->result($result,0,0));
-$glpilanguage    = trim($DB->result($result,0,1));
+$current_version = trim($DB->result($result,0,'value'));
+$glpilanguage    = trim($DB->result($result,1,'value'));
 
 $migration = new CliMigration($current_version);
 
