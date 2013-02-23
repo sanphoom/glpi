@@ -3799,6 +3799,16 @@ class Ticket extends CommonITILObject {
          $showuserlink = 1;
       }
 
+
+      if ($options['template_preview']) {
+         // Add all values to fields of tickets for template preview
+         foreach ($values as $key => $val) {
+            if (!isset($this->fields[$key])) {
+               $this->fields[$key] = $val;
+            }
+         }
+      }
+
       // In percent
       $colsize1 = '13';
       $colsize2 = '29';
