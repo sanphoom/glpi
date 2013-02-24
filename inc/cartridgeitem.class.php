@@ -452,7 +452,7 @@ class CartridgeItem extends CommonDBTM {
     *
     * @return nothing (display)
    **/
-   static function dropdownForPrinter(Printer $printer, $options=array()) {
+   static function dropdownForPrinter(Printer $printer) {
       global $DB;
 
       $query = "SELECT COUNT(*) AS cpt,
@@ -482,12 +482,11 @@ class CartridgeItem extends CommonDBTM {
                $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
                $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);
                $datas[$data["tID"]] = $text;
-               $datas["cpt"]        = $data['cpt'];
             }
          }
       }
       if (count($datas)) {
-         return Dropdown::showFromArray('cartridgeitems_id', $datas, $options);
+         return Dropdown::showFromArray('cartridgeitems_id', $datas);
       }
       return false;
    }
