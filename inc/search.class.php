@@ -1179,16 +1179,28 @@ class Search {
                }
                // Specific column display
                if ($itemtype == 'CartridgeItem') {
+                  $extrastyle = '';
+                  if ($output_type != self::HTML_OUTPUT) {
+                     if (Cartridge::getUnusedNumber($data["id"]) <= $data["ALARM"]) {
+                        $extrastyle = "style=\"background-color: #cf9b9b;\"";
+                     }
+                  }
                   echo self::showItem($output_type,
                                       Cartridge::getCount($data["id"], $data["ALARM"],
                                                           $output_type != self::HTML_OUTPUT),
-                                      $item_num, $row_num);
+                                      $item_num, $row_num, $extrastyle);
                }
                if ($itemtype == 'ConsumableItem') {
+                  $extrastyle = '';
+                  if ($output_type != self::HTML_OUTPUT) {
+                     if (Consumable::getUnusedNumber($data["id"]) <= $data["ALARM"]) {
+                        $extrastyle = "style=\"background-color: #cf9b9b;\"";
+                     }
+                  }
                   echo self::showItem($output_type,
                                       Consumable::getCount($data["id"], $data["ALARM"],
                                                            $output_type != self::HTML_OUTPUT),
-                                      $item_num, $row_num);
+                                      $item_num, $row_num, $extrastyle);
                }
                if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
                   $typename = $data["TYPE"];
@@ -3830,7 +3842,7 @@ class Search {
             if (($ID <> 151) && !empty($data[$NAME.$num])
                 && ($data[$NAME.$num.'_2'] != CommonITILObject::WAITING)
                 && ($data[$NAME.$num] < $_SESSION['glpi_currenttime'])) {
-               return " class='tab_bg_2_2' ";
+               return " style=\"background-color: #cf9b9b\" ";
             }
 
          default :
@@ -5616,6 +5628,7 @@ class Search {
             $pdf->SetFont($font, '', 8);
             $pdf->AddPage();
             $PDF_TABLE.='</table>';
+//            print_r($PDF_TABLE);
             $pdf->writeHTML($PDF_TABLE, true, false, false, false, '');
             $pdf->Output('glpi.pdf', 'I');
             break;

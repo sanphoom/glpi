@@ -41,13 +41,6 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
       $_GET["export_all"]   = 1;
    }
 
-   // PDF case
-   if ($_GET["display_type"] == Search::PDF_OUTPUT_LANDSCAPE
-       || $_GET["display_type"] == Search::PDF_OUTPUT_PORTRAIT) {
-
-      include (GLPI_ROOT . "/lib/ezpdf/class.ezpdf.php");
-   }
-
    switch ($_GET["item_type"]) {
       case 'KnowbaseItem' :
          KnowbaseItem::showList($_GET, $_GET["is_faq"]);
