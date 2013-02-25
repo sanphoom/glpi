@@ -1381,6 +1381,7 @@ class AuthLDAP extends CommonDBTM {
       //If paged results cannot be used (PHP < 5.4)
       $cookie   = ''; //Cookie used to perform query using pages
       $count    = 0;  //Store the number of results ldap_search
+      
       do {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true, $cookie);
@@ -1566,7 +1567,7 @@ class AuthLDAP extends CommonDBTM {
 
                 //If user is marked as coming from LDAP, but is not present in it anymore
                 if (!$user['is_deleted']
-                    && ($user['auths_id'] == $options['ldapservers_id'])) {
+                   && ($user['auths_id'] == $options['ldapservers_id'])) {
                    User::manageDeletedUserInLdap($user['id']);
                    $results[self::USER_DELETED_LDAP] ++;
                 }
@@ -2055,7 +2056,8 @@ class AuthLDAP extends CommonDBTM {
                // Add the auth method
                // Force date sync
                $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
-
+               $user->fields['is_deleted_ldap'] = 0;
+               
                if ($action == self::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
@@ -2091,7 +2093,7 @@ class AuthLDAP extends CommonDBTM {
             $users_id = User::getIdByField('name', $params['value']);
             User::manageDeletedUserInLdap($users_id);
             return array('action' => self::USER_DELETED_LDAP,
-                         'id'     => $users_id);
+                          'id'     => $users_id);
          }
 
       } else {

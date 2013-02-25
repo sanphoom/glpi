@@ -652,7 +652,10 @@ class Auth extends CommonGLPI {
       // is not present on the DB, so we add him.
       // if not, we update him.
       if ($this->auth_succeded) {
-
+         
+         //Set user an not deleted from LDAP
+         $this->user->fields['is_deleted_ldap'] = 0;
+         
          // Prepare data
          $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
          if ($this->extauth) {

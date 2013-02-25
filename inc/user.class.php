@@ -745,13 +745,22 @@ class User extends CommonDBTM {
          }
       }
 
+      /*
+      //User was not present in LDAP, and it just comes back
+      if (in_array('is_deleted_ldap', $this->updates) && $this->fields['is_deleted_ldap'] == 0) {
+         $changes[0] = '0';
+         $changes[1] = '';
+         $changes[2] = __('User present in LDAP directory');
+         Log::history($this->getID(), 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+      }*/
+      
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
       $this->applyRightRules();
    }
 
 
-
+    
    // SPECIFIC FUNCTIONS
    /**
     * Apply rules to determine dynamic rights of the user
@@ -1740,6 +1749,9 @@ class User extends CommonDBTM {
                //TRANS: %s is the user dn
                echo '<br>'.sprintf(__('%1$s: %2$s'), __('User DN'), $this->fields["user_dn"]);
             }
+            if ($this->fields['is_deleted_ldap']) {
+               echo '<br>'.__('User missing in LDAP directory');
+            }
 
             echo "</td>";
          } else {
@@ -2482,6 +2494,12 @@ class User extends CommonDBTM {
       $tab[23]['name']                 = __('Last synchronization');
       $tab[23]['massiveaction']        = false;
 
+      $tab[24]['table']                = $this->getTable();
+      $tab[24]['field']                = 'is_deleted_ldap';
+      $tab[24]['name']                 = __('Deleted user in LDAP directory');
+      $tab[24]['datatype']             = 'bool';
+      $tab[24]['massiveaction']        = false;
+            
       $tab[80]['table']                = 'glpi_entities';
       $tab[80]['linkfield']            = 'entities_id';
       $tab[80]['field']                = 'completename';
@@ -3008,7 +3026,8 @@ class User extends CommonDBTM {
 
          $where = implode("','",$IDs);
          $query = "UPDATE `glpi_users`
-                   SET `authtype` = '$authtype', `auths_id` = '$server', `password` = ''
+                   SET `authtype` = '$authtype', `auths_id` = '$server', `password` = '',
+                       `is_deleted_ldap`=''
                    WHERE `id` IN ('$where')";
          if ($DB->query($query)) {
             foreach ($IDs as $ID) {
@@ -3313,13 +3332,21 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       //User is present in DB but not in the directory : it's been deleted in LDAP
-      $tmp['id'] = $users_id;
-      $myuser    = new User();
+      $tmp['id']              = $users_id;
+      $tmp['is_deleted_ldap'] = 1;
+      $myuser                 = new User();
+      $myuser->getFromDB($users_id);
+      
+      //User is already considered as delete from ldap
+      if ($myuser->fields['is_deleted_ldap'] == 1) {
+         return;
+      }
 
       switch ($CFG_GLPI['user_deleted_ldap']) {
          //DO nothing
          default :
          case 0 :
+            $myuser->update($tmp);
             break;
 
          //Put user in dustbin
@@ -3331,6 +3358,7 @@ class User extends CommonDBTM {
          case 2 :
             Profile_User::deleteRights($users_id, true);
             Group_User::deleteGroups($users_id, true);
+            $myuser->update($tmp);
             break;
 
          //Deactivate the user
@@ -3339,12 +3367,12 @@ class User extends CommonDBTM {
             $myuser->update($tmp);
             break;
       }
+      /*
       $changes[0] = '0';
       $changes[1] = '';
       $changes[2] = __('Deleted user in LDAP directory');
-      Log::history($users_id, 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+      Log::history($users_id, 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);*/
    }
-
 
    /**
     * @param $login
