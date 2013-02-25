@@ -3027,7 +3027,7 @@ class User extends CommonDBTM {
          $where = implode("','",$IDs);
          $query = "UPDATE `glpi_users`
                    SET `authtype` = '$authtype', `auths_id` = '$server', `password` = '',
-                       `is_deleted_ldap`=''
+                       `is_deleted_ldap`='0'
                    WHERE `id` IN ('$where')";
          if ($DB->query($query)) {
             foreach ($IDs as $ID) {
