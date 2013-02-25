@@ -321,7 +321,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
    //Fill the database
    function fill_db() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       //include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
@@ -330,12 +330,8 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.85-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
-
       // update default language
-      $query = "UPDATE `glpi_configs`
-                SET `language` = '".$_SESSION["glpilanguage"]."'";
-      $DB->queryOrDie($query, "4203");
-
+      Config::setConfigurationValues('core', array('language' => $_SESSION["glpilanguage"]));
       $query = "UPDATE `glpi_users`
                 SET `language` = NULL";
       $DB->queryOrDie($query, "4203");
@@ -343,7 +339,6 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
 
    $link = mysql_connect($host,$user,$password);
-
    if (!empty($databasename)) { // use db already created
       $DB_selected = mysql_select_db($databasename, $link);
 
@@ -356,6 +351,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
          if (create_conn_file($host,$user,$password,$databasename)) {
             fill_db();
             echo "<p>".__('OK - database was initialized')."</p>";
+
             next_form();
 
          } else { // can't create config_db file
