@@ -5434,7 +5434,7 @@ class Search {
 
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-            $PDF_TABLE .= "<th>";
+            $PDF_TABLE .= "<th $options>";
             $PDF_TABLE .= Html::clean($value);
             $PDF_TABLE .= "</th>\n";
             break;
@@ -5490,7 +5490,7 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-            $PDF_TABLE .= "<td valign='top'>";
+            $PDF_TABLE .= "<td $extraparam valign='top'>";
             $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
             $PDF_TABLE .= "</td>\n";
 
