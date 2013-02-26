@@ -42,6 +42,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    public $html_tags = array('##ticket.solution.description##');
 
+   const HEADERTAG = '=-=-=-=';
+   const FOOTERTAG = '=_=_=_=';
+   
+
 
    /**
     * @param $entity          (default '')
@@ -102,7 +106,20 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       return parent::getSubjectPrefix();
    }
 
+   /**
+   * Get header to add to content
+   **/
+   function getContentHeader() {
+      return self::HEADERTAG.' '.__('To answer by email, write above this line').' '.self::HEADERTAG;
+   }
 
+   /**
+   * Get footer to add to content
+   **/
+   function getContentFooter() {
+      return self::FOOTERTAG.' '.__('To answer by email, write under this line').' '.self::FOOTERTAG;
+   }
+   
    /**
     * @since version 0.84
     *

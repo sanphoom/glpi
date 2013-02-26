@@ -128,7 +128,7 @@ class MailCollector  extends CommonDBTM {
          $input["host"] = Toolbox::constructMailServerConfig($input);
       }
 
-      if (!NotificationMail::isUserAddressValid($input['name'])) {
+      if (isset($input['name']) && !NotificationMail::isUserAddressValid($input['name'])) {
          Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
       }
 
@@ -689,6 +689,7 @@ class MailCollector  extends CommonDBTM {
       // For followup : do not check users_id = login user
       $tkt['_do_not_check_users_id'] = 1;
       $body                          = $this->getBody($i);
+
       // Do it before using charset variable
       $head['subject']               = $this->decodeMimeString($head['subject']);
       $tkt['_head']                  = $head;
@@ -704,12 +705,7 @@ class MailCollector  extends CommonDBTM {
       } else {
          $tkt['content'] = $body;
       }
-
-      // Add message from getAttached
-      if ($this->addtobody) {
-         $tkt['content'] .= $this->addtobody;
-      }
-
+      
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
          if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
@@ -731,6 +727,8 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
+      $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
+      
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
          // it's a reply to a previous ticket
@@ -747,29 +745,51 @@ class MailCollector  extends CommonDBTM {
 
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
-            $first_comment  = true;
             $to_keep        = array();
 
             // Move requester to author of followup :
             $tkt['users_id'] = $tkt['_users_id_requester'];
 
+            $begin_strip = -1;
+            $end_strip = -1;
+            $begin_match = "/".NotificationTargetTicket::HEADERTAG.".*".NotificationTargetTicket::HEADERTAG."/";
+            $end_match = "/".NotificationTargetTicket::FOOTERTAG.".*".NotificationTargetTicket::FOOTERTAG."/";
             foreach ($content as $ID => $val) {
-               if (isset($val[0]) && ($val[0] == '>')) {
-                  // Delete line at the top of the first comment
-                  if ($first_comment) {
-                     $first_comment = false;
-                     // Do not drop line before comment because may be real text
-//                      if (isset($to_keep[$ID-1])) {
-//                         unset($to_keep[$ID-1]);
-//                      }
+               // Get first tag for begin
+               if ($begin_strip < 0) {
+                  if (preg_match($begin_match,$val)) {
+                     $begin_strip = $ID;
                   }
-               } else {
-                  $to_keep[$ID] = $ID;
+               }
+               // Get last tag for end
+               if ($begin_strip >= 0) {
+                  if (preg_match($end_match,$val)) {
+                     $end_strip = $ID;
+                     continue;
+                  }
                }
             }
 
-            foreach ($to_keep as $ID ) {
-               $tkt['content'] .= $content[$ID]."\n";
+            if ($begin_strip>=0) {
+               // Clean first and last lines
+               $content[$begin_strip] = preg_replace($begin_match,'',$content[$begin_strip]);
+            }
+            if ($end_strip>=0) {
+               // Clean first and last lines
+               $content[$end_strip] = preg_replace($end_match,'',$content[$end_strip]);
+            }
+
+            if ($begin_strip>=0) {
+               $length = count($content);
+               // Use end strip if set
+               if ($end_strip >=0 && $end_strip < $length) {
+                  $length = $end_strip;
+               }
+               
+               for ($i = ($begin_strip+1); $i < $length; $i++) {
+                  unset($content[$i]);
+               }
+               $tkt['content'] = implode("\n",$content);
             }
 
             // Do not play rules for followups : WRONG : play rules only for refuse options
@@ -782,6 +802,11 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
+      
+      // Add message from getAttached
+      if ($this->addtobody) {
+         $tkt['content'] .= $this->addtobody;
+      }
       $tkt['name'] = $this->textCleaner($head['subject']);
       if (!isset($tkt['tickets_id'])) {
          // Which entity ?
@@ -799,7 +824,6 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
-      $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
 
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
@@ -1065,8 +1089,9 @@ class MailCollector  extends CommonDBTM {
    **/
    function get_mime_type(&$structure) {
 
-      $primary_mime_type = array("APPLICATION", "AUDIO", "IMAGE", "MESSAGE", "MULTIPART", "OTHER",
-                                 "TEXT", "VIDEO");
+      // DO NOT REORDER IT
+      $primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO",
+                                 "IMAGE", "VIDEO", "OTHER");
 
       if ($structure->subtype) {
          return $primary_mime_type[intval($structure->type)] . '/' . $structure->subtype;
@@ -1371,7 +1396,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function deleteMails($mid, $folder='') {
 
-      if ($folder) {
+      if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
             return true;

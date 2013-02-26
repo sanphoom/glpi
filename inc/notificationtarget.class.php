@@ -161,6 +161,20 @@ class NotificationTarget extends CommonDBChild {
    }
 
    /**
+   * Get header to add to content
+   **/
+   function getContentHeader() {
+      return '';
+   }
+
+   /**
+   * Get footer to add to content
+   **/
+   function getContentFooter() {
+      return '';
+   }
+   
+   /**
     * @since version 0.84
     *
     * @return message id for notification
