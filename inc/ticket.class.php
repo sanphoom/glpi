@@ -1072,7 +1072,6 @@ class Ticket extends CommonITILObject {
 
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
-
       // save value before clean;
       $title = ltrim($input['name']);
 
@@ -4161,7 +4160,9 @@ class Ticket extends CommonITILObject {
          printf(__('%1$s%2$s'), __('Approval request'), $tt->getMandatoryMark('_add_validation'));
          echo $tt->getEndHiddenFieldText('_add_validation');
       } else {
+         echo $tt->getBeginHiddenFieldText('global_validation');
          _e('Approval');
+         echo $tt->getEndHiddenFieldText('global_validation');
       }
       echo "</th>";
       echo "<td>";
@@ -4184,7 +4185,12 @@ class Ticket extends CommonITILObject {
                                  'value'  => $values['_add_validation']));
          }
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
+         if ($tt->isPredefinedField('global_validation')) {
+            echo "<input type='hidden' name='global_validation' value='".$tt->predefined['global_validation']."'>";
+         }
       } else {
+         echo $tt->getBeginHiddenFieldValue('global_validation');
+
          if ($canupdate) {
             TicketValidation::dropdownStatus('global_validation',
                                              array('global' => true,
@@ -4192,6 +4198,8 @@ class Ticket extends CommonITILObject {
          } else {
             echo TicketValidation::getStatus($this->fields['global_validation']);
          }
+         echo $tt->getEndHiddenFieldValue('global_validation',$this);
+         
       }
       echo "</td></tr>";
 
