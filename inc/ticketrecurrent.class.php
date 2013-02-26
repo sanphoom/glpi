@@ -314,7 +314,7 @@ class TicketRecurrent extends CommonDropdown {
          return 'NULL';
       }
       if (!empty($end_date) && ($end_date <> 'NULL')) {
-         if (strtotime($begin_date) < time()) {
+         if (strtotime($end_date) < time()) {
             return 'NULL';
          }
       }
