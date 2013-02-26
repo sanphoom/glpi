@@ -88,7 +88,7 @@ class RuleAction extends CommonDBChild {
       if (isset($this->input['rules_id'])
          && $realrule = Rule::getRuleObjectByID($this->input['rules_id'])) {
          $realrule->update(array('id'       => $this->input['rules_id'],
-                           'date_mod' => $_SESSION['glpi_currenttime']));
+                                 'date_mod' => $_SESSION['glpi_currenttime']));
       }
    }
 
@@ -97,7 +97,7 @@ class RuleAction extends CommonDBChild {
       if (isset($this->fields['rules_id'])
          && $realrule = Rule::getRuleObjectByID($this->fields['rules_id'])) {
          $realrule->update(array('id'       => $this->fields['rules_id'],
-                           'date_mod' => $_SESSION['glpi_currenttime']));
+                                 'date_mod' => $_SESSION['glpi_currenttime']));
       }
    }
    
