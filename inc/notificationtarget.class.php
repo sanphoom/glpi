@@ -136,7 +136,8 @@ class NotificationTarget extends CommonDBChild {
 
       if (!$notify_me) {
          if (isset($infos['users_id'])
-             && ($infos['users_id'] === Session::getLoginUserID())) {
+            // Check login user and not event launch by crontask
+             && ($infos['users_id'] === Session::getLoginUserID(false))) {
             return false;
          }
       }

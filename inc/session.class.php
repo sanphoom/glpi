@@ -624,7 +624,7 @@ class Session {
       return (isset($_SESSION["glpicronuserrunning"])
               && (isCommandLine()
                   || strpos($_SERVER['PHP_SELF'], 'cron.php')
-                  || strpos($_SERVER['REQUEST_URI'], 'crontask.php?execute')));
+                  || strpos($_SERVER['PHP_SELF'], 'crontask.form.php')));
    }
 
 
