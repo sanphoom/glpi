@@ -235,6 +235,7 @@ class Ajax {
 
       $rand = mt_rand();
       if (count($tabs)>0) {
+      
          echo "<div id='tabs$rand' class='center'>";
          echo "<ul>";
          $current = 0;
@@ -261,9 +262,23 @@ class Ajax {
             echo $title."</a></li>";
             $current ++;
          }
-         echo "</ul></div>";
+         echo "</ul>";
+         echo "<div class='loadingindicator' id='loadingindicator$rand'>".__('Loading...')."</div>";
+         
+         echo "</div>";
 
          echo "<script type='text/javascript'>";
+         // Show loading indicator
+         echo "$.ajaxSetup({
+                  cache:false,
+                  beforeSend: function() {
+                     $('#loadingindicator$rand').show()
+                  },
+                  complete: function(){
+                     $('#loadingindicator$rand').hide()
+                  },
+                  success: function() {}
+               });  ";
          echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'},
          activate : function( event, ui ){
             //  Get future value

@@ -82,3 +82,13 @@
 html .ui-autocomplete {
    height: 100px;
 }
+
+.loadingindicator {
+   -moz-border-radius: 10px;
+   -webkit-border-radius: 10px;
+   -o-border-radius: 10px;
+   border: 1px solid  #CC9900;
+   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
+   max-width: 350px;
+   margin : auto;
+}
