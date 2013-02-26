@@ -1082,7 +1082,7 @@ class Rule extends CommonDBTM {
          $paramsma = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
                            'check_items_id' => $rules_id,
-                           'container'  => 'mass'.$this->ruleactionclass.$rand);
+                           'container'  => 'mass'.$this->rulecriteriaclass.$rand);
          Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
       }
 
