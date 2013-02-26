@@ -43,7 +43,7 @@ class TicketRecurrent extends CommonDropdown {
    public $dohistory              = true;
 
    // From CommonDropdown
-   public $first_level_menu       = "maintain";
+   public $first_level_menu       = "helpdesk";
    public $second_level_menu      = "ticketrecurrent";
 
    public $display_dropdowntitle  = false;
