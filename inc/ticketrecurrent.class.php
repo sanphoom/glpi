@@ -84,7 +84,7 @@ class TicketRecurrent extends CommonDropdown {
       if (Session::haveRight("tickettemplate","r")) {
          switch ($item->getType()) {
             case 'TicketRecurrent' :
-               $ong[1] = self::getTypeName(2);
+               $ong[1] = _n('Information', 'Information', 2);
                return $ong;
          }
       }
@@ -95,7 +95,8 @@ class TicketRecurrent extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('TicketRecurrent', $ong, $options);
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
