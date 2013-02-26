@@ -1480,7 +1480,7 @@ class Config extends CommonDBTM {
             $tabs[2] = __('Default values');   // Prefs
             $tabs[3] = __('Assets');
             $tabs[4] = __('Assistance');
-            $tabs[5] = __('System information');
+            $tabs[5] = __('System');
 
             if (DBConnection::isDBSlaveActive()) {
                $tabs[6]  = _n('Mysql replica', 'Mysql replicas', 2);  // Slave
