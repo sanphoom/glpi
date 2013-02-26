@@ -251,9 +251,9 @@ class Ajax {
             // No title strip for horizontal menu
             if ($orientation=='vertical') {
                if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
-                  $title = Html::resume_text($regs[1],$limit).$regs[2];
+                  $title = Html::resume_text(trim($regs[1]),$limit).$regs[2];
                } else {
-                  $title = Html::resume_text($val['title'],$limit);
+                  $title = Html::resume_text(trim($val['title']),$limit);
                }
             } else {
                $title = $val['title'];

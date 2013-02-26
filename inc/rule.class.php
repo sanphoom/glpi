@@ -2769,7 +2769,7 @@ class Rule extends CommonDBTM {
 
             default:
                if ($item instanceof Rule) {
-                  return $this->getTypeName(1);
+                  return sprintf('%1$s / %2$s', _n('Criterion', 'Criteria', 2), _n('Action', 'Actions', 2));
                }
          }
       }
