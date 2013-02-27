@@ -75,6 +75,10 @@ class Auth extends CommonGLPI {
       $this->user = new User();
    }
 
+   static function canView() {
+      return Session::haveRight('config', 'w');
+   }
+
    /**
     *  @see CommonGLPI::getMenuContent()
    **/

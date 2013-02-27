@@ -65,7 +65,13 @@ class MigrationCleaner extends CommonGLPI {
          }
       }
 
-      return $_SESSION['glpishowmigrationcleaner'];
+      if ($_SESSION['glpishowmigrationcleaner']
+          && (Session::haveRight("networking", "w")
+              || Session::haveRight("internet", "w"))) {
+         return true;
+      }
+
+      return false;
    }
 
 }

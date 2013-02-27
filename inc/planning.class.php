@@ -39,6 +39,8 @@ if (!defined('GLPI_ROOT')) {
 
 class Planning extends CommonGLPI {
 
+   
+
    static function getTypeName($nb=0) {
       return __('Planning');
    }
@@ -50,6 +52,11 @@ class Planning extends CommonGLPI {
       return 'p';
    }
 
+   static function canView() {
+      return (Session::haveRight("show_planning","1")
+         || Session::haveRight("show_all_planning","1")
+         || Session::haveRight("show_group_planning","1"));
+   }
 
    function defineTabs($options=array()) {
 

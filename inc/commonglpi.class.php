@@ -262,10 +262,13 @@ class CommonGLPI {
 
          }
       } else {
+         if (!method_exists($type, 'canView')
+               || $item->canView()) {
             $menu['title']           = static::getMenuName();
             $menu['shortcut']        = static::getMenuShorcut();
             $menu['page']            = static::getSearchURL(false);
             $menu['links']['search'] = static::getSearchURL(false);
+         }
       }
       if ($data = static::getAdditionalMenuOptions()) {
          $menu['options'] = $data;

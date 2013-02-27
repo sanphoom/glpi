@@ -55,6 +55,10 @@ class Report extends CommonGLPI{
       return 'e';
    }
    
+   static function canView() {
+      return Session::haveRight("reports","r");
+   }
+
    /**
     * Show report title
     *

@@ -51,6 +51,10 @@ class Stat extends CommonGLPI {
       return 'a';
    }
 
+   static function canView() {
+      return Session::haveRight("statistic","1");
+   }
+
    /**
     * @param $itemtype
     * @param $date1
