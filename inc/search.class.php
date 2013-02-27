@@ -4259,7 +4259,10 @@ class Search {
             return $out;
 
          case "glpi_tickets.due_date" :
+            // Due date + progress
             if ($ID == 151) {
+               $out = Html::convDate($data[$NAME.$num]);
+
                // No due date in waiting status
                if ($data[$NAME.$num.'_2'] == CommonITILObject::WAITING) {
                   return '';
@@ -4336,7 +4339,7 @@ class Search {
                }
 
                //Calculate bar progress
-               $out  = "<div class='center' style='background-color: #ffffff; width: 100%;
+               $out .= "<div class='center' style='background-color: #ffffff; width: 100%;
                          border: 1px solid #9BA563;' >";
                $out .= "<div style='position:absolute;'>&nbsp;".$percentage_text."%</div>";
                $out .= "<div class='center' style='background-color: ".$color.";
