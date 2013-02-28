@@ -876,7 +876,7 @@ class RuleCollection extends CommonDBTM {
     *
     * Check if a criterion is a dropdown or not
     * @since 0.84
-    * @param Available criteria for this rule
+    * @param $available_criteria available criterai for this rule
     * @param $condition the rulecriteria condition
     * @param $criterion the criterion
     *

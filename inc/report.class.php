@@ -62,7 +62,6 @@ class Report extends CommonGLPI{
    /**
     * Show report title
     *
-    * @param none
    **/
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -156,7 +155,6 @@ class Report extends CommonGLPI{
    /**
     * Show Default Report
     *
-    * @param none
    **/
    static function showDefaultReport() {
       global $DB;

@@ -1735,7 +1735,7 @@ class Config extends CommonDBTM {
     * Delete config entries
     *
     * @param $context string context to get values (default for glpi is core)
-    * @param $names array of config names to delete
+    * @param $values array of config names to delete
     * @return array of config values
    **/
    static function deleteConfigurationValues($context, array $values = array()) {

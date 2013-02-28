@@ -222,6 +222,7 @@ class Ajax {
     *                                                                params => 'url_params')...
     * @param $type                     itemtype for active tab
     * @param $ID                       ID of element for active tab
+    * @param $orientation              orientation of tabs (default vertical may also be horizontal)
     * @param $size                     width of tabs panel (default 950)
     *
     * @return nothing
