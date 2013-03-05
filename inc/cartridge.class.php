@@ -47,6 +47,7 @@ class Cartridge extends CommonDBChild {
    // From CommonDBTM
    static protected $forward_entity_to = array('Infocom');
    public $dohistory                   = true;
+   var $no_form_page                   = true;
 
    // From CommonDBChild
    static public $itemtype             = 'CartridgeItem';
