@@ -5787,9 +5787,23 @@ CREATE TABLE `glpi_states` (
   `level` int(11) NOT NULL DEFAULT '0',
   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
   `sons_cache` longtext COLLATE utf8_unicode_ci,
+  `is_visible_computer` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_monitor` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_networkequipment` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_peripheral` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_phone` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_printer` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_softwareversion` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `unicity` (`states_id`,`name`)
+  KEY `unicity` (`states_id`,`name`),
+  KEY `is_visible_computer` (`is_visible_computer`),
+  KEY `is_visible_monitor` (`is_visible_monitor`),
+  KEY `is_visible_networkequipment` (`is_visible_networkequipment`),
+  KEY `is_visible_peripheral` (`is_visible_peripheral`),
+  KEY `is_visible_phone` (`is_visible_phone`),
+  KEY `is_visible_printer` (`is_visible_printer`),
+  KEY `is_visible_softwareversion` (`is_visible_softwareversion`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

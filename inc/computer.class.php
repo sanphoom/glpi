@@ -415,7 +415,8 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value' => $this->fields["states_id"],
+                            'condition' => "`is_visible_computer`='1'"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -740,7 +741,8 @@ class Computer extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
-
+      $tab[31]['condition']      = "`is_visible_computer`='1'";
+      
       $tab[45]['table']          = 'glpi_operatingsystems';
       $tab[45]['field']          = 'name';
       $tab[45]['name']           = __('Operating system');

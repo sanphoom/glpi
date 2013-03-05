@@ -181,7 +181,8 @@ class Peripheral extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".__('Status')."</td>\n";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value' => $this->fields["states_id"],
+                            'condition' => "`is_visible_peripheral`='1'"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -433,7 +434,8 @@ class Peripheral extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']        = 'dropdown';
-
+      $tab[31]['condition']      = "`is_visible_peripheral`='1'";
+      
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
       $tab[5]['name']            = __('Serial number');

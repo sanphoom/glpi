@@ -238,7 +238,15 @@ abstract class CommonDropdown extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
          }
-
+         
+         if (!isset($field['type'])) {
+            $field['type'] = '';
+         }
+          
+         if ($field['name'] == 'header') {
+            echo "<tr class='tab_bg_1'><th colspan='2'>".$field['label']."</th></tr>";
+            continue;
+         }
 
          echo "<tr class='tab_bg_1'><td>".$field['label'];
          if (isset($field['comment']) && !empty($field['comment'])) {
@@ -246,9 +254,7 @@ abstract class CommonDropdown extends CommonDBTM {
             Html::showToolTip($field['comment']);
          }
          echo "</td><td>";
-         if (!isset($field['type'])) {
-            $field['type'] = '';
-         }
+
          switch ($field['type']) {
             case 'UserDropdown' :
                $param = array('name'   => $field['name'],

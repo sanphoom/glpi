@@ -414,6 +414,15 @@ function update084to085() {
    $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
 
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_states'));
+   foreach (array('is_visible_computer', 'is_visible_monitor', 'is_visible_networkequipment',
+                  'is_visible_peripheral', 'is_visible_phone', 'is_visible_printer',
+                  'is_visible_softwareversion') as $field)  {
+      $migration->addField('glpi_states', $field, 'bool',
+                           array('value' => '1'));
+      $migration->addKey('glpi_states', $field);
+   }
+    
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -42,7 +42,22 @@ class State extends CommonTreeDropdown {
       return _n('Status of items', 'Statuses of items', $nb);
    }
 
-
+   function getAdditionalFields() {
+   
+      $fields   = parent::getAdditionalFields();
+      $fields[] = array('label' => __('Visibility'), 'name' => 'header');
+      
+      foreach (array('Computer', 'Monitor', 'Printer', 'NetworkEquipment', 'Softwareversion',
+                     'Phone', 'Peripheral') as $type) {
+         $name     = "is_visible_".strtolower($type);
+         $fields[] = array('name'  => $name,
+                           'label' => $type::getTypeName(),
+                           'type'  => 'bool',
+                           'list'  => false);
+      }
+      return $fields;
+   }
+    
    /**
     * Dropdown of states for behaviour config
     *
@@ -184,6 +199,17 @@ class State extends CommonTreeDropdown {
       }
    }
 
+   
+   function getEmpty() {
+      parent::getEmpty();
+      //initialize is_visible_* fields at true to keep the same behavior as in older versions
+      $fields = array('is_visible_computer', 'is_visible_softwareversion', 'is_visible_monitor',
+                      'is_visible_printer', 'is_visible_peripheral', 'is_visible_phone',
+                      'is_visible_networkequipment');
+      foreach ($fields as $field) {
+         $this->fields[$field] = 1;
+      }
+   }
 
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);

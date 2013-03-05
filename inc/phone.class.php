@@ -178,7 +178,8 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value' => $this->fields["states_id"],
+                            'condition' => "`is_visible_computer`='1'"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -462,7 +463,8 @@ class Phone extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
-
+      $tab[31]['condition']      = "`is_visible_phone`='1'";
+      
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
       $tab[5]['name']            = __('Serial Number');
