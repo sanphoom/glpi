@@ -179,7 +179,7 @@ class Phone extends CommonDBTM {
       echo "<td>".__('Status')."</td>";
       echo "<td>";
       State::dropdown(array('value' => $this->fields["states_id"],
-                            'condition' => "`is_visible_computer`='1'"));
+                            'condition' => "`is_visible_phone`='1'"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

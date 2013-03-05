@@ -38,6 +38,15 @@ if (!defined('GLPI_ROOT')) {
 /// Class State
 class State extends CommonTreeDropdown {
 
+   protected $visibility_fields = array('Computer'         => 'is_visible_computer',
+                                    'SoftwareVersion'  => 'is_visible_softwareversion',
+                                    'Monitor'          => 'is_visible_monitor',
+                                    'Printer'          => 'is_visible_printer',
+                                    'Peripheral'       => 'is_visible_peripheral',
+                                    'Phone'            => 'is_visible_phone',
+                                    'NetworkEquipment' => 'is_visible_networkequipment');
+
+
    static function getTypeName($nb=0) {
       return _n('Status of items', 'Statuses of items', $nb);
    }
@@ -47,10 +56,8 @@ class State extends CommonTreeDropdown {
       $fields   = parent::getAdditionalFields();
       $fields[] = array('label' => __('Visibility'), 'name' => 'header');
       
-      foreach (array('Computer', 'Monitor', 'Printer', 'NetworkEquipment', 'Softwareversion',
-                     'Phone', 'Peripheral') as $type) {
-         $name     = "is_visible_".strtolower($type);
-         $fields[] = array('name'  => $name,
+      foreach ($this->visibility_fields as $type => $field) {
+         $fields[] = array('name'  => $field,
                            'label' => $type::getTypeName(),
                            'type'  => 'bool',
                            'list'  => false);
@@ -203,10 +210,7 @@ class State extends CommonTreeDropdown {
    function getEmpty() {
       parent::getEmpty();
       //initialize is_visible_* fields at true to keep the same behavior as in older versions
-      $fields = array('is_visible_computer', 'is_visible_softwareversion', 'is_visible_monitor',
-                      'is_visible_printer', 'is_visible_peripheral', 'is_visible_phone',
-                      'is_visible_networkequipment');
-      foreach ($fields as $field) {
+      foreach ($this->visibility_fields as $type => $field) {
          $this->fields[$field] = 1;
       }
    }
