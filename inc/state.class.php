@@ -219,5 +219,21 @@ class State extends CommonTreeDropdown {
       Rule::cleanForItemCriteria($this);
    }
 
+
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+
+      $state = new self();
+      // Get visibility information from parent if not set
+      if (isset($input['states_id']) && $state->getFromDB($input['states_id'])) {
+         foreach ($this->visibility_fields as $type => $field) {
+            if (!isset($input[$field]) && isset($state->fields[$field])) {
+               $input[$field] = $state->fields[$field];
+            }
+         }
+      }
+      return $input;
+   }
+   
 }
 ?>
