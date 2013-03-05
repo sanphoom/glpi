@@ -157,7 +157,7 @@ class FieldUnicity extends CommonDropdown {
          $options[0] = Dropdown::EMPTY_VALUE;
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
-               if ($item->can(-1,'r')) {
+               if ($item->canCreate()) {
                   $options[$itemtype] = $item->getTypeName(1);
                }
             }
