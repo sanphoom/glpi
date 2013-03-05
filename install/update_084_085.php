@@ -413,7 +413,8 @@ function update084to085() {
    Config::setConfigurationValues('core', array('use_unicodefont' => 0));
    $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
 
-
+   $migration->addField('glpi_links', 'open_window', 'bool', array('value' => 1));
+   
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_states'));
    foreach (array('is_visible_computer', 'is_visible_monitor', 'is_visible_networkequipment',
                   'is_visible_peripheral', 'is_visible_phone', 'is_visible_printer',

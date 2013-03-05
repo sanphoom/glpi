@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -93,6 +93,11 @@ class Link extends CommonDBTM {
       $DB->query($query2);
    }
 
+   function getEmpty() {
+      parent::getEmpty();
+      //Keep the same behavior as in previous versions
+      $this->fields['open_window'] = 1;
+   }
 
    /**
    * Print the link form
@@ -113,9 +118,13 @@ class Link extends CommonDBTM {
                             [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP]</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
-      echo "<td colspan='3'>";
-      Html::autocompletionTextField($this, "name", array('size' => 84));
-      echo "</td></tr>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "name");
+      echo "</td>";
+      echo "<td>".__('Open in a new window')."</td><td>";
+      Dropdown::showYesNo('open_window', $this->fields['open_window']);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
       echo "<td colspan='2'>";
@@ -375,8 +384,9 @@ class Link extends CommonDBTM {
       $query = "SELECT `glpi_links`.`id`,
                        `glpi_links`.`link` AS link,
                        `glpi_links`.`name` AS name ,
-                       `glpi_links`.`data` AS data
-                FROM `glpi_links`
+                       `glpi_links`.`data` AS data,
+                       `glpi_links`.`open_window` AS open_window
+            FROM `glpi_links`
                 INNER JOIN `glpi_links_itemtypes`
                      ON `glpi_links`.`id` = `glpi_links_itemtypes`.`links_id`
                 WHERE `glpi_links_itemtypes`.`itemtype`='".$item->getType()."' " .
@@ -406,7 +416,11 @@ class Link extends CommonDBTM {
                   $name =  (isset($names[$key]) ? $names[$key] : reset($names));
                   echo "<tr class='tab_bg_2'>";
                   $url = $link;
-                  echo "<td class='center'><a href='$url' target='_blank'>";
+                  echo "<td class='center'><a href='$url'";
+                  if ($data['open_window']) {
+                     echo " target='_blank'";
+                  }
+                  echo ">";
                   $linkname = sprintf(__('%1$s #%2$s'), $name, $i);
                   $linkname = printf(__('%1$s: %2$s'), $linkname, $link);
                   echo "</a></td></tr>";
