@@ -97,7 +97,6 @@ if ($_GET["action"] == "edit") {
                                    'itemtype' => $_GET["itemtype"]));
    }
 } else {
-   $bookmark->showNavigationHeader();
-   $bookmark->showTabsContent();
+   $bookmark->display();
 }
 ?>
