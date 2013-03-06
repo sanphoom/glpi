@@ -1220,10 +1220,21 @@ function getUserName($ID, $link=0) {
                                                                         $data["usercategories_id"]));
             }
             if (count($comments)) {
-               foreach ($comments as $data) {
-               $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",
-                                   "<span class='b'>".$data['name']."</span>", $data['value']);
+               $user['comment'] = $user['comment'];
+               foreach ($comments as $datas) {
+                  $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",
+                                   "<span class='b'>".$datas['name']."</span>", $datas['value']);
                }
+            }
+
+            if (!empty($data['picture'])) {
+               $last_dot_index = strrpos($data['picture'], '.');
+               $thumbnail = $data['picture'];
+               $thumbnail = substr_replace($data['picture'], "_min.", $last_dot_index, 1);
+               $user['comment'] = "<div class='tooltip_picture_border'>".
+                  "<img  class='tooltip_picture' src='".$CFG_GLPI["root_doc"].
+                  "/front/document.send.php?file=_pictures/$thumbnail' /></div>".
+                  "<div class='tooltip_text'>".$user['comment']."</div>";
             }
          } else {
             $user = $username;

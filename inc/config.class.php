@@ -1576,7 +1576,9 @@ class Config extends CommonDBTM {
                             GLPI_RSS_DIR
                                     => __('Checking write permissions for rss files'),
                             GLPI_UPLOAD_DIR
-                                    => __('Checking write permissions for upload files'));
+                                    => __('Checking write permissions for upload files'),
+                            GLPI_PICTURE_DIR
+                                    => __('Checking write permissions for pictures files'));
       $error = 0;
       foreach ($dir_to_check as $dir => $message) {
          if (!$fordebug) {

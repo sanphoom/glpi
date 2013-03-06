@@ -927,6 +927,22 @@ class Toolbox {
       }
       echo "</tr>";
 
+      //Test for GD extension.
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('GD extension test')."</td>";
+
+      if (!extension_loaded('gd')) {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
+               __('GD extension of your parser PHP is not installed')."></td>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
+               __s('The functionality is found - Perfect!'). "\" title=\"".
+               __s('The functionality is found - Perfect!').
+               "\"></td>";
+      }
+      echo "</tr>";
+
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
 
@@ -1111,6 +1127,51 @@ class Toolbox {
             unlink($dir);
          }
       }
+   }
+
+   /** 
+    * Resize a picture to the new size 
+    * 
+    * @param $source_path string : path of the picture to be resized
+    * @param $dest_path string : path of the new resized picture
+    * @param $new_width string : new width after resized
+    * @param $new_height string : new height after resized
+    * @return bool : true or false
+   **/
+   static function resizePicture($source_path, $dest_path, $new_width = 71, $new_height = 71) {
+
+      //get img informations (dimensions and extension)
+      $img_infos  = getimagesize($source_path);
+      $img_width  = $img_infos[0];
+      $img_height = $img_infos[1];
+      $img_type   = $img_infos[2];
+
+      switch ($img_type) {
+         case IMAGETYPE_BMP:
+            $source_res = imagecreatefromwbmp($source_path);
+            break;
+         case IMAGETYPE_GIF:
+            $source_res = imagecreatefromgif($source_path);
+            break;
+         case IMAGETYPE_JPEG:
+            $source_res = imagecreatefromjpeg($source_path);
+            break;
+         case IMAGETYPE_PNG:
+            $source_res = imagecreatefrompng($source_path);
+            break;
+         default:
+            return false;
+      }
+
+      //create new img ressource for store thumbnail
+      $source_dest = imagecreatetruecolor($new_width, $new_height);
+
+      //resize image
+      imagecopyresampled($source_dest, $source_res, 0, 0, 0, 0, 
+                         $new_width, $new_height, $img_width, $img_height);
+
+      //output img
+      return imagejpeg($source_dest, $dest_path, 90);
    }
 
 

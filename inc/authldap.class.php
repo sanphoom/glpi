@@ -94,6 +94,7 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['comment_field']               = '';
       $this->fields['title_field']                 = '';
       $this->fields['use_dn']                      = 0;
+      $this->fields['picture_field']               = '';
    }
 
 
@@ -135,6 +136,7 @@ class AuthLDAP extends CommonDBTM {
             $this->fields['use_dn']                    = 1 ;
             $this->fields['can_support_pagesize']      = 1 ;
             $this->fields['pagesize']                  = '1000';
+            $this->fields['picture_field']             = '';
             break;
 
          default:
@@ -791,6 +793,10 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='language_field' value='".
                  $this->fields["language_field"]."'></td></tr>";
 
+      echo "<tr class='tab_bg_2'><td>" . __('Picture') . "</td>";
+      echo "<td><input type='text' name='picture_field' value='".
+                 $this->fields["picture_field"]."'></td>";
+
 
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
@@ -1070,7 +1076,8 @@ class AuthLDAP extends CommonDBTM {
                       'title_field'               => 'usertitles_id',
                       'category_field'            => 'usercategories_id',
                       'language_field'            => 'language',
-                      'registration_number_field' => 'registration_number');
+                      'registration_number_field' => 'registration_number',
+                      'picture_field'             => 'picture');
 
       foreach ($fields as $key => $val) {
          if (isset($authtype_array[$key]) && !empty($authtype_array[$key])) {
@@ -2480,10 +2487,12 @@ class AuthLDAP extends CommonDBTM {
     * @param $dn        string   DN of the object
     * @param attrs      array    of the attributes to retreive
    **/
-   static function getObjectByDn($ds, $condition, $dn, $attrs=array()) {
+   static function getObjectByDn($ds, $condition, $dn, $attrs=array(), $clean=true) {
 
       if ($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
-         $info = self::get_entries_clean($ds, $result);
+         if ($clean) {
+            $info = self::get_entries_clean($ds, $result);
+         } else $info = ldap_get_entries($ds, $result);
 
          if (is_array($info) && ($info['count'] == 1)) {
             return $info[0];
@@ -2499,8 +2508,8 @@ class AuthLDAP extends CommonDBTM {
     * @param $user_dn
     * @param $attrs
    **/
-   static function getUserByDn($ds, $user_dn, $attrs) {
-      return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs);
+   static function getUserByDn($ds, $user_dn, $attrs, $clean = true) {
+      return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs, $clean);
    }
 
    /**
@@ -2756,7 +2765,8 @@ class AuthLDAP extends CommonDBTM {
                                       'phone2_field'    => __('Phone 2'),
                                       'mobile_field'    => __('Mobile phone'),
                                       'title_field'     => _x('person','Title'),
-                                      'category_field'  => __('Category'));
+                                      'category_field'  => __('Category'),
+                                      'picture_field'   => __('Picture'));
                $available_fields = array();
                foreach ($fields as $field => $label) {
                   if (isset($authldap->fields[$field]) && ($authldap->fields[$field] != '')) {

@@ -770,6 +770,51 @@ li.auto_comp {
 
 
 
+/* ################--------------- User Picture ---------------#################### */
+.tooltip {
+   font-size: 11px !important;
+}
+.tooltip:contains(img) {
+   white-space: nowrap;
+   height: 100px !important;
+   border:10px solid red;
+}
+
+.tooltip_picture_border {
+   padding:2px;
+   border-radius: 51px;
+   border: 5px inset #D0D99D;
+   _border: 3px solid #D0D99D;
+   width:72px;
+   height:72px;
+   position: absolute;
+}  
+.tooltip_picture {
+   width:71px;
+   height:71px;
+   border-radius:50px;
+}
+.tooltip_text {
+   margin-left:90px;
+   min-height: 85px;
+}
+
+.user_picture_border {
+   padding:2px;
+   border-radius: 6px;
+   border: 5px inset #D0D99D;
+   width:232px;
+   height:232px;
+   margin-right:5px;
+   background-color: #FFF
+}
+.user_picture {
+   margin: 0 auto;
+   width:230px;
+   height:230px;
+   border-radius: 5px;
+}
+
 /* ################--------------- Space to replace &nbsp; ---------------#################### */
 
 /* 2 space */

@@ -571,6 +571,14 @@ class User extends CommonDBTM {
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
       $rulesplayed = $this->applyRightRules();
+      $picture     = $this->syncLdapPhoto();
+
+      //add picture in user fields
+      if (!empty($picture)) {
+         $this->update(array('id'      => $this->fields['id'],
+                             'picture' => $picture));
+      }
+      
 
       // Add default profile
       if (!$rulesplayed) {
@@ -614,6 +622,49 @@ class User extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
+
+      //picture manually uploaded by user
+      if (isset($_FILES['picture'])) {
+         if (!count($_FILES['picture'])
+             || empty($_FILES['picture']['name'])
+             || !is_file($_FILES['picture']['tmp_name'])) {
+
+            switch ($_FILES['picture']['error']) {
+               case UPLOAD_ERR_INI_SIZE :
+               case UPLOAD_ERR_FORM_SIZE :
+                  Session::addMessageAfterRedirect(__('File too large to be added.'), false, ERROR);
+                  break;
+
+               case UPLOAD_ERR_NO_FILE :
+                   // Session::addMessageAfterRedirect(__('No file specified.'),false,ERROR);
+                  break;
+            }
+
+            return false;
+         }
+         // Move uploaded file
+         $filename = $this->fields['id'];
+         $tmp = explode(".", $_FILES['picture']['name']);
+         $extension = array_pop($tmp);
+         $picture_path = GLPI_DOC_DIR."/_pictures/$filename.".$extension;
+         @unlink($picture_path);
+         if (Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
+            Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
+            // For display
+            $input['picture'] = $filename.".".$extension;
+
+            //prepare a thumbnail
+            $thumb_path = GLPI_DOC_DIR."/_pictures/".$filename."_min.".$extension;
+            Toolbox::resizePicture($picture_path, $thumb_path);
+         } else {
+            Session::addMessageAfterRedirect(
+                     __('Potential upload attack or file too large. Moving temporary file failed.'),
+                                             false, ERROR);
+         }
+      } else {
+         //ldap jpegphoto synchronisation.
+         $input['picture'] = $this->syncLdapPhoto();
+      }
 
       if (isset($input["password2"])) {
          // Empty : do not update
@@ -957,6 +1008,60 @@ class User extends CommonDBTM {
             }
          }
       }
+   }
+
+   /**
+    * Synchronise picture (photo) of the user
+    *
+    * @return string : the filename to be stored in user picture field
+   **/
+   function syncLdapPhoto() {
+      if (isset($this->fields["authtype"])
+          && (($this->fields["authtype"] == Auth::LDAP))) {
+
+         if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
+            $config_ldap = new AuthLDAP();
+            $ds          = false;
+
+            //connect ldap server
+            if ($config_ldap->getFromDB($this->fields['auths_id'])) {
+               $ds = $config_ldap->connect();
+            }
+
+            if ($ds) {
+               //get picture fields
+               $picture_field = $config_ldap->fields['picture_field'];
+               if (empty($picture_field)) return "";
+
+               //get picture content in ldap
+               $info = AuthLdap::getUserByDn($ds, $this->fields['user_dn'],
+                                             array($picture_field), false);
+
+               //getUserByDn returns an array. If the picture is empty,
+               //$info[$picture_field][0] is null
+               if (!isset($info[$picture_field][0]) || empty($info[$picture_field][0])) {
+                  return "";
+               }
+               //prepare paths
+               $img = array_pop($info[$picture_field]);
+               $filename = $this->fields["id"];
+               $file = GLPI_PICTURE_DIR . "/" . $filename . '.jpg';
+
+               //save picture
+               $outjpeg = fopen($file, 'wb');
+               fwrite($outjpeg, $img);
+               fclose ($outjpeg);
+
+               //save thumbnail
+               $thumb = GLPI_PICTURE_DIR . "/" . $filename . '_min.jpg';
+               Toolbox::resizePicture($file, $thumb);
+
+               return $filename . ".jpg";
+            }
+         }
+      }
+
+      return "";
    }
 
 
@@ -1659,6 +1764,7 @@ class User extends CommonDBTM {
                            || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
                                && !empty($this->fields["password"])));
 
+      $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -1680,60 +1786,58 @@ class User extends CommonDBTM {
          echo "</td>";
       }
 
-      //do some rights verification
-      if (Session::haveRight("user", "w")
-          && (!$extauth || empty($ID))
-          && $caneditpassword) {
-         echo "<td>" . __('Password')."</td>";
-         echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='off' onkeyup=\"return passwordCheck();\">";
+      if (!empty($this->fields["name"])) {
+         echo "<td rowspan='6'>" . __('Picture') . "</td>";
+         echo "<td rowspan='6'>";
+         echo "<div class='user_picture_border'>";
+         if (!empty($this->fields["picture"])) {
+            echo "<img src='".$CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".
+               $this->fields["picture"]."' class='user_picture'/>";
+         } else {
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/picture.png' class='user_picture' />";
+         }
+         echo "</div>";
+         echo "<input type='file' name='picture' accept='image/gif, image/jpeg, image/png'>";
          echo "</td>";
-      } else {
-         echo "<td colspan='2'>&nbsp;</td>";
+         echo "</tr>";
       }
-      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Surname') . "</td><td>";
       Html::autocompletionTextField($this,"realname");
       echo "</td>";
-
-       //do some rights verification
-      if (Session::haveRight("user", "w")
-          && (!$extauth || empty($ID))
-          && $caneditpassword) {
-         echo "<td>" . __('Password confirmation') . "</td>";
-         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'>&nbsp;</td>";
-      }
       echo "</tr>";
-
 
       echo "<tr class='tab_bg_1'><td>" . __('First name') . "</td><td>";
       Html::autocompletionTextField($this, "firstname");
       echo "</td>";
+      echo "</tr>";
 
+      //do some rights verification
       if (Session::haveRight("user", "w")
           && (!$extauth || empty($ID))
           && $caneditpassword) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>" . __('Password')."</td>";
+         echo "<td><input id='password' type='password' name='password' value='' size='20'
+                    autocomplete='off' onkeyup=\"return passwordCheck();\">";
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>" . __('Password confirmation') . "</td>";
+         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
+         echo "</td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Password security policy')."</td>";
          echo "<td>";
          Config::displayPasswordSecurityChecks();
          echo "</td>";
-      } else {
-         echo "<td colspan='2'>&nbsp;</td>";
+         echo "</tr>";
       }
 
-      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . _n('Email','Emails',2);
-      UserEmail::showAddEmailButton($this);
-      echo "</td><td>";
-      UserEmail::showForUser($this);
-      echo "</td>";
-
       //Authentications information : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
@@ -1762,11 +1866,24 @@ class User extends CommonDBTM {
       }
       echo "</tr>";
 
+      
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . _n('Email','Emails',2);
+      UserEmail::showAddEmailButton($this);
+      echo "</td><td>";
+      UserEmail::showForUser($this);
+      echo "</td>";
+      echo "<td>&nbsp;</td>";
+      echo "</tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>" .  __('Phone') . "</td><td>";
       Html::autocompletionTextField($this, "phone");
       echo "</td>";
+      echo "</tr>";
 
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Active')."</td><td>";
       Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td></tr>";
@@ -1973,14 +2090,20 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-         //do some rights verification
-         if (!$extauth
-             && Session::haveRight("password_update", "1")) {
-            echo "<td>" . __('Password') . "</td>";
-            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='off' onkeyup=\"return passwordCheck();\">";
-            echo "</td></tr>";
-         } else {
-            echo "<td colspan='2'></tr>";
+         if (!empty($this->fields["name"])) {
+            echo "<td rowspan='11'>" . __('Picture') . "</td>";
+            echo "<td rowspan='11'>";
+            echo "<div class='user_picture_border'>";
+            if (!empty($this->fields["picture"])) {
+               echo "<img src='".$CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".
+                  $this->fields["picture"]."' class='user_picture'/>";
+            } else {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/picture.png' class='user_picture' />";
+            }
+            echo "</div>";
+            echo "<input type='file' name='picture' accept='image/gif, image/jpeg, image/png'>";
+            echo "</td>";
+            echo "</tr>";
          }
 
          echo "<tr class='tab_bg_1'><td>" . __('First name') . "</td><td>";
@@ -1992,33 +2115,41 @@ class User extends CommonDBTM {
          } else {
             Html::autocompletionTextField($this, "firstname");
          }
-         echo "</td>";
+         echo "</td></tr>";
 
+         //do some rights verification
          if (!$extauth
              && Session::haveRight("password_update", "1")) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('Password') . "</td>";
+            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='off' onkeyup=\"return passwordCheck();\">";
+            echo "</td></tr>";
+         
+            echo "<tr class='tab_bg_1'>";
             echo "<td>" . __('Password confirmation') . "</td>";
             echo "<td><input type='password' name='password2' value='' size='30' autocomplete='off'>";
             echo "</td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".__('Password security policy')."</td>";
+            echo "<td>";
+            Config::displayPasswordSecurityChecks();
+            echo "</td>";
+            echo "</tr>";
          } else {
-            echo "<td colspan='2'></tr>";
+            echo "<tr class='tab_bg_1'><td></td></tr>";
+            echo "<tr class='tab_bg_1'><td></td></tr>";
          }
+        
+         
+
+         
 
          echo "<tr class='tab_bg_1'><td class='top'>" . _n('Email', 'Emails',2);
          UserEmail::showAddEmailButton($this);
          echo "</td><td>";
          UserEmail::showForUser($this);
          echo "</td>";
-
-         if (!$extauth
-             && Session::haveRight("password_update", "1")) {
-            echo "<td>".__('Password security policy')."</td>";
-            echo "<td>";
-            Config::displayPasswordSecurityChecks();
-            echo "</td>";
-         } else {
-            echo "<td colspan='2'>";
-         }
-         echo "</tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;:</td><td>";
 
@@ -2028,14 +2159,15 @@ class User extends CommonDBTM {
          } else {
             Html::autocompletionTextField($this, "mobile");
          }
-         echo "</td>";
+         echo "</td></tr>";
+
+
+         echo "<tr class='tab_bg_1'>";
 
          if (!GLPI_DEMO_MODE) {
             echo "<td>" . __('Language') . "</td><td>";
             // Use session variable because field in table may be null if same of the global config
             Dropdown::showLanguages("language", array('value' => $_SESSION["glpilanguage"]));
-         } else {
-            echo "<td colspan='2'>&nbsp;";
          }
          echo "</td></tr>";
 
@@ -2048,7 +2180,10 @@ class User extends CommonDBTM {
          } else {
             Html::autocompletionTextField($this, "phone");
          }
-         echo "</td>";
+         echo "</td></tr>";
+
+
+         echo "<tr class='tab_bg_1'>";
 
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . __('Default profile') . "</td><td>";

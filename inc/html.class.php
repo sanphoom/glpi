@@ -3078,12 +3078,13 @@ class Html {
          $param['contentid'] = "content".$param['applyto'];
       }
 
-      $out .= "<span id='".$param['contentid']."' class='invisible'>$content</span>";
+      $out .= "<div id='".$param['contentid']."' class='invisible'>$content</div>";
 
       $out .= "<script type='text/javascript' >\n";
       $out .= Html::jsGetElementbyID($param['applyto']).".tooltip({
          content: function() {return $('#".$param['contentid']."').html()},
-         items: 'img, a'
+         items: 'img, a',
+         tooltipClass: 'tooltip'
       });";
       $out .= "</script>";
 

@@ -100,6 +100,11 @@ if (!defined("GLPI_GRAPH_DIR")) {
    define("GLPI_GRAPH_DIR",GLPI_ROOT . "/files/_graphs");
 }
 
+// Path for picture storage
+if (!defined("GLPI_PICTURE_DIR")) {
+   define("GLPI_PICTURE_DIR",GLPI_ROOT . "/files/_pictures");
+}
+
 // Path for temp storage
 if (!defined("GLPI_TMP_DIR")) {
    define("GLPI_TMP_DIR",GLPI_ROOT . "/files/_tmp");

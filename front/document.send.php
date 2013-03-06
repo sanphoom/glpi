@@ -68,6 +68,10 @@ if (isset($_GET['docid'])) { // docid for document
          $send = true;
       }
 
+      if ($splitter[0] == "_pictures") {
+         $send = true;
+      }
+
       if ($send && file_exists(GLPI_DOC_DIR."/".$_GET["file"])) {
          Toolbox::sendFile(GLPI_DOC_DIR."/".$_GET["file"], $splitter[1]);
       } else {
