@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
    $bookmark->delete($_POST);
    $_GET["action"] = "load";
 
-} 
+}
 
 if ($_GET["action"] == "edit") {
 
@@ -97,10 +97,7 @@ if ($_GET["action"] == "edit") {
                                    'itemtype' => $_GET["itemtype"]));
    }
 } else {
-   echo '<br>';
-
-   $bookmark->showTabs();
-   echo "<div id='tabcontent'>&nbsp;</div>";
-   echo "<script type='text/javascript'>loadDefaultTab();</script>";
+   $bookmark->showNavigationHeader();
+   $bookmark->showTabsContent();
 }
 ?>
