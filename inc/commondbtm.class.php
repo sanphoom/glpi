@@ -66,6 +66,8 @@ class CommonDBTM extends CommonGLPI {
 
    /// Tab orientation : horizontal or vertical
    public $taborientation = 'vertical';
+   /// Need to get item to show tab
+   public $get_item_to_display_tab = true;
    
    ///Forward entity to plugins itemtypes
    static protected $plugins_forward_entity = array();

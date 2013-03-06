@@ -61,7 +61,7 @@ if (!isset($_GET["withtemplate"])) {
 }
 
 if ($item = getItemForItemtype($_GET['_itemtype'])) {
-   if ($item instanceof CommonDBTM) {
+   if ($item->get_item_to_display_tab) {
       if (!isset($_GET["id"])
             || ($item->isNewID($_GET["id"]) && !$item->can(-1, 'w', $_GET))) {
          exit();
@@ -78,7 +78,6 @@ foreach ($notvalidoptions as $key) {
       unset($options[$key]);
    }
 }
-
 CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'],$_GET["withtemplate"], $options);
 
 

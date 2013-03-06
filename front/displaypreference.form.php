@@ -63,10 +63,7 @@ if (isset($_POST["activate"])) {
 // Datas may come from GET or POST : use REQUEST
 if ((strpos($_SERVER['PHP_SELF'],"popup")
     && $_REQUEST["itemtype"])) {
-   // TODO: remove HTML code and use 'showNavigationHeader' and 'showTabsContent' instead
-   $setupdisplay->showTabs(array('displaytype' => $_REQUEST['itemtype']));
-   echo "<div id='tabcontent'>&nbsp;</div>";
-   echo "<script type='text/javascript'>loadDefaultTab();</script>";
+   $setupdisplay->display(array('displaytype' => $_REQUEST['itemtype']));
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {

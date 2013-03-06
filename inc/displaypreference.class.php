@@ -37,11 +37,14 @@ if (!defined('GLPI_ROOT')) {
 
 class DisplayPreference extends CommonDBTM {
 
+   // From CommonGLPI
+   public $taborientation = 'horizontal';
+   public $get_item_to_display_tab = false;
+
    // From CommonDBTM
    var $auto_message_on_action = false;
 
    protected $displaylist = false;
-
 
    /**
     * @see CommonDBTM::prepareInputForAdd()
@@ -685,12 +688,12 @@ class DisplayPreference extends CommonDBTM {
          case __CLASS__ :
             switch ($tabnum) {
                case 1 :
-                  $item->showFormGlobal($_POST['target'], $_POST["displaytype"]);
+                  $item->showFormGlobal($_GET['_target'], $_GET["displaytype"]);
                   return true;
 
                case 2 :
                   Session::checkRight('search_config', 'w');
-                  $item->showFormPerso($_POST['target'], $_POST["displaytype"]);
+                  $item->showFormPerso($_GET['_target'], $_GET["displaytype"]);
                   return true;
             }
       }
