@@ -110,6 +110,7 @@ class Profile extends CommonDBTM {
                   $ong[1] = __('Simplified interface'); // Helpdesk
 
                } else {
+                  /// TODO split it in 2 or 3 tabs
                   $ong[2] = sprintf(__('%1$s/%2$s'), sprintf(__('%1$s/%2$s'),__('Assets'), __('Management')), __('Tools'));
                   $ong[3] = __('Assistance');
                   $ong[4] = __('Life cycles');
