@@ -71,6 +71,28 @@ class Bookmark extends CommonDBTM {
    }
 
 
+   // Special case: a private bookmark has entities_id==-1 => we cannot check it through
+   //               CommonDBTM::canCreateItem ...
+   function canCreateItem() {
+      if (($this->fields['is_private'] == 1)
+          && ($this->fields['users_id'] == Session::getLoginUserID())) {
+         return true;
+      }
+      return parent::canCreateItem();
+   }
+
+
+   // Special case: a private bookmark has entities_id==-1 => we cannot check it through
+   //               CommonDBTM::canViewItem ...
+   function canViewItem() {
+      if (($this->fields['is_private'] == 1)
+          && ($this->fields['users_id'] == Session::getLoginUserID())) {
+         return true;
+      }
+      return parent::canViewItem();
+   }
+
+
    function isNewItem() {
       /// For tabs management : force isNewItem
       return false;
@@ -109,7 +131,7 @@ class Bookmark extends CommonDBTM {
             if ($tabnum == 2) {
                $is_private = 0;
             }
-            $item->showBookmarkList($_POST['target'], $is_private);
+            $item->showBookmarkList($_GET['_target'], $is_private);
             return true;
       }
       return false;
