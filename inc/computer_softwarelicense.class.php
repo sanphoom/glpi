@@ -357,6 +357,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                        `glpi_computers`.`serial`,
                        `glpi_computers`.`otherserial`,
                        `glpi_users`.`name` AS username,
+                       `glpi_users`.`id` AS userid,
+                       `glpi_users`.`realname` AS userrealname,
+                       `glpi_users`.`firstname` AS userfirstname,
                        `glpi_softwarelicenses`.`name` AS license,
                        `glpi_softwarelicenses`.`id` AS vID,
                        `glpi_softwarelicenses`.`name` AS vername,
@@ -410,6 +413,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $soft = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
+            $linkUser   = Session::haveRight('user', 'r');
 
             $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["vername"]);
@@ -482,7 +486,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                echo "<td>".$data['location']."</td>";
                echo "<td>".$data['state']."</td>";
                echo "<td>".$data['groupe']."</td>";
-               echo "<td>".$data['username']."</td>";
+               echo "<td>".formatUserName($data['userid'], $data['username'], $data['userrealname'],
+                                          $data['userfirstname'], $linkUser)."</td>";
                echo "</tr>\n";
 
             } while ($data=$DB->fetch_assoc($result));
