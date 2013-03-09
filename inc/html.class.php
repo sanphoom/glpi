@@ -1021,9 +1021,9 @@ class Html {
                }
             }
          }
-         
 
-         
+
+
          foreach ($menu as $category => $datas) {
             if (isset($datas['types']) && count($datas['types'])) {
                foreach ($datas['types'] as $type) {
@@ -1062,50 +1062,50 @@ class Html {
             }
          }
 
-         
+
          //  PLUGINS
 //          if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
 //             $plugins = array();
-// 
+//
 //             foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
 //                if ($active) { // true or a string
 //                   $plugins[$plugin] = Plugin::getInfo($plugin);
 //                }
 //             }
-// 
+//
 //             if (count($plugins)) {
 //                $list = array();
-// 
+//
 //                foreach ($plugins as $key => $val) {
 //                   $list[$key] = $val["name"];
 //                }
 //                asort($list);
-// 
+//
 //                foreach ($list as $key => $val) {
 //                   $menu['plugins']['content'][$key]['title'] = $val;
 //                   $menu['plugins']['content'][$key]['page']  = '/plugins/'.$key.'/';
-// 
+//
 //                   if (is_string($PLUGIN_HOOKS["menu_entry"][$key])) {
 //                      $menu['plugins']['content'][$key]['page'] .= $PLUGIN_HOOKS["menu_entry"][$key];
 //                   }
-// 
+//
 //                   // Set default link for plugins
 //                   if (!isset($menu['plugins']['default'])) {
 //                      $menu['plugins']['default'] = $menu['plugins']['content'][$key]['page'];
 //                   }
-// 
+//
 //                   if (($sector == "plugins")
 //                      && ($item == $key)) {
-// 
+//
 //                      if (isset($PLUGIN_HOOKS["submenu_entry"][$key])
 //                         && is_array($PLUGIN_HOOKS["submenu_entry"][$key])) {
-// 
+//
 //                         foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link) {
 //                            // New complete option management
 //                            if ($name == "options") {
 //                               $menu['plugins']['content'][$key]['options'] = $link;
 //                            } else { // Keep it for compatibility
-// 
+//
 //                               if (is_array($link)) {
 //                                  // Simple link option
 //                                  if (isset($link[$option])) {
@@ -1130,7 +1130,7 @@ class Html {
       } else {
          $menu = $_SESSION['glpimenu'];
       }
-      
+
       $already_used_shortcut = array('1');
 
 
@@ -2121,7 +2121,7 @@ class Html {
     * @since version 0.84
     *
     * @param $container_id  string html of the container of checkboxes link to this check all checkbox
-    * @param $rand          string rand value to use (default is auto generated)
+    * @param $rand          string rand value to use (default is auto generated) (default ''))
     *
     * @return nothing / display item
    **/
@@ -2136,7 +2136,7 @@ class Html {
     * @since version 0.84
     *
     * @param $container_id  string html of the container of checkboxes link to this check all checkbox
-    * @param $rand          string rand value to use (default is auto generated)
+    * @param $rand          string rand value to use (default is auto generated)(default '')
     *
     * @return Get checkbox string
    **/
@@ -3642,6 +3642,7 @@ class Html {
       return $out;
    }
 
+
    /**
     * Get javascript code for hide an item
     *
@@ -3654,6 +3655,7 @@ class Html {
    static function jsHide($id){
       return self::jsGetElementbyID($id).".hide();\n";
    }
+
 
    /**
     * Get javascript code for hide an item
@@ -3668,6 +3670,7 @@ class Html {
       return self::jsGetElementbyID($id).".show();\n";
    }
 
+
    /**
     * Clean ID used for HTML elements
     *
@@ -3679,8 +3682,8 @@ class Html {
    **/
    static function cleanId($id) {
       return str_replace(array('[',']'), '_', $id);
-
    }
+
 
    /**
     * Get javascript code to get item by id

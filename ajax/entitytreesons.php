@@ -55,29 +55,29 @@ if (isset($_GET['node'])) {
    $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
    // Root node
-   if ($_GET['node']==-1) {
+   if ($_GET['node'] == -1) {
       $pos = 0;
 
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
-         $path = array();
-         $ID                = $entity['id'];
-         $is_recursive      = $entity['is_recursive'];
-         
-         $path['data']['title']     = Dropdown::getDropdownName("glpi_entities", $ID);
-         $path['attr']['id']      = $ID;
-         $path['data']['attr']['href']      = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$ID;
+         $path                         = array();
+         $ID                           = $entity['id'];
+         $is_recursive                 = $entity['is_recursive'];
+
+         $path['data']['title']        = Dropdown::getDropdownName("glpi_entities", $ID);
+         $path['attr']['id']           = $ID;
+         $path['data']['attr']['href'] = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$ID;
 
          if ($is_recursive) {
             $query2 = "SELECT count(*)
                        FROM `glpi_entities`
                        WHERE `entities_id` = '$ID'";
             $result2 = $DB->query($query2);
-            if ($DB->result($result2,0,0) >0) {
-               $path['data']['title']    .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
-                                             $CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".
-                                             $ID."&amp;is_recursive=1'>".
-                                    "<img alt=\"".__s('Show all')."\" src='".
-                                       $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+            if ($DB->result($result2,0,0) > 0) {
+               $path['data']['title'] .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
+                                                 $CFG_GLPI["root_doc"]."/front/".$target.
+                                                 "?active_entity=".$ID."&amp;is_recursive=1'>".
+                                         "<img alt=\"".__s('Show all')."\" src='".
+                                           $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
                if (isset($ancestors[$ID])) {
                   $path['state'] = 'open';
                } else {
@@ -93,24 +93,25 @@ if (isset($_GET['node'])) {
                 WHERE `entities_id` = '".$_GET['node']."'
                 ORDER BY `name`";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             while ($row = $DB->fetch_assoc($result)) {
                $path = array();
-               $path['data']['title']      = $row['name'];
-               $path['attr']['id']        = $row['id'];
-               $path['data']['attr']['href']      = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$row['id'];
+               $path['data']['title']        = $row['name'];
+               $path['attr']['id']           = $row['id'];
+               $path['data']['attr']['href'] = $CFG_GLPI["root_doc"]."/front/$target?active_entity=".
+                                                $row['id'];
 
                $query2 = "SELECT count(*)
-                        FROM `glpi_entities`
-                        WHERE `entities_id` = '".$row['id']."'";
+                          FROM `glpi_entities`
+                          WHERE `entities_id` = '".$row['id']."'";
                $result2 = $DB->query($query2);
-               if ($DB->result($result2,0,0) >0) {
-                  $path['data']['title']    .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
-                                                $CFG_GLPI["root_doc"]."/front/".$target.
-                                                "?active_entity=".$row['id']."&amp;is_recursive=1'>".
-                                       "<img alt=\"".__s('Show all')."\" src='".
-                                          $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+               if ($DB->result($result2,0,0) > 0) {
+                  $path['data']['title'] .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
+                                                    $CFG_GLPI["root_doc"]."/front/".$target.
+                                                    "?active_entity=".$row['id']."&amp;is_recursive=1'>".
+                                            "<img alt=\"".__s('Show all')."\" src='".
+                                              $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
 
                   if (isset($ancestors[$row['id']])) {
                      $path['state'] = 'open';
@@ -126,5 +127,4 @@ if (isset($_GET['node'])) {
    }
    echo json_encode($nodes);
 }
-
 ?>

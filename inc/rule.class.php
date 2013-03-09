@@ -113,9 +113,9 @@ class Rule extends CommonDBTM {
       if ($rule->getFromDB($rules_id)) {
          $realrule = new $rule->fields['sub_type']();
          return $realrule;
-      }   
+      }
       return null;
-   }   
+   }
 
    /**
     *  @see CommonGLPI::getMenuContent()
@@ -494,7 +494,7 @@ class Rule extends CommonDBTM {
 
       $actions['duplicate'] = __('Duplicate');
       $actions['export']    = __('Export');
-      
+
       return $actions;
    }
 
@@ -538,7 +538,7 @@ class Rule extends CommonDBTM {
                          __s('Export')."'>";
                return true;
                break;
-            
+
          default :
             return parent::showSpecificMassiveActionsParameters($input);
 
@@ -576,6 +576,7 @@ class Rule extends CommonDBTM {
                $res['noright']++;
             }
             break;
+
          case 'duplicate':
             $rulecollection = new RuleCollection();
             if (isset($input["item"]) && count($input["item"])) {
@@ -588,13 +589,15 @@ class Rule extends CommonDBTM {
                }
             }
             break;
+
          case 'export':
             if (isset($input["item"]) && count($input["item"])) {
                $_SESSION['exportitems'] = $input["item"];
-               $res['ok'] = -1; //processed after redirection
+               $res['ok']       = -1; //processed after redirection
                $res['REDIRECT'] = 'rule.backup.php?action=download&itemtype='.$this->getType();
             }
          break;
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
@@ -929,10 +932,10 @@ class Rule extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.$this->ruleactionclass.$rand);
-         $paramsma = array('num_displayed' => $nb,
+         $paramsma = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
                            'check_items_id' => $rules_id,
-                           'container'  => 'mass'.$this->ruleactionclass.$rand);
+                           'container'      => 'mass'.$this->ruleactionclass.$rand);
          Html::showMassiveActions($this->ruleactionclass, $paramsma);
       }
 
@@ -1095,7 +1098,7 @@ class Rule extends CommonDBTM {
          $paramsma = array('num_displayed'  => $nb,
                            'check_itemtype' => get_class($this),
                            'check_items_id' => $rules_id,
-                           'container'  => 'mass'.$this->rulecriteriaclass.$rand);
+                           'container'      => 'mass'.$this->rulecriteriaclass.$rand);
          Html::showMassiveActions($this->rulecriteriaclass, $paramsma);
       }
 
@@ -1738,7 +1741,7 @@ class Rule extends CommonDBTM {
       if (!isset($input['uuid'])) {
          $input["uuid"] = self::getUuid();
       }
-      
+
       return $input;
    }
 
@@ -2840,7 +2843,7 @@ class Rule extends CommonDBTM {
    **/
    static function getUuid() {
       //encode uname -a, ex Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686
-      $serverSubSha1 = substr(sha1(php_uname('a')), 0, 8); 
+      $serverSubSha1 = substr(sha1(php_uname('a')), 0, 8);
       // encode script current dir, ex : /var/www/glpi_X
       $dirSubSha1 = substr(sha1(__FILE__), 0, 8);
       return uniqid("$serverSubSha1-$dirSubSha1-", true);
@@ -2854,7 +2857,7 @@ class Rule extends CommonDBTM {
       echo "<div class='spaced'>";
       echo "<b>UUID</b> : ".$this->fields['uuid'];
       echo "</div>";
-      
+
    }
 
 }

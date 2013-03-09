@@ -68,7 +68,7 @@ class CommonDBTM extends CommonGLPI {
    public $taborientation = 'vertical';
    /// Need to get item to show tab
    public $get_item_to_display_tab = true;
-   
+
    ///Forward entity to plugins itemtypes
    static protected $plugins_forward_entity = array();
 
@@ -1261,7 +1261,7 @@ class CommonDBTM extends CommonGLPI {
                if ($this->dohistory && $history) {
                   $changes[0] = 0;
                   $changes[1] = $changes[2] = "";
-                  $logaction = Log::HISTORY_DELETE_ITEM;
+                  $logaction  = Log::HISTORY_DELETE_ITEM;
                   if ($this->useDeletedToLockIfDynamic()
                       && $this->isDynamic()) {
                      $logaction = Log::HISTORY_LOCK_ITEM;

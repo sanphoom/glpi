@@ -406,11 +406,11 @@ class Computer_Item extends CommonDBRelation{
       foreach ($CFG_GLPI["directconnect_types"] as $itemtype) {
          $item = new $itemtype();
          if ($item->canView()) {
-            $query = "SELECT `glpi_computers_items`.`id` as assoc_id,
-                      `glpi_computers_items`.`computers_id` as assoc_computers_id,
-                      `glpi_computers_items`.`itemtype` as assoc_itemtype,
-                      `glpi_computers_items`.`items_id` as assoc_items_id,
-                      `glpi_computers_items`.`is_dynamic` as assoc_is_dynamic,
+            $query = "SELECT `glpi_computers_items`.`id` AS assoc_id,
+                      `glpi_computers_items`.`computers_id` AS assoc_computers_id,
+                      `glpi_computers_items`.`itemtype` AS assoc_itemtype,
+                      `glpi_computers_items`.`items_id` AS assoc_items_id,
+                      `glpi_computers_items`.`is_dynamic` AS assoc_is_dynamic,
                       ".getTableForItemType($itemtype).".*
                       FROM `glpi_computers_items`
                       LEFT JOIN `".getTableForItemType($itemtype)."`
