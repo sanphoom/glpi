@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * @since version 0.84
- *
 **/
 class IPNetwork_Vlan extends CommonDBRelation {
 

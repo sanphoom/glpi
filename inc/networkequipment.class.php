@@ -71,7 +71,7 @@ class NetworkEquipment extends CommonDBTM {
    static function getMenuName() {
       return _n('Network', 'Networks', 2);
    }
-   
+
    static function canCreate() {
       return Session::haveRight('networking', 'w');
    }
@@ -352,9 +352,7 @@ class NetworkEquipment extends CommonDBTM {
       NetworkEquipmentFirmware::dropdown(array('value' => $this->fields["networkequipmentfirmwares_id"]));
       echo "</td>";
       if ($inventory_show) {
-         echo "<td rowspan='3'>";
-         _e('Automatic inventory');
-         echo "</td>";
+         echo "<td rowspan='3'>".__('Automatic inventory')."</td>";
          echo "<td rowspan='3'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
@@ -444,7 +442,7 @@ class NetworkEquipment extends CommonDBTM {
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
       $tab[31]['condition']      = "`is_visible_networkequipment`='1'";
-      
+
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
       $tab[5]['name']            = __('Serial number');

@@ -538,7 +538,6 @@ class Log extends CommonDBTM {
                                                    $data["new_value"]));
                   break;
 
-
                default :
                   $fct = array($data['itemtype_link'], 'getHistoryEntry');
                   if (($data['linked_action'] >= self::HISTORY_PLUGIN)

@@ -197,40 +197,40 @@ class Html {
    }
 
 
-    /**
-     *  Resume text for followup
-     *
-     * @param $string   string   string to resume
-     * @param $length   integer  resume length (default 255)
-     *
-     * @return cut string
+   /**
+    *  Resume text for followup
+    *
+    * @param $string   string   string to resume
+    * @param $length   integer  resume length (default 255)
+    *
+    * @return cut string
+   **/
+   static function resume_text($string, $length=255) {
+
+      if (Toolbox::strlen($string) > $length) {
+         $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
+      }
+
+      return $string;
+   }
+
+
+   /**
+    *  Resume a name for display
+    *
+    * @param $string   string   string to resume
+    * @param $length   integer  resume length (default 255)
+    *
+    * @return cut string
     **/
-    static function resume_text($string, $length=255) {
+   static function resume_name($string, $length=255) {
 
-       if (Toolbox::strlen($string) > $length) {
-          $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
-       }
+      if (strlen($string) > $length) {
+         $string = Toolbox::substr($string, 0, $length)."...";
+      }
 
-       return $string;
-    }
-
-
-    /**
-     *  Resume a name for display
-     *
-     * @param $string   string   string to resume
-     * @param $length   integer  resume length (default 255)
-     *
-     * @return cut string
-     **/
-    static function resume_name($string, $length=255) {
-
-       if (strlen($string) > $length) {
-          $string = Toolbox::substr($string, 0, $length)."...";
-       }
-
-       return $string;
-    }
+      return $string;
+   }
 
 
    /**
@@ -677,14 +677,14 @@ class Html {
    }
 
 
-    /**
-     * Create a Dynamic Progress Bar
-     *
-     * @param $msg initial message (under the bar) (default '&nbsp;')
-     *
-     * @return nothing
+   /**
+    * Create a Dynamic Progress Bar
+    *
+    * @param $msg initial message (under the bar) (default '&nbsp;')
+    *
+    * @return nothing
     **/
-    static function createProgressBar($msg="&nbsp;") {
+   static function createProgressBar($msg="&nbsp;") {
 
       echo "<div class='doaction_cadre'>";
       echo "<div class='doaction_progress' id='doaction_progress'>";
@@ -697,33 +697,33 @@ class Html {
        echo self::jsGetElementbyID('doaction_progress').".progressbar();";
        echo "</script>\n";
        self::changeProgressBarMessage($msg);
-    }
+   }
 
-    /**
-     * Change the Message under the Progress Bar
-     *
-     * @param $msg message under the bar (default '&nbsp;')
-     *
-     * @return nothing
-    **/
-    static function changeProgressBarMessage($msg="&nbsp;") {
+   /**
+    * Change the Message under the Progress Bar
+    *
+    * @param $msg message under the bar (default '&nbsp;')
+    *
+    * @return nothing
+   **/
+   static function changeProgressBarMessage($msg="&nbsp;") {
 
        echo "<script type='text/javascript'>".self::jsGetElementbyID('doaction_progress_text').".text(\"".addslashes($msg)."\")".
             "</script>\n";
        self::glpi_flush();
-    }
+   }
 
 
-    /**
-     * Change the Progress Bar Position
-     *
-     * @param $crt   Current Value (less then $max)
-     * @param $tot   Maximum Value
-     * @param $msg   message inside the bar (default is %) (default '')
-     *
-     * @return nothing
-    **/
-    static function changeProgressBarPosition($crt, $tot, $msg="") {
+   /**
+    * Change the Progress Bar Position
+    *
+    * @param $crt   Current Value (less then $max)
+    * @param $tot   Maximum Value
+    * @param $msg   message inside the bar (default is %) (default '')
+    *
+    * @return nothing
+   **/
+   static function changeProgressBarPosition($crt, $tot, $msg="") {
 
        if (!$tot) {
           $pct = 0;
@@ -740,7 +740,7 @@ class Html {
          self::changeProgressBarMessage($msg);
        }
        self::glpi_flush();
-    }
+   }
 
 
     /**
@@ -882,17 +882,17 @@ class Html {
          echo "<script type='text/javascript' src='".
                 $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js'></script>\n";
          echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'></script>\n";
+                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
+              "</script>\n";
 
       if (isset($_SESSION['glpilanguage'])) {
          echo "<script type='text/javascript' src='".
                 $CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js'></script>\n";
          $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/localization/jquery-ui-timepicker-".
-                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.$filename)) {
-            echo "<script type='text/javascript' src='".
-                  $CFG_GLPI["root_doc"]."$filename'></script>\n";
+            echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."$filename'></script>\n";
          }
       }
 

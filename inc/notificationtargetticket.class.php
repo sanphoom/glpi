@@ -44,7 +44,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    const HEADERTAG = '=-=-=-=';
    const FOOTERTAG = '=_=_=_=';
-   
+
 
 
    /**
@@ -119,7 +119,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function getContentFooter() {
       return self::FOOTERTAG.' '.__('To answer by email, write under this line').' '.self::FOOTERTAG;
    }
-   
+
    /**
     * @since version 0.84
     *
@@ -363,8 +363,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          //Object group
          if ($hardware->getField('groups_id')) {
             $datas['##ticket.item.group##']
-                        = Dropdown::getDropdownName('glpi_groups',
-                                                    $hardware->getField('groups_id'));
+                        = Dropdown::getDropdownName('glpi_groups', $hardware->getField('groups_id'));
          }
 
          $modeltable = getSingular($hardware->getTable())."models";
@@ -372,7 +371,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          if ($hardware->isField($modelfield)) {
             $datas['##ticket.item.model##']
-                  = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
+                        = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
          }
 
       }

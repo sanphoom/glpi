@@ -320,9 +320,7 @@ class Phone extends CommonDBTM {
       echo "</td></tr></table>\n";
       echo "</td>";
       if ($inventory_show) {
-         echo "<td rowspan='2'>";
-         _e('Automatic inventory');
-         echo "</td>";
+         echo "<td rowspan='2'>".__('Automatic inventory')."</td>";
          echo "<td rowspan='2'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
@@ -464,7 +462,7 @@ class Phone extends CommonDBTM {
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
       $tab[31]['condition']      = "`is_visible_phone`='1'";
-      
+
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
       $tab[5]['name']            = __('Serial Number');

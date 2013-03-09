@@ -345,7 +345,7 @@ class Lock {
                       "unlock_ComputerDisk"           => __('Unlock volumes'),
                       "unlock_Device"                 => __('Unlock devices'),
                       "unlock_ComputerVirtualMachine" => __('Unlock virtual machines')
-                      );
+                     );
       }
       return array();
    }
@@ -429,8 +429,8 @@ class Lock {
             // Devices
             if (preg_match('/^Item\_Device/',$itemtype)) {
                $condition = array('itemtype'   => $baseitemtype,
-                                 'is_dynamic' => 1,
-                                 'is_deleted' => 1);
+                                  'is_dynamic' => 1,
+                                  'is_deleted' => 1);
                $table     = getTableForItemType($itemtype);
                $field     = 'items_id';
             }

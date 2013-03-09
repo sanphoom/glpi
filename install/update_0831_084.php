@@ -204,7 +204,7 @@ function update0831to084() {
          }
       }
    }
-   
+
    // Update glpi_profiles : ticket_status
    foreach ($DB->request('glpi_profiles') as $data) {
       $fields_to_decode = array('ticket_status','problem_status');
@@ -985,7 +985,8 @@ function update0831to084() {
                                        AND `itemtype_link` IN ('Reminder', 'Knowbase')";
 
    foreach ($cleancondition as $name => $condition) {
-      $query = "DELETE FROM `glpi_logs`
+      $query = "DELETE
+                FROM `glpi_logs`
                 WHERE $condition";
       $DB->queryOrDie($query, "0.84 clean logs for $name");
    }
