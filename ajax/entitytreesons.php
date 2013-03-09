@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2012 by the INDEPNET Development Team.
+ Copyright (C) 2003-2013 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
@@ -33,8 +33,7 @@
 
 $AJAX_INCLUDE = 1;
 
-define('GLPI_ROOT','..');
-include (GLPI_ROOT."/inc/includes.php");
+include (GLPI_ROOT."../inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
