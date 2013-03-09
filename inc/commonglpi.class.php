@@ -141,7 +141,7 @@ class CommonGLPI {
    **/
    final function defineAllTabs($options=array()) {
       global $CFG_GLPI;
-      
+
       $onglets = array();
       // Tabs known by the object
       if ($this->isNewItem()) {
@@ -167,7 +167,7 @@ class CommonGLPI {
               || in_array($class, $CFG_GLPI["reservation_types"]))) {
 
             $onglets[-2] = __('Debug');
-      }      
+      }
 //       // Single tab
 //       if (empty($onglets)) {
 //          $onglets['empty'] = $this->getTypeName(1);
@@ -490,6 +490,7 @@ class CommonGLPI {
       return true;
    }
 
+
    /**
     * Get the search page URL for the current classe
     *
@@ -708,7 +709,7 @@ class CommonGLPI {
             echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
                        __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
-         
+
          echo "<td><a href=\"".$glpilisturl."\">";
          if ($glpilisttitle) {
             if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
@@ -741,7 +742,7 @@ class CommonGLPI {
 
          if ($current !== false) {
             echo "<td>".($current+1) . "/" . count($glpilistitems)."</td>";
-         }         
+         }
 
          if ($next >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
@@ -760,7 +761,7 @@ class CommonGLPI {
             echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
                        __s('Last')."\" title=\"".__s('Last')."\"></td>";
          }
-         
+
 //          echo "</ul></div>";
          // End pager
          echo "</tr></table></div>";
