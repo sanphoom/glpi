@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -124,8 +124,9 @@ class TicketSatisfaction extends CommonDBTM {
 
          echo "<select id='satisfaction_data' name='satisfaction'>";
 
-         for ($i=0; $i<=5; $i++) {
-            echo "<option value='$i' ".($i==$this->fields["satisfaction"]?'selected':'').">$i</option>";
+         for ($i=0 ; $i<=5 ; $i++) {
+            echo "<option value='$i' ".(($i == $this->fields["satisfaction"])?'selected':'').
+                  ">$i</option>";
          }
          echo "</select>";
          echo "<div class='rateit' id='stars'></div>";

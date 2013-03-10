@@ -73,6 +73,8 @@ class Transfer extends CommonDBTM {
 
    /**
     * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
    **/
    function defineTabs($options=array()) {
 
@@ -81,7 +83,8 @@ class Transfer extends CommonDBTM {
 
       return $ong;
    }
-   
+
+
    function getSearchOptions() {
 
       $tab                       = array();
@@ -2934,6 +2937,7 @@ class Transfer extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
+
       $edit_form = true;
       if (!strpos($_SERVER['HTTP_REFERER'],"transfer.form.php")) {
          $edit_form = false;

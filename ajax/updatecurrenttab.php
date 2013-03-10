@@ -40,12 +40,12 @@ if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
       if (isset($_GET['id']) && $_GET['id']) {
          $item->getFromDB($_GET['id']);
       }
-      
-      $tabs = $item->defineAllTabs();
+
+      $tabs         = $item->defineAllTabs();
       // Add all tab
-      $tabs[-1] = 'All';
+      $tabs[-1]     = 'All';
       $selected_tab = '';
-      $current = 0;
+      $current      = 0;
       foreach ($tabs as $key => $val) {
          if ($current == $_GET['tab']) {
             $selected_tab = $key;
@@ -55,7 +55,7 @@ if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
       if (!empty($selected_tab)) {
          Session::setActiveTab($_GET['itemtype'], $selected_tab);
       }
-      
+
    }
 }
 ?>

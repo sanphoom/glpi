@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -78,7 +78,7 @@ class AuthMail extends CommonDBTM {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('AuthMail', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

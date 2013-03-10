@@ -76,7 +76,7 @@ class MailCollector  extends CommonDBTM {
    static function getTypeName($nb=0) {
       return _n('Receiver', 'Receivers', $nb);
    }
-   
+
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
    **/
@@ -183,7 +183,7 @@ class MailCollector  extends CommonDBTM {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               return _n('Action', 'Actions',2);
+               return _n('Action', 'Actions', 2);
          }
       }
       return '';
@@ -705,7 +705,7 @@ class MailCollector  extends CommonDBTM {
       } else {
          $tkt['content'] = $body;
       }
-      
+
       // See In-Reply-To field
       if (isset($head['in_reply_to'])) {
          if (preg_match($glpi_message_match, $head['in_reply_to'], $match)) {
@@ -728,7 +728,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
-      
+
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
          // it's a reply to a previous ticket
@@ -785,7 +785,7 @@ class MailCollector  extends CommonDBTM {
                if ($end_strip >=0 && $end_strip < $length) {
                   $length = $end_strip;
                }
-               
+
                for ($i = ($begin_strip+1); $i < $length; $i++) {
                   unset($content[$i]);
                }
@@ -802,7 +802,7 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      
+
       // Add message from getAttached
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;

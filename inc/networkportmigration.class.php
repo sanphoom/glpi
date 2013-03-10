@@ -113,15 +113,17 @@ class NetworkPortMigration extends CommonDBChild {
 
    /**
     * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
    **/
    function defineTabs($options=array()) {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-
       return $ong;
    }
-   
+
+
    static function getMotives() {
 
       return array( 'unknown_interface_type'

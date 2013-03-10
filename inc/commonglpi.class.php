@@ -218,9 +218,17 @@ class CommonGLPI {
       }
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @param $ong   array
+   **/
    function addDefaultFormTab(array &$ong) {
       $ong[$this->getType().'$main'] = $this->getTypeName(1);
    }
+
+
    /**
     * get menu content
     *
@@ -229,13 +237,14 @@ class CommonGLPI {
     * @return array for menu
    **/
    static function getMenuContent() {
-      $menu = array();
 
-      $type = static::getType();
-      $item = new $type();
-      $forbidden = $type::getForbiddenActionsForMenu();
+      $menu       = array();
 
-      $debug = false;
+      $type       = static::getType();
+      $item       = new $type();
+      $forbidden  = $type::getForbiddenActionsForMenu();
+
+      $debug      = false;
 
       if ($item instanceof CommonDBTM) {
          if ($type::canView()) {
@@ -251,7 +260,7 @@ class CommonGLPI {
                                     = '/front/setup.templates.php?'.'itemtype='.$type.'&amp;add=1';
                   if (!in_array('template', $forbidden)) {
                      $menu['links']['template']
-                                       = '/front/setup.templates.php?'.'itemtype='.$type.'&amp;add=0';
+                                    = '/front/setup.templates.php?'.'itemtype='.$type.'&amp;add=0';
                   }
                } else {
                   $menu['links']['add'] = static::getFormURL(false);
@@ -265,7 +274,7 @@ class CommonGLPI {
          }
       } else {
          if (!method_exists($type, 'canView')
-               || $item->canView()) {
+             || $item->canView()) {
             $menu['title']           = static::getMenuName();
             $menu['shortcut']        = static::getMenuShorcut();
             $menu['page']            = static::getSearchURL(false);
@@ -281,6 +290,7 @@ class CommonGLPI {
       return false;
    }
 
+
    /**
     * Get forbidden actions for menu : may be add / template
     *
@@ -291,6 +301,7 @@ class CommonGLPI {
    static function getForbiddenActionsForMenu() {
       return array();
    }
+
 
    /**
     * Get additional menu options
@@ -303,6 +314,7 @@ class CommonGLPI {
       return false;
    }
 
+
    /**
     * Get additional menu links
     *
@@ -313,6 +325,7 @@ class CommonGLPI {
    static function getAdditionalMenuLinks() {
       return false;
    }
+
 
    /**
     * Get menu shortcut
@@ -325,8 +338,9 @@ class CommonGLPI {
       return '';
    }
 
+
    /**
-    * Get menu shortcut
+    * Get menu name
     *
     * @since version 0.85
     *
@@ -335,6 +349,7 @@ class CommonGLPI {
    static function getMenuName() {
       return static::getTypeName(2);
    }
+
 
    /**
     * Get Tab Name used for itemtype
@@ -380,7 +395,7 @@ class CommonGLPI {
     *
     * @return true
    **/
-   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0, $options = array()) {
+   static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate=0, $options=array()) {
 
       switch ($tab) {
          // All tab
@@ -413,10 +428,11 @@ class CommonGLPI {
             if (isset($data[1])) {
                $tabnum = $data[1];
             }
-            if ($tabnum =='main') {
+            if ($tabnum == 'main') {
                $options['withtemplate'] = $withtemplate;
                return $item->showForm($item->getID(), $options);
-            } else if (!is_integer($itemtype) && ($itemtype != 'empty')
+            }
+            if (!is_integer($itemtype) && ($itemtype != 'empty')
                 && ($obj = getItemForItemtype($itemtype))) {
                return $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
             }
@@ -601,13 +617,16 @@ class CommonGLPI {
          }
 
          // Not all tab for templates and if only 1 tab
-         if ($display_all && empty($withtemplate) && count($tabs)>1) {
+         if ($display_all
+             && empty($withtemplate)
+             && (count($tabs) > 1)) {
             $tabs[-1] = array('title'  => __('All'),
                               'url'    => $tabpage,
                               'params' => "_target=$target&amp;_itemtype=".$this->getType().
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml");
          }
-         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID, $this->taborientation);
+         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
+                          $this->taborientation);
       }
    }
 
@@ -727,15 +746,16 @@ class CommonGLPI {
 
          $name = $this->getTypeName(1);
          if ($this instanceof CommonDBTM) {
-
-            $name = sprintf('%1$s - %2$s', $name,
-                        sprintf(__('%1$s - ID %2$d'),
-                                            $this->getName(), $this->fields['id']));
+            $name = sprintf(__('%1$s - %2$s'), $name,
+                            sprintf(__('%1$s - ID %2$d'),
+                                    $this->getName(), $this->fields['id']));
          }
          if (isset($this->fields["entities_id"])
                && Session::isMultiEntitiesMode()
                && $this->isEntityAssign()) {
-            $name = sprintf('%1$s (%2$s)', $name, Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]));
+            $name = sprintf(__('%1$s (%2$s)'), $name,
+                            Dropdown::getDropdownName("glpi_entities",
+                                                      $this->fields["entities_id"]));
 
          }
          echo "<td class='info b'>".$name."</td>";
@@ -773,6 +793,7 @@ class CommonGLPI {
    /**
     * Show tabs
     *
+    * @since version 0.85
     * @param $options array of parameters to add to URLs and ajax
     *     - withtemplate is a template view ?
     * @deprecated  Only for compatibility usage
@@ -852,8 +873,9 @@ class CommonGLPI {
 //                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
 //          echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
 //          echo "</a></li>";
-         echo "<li><a href=\"javascript:toggleTableDisplay('mainformtable','tabsbodyimg','".$CFG_GLPI["root_doc"].
-                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
+         echo "<li><a href=\"javascript:toggleTableDisplay('mainformtable','tabsbodyimg','".
+                    $CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"].
+                    "/pics/deplier_up.png')\">";
          echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
          echo "</a></li>";
 
@@ -916,6 +938,7 @@ class CommonGLPI {
       }
    }
 
+
    /**
     * @param $options   array
    **/
@@ -925,10 +948,15 @@ class CommonGLPI {
       $this->addDivForTabs($options);
    }
 
+
    /** Display item with tabs
+    *
+    * @since version 0.85
+    *
     * @param $options   array
    **/
    function display($options=array()) {
+
       if (isset($options['id'])) {
          $this->getFromDB($options['id']);
       }
@@ -936,6 +964,7 @@ class CommonGLPI {
       $this->showNavigationHeader($options);
       $this->showTabsContent($options);
    }
+
 
    /**
     * to list infos in debug tab

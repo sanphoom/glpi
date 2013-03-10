@@ -228,7 +228,7 @@ class Ajax {
     * @return nothing
    **/
    static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type, $ID = 0, $orientation = 'vertical', $size=950) {
+                              $type, $ID = 0, $orientation='vertical', $size=950) {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
@@ -236,7 +236,7 @@ class Ajax {
 
       $rand = mt_rand();
       if (count($tabs)>0) {
-      
+
          echo "<div id='tabs$rand' class='center'>";
          echo "<ul>";
          $current = 0;
@@ -251,7 +251,7 @@ class Ajax {
             $title = '';
             $limit = 18;
             // No title strip for horizontal menu
-            if ($orientation=='vertical') {
+            if ($orientation == 'vertical') {
                if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
                   $title = Html::resume_text(trim($regs[1]),$limit).$regs[2];
                } else {
@@ -265,7 +265,7 @@ class Ajax {
          }
          echo "</ul>";
          echo "<div class='loadingindicator' id='loadingindicator$rand'>".__('Loading...')."</div>";
-         
+
          echo "</div>";
 
          echo "<script type='text/javascript'>";

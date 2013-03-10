@@ -87,8 +87,11 @@ class ComputerDisk extends CommonDBChild {
       return true;
    }
 
+
    /**
     * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
    **/
    function defineTabs($options=array()) {
 
@@ -97,7 +100,8 @@ class ComputerDisk extends CommonDBChild {
 
       return $ong;
    }
-   
+
+
    /**
     * Duplicate all disks from a computer template to his clone
     *

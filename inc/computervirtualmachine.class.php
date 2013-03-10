@@ -69,8 +69,11 @@ class ComputerVirtualMachine extends CommonDBChild {
       return '';
    }
 
+
    /**
     * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
    **/
    function defineTabs($options=array()) {
 
@@ -79,7 +82,8 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       return $ong;
    }
-   
+
+
    /**
     * @param $item         CommonGLPI object
     * @param $tabnum       (default 1)
