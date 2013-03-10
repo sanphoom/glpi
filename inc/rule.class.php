@@ -103,8 +103,10 @@ class Rule extends CommonDBTM {
       return _n('Rule', 'Rules', $nb);
    }
 
+
    /**
    *  Get correct Rule object for specific rule
+   *
    *  @param $rules_id ID of the rule
    **/
    static function getRuleObjectByID($rules_id) {
@@ -117,21 +119,25 @@ class Rule extends CommonDBTM {
       return null;
    }
 
+
    /**
     *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
+
       $menu = array();
 
       if (Session::haveRight("rule_ldap","r")
-         || Session::haveRight("rule_ocs","r")
-         || Session::haveRight("entity_rule_ticket","r")
-         || Session::haveRight("rule_softwarecategories","r")
-         || Session::haveRight("rule_mailcollector","r")) {
+          || Session::haveRight("rule_ocs","r")
+          || Session::haveRight("entity_rule_ticket","r")
+          || Session::haveRight("rule_softwarecategories","r")
+          || Session::haveRight("rule_mailcollector","r")) {
 
-         $menu['rule']['title']    = static::getTypeName(2);
-         $menu['rule']['page']     = static::getSearchURL(false);
+         $menu['rule']['title'] = static::getTypeName(2);
+         $menu['rule']['page']  = static::getSearchURL(false);
 
          foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
             $rulecollection = new $rulecollectionclass();
@@ -152,21 +158,22 @@ class Rule extends CommonDBTM {
       }
 
       if (Session::haveRight("transfer","r" )
-            && Session::isMultiEntitiesMode()) {
-            $menu['rule']['options']['transfer']['title'] = __('Transfer');
-            $menu['rule']['options']['transfer']['page']  = "/front/transfer.php";
+          && Session::isMultiEntitiesMode()) {
+            $menu['rule']['options']['transfer']['title']           = __('Transfer');
+            $menu['rule']['options']['transfer']['page']            = "/front/transfer.php";
             $menu['rule']['options']['transfer']['links']['search'] = "/front/transfer.php";
 
             if (Session::haveRight("transfer","w")) {
-               $menu['rule']['options']['transfer']['links']['summary'] = "/front/transfer.action.php";
+               $menu['rule']['options']['transfer']['links']['summary']
+                                                                    = "/front/transfer.action.php";
                $menu['rule']['options']['transfer']['links']['add'] = "/front/transfer.form.php";
             }
          }
 
 
          if (Session::haveRight("rule_dictionnary_dropdown","r")
-            || Session::haveRight("rule_dictionnary_software","r")
-            || Session::haveRight("rule_dictionnary_printer","r")) {
+             || Session::haveRight("rule_dictionnary_software","r")
+             || Session::haveRight("rule_dictionnary_printer","r")) {
 
             $menu['dictionnary']['title']    = __('Dictionaries');
             $menu['dictionnary']['shortcut'] = '';
@@ -523,21 +530,18 @@ class Rule extends CommonDBTM {
                            _sx('button', 'Move')."'>\n";
             return true;
 
-            break;
          case "duplicate" :
             if ($this->isEntityAssign()) {
                Entity::dropdown();
             }
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Duplicate')."'>";
-               return true;
-               break;
+            return true;
 
          case "export" :
             echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                          __s('Export')."'>";
-               return true;
-               break;
+            return true;
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
@@ -960,7 +964,7 @@ class Rule extends CommonDBTM {
       echo "</table>\n";
 
       if ($canedit && $nb) {
-         $paramsma['ontop'] =false;
+         $paramsma['ontop'] = false;
          Html::showMassiveActions($this->ruleactionclass, $paramsma);
          Html::closeForm();
       }
@@ -2836,28 +2840,35 @@ class Rule extends CommonDBTM {
       return true;
    }
 
+
    /**
     * Generate unique id for rule based on server name, glpi directory and basetime
+    *
+    * @since version 0.85
     *
     * @return uuid
    **/
    static function getUuid() {
+
       //encode uname -a, ex Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686
       $serverSubSha1 = substr(sha1(php_uname('a')), 0, 8);
       // encode script current dir, ex : /var/www/glpi_X
-      $dirSubSha1 = substr(sha1(__FILE__), 0, 8);
-      return uniqid("$serverSubSha1-$dirSubSha1-", true);
+      $dirSubSha1    = substr(sha1(__FILE__), 0, 8);
 
+      return uniqid("$serverSubSha1-$dirSubSha1-", true);
    }
+
 
    /**
     * Display debug information for current object
+    *
+    * @since version 0.85
    **/
    function showDebug() {
-      echo "<div class='spaced'>";
-      echo "<b>UUID</b> : ".$this->fields['uuid'];
-      echo "</div>";
 
+      echo "<div class='spaced'>";
+      printf(__('%1$s: %2$s'), "<b>UUID</b>", $this->fields['uuid']);
+      echo "</div>";
    }
 
 }

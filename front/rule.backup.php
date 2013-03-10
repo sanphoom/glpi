@@ -27,13 +27,17 @@
  --------------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+/** @file
+ * @brief
+ * @since version 0.85
+*/
+
+include (GLPI_ROOT . "../inc/includes.php");
 
 Session::checkCentralAccess();
 if (isset($_GET['action'])) {
    $action = $_GET['action'];
-} elseif (isset($_POST['action'])) {
+} else if (isset($_POST['action'])) {
    $action = $_POST['action'];
 } else {
    $action = "import";
@@ -49,7 +53,6 @@ if ($action != "export") {
 switch ($action) {
    case "preview_import":
       $rulecollection->checkGlobal('w');
-
       if (RuleCollection::previewImportRules()) {
          break;
       }
@@ -60,7 +63,7 @@ switch ($action) {
       break;
 
    case "export":
-      $rule      = new Rule();
+      $rule = new Rule();
       if (isset($_SESSION['exportitems'])) {
          $rules_key = array_keys($_SESSION['exportitems']);
       } else {
