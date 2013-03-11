@@ -549,13 +549,31 @@ class Html {
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
-         echo "<div id='debug'>";
+         $rand = mt_rand();
+         echo "<br><br><br><div id='debug'>";
          echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
+         
+
+
+         echo "<div id='debugtabs$rand'><ul>";
+         if ($CFG_GLPI["debug_sql"]) {
+            echo "<li><a href='#debugsql$rand'>SQL REQUEST</a></li>";
+         }
+         if ($CFG_GLPI["debug_vars"]) {
+            echo "<li><a href='#debugautoload$rand'>AUTOLOAD</a></li>";
+            echo "<li><a href='#debugpost$rand'>POST VARIABLE</a></li>";
+            echo "<li><a href='#debugget$rand'>GET VARIABLE</a></li>";
+            if ($with_session) {
+               echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
+            }
+         }
+         echo "</ul>";
+
 
          if ($CFG_GLPI["debug_sql"]) {
-            echo "<h2>SQL REQUEST : ";
-            echo $SQL_TOTAL_REQUEST." Queries ";
-            echo "took  ".array_sum($DEBUG_SQL['times'])."s  </h2>";
+            echo "<div id='debugsql$rand'>";
+            echo "<div class='b'>".$SQL_TOTAL_REQUEST." Queries ";
+            echo "took  ".array_sum($DEBUG_SQL['times'])."s</div>";
 
             echo "<table class='tab_cadre'><tr><th>N&#176; </th><th>Queries</th><th>Time</th>";
             echo "<th>Errors</th></tr>";
@@ -574,20 +592,28 @@ class Html {
                echo "</td></tr>";
             }
             echo "</table>";
+            echo "</div>";
          }
-
          if ($CFG_GLPI["debug_vars"]) {
-            echo "<h2>AUTOLOAD</h2>";
-            echo "<p>" . implode(', ', $DEBUG_AUTOLOAD) . "</p>";
-            echo "<h2>POST VARIABLE</h2>";
-            self::printCleanArray($_POST);
-            echo "<h2>GET VARIABLE</h2>";
-            self::printCleanArray($_GET);
+            echo "<div id='debugautoload$rand'>";
+            echo implode(', ', $DEBUG_AUTOLOAD);
+            echo "</div>";
+            echo "<div id='debugpost$rand'>";
+            self::printCleanArray($_POST, 0, true);
+            echo "</div>";
+            echo "<div id='debugget$rand'>";
+            self::printCleanArray($_GET, 0, true);
+            echo "</div>";
             if ($with_session) {
-               echo "<h2>SESSION VARIABLE</h2>";
-               self::printCleanArray($_SESSION);
+               echo "<div id='debugsession$rand'>";
+               self::printCleanArray($_SESSION, 0, true);
+               echo "</div>";
             }
          }
+         echo "<script type='text/javascript'>
+               $( '#debugtabs$rand' ).tabs();";
+         echo "</script>";
+
          echo "</div>";
       }
    }
@@ -3300,10 +3326,11 @@ class Html {
     *
     * @param $tab    the array to display
     * @param $pad    Pad used (default 0)
+    * @param $jsexpand    Expand using JS ? (default  false)
     *
     * @return nothing
    **/
-   static function printCleanArray($tab, $pad=0) {
+   static function printCleanArray($tab, $pad=0,$jsexpand=false) {
 
       if (count($tab)) {
          echo "<table class='tab_cadre'>";
@@ -3313,16 +3340,28 @@ class Html {
          foreach ($tab as $key => $val) {
             echo "<tr class='tab_bg_1'><td class='top right'>";
             echo $key;
-            echo "</td><td class='top'>=></td><td class='top tab_bg_1'>";
+            $is_array=is_array($val);
+            $rand = mt_rand();
+            echo "</td><td class='top'>";
+            if ($jsexpand && $is_array) {
+               echo "<a class='pointer' onclick=\"javascript:showHideDiv('content$key$rand','','','')\">=></a>";
+            } else {
+               echo "=>";
+            }
+            echo "</td><td class='top tab_bg_1'>";
 
-            if (is_array($val)) {
+            if ($is_array) {
+               echo "<div id='content$key$rand' ".($jsexpand?"style=\"display:none;\"":'').">";
                self::printCleanArray($val,$pad+1);
+               echo "</div>";
             } else {
                echo $val;
             }
             echo "</td></tr>";
          }
          echo "</table>";
+      } else {
+         _e('Empty array');
       }
    }
 
