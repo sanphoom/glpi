@@ -1862,7 +1862,7 @@ class User extends CommonDBTM {
             echo "<td colspan='2'>&nbsp;</td>";
          }
       } else {
-         echo "<td colspan='2'><input type='hidden' name='authtype' value='1'></td>";
+         echo "<td colspan='2'>---<input type='hidden' name='authtype' value='1'></td>";
       }
       echo "</tr>";
 
@@ -2091,8 +2091,8 @@ class User extends CommonDBTM {
          echo "</td>";
 
          if (!empty($this->fields["name"])) {
-            echo "<td rowspan='11'>" . __('Picture') . "</td>";
-            echo "<td rowspan='11'>";
+            echo "<td rowspan='8'>" . __('Picture') . "</td>";
+            echo "<td rowspan='8'>";
             echo "<div class='user_picture_border'>";
             if (!empty($this->fields["picture"])) {
                echo "<img src='".$CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".
