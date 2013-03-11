@@ -32,7 +32,7 @@
  * @since version 0.85
 */
 
-include (GLPI_ROOT . "../inc/includes.php");
+include ("../inc/includes.php");
 
 Session::checkCentralAccess();
 if (isset($_GET['action'])) {
