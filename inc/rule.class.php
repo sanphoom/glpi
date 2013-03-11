@@ -529,7 +529,7 @@ class Rule extends CommonDBTM {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
-
+            
          case "duplicate" :
             if ($this->isEntityAssign()) {
                Entity::dropdown();
@@ -2429,11 +2429,15 @@ class Rule extends CommonDBTM {
    static function doHookAndMergeResults($hook, $params=array(), $itemtype='') {
       global $PLUGIN_HOOKS;
 
+      if (empty($itemtype)) {
+         $itemtype = static::getType();
+      }
+      
       //Agregate all plugins criteria for this rules engine
       $toreturn = $params;
       if (isset($PLUGIN_HOOKS['use_rules'])) {
          foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
-            if (is_array($val) && in_array(static::getType(), $val)) {
+            if (is_array($val) && in_array($itemtype, $val)) {
                $results = Plugin::doOneHook($plugin, $hook, array('rule_itemtype' => $itemtype,
                                                                   'values'        => $params));
                if (is_array($results)) {
