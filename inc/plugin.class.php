@@ -602,7 +602,8 @@ class Plugin extends CommonDBTM {
          CronTask::Unregister($this->fields['directory']);
          self::load($this->fields['directory'],true);
          FieldUnicity::deleteForItemtype($this->fields['directory']);
-
+         Link_Itemtype::deleteForItemtype($this->fields['directory']);
+         
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
@@ -1008,7 +1009,7 @@ class Plugin extends CommonDBTM {
                      'linkuser_types', 'networkport_instantiations',
                      'networkport_types', 'notificationtemplates_types', 'planning_types',
                      'reservation_types', 'rulecollections_types', 'systeminformations_types',
-                     'ticket_types', 'unicity_types') as $att) {
+                     'ticket_types', 'unicity_types', 'link_types') as $att) {
 
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);
