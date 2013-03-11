@@ -566,6 +566,7 @@ class Html {
             if ($with_session) {
                echo "<li><a href='#debugsession$rand'>SESSION VARIABLE</a></li>";
             }
+            echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
          }
          echo "</ul>";
 
@@ -609,6 +610,10 @@ class Html {
                self::printCleanArray($_SESSION, 0, true);
                echo "</div>";
             }
+            echo "<div id='debugserver$rand'>";
+            self::printCleanArray($_SERVER, 0, true);
+            echo "</div>";
+            
          }
          echo "<script type='text/javascript'>
                $( '#debugtabs$rand' ).tabs();";
