@@ -1732,7 +1732,6 @@ class Config extends CommonDBTM {
       }
    }
 
-
    /**
     * Delete config entries
     *
@@ -1744,10 +1743,9 @@ class Config extends CommonDBTM {
       $config = new self();
       foreach ($values as $name => $value) {
          if ($config->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
-            $config->delete(array('id' => $this->getID()));
+            $config->delete(array('id' => $config->getID()));
          }
       }
-
    }
 }
 ?>
