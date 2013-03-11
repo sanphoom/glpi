@@ -64,6 +64,21 @@ class Cartridge extends CommonDBChild {
       return $forbidden;
    }
 
+   function showSpecificMassiveActionsParameters($input=array()) {
+
+      switch ($input['action']) {
+         case "updatepages" :
+            if (!isset($input['maxpages'])) {
+               $input['maxpages'] = '';
+            }
+            echo "<input type='text' name='pages' value=\"".$input['maxpages']."\" size='6'>";
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Update')."'>";
+            return true;
+      }
+      return false;
+   }
+   
    function getNameField() {
       return 'id';
    }
@@ -150,7 +165,28 @@ class Cartridge extends CommonDBChild {
                }
             }
             break;
-
+            
+         case "updatepages" :
+            if (isset($input['pages'])) {
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     if ($this->can($key,'w')) {
+                        if ($this->update(array('id' => $key,
+                                                'pages' => $input['pages']))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+            
          default :
             return parent::doSpecificMassiveActions($input);
       }
@@ -178,18 +214,6 @@ class Cartridge extends CommonDBChild {
 
 
    // SPECIFIC FUNCTIONS
-   /**
-    * Update count pages value of a cartridge
-    *
-    * @param $pages  count pages value
-    *
-    * @return boolean : true for success
-   **/
-   function updatePages($pages) {
-
-      return $this->update(array('id'    => $this->fields['id'],
-                                 'pages' => $pages));
-   }
 
    /**
     * Link a cartridge to a printer.
@@ -249,8 +273,15 @@ class Cartridge extends CommonDBChild {
       global $DB;
 
       if ($this->getFromDB($ID)) {
+         $printer = new Printer();
+         $toadd = '';
+         if ($printer->getFromDB($this->getField("printers_id"))) {
+            $toadd.= ", `pages` = '".$printer->fields['last_pages_counter']."' ";
+         }
+
          $query = "UPDATE`".$this->getTable()."`
                    SET `date_out` = '".date("Y-m-d")."'
+                     $toadd
                    WHERE `id`='$ID'";
 
          if ($result = $DB->query($query)
@@ -727,12 +758,14 @@ class Cartridge extends CommonDBChild {
          if (!$old) {
             $actions = array('uninstall' => __('End of life'));
          } else {
-            $actions = array('delete' => _x('button', 'Delete permanently'));
+            $actions = array('updatepages' => __('Update printer counter'),
+                             'delete'      => _x('button', 'Delete permanently'));
          }
          $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'rand'             => $rand);
+                           'rand'             => $rand,
+                           'extraparams'      => array('maxpages' => $printer->fields['last_pages_counter']));
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
