@@ -506,9 +506,7 @@ class Computer_Item extends CommonDBRelation{
                  ">".$name."</td>";
             if (Plugin::haveImport()) {
                echo "<td>";
-               if ($data['assoc_is_dynamic']) {
-                  _e('Yes');
-               }
+               echo Dropdown::getYesNo($data['assoc_is_dynamic']);
                echo "</td>";
             }
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
@@ -635,9 +633,7 @@ class Computer_Item extends CommonDBRelation{
                  ">".$comp->getLink()."</td>";
             if (Plugin::haveImport()) {
                echo "<td>";
-               if ($dynamic[$key]) {
-                  _e('Yes');
-               }
+               echo Dropdown::getYesNo($dynamic[$key]);
                echo "</td>";
             }
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
