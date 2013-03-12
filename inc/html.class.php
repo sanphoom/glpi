@@ -616,7 +616,10 @@ class Html {
             
          }
          echo "<script type='text/javascript'>
-               $( '#debugtabs$rand' ).tabs();";
+               $( '#debugtabs$rand' ).tabs({
+                  collapsible: true, 
+                  active: false
+               });";
          echo "</script>";
 
          echo "</div>";
