@@ -77,15 +77,17 @@ function update084to085() {
          $migration->copyTable('glpi_configs', 'origin_glpi_configs');
       }
 
-      $query  = "SELECT * FROM `glpi_configs` WHERE `id` = '1'";
+      $query  = "SELECT *
+                 FROM `glpi_configs`
+                 WHERE `id` = '1'";
       $result_of_configs = $DB->query($query);
 
       // Update glpi_configs
       $migration->addField('glpi_configs', 'context', 'VARCHAR(150) COLLATE utf8_unicode_ci',
                            array('update' => "'core'"));
-      $migration->addField('glpi_configs', 'name',    'VARCHAR(150) COLLATE utf8_unicode_ci',
+      $migration->addField('glpi_configs', 'name', 'VARCHAR(150) COLLATE utf8_unicode_ci',
                            array('update' => "'version'"));
-      $migration->addField('glpi_configs', 'value',   'text',   array('update' => "'0.85'"));
+      $migration->addField('glpi_configs', 'value', 'text', array('update' => "'0.85'"));
       $migration->addKey('glpi_configs', array('context', 'name'), 'unicity', 'UNIQUE');
 
       $migration->migrationOneTable('glpi_configs');
@@ -102,8 +104,9 @@ function update084to085() {
          $migration->migrationOneTable('glpi_configs');
          // Then insert new values
          foreach ($configs as $name => $value) {
-            $query = "INSERT INTO `glpi_configs` (`context`, `name`, `value`)
-                                          VALUES ('core', '$name', '$value');";
+            $query = "INSERT INTO `glpi_configs`
+                             (`context`, `name`, `value`)
+                      VALUES ('core', '$name', '$value');";
             $DB->query($query);
          }
       }
@@ -141,7 +144,8 @@ function update084to085() {
             $migration->dropField('glpi_profiles', $field['Field']);
          }
       }
-      $query = "SELECT * FROM `origin_glpi_profiles`";
+      $query = "SELECT *
+                FROM `origin_glpi_profiles`";
       foreach ($DB->request($query) as $profile) {
          $profiles_id = $profile['id'];
          foreach ($rights as $right) {
@@ -150,8 +154,9 @@ function update084to085() {
             } else {
                $new_right = $profile[$right];
             }
-            $query = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`, `right`)
-                              VALUES ('$profiles_id', '$right', '".$profile[$right]."')";
+            $query = "INSERT INTO `glpi_profilerights`
+                             (`profiles_id`, `name`, `right`)
+                      VALUES ('$profiles_id', '$right', '".$profile[$right]."')";
             $DB->query($query);
          }
       }

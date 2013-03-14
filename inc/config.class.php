@@ -1645,8 +1645,11 @@ class Config extends CommonDBTM {
       return $error;
    }
 
+
    /**
     * Get current DB version (compatible with all version of GLPI)
+    *
+    * @since version 0.85
     *
     * @return DB version
    **/
@@ -1665,7 +1668,7 @@ class Config extends CommonDBTM {
          $query = "SELECT `value` as version
                    FROM `glpi_configs`
                    WHERE 'context' = 'core'
-                     AND 'name' = 'version'";
+                         AND 'name' = 'version'";
       }
 
       $result = $DB->query($query);
@@ -1673,14 +1676,18 @@ class Config extends CommonDBTM {
       return trim($config['version']);
    }
 
+
    /**
     * Get config values
     *
-    * @param $context string context to get values (default for glpi is core)
-    * @param $names array of config names to get
+    * @since version 0.85
+    *
+    * @param $context  string   context to get values (default for glpi is core)
+    * @param $names    array    of config names to get
+    *
     * @return array of config values
    **/
-   static function getConfigurationValues($context, array $names = array()) {
+   static function getConfigurationValues($context, array $names=array()) {
       global $DB;
 
       if (count($names) == 0) {
@@ -1708,13 +1715,15 @@ class Config extends CommonDBTM {
     *
     * @param $context  string context to get values (default for glpi is core)
     * @param $values   array  of config names to set
+    *
     * @return array of config values
    **/
    static function setConfigurationValues($context, array $values= array()) {
 
       $config = new self();
       foreach ($values as $name => $value) {
-         if ($config->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
+         if ($config->getFromDBByQuery("WHERE `context` = '$context'
+                                              AND `name` = '$name'")) {
 
             $input = array('id'      => $config->getID(),
                            'context' => $context,
@@ -1735,14 +1744,19 @@ class Config extends CommonDBTM {
    /**
     * Delete config entries
     *
-    * @param $context string context to get values (default for glpi is core)
-    * @param $values array of config names to delete
+    * @since version 0.85
+    *
+    * @param $context string  context to get values (default for glpi is core)
+    * @param $values  array   of config names to delete
+    *
     * @return array of config values
    **/
-   static function deleteConfigurationValues($context, array $values = array()) {
+   static function deleteConfigurationValues($context, array $values= array()) {
+
       $config = new self();
       foreach ($values as $name => $value) {
-         if ($config->getFromDBByQuery("WHERE `context` = '$context' AND `name` = '$name'")) {
+         if ($config->getFromDBByQuery("WHERE `context` = '$context'
+                                              AND `name` = '$name'")) {
             $config->delete(array('id' => $config->getID()));
          }
       }

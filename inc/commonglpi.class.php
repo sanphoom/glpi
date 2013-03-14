@@ -712,21 +712,21 @@ class CommonGLPI {
          echo "<tr class='tab_bg_2'>";
 
          if ($first >= 0) {
-            echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                       "\" title=\"".__s('First')."\"></a></td>";
+            echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>".
+                  "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
+                    "\" title=\"".__s('First')."\"></a></td>";
          } else {
             echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                       __s('First')."\" title=\"".__s('First')."\"></td>";
+                                    __s('First')."\" title=\"".__s('First')."\"></td>";
          }
 
          if ($prev >= 0) {
-            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                       "\" title=\"".__s('Previous')."\"></a></td>";
+            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml'>".
+                  "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+                    "\" title=\"".__s('Previous')."\"></a></td>";
          } else {
             echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                       __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
+                                    __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
          echo "<td><a href=\"".$glpilisturl."\">";
@@ -765,21 +765,21 @@ class CommonGLPI {
          }
 
          if ($next >= 0) {
-            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                       "\" title=\"".__s('Next')."\"></a></td>";
+            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml'>".
+                  "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+                    "\" title=\"".__s('Next')."\"></a></td>";
          } else {
             echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                       __s('Next')."\" title=\"".__s('Next')."\"></td>";
+                                     __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
-            echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                       "\" title=\"".__s('Last')."\"></a></td>";
+            echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>".
+                  "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
+                    "\" title=\"".__s('Last')."\"></a></td>";
          } else {
             echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                       __s('Last')."\" title=\"".__s('Last')."\"></td>";
+                                     __s('Last')."\" title=\"".__s('Last')."\"></td>";
          }
 
 //          echo "</ul></div>";

@@ -774,9 +774,9 @@ function updateDbUpTo031() {
                   'language'            => $glpilanguage,
                   'founded_new_version' => '') as $name => $value) {
       $query = "UPDATE `glpi_configs`
-                   SET `value` = '$value'
+                SET `value` = '$value'
                  WHERE `context` = 'core'
-                   AND `name` = '$name'";
+                       AND `name` = '$name'";
       $DB->queryOrDie($query);
    }
 

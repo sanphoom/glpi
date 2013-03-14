@@ -45,7 +45,7 @@ if (isset($_POST["rubdoc"])) {
    $used = array();
 
    // Clean used array
-   if (isset($_POST['used']) && is_array($_POST['used']) && count($_POST['used'])>0) {
+   if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
       $query = "SELECT `id`
                 FROM `glpi_documents`
                 WHERE `id` IN (".implode(',',$_POST['used']).")

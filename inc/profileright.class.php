@@ -36,6 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Profile class
+/// since version 0.85
 class ProfileRight extends CommonDBChild {
 
    // From CommonDBChild:
@@ -47,7 +48,8 @@ class ProfileRight extends CommonDBChild {
       global $DB;
 
       if (!isset($_SESSION['glpi_all_possible_rights'])
-         || count($_SESSION['glpi_all_possible_rights']) == 0) {
+          ||( count($_SESSION['glpi_all_possible_rights']) == 0)) {
+
          $_SESSION['glpi_all_possible_rights'] = array();
          $rights = array();
          $query  = "SELECT DISTINCT `name`
@@ -61,7 +63,11 @@ class ProfileRight extends CommonDBChild {
    }
 
 
-   static function getProfileRights($profiles_id, array $rights = array()) {
+   /**
+    * @param $profiles_id
+    * @param$rights         array
+   **/
+   static function getProfileRights($profiles_id, array $rights=array()) {
       global $DB;
 
       if (count($rights) == 0) {
@@ -72,7 +78,7 @@ class ProfileRight extends CommonDBChild {
          $query  = "SELECT *
                     FROM `glpi_profilerights`
                     WHERE `profiles_id` = '$profiles_id'
-                      AND `name` IN ('".implode("', '", $rights)."')";
+                          AND `name` IN ('".implode("', '", $rights)."')";
       }
       $rights = array();
       foreach ($DB->request($query) as $right) {
@@ -81,18 +87,26 @@ class ProfileRight extends CommonDBChild {
       return $rights;
    }
 
+
+   /**
+    * @param $rights   array
+    *
+    * @return boolean
+   **/
    static function addProfileRights(array $rights) {
       global $DB;
 
       $ok = true;
       $_SESSION['glpi_all_possible_rights'] = array();
       $query = "SELECT `id`
-                  FROM `glpi_profiles`;";
+                FROM `glpi_profiles`";
+
       foreach ($DB->request($query) as $profile) {
          $profiles_id = $profile['id'];
          foreach ($rights as $name) {
-            $query = "INSERT INTO `glpi_profilerights` (`profiles_id`, `name`)
-                              VALUES ('$profiles_id', '$name');";
+            $query = "INSERT INTO `glpi_profilerights`
+                             (`profiles_id`, `name`)
+                      VALUES ('$profiles_id', '$name')";
             if (!$DB->query($query)) {
                $ok = false;
             }
@@ -101,14 +115,20 @@ class ProfileRight extends CommonDBChild {
       return $ok;
    }
 
+
+   /**
+    * @param $rights   array
+    *
+    * @return boolean
+    */
    static function deleteProfileRights(array $rights) {
       global $DB;
 
       $_SESSION['glpi_all_possible_rights'] = array();
-      $ok = true;
+      $ok                                   = true;
       foreach ($rights as $name) {
          $query = "DELETE FROM `glpi_profilerights`
-                     WHERE `name` = '$name'";
+                   WHERE `name` = '$name'";
          if (!$DB->query($query)) {
             $ok = false;
          }
@@ -116,61 +136,75 @@ class ProfileRight extends CommonDBChild {
       return $ok;
    }
 
+
+   /**
+    * @param $right
+    * @param $value
+    * @param $condition
+    *
+    * @return boolean
+   **/
    static function updateProfileRightAsOtherRight($right, $value, $condition) {
       global $DB;
 
       $profiles = array();
-      $ok = true;
+      $ok       = true;
       foreach ($DB->request('glpi_profilerights', $condition) as $data) {
          $profiles[] = $data['profiles_id'];
       }
       if (count($profiles)) {
          $query = "UPDATE `glpi_profilerights`
-                     SET `right` = '$value'
-                     WHERE `name`='$right'
-                           AND `profiles_id` IN ('".implode("', '",$profiles)."');";
+                   SET `right` = '$value'
+                   WHERE `name`='$right'
+                         AND `profiles_id` IN ('".implode("', '",$profiles)."')";
          if (!$DB->query($query)) {
             $ok = false;
          }
       }
       return $ok;
    }
-   
+
+
+   /**
+    * @param $profiles_id
+   **/
    static function fillProfileRights($profiles_id) {
       global $DB;
 
       $query = "SELECT DISTINCT POSSIBLE.`name` AS NAME
                 FROM `glpi_profilerights` AS POSSIBLE
-                WHERE NOT EXISTS (
-                        SELECT *
-                        FROM `glpi_profilerights` AS CURRENT
-                        WHERE CURRENT.`profiles_id` = '$profiles_id'
-                          AND CURRENT.`NAME` = POSSIBLE.`NAME`)";
+                WHERE NOT EXISTS (SELECT *
+                                  FROM `glpi_profilerights` AS CURRENT
+                                  WHERE CURRENT.`profiles_id` = '$profiles_id'
+                                        AND CURRENT.`NAME` = POSSIBLE.`NAME`)";
 
       foreach ($DB->request($query) as $right) {
          $query = "INSERT INTO `glpi_profilerights`
-                     (`profiles_id`, `name`) values ('$profiles_id', '".$right['NAME']."')";
+                          (`profiles_id`, `name`)
+                   VALUES ('$profiles_id', '".$right['NAME']."')";
          $DB->query($query);
       }
-
    }
 
-   function updateProfileRights($profiles_id, array $rights = array()) {
+
+   /**
+    * @param $profiles_id
+    * @param $rights         array
+    */
+   function updateProfileRights($profiles_id, array $rights=array()) {
 
       foreach ($rights as $name => $right) {
          if ($this->getFromDBByQuery("WHERE `profiles_id` = '$profiles_id'
-                                        AND `name` = '$name'")) {
+                                            AND `name` = '$name'")) {
 
             $input = array('id'          => $this->getID(),
                            'right'       => $right);
-
             $this->update($input);
-         } else {
 
+         } else {
             $input = array('profiles_id' => $profiles_id,
                            'name'        => $name,
                            'right'       => $right);
-
             $this->add($input);
          }
       }
