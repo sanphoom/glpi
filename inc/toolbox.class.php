@@ -1143,9 +1143,9 @@ class Toolbox {
       }
    }
 
-   /** 
-    * Resize a picture to the new size 
-    * 
+   /**
+    * Resize a picture to the new size
+    *
     * @param $source_path string : path of the picture to be resized
     * @param $dest_path string : path of the new resized picture
     * @param $new_width string : new width after resized
@@ -1181,7 +1181,7 @@ class Toolbox {
       $source_dest = imagecreatetruecolor($new_width, $new_height);
 
       //resize image
-      imagecopyresampled($source_dest, $source_res, 0, 0, 0, 0, 
+      imagecopyresampled($source_dest, $source_res, 0, 0, 0, 0,
                          $new_width, $new_height, $img_width, $img_height);
 
       //output img

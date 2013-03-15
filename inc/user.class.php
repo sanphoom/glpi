@@ -578,7 +578,7 @@ class User extends CommonDBTM {
          $this->update(array('id'      => $this->fields['id'],
                              'picture' => $picture));
       }
-      
+
 
       // Add default profile
       if (!$rulesplayed) {
@@ -804,14 +804,14 @@ class User extends CommonDBTM {
          $changes[2] = __('User present in LDAP directory');
          Log::history($this->getID(), 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
       }*/
-      
+
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
       $this->applyRightRules();
    }
 
 
-    
+
    // SPECIFIC FUNCTIONS
    /**
     * Apply rules to determine dynamic rights of the user
@@ -1866,7 +1866,7 @@ class User extends CommonDBTM {
       }
       echo "</tr>";
 
-      
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . _n('Email','Emails',2);
@@ -1949,9 +1949,10 @@ class User extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" .  __('Default profile') . "</td><td>";
 
-            $options[0] = Dropdown::EMPTY_VALUE;
+            $options = array(0 => Dropdown::EMPTY_VALUE);
             $options   += Dropdown::getDropdownArrayNames('glpi_profiles',
                                                           Profile_User::getUserProfiles($this->fields['id']));
+
             Dropdown::showFromArray("profiles_id", $options,
                                     array('value' => $this->fields["profiles_id"]));
 
@@ -2124,7 +2125,7 @@ class User extends CommonDBTM {
             echo "<td>" . __('Password') . "</td>";
             echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='off' onkeyup=\"return passwordCheck();\">";
             echo "</td></tr>";
-         
+
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __('Password confirmation') . "</td>";
             echo "<td><input type='password' name='password2' value='' size='30' autocomplete='off'>";
@@ -2140,10 +2141,10 @@ class User extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td></td></tr>";
             echo "<tr class='tab_bg_1'><td></td></tr>";
          }
-        
-         
 
-         
+
+
+
 
          echo "<tr class='tab_bg_1'><td class='top'>" . _n('Email', 'Emails',2);
          UserEmail::showAddEmailButton($this);
@@ -2634,7 +2635,7 @@ class User extends CommonDBTM {
       $tab[24]['name']                 = __('Deleted user in LDAP directory');
       $tab[24]['datatype']             = 'bool';
       $tab[24]['massiveaction']        = false;
-            
+
       $tab[80]['table']                = 'glpi_entities';
       $tab[80]['linkfield']            = 'entities_id';
       $tab[80]['field']                = 'completename';
@@ -3471,7 +3472,7 @@ class User extends CommonDBTM {
       $tmp['is_deleted_ldap'] = 1;
       $myuser                 = new User();
       $myuser->getFromDB($users_id);
-      
+
       //User is already considered as delete from ldap
       if ($myuser->fields['is_deleted_ldap'] == 1) {
          return;

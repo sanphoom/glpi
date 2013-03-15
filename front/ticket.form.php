@@ -165,7 +165,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
 
 }
-
+toolbox::logdebug("get",$_GET);
 if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpHeader(Ticket::getTypeName(2), '', $_SESSION["glpiname"]);
@@ -180,6 +180,8 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
          $options[$key] = $_GET[$key];
       }
    }
+
+
    $options['id'] = $_GET["id"];
    $track->display($options);
 
