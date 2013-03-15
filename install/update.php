@@ -770,16 +770,10 @@ function updateDbUpTo031() {
    }
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   foreach (array('version'             => '0.85',
-                  'language'            => $glpilanguage,
-                  'founded_new_version' => '') as $name => $value) {
-      $query = "UPDATE `glpi_configs`
-                SET `value` = '$value'
-                 WHERE `context` = 'core'
-                       AND `name` = '$name'";
-      $DB->queryOrDie($query);
-   }
-
+   Config::setConfigurationValues('core', array('version'             => '0.85',
+                                                'language'            => $glpilanguage,
+                                                'founded_new_version' => ''));
+   
    // Update process desactivate all plugins
    $plugin = new Plugin();
    $plugin->unactivateAll();

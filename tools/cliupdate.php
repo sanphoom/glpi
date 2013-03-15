@@ -167,24 +167,29 @@ class CliMigration extends Migration {
 
 /*---------------------------------------------------------------------*/
 
-if (TableExists("glpi_configs")) {
-   $query = "SELECT `version`, `language`
-             FROM `glpi_configs`";
-   $result          = $DB->query($query) or die("get current version ".$DB->error());
+if (!TableExists("glpi_configs")) {
+   // Get current version
+   // Use language from session, even if sometime not reliable
+   $query = "SELECT `version`, 'language'
+               FROM `glpi_config`";
+   $result = $DB->queryOrDie($query, "get current version");
+
    $current_version = trim($DB->result($result,0,0));
    $glpilanguage    = trim($DB->result($result,0,1));
-
-} else if (TableExists("glpi_config")) {
+// < 0.85
+} else if (FieldExists('glpi_configs', 'version')) {
+   // Get current version and language
    $query = "SELECT `version`, `language`
-             FROM `glpi_config`";
-   $result          = $DB->query($query) or die("get current version ".$DB->error());
+               FROM `glpi_configs`";
+   $result = $DB->queryOrDie($query, "get current version");
+
    $current_version = trim($DB->result($result,0,0));
    $glpilanguage    = trim($DB->result($result,0,1));
-
 } else {
    $configurationValues = Config::getConfigurationValues('core', array('version', 'language'));
-   $current_version     = $configurationValues['version'];
-   $glpilanguage        = $configurationValues['language'];
+
+   $current_version = $configurationValues['version'];
+   $glpilanguage    = $configurationValues['language'];
 }
 
 $migration = new CliMigration($current_version);
@@ -278,11 +283,9 @@ switch ($current_version) {
 if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   $query = "UPDATE `glpi_configs`
-             SET `version` = '".GLPI_VERSION."',
-                 `founded_new_version` = ''";
-   $DB->queryOrDie($query, 'update version number');
-
+   Config::setConfigurationValues('core', array('version'             => GLPI_VERSION,
+                                                'founded_new_version' => ''));
+   
    // Update process desactivate all plugins
    $plugin = new Plugin();
    $plugin->unactivateAll();
