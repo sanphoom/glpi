@@ -1341,7 +1341,7 @@ function update0831to084() {
 
    $types = array('glpi_computers_items', 'glpi_computervirtualmachines',
                   'glpi_computers_softwareversions', 'glpi_computerdisks', 'glpi_networkports',
-                  'glpi_computers_softwarelicenses');
+                  'glpi_computers_softwarelicenses', 'glpi_networknames', 'glpi_ipaddresses');
    foreach (Item_Devices::getDeviceTypes() as $id => $type) {
       $types[] = getTableForItemType($type);
    }
@@ -1362,7 +1362,7 @@ function update0831to084() {
    //Add field is_dynamic
    $types = array_merge($types, array('glpi_printers', 'glpi_phones', 'glpi_peripherals',
                                       'glpi_networkequipments', 'glpi_networkports',
-                                      'glpi_monitors'));
+                                      'glpi_monitors', 'glpi_networknames', 'glpi_ipaddresses'));
    foreach ($types as $table) {
       if ($migration->addField($table, 'is_dynamic', 'bool')) {
          $migration->migrationOneTable($table);
