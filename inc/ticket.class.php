@@ -5050,7 +5050,6 @@ class Ticket extends CommonITILObject {
       }
    }
 
-
    /**
     * @param $output_type     (default 'Search::HTML_OUTPUT')
     * @param $mass_id         id of the form to check all (default '')
@@ -5534,40 +5533,41 @@ class Ticket extends CommonITILObject {
             $items[$i]['begin'] = $plan['begin'];
             $items[$i]['end']   = $plan['end'];
 
-            foreach ($DB->request("glpi_users",
-                                  array('id' => $plan['users_id_tech'])) as $user) {
-               $j = $user['id'];
-               $items[$j]['realname'] = $user['realname'];
-               $items[$j]['firstname'] = $user['firstname'];
-               if (($items[$j]['realname'] == '')
-                   && ($items[$j]['firstname'] == '')) {
-                  $name[$j] = $user['name'];
-               } else {
-                  $name[$j] =  $items[$j]['realname']." ". $items[$j]['firstname'];
+            if (isset($items[$i]['begin']) && $items[$i]['begin']) {
+
+               foreach ($DB->request("glpi_users",
+                                     array('id' => $plan['users_id_tech'])) as $user) {
+                  $j = $user['id'];
+                  $items[$j]['realname']  = $user['realname'];
+                  $items[$j]['firstname'] = $user['firstname'];
+                  if (($items[$j]['realname'] == '')
+                      && ($items[$j]['firstname'] == '')) {
+                     $name[$j] = $user['name'];
+                  } else {
+                     $name[$j] =  $items[$j]['realname']." ". $items[$j]['firstname'];
+                  }
+               }
+
+               if ($i) {
+                  $tenth_column .= sprintf(__('From %s').($output_type == Search::HTML_OUTPUT?'<br>':''),
+                                           Html::convDateTime($items[$i]['begin']));
+                  $tenth_column .= sprintf(__('To %s').($output_type == Search::HTML_OUTPUT?'<br>':''),
+                                           Html::convDateTime($items[$i]['end']));
+                  if (isset($j)) {
+                     $tenth_column .= sprintf(__('By %s').($output_type == Search::HTML_OUTPUT?'<br>':''),
+                                              $name[$j]);
+                  }
+                  $tenth_column .= "<br>";
                }
             }
-            if (isset($i)) {
-               $tenth_column = sprintf(__('%1$s %2$s'),
-                                          sprintf(__('From %s')."<br>\n",
-                                                     ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                                                      Html::convDateTime($items[$i]['begin']."<br>")),
-                                          sprintf(__('To %s')."<br>\n",
-                                                     ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                                                      Html::convDateTime($items[$i]['end']."<br>")));
-            }
-            if (isset($j)) {
-               $tenth_column = sprintf(__('%1$s %2$s'), $tenth_column,
-                                          sprintf(__('%1$s %2$s')."<br>\n", __('By'),
-                                                     ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                                                      $name[$j]));
-            }
+
          }
+         unset($i, $j);
          echo Search::showItem($output_type, $tenth_column, $item_num, $row_num,
                                $align_desc."width='150'");
 
          // Finish Line
          echo Search::showEndLine($output_type);
-
       } else {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='6' ><i>".__('No ticket in progress.')."</i></td></tr>";
@@ -5685,9 +5685,7 @@ class Ticket extends CommonITILObject {
       }
 
       return " DISTINCT `glpi_tickets`.*,
-                        `glpi_itilcategories`.`completename` AS catname,
-                        `glpi_tickettasks`.`begin` AS beginplan,
-                        `glpi_tickettasks`.`end` AS endplan
+                        `glpi_itilcategories`.`completename` AS catname
                         $SELECT";
    }
 
