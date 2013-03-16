@@ -80,12 +80,16 @@ class Computer extends CommonDBTM {
       return false;
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
    **/
    static function getMenuShorcut() {
       return 'o';
    }
+
 
    /**
     * @see CommonGLPI::defineTabs()
@@ -742,7 +746,7 @@ class Computer extends CommonDBTM {
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
       $tab[31]['condition']      = "`is_visible_computer`='1'";
-      
+
       $tab[45]['table']          = 'glpi_operatingsystems';
       $tab[45]['field']          = 'name';
       $tab[45]['name']           = __('Operating system');
