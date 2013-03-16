@@ -414,6 +414,7 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_profiles"
                         => array('glpi_knowbaseitems_profiles' => 'profiles_id',
+                                 'glpi_profilerights'          => 'profiles_id',
                                  'glpi_profiles_reminders'     => 'profiles_id',
                                  'glpi_profiles_users'         => 'profiles_id',
                                  'glpi_users'                  => 'profiles_id'),
