@@ -62,12 +62,16 @@ class CartridgeItem extends CommonDBTM {
       return Session::haveRight('cartridge', 'r');
    }
 
+
    /**
     * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
    **/
    static function getMenuName() {
       return Cartridge::getTypeName(2);
    }
+
 
    /**
     * @since version 0.84

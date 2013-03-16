@@ -53,24 +53,33 @@ class NetworkEquipment extends CommonDBTM {
       return _n('Network device', 'Network devices', $nb);
    }
 
+
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @since version 0.85
    **/
    static function getAdditionalMenuOptions() {
+
       if (static::canView()) {
          $options['networkport']['title'] = NetworkPort::getTypeName(2);
-         $options['networkport']['page'] = NetworkPort::getFormURL(false);
+         $options['networkport']['page']  = NetworkPort::getFormURL(false);
+
          return $options;
       }
       return false;
    }
 
+
    /**
     * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
    **/
    static function getMenuName() {
       return _n('Network', 'Networks', 2);
    }
+
 
    static function canCreate() {
       return Session::haveRight('networking', 'w');

@@ -39,24 +39,35 @@ if (!defined('GLPI_ROOT')) {
 
 class Planning extends CommonGLPI {
 
-   
 
+
+   /**
+    * @since version 0.85
+    *
+    * @param $nb
+   **/
    static function getTypeName($nb=0) {
       return __('Planning');
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
    **/
    static function getMenuShorcut() {
       return 'p';
    }
 
+
    static function canView() {
+
       return (Session::haveRight("show_planning","1")
-         || Session::haveRight("show_all_planning","1")
-         || Session::haveRight("show_group_planning","1"));
+              || Session::haveRight("show_all_planning","1")
+              || Session::haveRight("show_group_planning","1"));
    }
+
 
    function defineTabs($options=array()) {
 

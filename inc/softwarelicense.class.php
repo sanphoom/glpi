@@ -106,7 +106,7 @@ class SoftwareLicense extends CommonDBTM {
       // Add infocoms if exists for the licence
       Infocom::cloneItem('Software', $dupid, $this->fields['id'], $this->getType());
    }
-   
+
    /**
     * @since version 0.84
     *
@@ -604,12 +604,13 @@ class SoftwareLicense extends CommonDBTM {
          if ($num_displayed = $DB->numrows($result)) {
             if ($showmassiveactions) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams = array('num_displayed' => $num_displayed,
-                                            'container'     => 'mass'.__CLASS__.$rand,
-                                            'extraparams'
-                                              => array('options'
-                                                        => array('condition'
-                                                                 => "`glpi_softwareversions`.`softwares_id` = $softwares_id")));
+               $massiveactionparams
+                  = array('num_displayed' => $num_displayed,
+                          'container'     => 'mass'.__CLASS__.$rand,
+                          'extraparams'   => array('options'
+                                                   => array('condition'
+                                                            => "`glpi_softwareversions`.`softwares_id`
+                                                                  = $softwares_id")));
 
                Html::showMassiveActions(__CLASS__, $massiveactionparams);
             }

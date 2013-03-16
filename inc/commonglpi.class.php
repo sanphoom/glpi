@@ -254,13 +254,15 @@ class CommonGLPI {
             $menu['links']['search'] = static::getSearchURL(false);
 
 
-            if (!in_array('add', $forbidden) && $type::canCreate()) {
+            if (!in_array('add', $forbidden)
+                && $type::canCreate()) {
+
                if ($item->maybeTemplate()) {
-                  $menu['links']['add']
-                                    = '/front/setup.templates.php?'.'itemtype='.$type.'&amp;add=1';
+                  $menu['links']['add'] = '/front/setup.templates.php?'.'itemtype='.$type.
+                                          '&amp;add=1';
                   if (!in_array('template', $forbidden)) {
-                     $menu['links']['template']
-                                    = '/front/setup.templates.php?'.'itemtype='.$type.'&amp;add=0';
+                     $menu['links']['template'] = '/front/setup.templates.php?'.'itemtype='.$type.
+                                                  '&amp;add=0';
                   }
                } else {
                   $menu['links']['add'] = static::getFormURL(false);

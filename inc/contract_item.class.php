@@ -582,7 +582,7 @@ class Contract_Item extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $totalnb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";

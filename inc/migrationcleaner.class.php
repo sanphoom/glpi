@@ -35,30 +35,39 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+
+/**
+ * @since version 0.85
+**/
 class MigrationCleaner extends CommonGLPI {
 
    static function getTypeName($nb=0) {
       return __('Migration cleaner');
    }
 
+
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
    **/
    static function getAdditionalMenuOptions() {
+
       if (static::canView()) {
-         $options['networkportmigration']['title'] = NetworkPortMigration::getTypeName(2);
-         $options['networkportmigration']['page'] = NetworkPortMigration::getSearchURL(false);
+         $options['networkportmigration']['title']  = NetworkPortMigration::getTypeName(2);
+         $options['networkportmigration']['page']   = NetworkPortMigration::getSearchURL(false);
          $options['networkportmigration']['search'] = NetworkPortMigration::getSearchURL(false);
+
          return $options;
       }
       return false;
    }
 
+
    static function canView() {
+
       if (!isset($_SESSION['glpishowmigrationcleaner'])) {
 
          if (TableExists('glpi_networkportmigrations')
-            && (countElementsInTable('glpi_networkportmigrations') > 0)) {
+             && (countElementsInTable('glpi_networkportmigrations') > 0)) {
             $_SESSION['glpishowmigrationcleaner'] = true;
          } else {
             $_SESSION['glpishowmigrationcleaner'] = false;

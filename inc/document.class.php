@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -50,12 +50,16 @@ class Document extends CommonDBTM {
       return _n('Document', 'Documents', $nb);
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
    **/
    static function getMenuShorcut() {
       return 'd';
    }
+
 
    static function canCreate() {
 
@@ -194,7 +198,7 @@ class Document extends CommonDBTM {
           && (!isset($input['filename']) || empty($input['filename']))) {
          return false;
       }
-      
+
       // Set default category for document linked to tickets
       if (isset($input['itemtype'])
          && $input['itemtype'] == 'Ticket'
@@ -202,7 +206,7 @@ class Document extends CommonDBTM {
             || $input['documentcategories_id'] == 0)) {
          $input['documentcategories_id'] = $CFG_GLPI["documentcategories_id_forticket"];
       }
-      
+
       /* Unicity check
       if (isset($input['sha1sum'])) {
          // Check if already upload in the current entity

@@ -35,8 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Profile class
-/// since version 0.85
+/**
+ * Profile class
+ *
+ * @since version 0.85
+**/
 class ProfileRight extends CommonDBChild {
 
    // From CommonDBChild:
@@ -48,7 +51,7 @@ class ProfileRight extends CommonDBChild {
       global $DB;
 
       if (!isset($_SESSION['glpi_all_possible_rights'])
-          ||( count($_SESSION['glpi_all_possible_rights']) == 0)) {
+          ||(count($_SESSION['glpi_all_possible_rights']) == 0)) {
 
          $_SESSION['glpi_all_possible_rights'] = array();
          $rights = array();
@@ -98,6 +101,7 @@ class ProfileRight extends CommonDBChild {
 
       $ok = true;
       $_SESSION['glpi_all_possible_rights'] = array();
+
       $query = "SELECT `id`
                 FROM `glpi_profiles`";
 
@@ -120,7 +124,7 @@ class ProfileRight extends CommonDBChild {
     * @param $rights   array
     *
     * @return boolean
-    */
+   **/
    static function deleteProfileRights(array $rights) {
       global $DB;
 

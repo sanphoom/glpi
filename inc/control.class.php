@@ -37,6 +37,8 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Control class
+ *
+ * @since version 0.85
 **/
 /// TODO move function to class
 class Control extends CommonGLPI {
@@ -45,18 +47,21 @@ class Control extends CommonGLPI {
       return _n('Check', 'Checks', $nb);
    }
 
+
    static function canView() {
       return Session::haveRight('config', 'w');
    }
+
 
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
    **/
    static function getAdditionalMenuOptions() {
+
       if (static::canView()) {
-         $options['FieldUnicity']['title'] = __('Fields unicity');
-         $options['FieldUnicity']['page'] = '/front/fieldunicity.php';
-         $options['FieldUnicity']['links']['add'] = '/front/fieldunicity.form.php';
+         $options['FieldUnicity']['title']           = __('Fields unicity');
+         $options['FieldUnicity']['page']            = '/front/fieldunicity.php';
+         $options['FieldUnicity']['links']['add']    = '/front/fieldunicity.form.php';
          $options['FieldUnicity']['links']['search'] = '/front/fieldunicity.php';
 
          return $options;

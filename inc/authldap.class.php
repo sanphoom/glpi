@@ -571,7 +571,7 @@ class AuthLDAP extends CommonDBTM {
          $canedit = Session::haveRight("config", "w");
          Html::openMassiveActionsForm('massAuthLdapReplicate'.$rand);
          echo "<div class='center'>";
-         $massiveactionparams = array('num_displayed'  => $nb,
+         $massiveactionparams = array('num_displayed' => $nb,
                                       'container'     => 'massAuthLdapReplicate'.$rand);
 
          Html::showMassiveActions('AuthLdapReplicate', $massiveactionparams);
@@ -1395,7 +1395,7 @@ class AuthLDAP extends CommonDBTM {
       //If paged results cannot be used (PHP < 5.4)
       $cookie   = ''; //Cookie used to perform query using pages
       $count    = 0;  //Store the number of results ldap_search
-      
+
       do {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true, $cookie);
@@ -2071,7 +2071,7 @@ class AuthLDAP extends CommonDBTM {
                // Force date sync
                $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
                $user->fields['is_deleted_ldap'] = 0;
-               
+
                if ($action == self::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;

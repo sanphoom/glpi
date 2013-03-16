@@ -96,20 +96,27 @@ class Ticket extends CommonITILObject {
       return _n('Ticket','Tickets',$nb);
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
    **/
    static function getMenuShorcut() {
       return 't';
    }
 
+
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @since version 0.85
    **/
    static function getAdditionalMenuOptions() {
+
       if (TicketTemplate::canView()) {
-         $menu['TicketTemplate']['title'] = TicketTemplate::getTypeName(2);
-         $menu['TicketTemplate']['page'] = TicketTemplate::getSearchURL(false);
+         $menu['TicketTemplate']['title']           = TicketTemplate::getTypeName(2);
+         $menu['TicketTemplate']['page']            = TicketTemplate::getSearchURL(false);
          $menu['TicketTemplate']['links']['search'] = TicketTemplate::getSearchURL(false);
          if (TicketTemplate::canCreate()) {
             $menu['TicketTemplate']['links']['add'] = TicketTemplate::getFormURL(false);
@@ -119,11 +126,15 @@ class Ticket extends CommonITILObject {
       return false;
    }
 
+
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
+    *
+    * @since version 0.85
    **/
    static function getAdditionalMenuLinks() {
       global $CFG_GLPI;
+
       $links = array();
       if (TicketTemplate::canView()) {
          $links['template'] = TicketTemplate::getSearchURL(false);
@@ -153,7 +164,6 @@ class Ticket extends CommonITILObject {
       }
       return false;
    }
-
 
 
    function canAdminActors() {
@@ -4376,7 +4386,7 @@ class Ticket extends CommonITILObject {
       if (!$ID || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldText('name');
          echo "<input type='text' size='90' maxlength=250 name='name' ".
-                  " value=\"".Html::cleanInputText($this->fields["name"])."\">";
+                " value=\"".Html::cleanInputText($this->fields["name"])."\">";
          echo $tt->getEndHiddenFieldText('name');
       } else {
          if (empty($this->fields["name"])) {

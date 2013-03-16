@@ -44,16 +44,21 @@ class Stat extends CommonGLPI {
       return __('Statistics');
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
    **/
    static function getMenuShorcut() {
       return 'a';
    }
 
+
    static function canView() {
       return Session::haveRight("statistic","1");
    }
+
 
    /**
     * @param $itemtype
@@ -337,6 +342,8 @@ class Stat extends CommonGLPI {
     * @param $start
     * @param $value     array
     * @param $value2          (default '')
+    *
+    * @since version 0.85 (before show with same parameters)
    **/
    static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
       global $CFG_GLPI;

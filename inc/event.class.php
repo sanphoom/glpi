@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -43,9 +43,14 @@ class Event extends CommonDBTM {
       return _n('Log', 'Logs', $nb);
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function canView() {
       return Session::haveRight('logs', 'r');
    }
+
 
    function prepareInputForAdd($input) {
       global $CFG_GLPI;

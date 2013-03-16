@@ -50,8 +50,11 @@ class KnowbaseItem extends CommonDBTM {
       return __('Knowledge base');
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
    **/
    static function getMenuShorcut() {
       return 'b';
@@ -1538,10 +1541,10 @@ class KnowbaseItem extends CommonDBTM {
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed' => $nb,
-                           'container'     => 'mass'.__CLASS__.$rand,
-                           'specific_actions'
-                              => array('deletevisibility' => _x('button', 'Delete permanently')) );
+         $paramsma = array('num_displayed'    => $nb,
+                           'container'        => 'mass'.__CLASS__.$rand,
+                           'specific_actions' => array('deletevisibility'
+                                                         => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm']

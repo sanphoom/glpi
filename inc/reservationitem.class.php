@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -48,31 +48,40 @@ class ReservationItem extends CommonDBChild {
    static function getTypeName($nb=0) {
       return _n('Reservable item', 'Reservable items',$nb);
    }
-   
+
+
    /**
     * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
    **/
    static function getMenuName() {
       return Reservation::getTypeName(2);
    }
 
+
    /**
     * @see CommonGLPI::getForbiddenActionsForMenu()
+    *
+    * @since version 0.85
    **/
    static function getForbiddenActionsForMenu() {
       return array('add');
    }
 
+
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
+    *
+    * @since version 0.85
    **/
    static function getAdditionalMenuLinks() {
+
       if (static::canView()) {
          return array('showall' => Reservation::getSearchURL(false));
       }
       return false;
    }
-
 
 
    /**
@@ -130,7 +139,7 @@ class ReservationItem extends CommonDBChild {
 
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      
+
    }
 
 

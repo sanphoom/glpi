@@ -68,6 +68,7 @@ class Auth extends CommonGLPI {
    const X509     = 6;
    const NOT_YET_AUTHENTIFIED = 0;
 
+
    /**
     * Constructor
    **/
@@ -75,35 +76,39 @@ class Auth extends CommonGLPI {
       $this->user = new User();
    }
 
+
    static function canView() {
       return Session::haveRight('config', 'w');
    }
 
+
    /**
     *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
    **/
    static function getMenuContent() {
 
       $menu = array();
       if (Session::haveRight("config","w")) {
-            $menu['title'] = __('Authentication');
-            $menu['page']  = '/front/setup.auth.php';
+            $menu['title']                              = __('Authentication');
+            $menu['page']                               = '/front/setup.auth.php';
 
-            $menu['options']['ldap']['title'] = AuthLDAP::getTypeName(2);
-            $menu['options']['ldap']['page']  = '/front/authldap.php';
+            $menu['options']['ldap']['title']           = AuthLDAP::getTypeName(2);
+            $menu['options']['ldap']['page']            = '/front/authldap.php';
             $menu['options']['ldap']['links']['search'] = '/front/authldap.php';
-            $menu['options']['ldap']['links']['add'] = '' .'/front/authldap.form.php';
+            $menu['options']['ldap']['links']['add']    = '' .'/front/authldap.form.php';
 
-            $menu['options']['imap']['title'] = AuthMail::getTypeName(2);
-            $menu['options']['imap']['page']  = '/front/authmail.php';
+            $menu['options']['imap']['title']           = AuthMail::getTypeName(2);
+            $menu['options']['imap']['page']            = '/front/authmail.php';
             $menu['options']['imap']['links']['search'] = '/front/authmail.php';
             $menu['options']['imap']['links']['add']    = '' .'/front/authmail.form.php';
 
-            $menu['options']['others']['title'] = __('Others');
-            $menu['options']['others']['page']  = '/front/auth.others.php';
+            $menu['options']['others']['title']         = __('Others');
+            $menu['options']['others']['page']          = '/front/auth.others.php';
 
-            $menu['options']['settings']['title'] = __('Setup');
-            $menu['options']['settings']['page'] = '/front/auth.settings.php';
+            $menu['options']['settings']['title']       = __('Setup');
+            $menu['options']['settings']['page']        = '/front/auth.settings.php';
 
       }
       if (count($menu)) {
@@ -111,6 +116,7 @@ class Auth extends CommonGLPI {
       }
       return false;
    }
+
 
    /**
     * Is the user exists in the DB
@@ -656,10 +662,10 @@ class Auth extends CommonGLPI {
       // is not present on the DB, so we add him.
       // if not, we update him.
       if ($this->auth_succeded) {
-         
+
          //Set user an not deleted from LDAP
          $this->user->fields['is_deleted_ldap'] = 0;
-         
+
          // Prepare data
          $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
          if ($this->extauth) {

@@ -52,11 +52,15 @@ class Config extends CommonDBTM {
       return __('Setup');
    }
 
+
    /**
     *  @see CommonGLPI::getMenuContent()
+    *
+    *   @since version 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
+
       $menu = array();
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
@@ -67,6 +71,7 @@ class Config extends CommonDBTM {
       }
       return false;
    }
+
 
    static function canCreate() {
       return false;

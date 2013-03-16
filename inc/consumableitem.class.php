@@ -45,27 +45,35 @@ class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Consumable', 'Infocom');
 
-   static function getTypeName($nb=0) {
 
+   static function getTypeName($nb=0) {
       return _n('Consumable model', 'Consumable models', $nb);
    }
 
+
    /**
     * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
    **/
    static function getMenuName() {
       return Consumable::getTypeName(2);
    }
 
+
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
+    *
+    * @since version 0.85
    **/
    static function getAdditionalMenuLinks() {
+
       if (static::canView()) {
          return array('summary' => '/front/consumableitem.php?synthese=yes');
       }
       return false;
    }
+
 
    static function canCreate() {
       return Session::haveRight('consumable', 'w');
@@ -97,7 +105,7 @@ class ConsumableItem extends CommonDBTM {
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       $class = new Alert();
-      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);     
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
 

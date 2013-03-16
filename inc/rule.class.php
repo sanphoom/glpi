@@ -175,7 +175,7 @@ class Rule extends CommonDBTM {
              || Session::haveRight("rule_dictionnary_software","r")
              || Session::haveRight("rule_dictionnary_printer","r")) {
 
-            $menu['dictionnary']['title']    = __('Dictionaries');
+            $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', 2);
             $menu['dictionnary']['shortcut'] = '';
             $menu['dictionnary']['page']     = '/front/dictionnary.php';
 
@@ -419,6 +419,7 @@ class Rule extends CommonDBTM {
       return false;
    }
 
+
    /**
     * @since versin 0.84
    **/
@@ -529,7 +530,7 @@ class Rule extends CommonDBTM {
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
-            
+
          case "duplicate" :
             if ($this->isEntityAssign()) {
                Entity::dropdown();
@@ -2432,7 +2433,7 @@ class Rule extends CommonDBTM {
       if (empty($itemtype)) {
          $itemtype = static::getType();
       }
-      
+
       //Agregate all plugins criteria for this rules engine
       $toreturn = $params;
       if (isset($PLUGIN_HOOKS['use_rules'])) {

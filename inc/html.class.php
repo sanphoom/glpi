@@ -552,7 +552,7 @@ class Html {
          $rand = mt_rand();
          echo "<br><br><br><div id='debug'>";
          echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
-         
+
 
 
          echo "<div id='debugtabs$rand'><ul>";
@@ -613,11 +613,11 @@ class Html {
             echo "<div id='debugserver$rand'>";
             self::printCleanArray($_SERVER, 0, true);
             echo "</div>";
-            
+
          }
          echo "<script type='text/javascript'>
                $( '#debugtabs$rand' ).tabs({
-                  collapsible: true, 
+                  collapsible: true,
                   active: false
                });";
          echo "</script>";
@@ -998,44 +998,42 @@ class Html {
       echo "<body>";
       // Generate array for menu and check right
 
-      if (1||!isset($_SESSION['glpimenu'])
-      || !is_array($_SESSION['glpimenu'])
-      || count($_SESSION['glpimenu']) == 0) {
+      if (1
+          || !isset($_SESSION['glpimenu'])
+          || !is_array($_SESSION['glpimenu'])
+          || (count($_SESSION['glpimenu']) == 0)) {
 
          // INVENTORY
-         $showallassets              = false;
-         $menu['assets']['title'] = __('Assets');
-         $menu['assets']['types'] = array('Computer', 'Monitor', 'Software',
-                                          'NetworkEquipment', 'Peripheral',
-                                          'Printer', 'CartridgeItem',
-                                          'ConsumableItem', 'Phone' );
+         //don't change order in array
+         $showallassets                 = false;
+         $menu['assets']['title']       = __('Assets');
+         $menu['assets']['types']       = array('Computer', 'Monitor', 'Software',
+                                                'NetworkEquipment', 'Peripheral', 'Printer',
+                                                'CartridgeItem', 'ConsumableItem', 'Phone' );
 
-         $menu['helpdesk']['title'] = __('Assistance');
-         $menu['helpdesk']['types'] = array('Ticket', 'Problem', 'Change',
-                                            'Planning',
-                                            'Stat', 'TicketRecurrent');
+         $menu['helpdesk']['title']     = __('Assistance');
+         $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change', 'Planning', 'Stat',
+                                                'TicketRecurrent');
 
-         $menu['management']['title'] = __('Management');
-         $menu['management']['types'] = array('Budget', 'Supplier', 'Contact',
-                                             'Contract', 'Document');
+         $menu['management']['title']   = __('Management');
+         $menu['management']['types']   = array('Budget', 'Supplier', 'Contact', 'Contract',
+                                                'Document');
 
-         $menu['tools']['title'] = __('Tools');
-         $menu['tools']['types'] = array('Reminder', 'RSSFeed', 'KnowbaseItem',
-                                         'ReservationItem', 'Report',
-                                         'MigrationCleaner');
+         $menu['tools']['title']        = __('Tools');
+         $menu['tools']['types']        = array('Reminder', 'RSSFeed', 'KnowbaseItem',
+                                                'ReservationItem', 'Report', 'MigrationCleaner');
 
-         $menu['plugins']['title'] = __('Plugins');
-         $menu['plugins']['types'] = array();
+         $menu['plugins']['title']      = __('Plugins');
+         $menu['plugins']['types']      = array();
 
-         $menu['admin']['title'] = __('Administration');
-         $menu['admin']['types'] = array('User', 'Group', 'Entity', 'Rule',
-                                         'Profile', 'Backup', 'Event');
+         $menu['admin']['title']        = __('Administration');
+         $menu['admin']['types']        = array('User', 'Group', 'Entity', 'Rule',
+                                                'Profile', 'Backup', 'Event');
 
-         $menu['config']['title'] = __('Setup');
-         $menu['config']['types'] = array('CommonDropdown', 'CommonDevice',
-                                          'Notification', 'SLA', 'Config',
-                                          'Control', 'Crontask', 'Auth',
-                                          'MailCollector', 'Link', 'Plugin');
+         $menu['config']['title']       = __('Setup');
+         $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
+                                                'SLA', 'Config', 'Control', 'Crontask', 'Auth',
+                                                'MailCollector', 'Link', 'Plugin');
 
          // Special items
          $menu['preference']['title']   = __('My settings');
@@ -1057,7 +1055,6 @@ class Html {
          }
 
 
-
          foreach ($menu as $category => $datas) {
             if (isset($datas['types']) && count($datas['types'])) {
                foreach ($datas['types'] as $type) {
@@ -1072,8 +1069,7 @@ class Html {
                }
             }
             // Define default link :
-            if (isset($menu[$category]['content'])
-                  && count($menu[$category]['content'])) {
+            if (isset($menu[$category]['content']) && count($menu[$category]['content'])) {
                foreach ($menu[$category]['content'] as $val) {
                   if (isset($val['page'])) {
                      $menu[$category]['default'] = $val['page'];
@@ -1083,8 +1079,8 @@ class Html {
             }
          }
 
-         $allassets = array('Computer', 'Monitor', 'Peripheral',
-                            'NetworkEquipment', 'Phone', 'Printer');
+         $allassets = array('Computer', 'Monitor', 'Peripheral', 'NetworkEquipment', 'Phone',
+                            'Printer');
 
          foreach ($allassets as $type) {
             if (isset($menu['inventory']['content'][strtolower($type)])) {
@@ -1171,7 +1167,7 @@ class Html {
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' accesskey='1' title=\"".
-           __s('Home')."\">";
+             __s('Home')."\">";
       echo "</a></div>";
 
       /// Prefs / Logout link
@@ -1196,9 +1192,11 @@ class Html {
       echo "</li>\n";
 
       echo "<li><a href='".
-            (empty($CFG_GLPI["central_doc_url"])?"http://glpi-project.org/help-central":
-            $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
-            __('Help')."</a></li>";
+                 (empty($CFG_GLPI["central_doc_url"])
+                   ? "http://glpi-project.org/help-central"
+                   : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
+                     __('Help').
+           "</a></li>";
 
 
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".

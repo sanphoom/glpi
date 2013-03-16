@@ -144,7 +144,7 @@ class SlaLevel extends RuleTicket {
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $numrows,
-                                       'container'     => 'mass'.__CLASS__.$rand);
+                                      'container'      => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
 

@@ -52,30 +52,43 @@ abstract class CommonDropdown extends CommonDBTM {
 
    public $display_dropdowntitle  = true;
 
+
+   /**
+    * @since version 0.85
+    *
+    * @param $nb
+   **/
    static function getTypeName($nb=0) {
       return _n('Dropdown', 'Dropdowns', $nb);
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
    **/
    static function getMenuShorcut() {
       return 'n';
    }
 
+
    /**
     *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
+
       $menu = array();
       if (get_called_class() == 'CommonDropdown') {
          if (Session::haveRight("dropdown","r")
-            || Session::haveRight("entity_dropdown","r")
-            || Session::haveRight("internet","r")) {
-            $menu['title']    = static::getTypeName(2);
-            $menu['shortcut'] = 'n';
-            $menu['page']     = '/front/dropdown.php';
+             || Session::haveRight("entity_dropdown","r")
+             || Session::haveRight("internet","r")) {
+            $menu['title']             = static::getTypeName(2);
+            $menu['shortcut']          = 'n';
+            $menu['page']              = '/front/dropdown.php';
             $menu['config']['default'] = '/front/dropdown.php';
 
             $dps = Dropdown::getStandardDropdownItemTypes();
@@ -83,15 +96,11 @@ abstract class CommonDropdown extends CommonDBTM {
             foreach ($dps as $tab) {
                foreach ($tab as $key => $val) {
                   if ($tmp = getItemForItemtype($key)) {
-                     $menu['options'][$key]['title']
-                                 = $val;
-                     $menu['options'][$key]['page']
-                                 = $tmp->getSearchURL(false);
-                     $menu['options'][$key]['links']['search']
-                                 = $tmp->getSearchURL(false);
+                     $menu['options'][$key]['title']           = $val;
+                     $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
+                     $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
                      if ($tmp->canCreate()) {
-                        $menu['options'][$key]['links']['add']
-                                 = $tmp->getFormURL(false);
+                        $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
                      }
                   }
                }
@@ -105,6 +114,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       return false;
    }
+
 
    /**
     * Return Additional Fields for this type
@@ -217,7 +227,7 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
 ///    TODO MoYo : Why add this field ?
-//    echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";      
+//    echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";
       if ($this instanceof CommonDevice) {
          // Awfull hack for CommonDevice where name is designation
          Html::autocompletionTextField($this, "designation");
@@ -238,11 +248,11 @@ abstract class CommonDropdown extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
          }
-         
+
          if (!isset($field['type'])) {
             $field['type'] = '';
          }
-          
+
          if ($field['name'] == 'header') {
             echo "<tr class='tab_bg_1'><th colspan='2'>".$field['label']."</th></tr>";
             continue;

@@ -108,23 +108,28 @@ class Notification extends CommonDBTM {
       return _n('Notification', 'Notifications', $nb);
    }
 
+
    /**
     *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
+
       $menu = array();
 
-      if (Session::haveRight("notification","r") || Session::haveRight("config","r")) {
-         $menu['title'] = _n('Notification', 'Notifications', 2);
-         $menu['page']  = '/front/setup.notification.php';
-         $menu['options']['notification']['title'] = _n('Notification', 'Notifications', 2);
-         $menu['options']['notification']['page'] = '/front/notification.php';
-         $menu['options']['notification']['links']['add'] = '/front/notification.form.php';
+      if (Session::haveRight("notification","r")
+          || Session::haveRight("config","r")) {
+         $menu['title']                                      = _n('Notification', 'Notifications', 2);
+         $menu['page']                                       = '/front/setup.notification.php';
+         $menu['options']['notification']['title']           = _n('Notification', 'Notifications', 2);
+         $menu['options']['notification']['page']            = '/front/notification.php';
+         $menu['options']['notification']['links']['add']    = '/front/notification.form.php';
          $menu['options']['notification']['links']['search'] = '/front/notification.php';
 
          $menu['options']['config']['title'] = __('Email');
-         $menu['options']['config']['page'] = '/front/notificationmailsetting.form.php';
+         $menu['options']['config']['page']  = '/front/notificationmailsetting.form.php';
 
          $menu['options']['notificationtemplate']['title']
                         = _n('Notification template', 'Notification templates', 2);
@@ -141,6 +146,7 @@ class Notification extends CommonDBTM {
       }
       return false;
    }
+
 
    function defineTabs($options=array()) {
 

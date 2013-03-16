@@ -51,8 +51,11 @@ class User extends CommonDBTM {
       return _n('User','Users',$nb);
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    *  @since version 0.85
    **/
    static function getMenuShorcut() {
       return 'u';
@@ -60,8 +63,11 @@ class User extends CommonDBTM {
 
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    *  @since version 0.85
    **/
    static function getAdditionalMenuOptions() {
+
       if (Session::haveRight('import_externalauth_users', 'w')) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(2);
          $options['ldap']['page']  = "/front/ldap.php";
@@ -69,6 +75,7 @@ class User extends CommonDBTM {
       }
       return false;
    }
+
 
    static function canCreate() {
       return Session::haveRight('user', 'w');

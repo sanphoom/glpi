@@ -37,6 +37,8 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Backup class
+ *
+ * @since version 0.85
 **/
 /// TODO move function to class
 class Backup extends CommonGLPI {
@@ -45,6 +47,7 @@ class Backup extends CommonGLPI {
    static function getTypeName($nb=0) {
       return __('Maintenance');
    }
+
 
    static function canView() {
       return Session::haveRight('backup', 'w');

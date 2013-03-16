@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -45,10 +45,14 @@ class Group extends CommonTreeDropdown {
       return _n('Group', 'Groups', $nb);
    }
 
+
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
+    *
+    * @since version 0.85
    **/
    static function getAdditionalMenuOptions() {
+
       if (Session::haveRight('user_authtype', 'w')) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(2);
          $options['ldap']['page']  = "/front/ldap.group.php";
@@ -57,12 +61,16 @@ class Group extends CommonTreeDropdown {
       return false;
    }
 
+
    /**
     * @see CommonGLPI::getMenuShorcut()
+    *
+    * @since version 0.85
    **/
    static function getMenuShorcut() {
       return 'g';
    }
+
 
    static function canCreate() {
       return Session::haveRight('group', 'w');

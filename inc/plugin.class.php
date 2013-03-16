@@ -48,20 +48,30 @@ class Plugin extends CommonDBTM {
    const NOTUPDATED     = 6;
 
 
+   /**
+    * @since version 0.85
+    *
+    * @param $nb
+   **/
    static function getTypeName($nb=0) {
-      return _n('Plugin','Plugins',$nb);
+      return _n('Plugin', 'Plugins', $nb);
    }
-   
+
+
    /**
     * @see CommonGLPI::getMenuName()
+    *
+    * @since version 0.85
    **/
    static function getMenuName() {
       return static::getTypeName(2);
    }
-   
+
+
    static function canView() {
       return Session::haveRight('config', 'w');
    }
+
 
    /**
     * Retrieve an item from the database using its directory
@@ -603,7 +613,7 @@ class Plugin extends CommonDBTM {
          self::load($this->fields['directory'],true);
          FieldUnicity::deleteForItemtype($this->fields['directory']);
          Link_Itemtype::deleteForItemtype($this->fields['directory']);
-         
+
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
