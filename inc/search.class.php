@@ -1693,7 +1693,7 @@ class Search {
          // Force Computer itemtype for AllAssets to permit to show specific items
          if ($itemtype == 'AllAssets') {
             $used_itemtype = 'Computer';
-         } 
+         }
 
          $_POST['itemtype']   = $used_itemtype;
 
@@ -2325,7 +2325,7 @@ class Search {
                      $ADDITONALFIELDS";
 
          case "glpi_contractcosts.totalcost" :
-            return " SUM(`glpi_contractcosts$addtable`.`cost`) 
+            return " SUM(`glpi_contractcosts$addtable`.`cost`)
                      / COUNT(`glpi_contractcosts$addtable`.`id`)
                      * COUNT(DISTINCT `glpi_contractcosts$addtable`.`id`)
                      AS ".$NAME."_".$num.",
@@ -2375,7 +2375,7 @@ class Search {
          case "glpi_ticketcosts.cost_time" :
          case "glpi_ticketcosts.cost_fixed" :
          case "glpi_ticketcosts.cost_material" :
-            return " SUM(`glpi_ticketcosts$addtable`.`$field`) 
+            return " SUM(`glpi_ticketcosts$addtable`.`$field`)
                      / COUNT(`glpi_ticketcosts$addtable`.`id`)
                      * COUNT(DISTINCT `glpi_ticketcosts$addtable`.`id`)
                      AS ".$NAME."_".$num.",
@@ -2385,7 +2385,7 @@ class Search {
             return " SUM(`glpi_ticketcosts$addtable`.`actiontime`
                          * `glpi_ticketcosts$addtable`.`cost_time`/".HOUR_TIMESTAMP."
                          + `glpi_ticketcosts$addtable`.`cost_fixed`
-                         + `glpi_ticketcosts$addtable`.`cost_material`) 
+                         + `glpi_ticketcosts$addtable`.`cost_material`)
                      / COUNT(`glpi_ticketcosts$addtable`.`id`)
                      * COUNT(DISTINCT `glpi_ticketcosts$addtable`.`id`)
                      AS ".$NAME."_".$num.",
@@ -5602,10 +5602,8 @@ class Search {
       $out = "";
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
-         case self::PDF_OUTPUT_PORTRAIT :          
-
+         case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-
             if ($type == self::PDF_OUTPUT_LANDSCAPE) {
                $pdf = new GLPIPDF('L', 'mm', 'A4', true, 'UTF-8', false);
             } else {
@@ -5615,11 +5613,11 @@ class Search {
             $pdf->SetAuthor('GLPI');
             $pdf->SetTitle($title);
             $pdf->SetHeaderData('', '', $title, '');
-            $font = 'helvetica';
+            $font       = 'helvetica';
             $subsetting = true;
-            $fonsize = 8;
+            $fonsize    = 8;
             if (isset($_SESSION['glpiuse_unicodefont']) && $_SESSION['glpiuse_unicodefont']) {
-               $font = 'unifont';
+               $font       = 'unifont';
                $subsetting = false;
             }
             $pdf->setHeaderFont(Array($font, 'B', 8));
@@ -5632,7 +5630,7 @@ class Search {
 
             //set auto page breaks
             $pdf->SetAutoPageBreak(TRUE, 15);
-           
+
 
             // For standard language
             $pdf->setFontSubsetting($subsetting);
@@ -5771,6 +5769,7 @@ class Search {
             }
             $PDF_TABLE .= "<tr $style>";
             break;
+
          case self::SYLK_OUTPUT : //sylk
          case self::CSV_OUTPUT : //csv
             break;
@@ -5802,6 +5801,7 @@ class Search {
             global $PDF_TABLE;
             $PDF_TABLE.= '</tr>';
             break;
+
          case self::SYLK_OUTPUT : //sylk
             break;
 

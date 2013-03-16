@@ -1723,7 +1723,7 @@ class Config extends CommonDBTM {
     *
     * @return array of config values
    **/
-   static function setConfigurationValues($context, array $values= array()) {
+   static function setConfigurationValues($context, array $values=array()) {
 
       $config = new self();
       foreach ($values as $name => $value) {

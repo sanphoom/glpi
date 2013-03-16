@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -38,18 +38,29 @@ if (!defined('GLPI_ROOT')) {
 require_once(GLPI_TCPDF_DIR.'/tcpdf.php');
 
 /**
- *  NotificationMail class extends phpmail and implements the NotificationInterface
+ *  GLPIPDF class extends TCPDF
+ *
+ *  @since version 0.85
 **/
 class GLPIPDF extends TCPDF {
-   
 
-   //Page header
+
+   /**
+    * Page header
+    *
+    * @see TCPDF::Header()
+   */
    public function Header() {
       // Title
       $this->Cell(0, 15, $this->title, 0, false, 'C', 0, '', 0, false, 'M', 'M');
    }
 
-   // Page footer
+
+   /**
+    * Page footer
+    *
+    * @see TCPDF::Footer()
+   **/
    public function Footer() {
       // Position at 15 mm from bottom
       $this->SetY(-15);
