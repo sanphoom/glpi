@@ -269,19 +269,19 @@ class Ajax {
          echo "</div>";
 
          echo "<script type='text/javascript'>";
-         // Show loading indicator
-         echo "$.ajaxSetup({
-                  cache:false,
+//          echo "$.ajaxSetup({
+//                   cache:false,
+// 
+//                   success: function() {}
+//                });  ";
+         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'},
+                  // Show loading indicator
                   beforeSend: function() {
                      $('#loadingindicator$rand').show()
                   },
-                  complete: function(){
-                     $('#loadingindicator$rand').hide()
-                  },
-                  success: function() {}
-               });  ";
-         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'},
+                   success: function() {},
          activate : function( event, ui ){
+            $('#loadingindicator$rand').hide()
             //  Get future value
             var newIndex = ui.newTab.parent().children().index(ui.newTab);
             $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
