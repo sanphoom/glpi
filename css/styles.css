@@ -202,11 +202,11 @@ hr {
 
 #page {
    /*margin: 0 auto; text-align:center;*/
-   margin: 25px 10px;
+  /* margin: 25px 10px;*/
    background: #FFFFFF  repeat-x top left;
-   -moz-border-radius: 8px;
-   -webkit-border-radius: 8px;
-   border-radius: 8px;
+   -moz-border-radius: 0 0 8px 8px;
+   -webkit-border-radius: 0 0 8px 8px;
+   border-radius: 0 0 8px 8px;
    -moz-box-shadow: 0px 7px 10px #4D4D4D;
    -webkit-box-shadow: 0px 7px 10px #4D4D4D;
    box-shadow: 0px 7px 10px #4D4D4D;
@@ -220,9 +220,10 @@ hr {
    padding:0; 
 }
 
-#page {
+/*#page {
    margin-top:15px;
 }
+* */
 
 
 /* ################--------------- form ---------------#################### */
@@ -437,22 +438,19 @@ td { }
 
 .tab_cadre_central {
    margin: 0 auto;
-   -moz-border-radius: 4px;
-   -webkit-border-radius: 4px;
-   -o-border-radius: 4px;
-   border: 1px solid #bbbbbb;
+   /*border: 1px solid #bbbbbb;*/
    z-index:1;
    text-align: left;
    font-size: 11px;
    width:950px;
    /* background-color: #FFF4DF; */
-   background : url("../pics/fond-central.png") repeat-x top right ;
+  /* background : url("../pics/fond-central.png") repeat-x top right ;
    -moz-border-radius: 5px;
    -webkit-border-radius: 5px;
    border-radius: 5px;
    -moz-box-shadow: 0px 2px 5px #666;
    -webkit-box-shadow: 0px 2px 5px #666;
-   box-shadow: 0px 2px 5px #666;
+   box-shadow: 0px 2px 5px #666;*/
 }
 
 .tab_cadre_navigation {
@@ -1438,14 +1436,14 @@ div#tabcontent {
 
 div#header {
    background: #f1f4e3 url("../pics/fd_nav1.png") 0 0 repeat-x;
-   margin: 0px 10px 10px 10px;
+  /* margin: 0px 10px 10px 10px;
    -moz-border-radius: 0px 0px 8px 8px;
    -webkit-border-radius: 0px 0px 8px 8px;
    border-radius: 0px 0px 8px 8px;
    -moz-box-shadow: 0px 7px 10px #4D4D4D;
    -webkit-box-shadow: 0px 7px 10px #4D4D4D;
    box-shadow: 0px 7px 10px #4D4D4D;
-   padding-bottom: 8px;
+   padding-bottom: 8px;*/
 }
 
 div#c_preference {
@@ -1799,6 +1797,8 @@ div#show_all_menu .tab_bg_1 a:hover {
 /* ################--------------- Footer  ---------------#################### */
 
 #footer {
+   margin-top:10px;
+   margin-bottom:10px;
    background: url("../pics/fd_footer.png") 0 0 repeat-x;
    font-size: 9px;	
    color :#757575;
@@ -1889,9 +1889,9 @@ div#show_all_menu .tab_bg_1 a:hover {
 }
 
 #debug h1, #debugajax h1 {
-   font-size:14px; 
+   font-size:18px; 
    text-align:center; 
-   background-color:#efefe7;
+   /*background-color:#efefe7;*/
    padding: 5px;
 }
 
