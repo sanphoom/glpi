@@ -71,8 +71,9 @@ class Reservation extends CommonDBChild {
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
+
       if ($item->getType() == 'User') {
-         self::showForUser($_POST["id"]);
+         self::showForUser($_GET["id"]);
       } else {
          self::showForItem($item);
       }
