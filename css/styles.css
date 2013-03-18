@@ -37,7 +37,7 @@ body {
    font-size: 12px;
    margin: 0;
    padding: 0;
-   background:  #dfdfdf repeat-x;
+   background:  #f8f7f3 repeat-x;
    
 }
 
@@ -243,7 +243,10 @@ select {
    color: black;
    background-color: white;
    line-height: 19px; /* do not set height because using multiple select*/
-}
+   
+   /*width: 220px;*/
+  border: 1px solid #bbb;
+}}
 
 textarea, input {
    background-color:#FAFAFA;
