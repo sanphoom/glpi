@@ -239,12 +239,10 @@ option {
 
 select {
    font-size: 11px;
-   border: 1px solid #888888;
    color: black;
    background-color: white;
    line-height: 19px; /* do not set height because using multiple select*/
-   
-   /*width: 220px;*/
+   width: 200px;
   border: 1px solid #bbb;
 }}
 
