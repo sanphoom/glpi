@@ -1722,7 +1722,7 @@ class Toolbox {
 
             switch ($_SESSION["glpiactiveprofile"]["interface"]) {
                case "helpdesk" :
-                  switch ($data[0]) {
+                  switch (strtolower($data[0])) {
                      case "plugin" :
                         $plugin = $data[1];
                         $valid  = false;
@@ -1789,7 +1789,7 @@ class Toolbox {
                   break;
 
                case "central" :
-                  switch ($data[0]) {
+                  switch (strtolower($data[0])) {
                      case "plugin" :
                         $plugin = $data[1];
                         $valid  = false;
@@ -1835,7 +1835,7 @@ class Toolbox {
                      // Use for compatibility with old name
                      // no break
                      case "tracking" :
-                        $data[0] = "ticket";
+                        $data[0] = "Ticket";
 
                      default :
                         if (!empty($data[0] )&& ($data[1] > 0)) {
@@ -1848,8 +1848,8 @@ class Toolbox {
                                  }
                               }
                            }
-
-                           Html::redirect($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".
+                           $item = new $data[0]();
+                           Html::redirect($item->getFormURL()."?id=".
                                         $data[1]."&$forcetab");
                         } else {
                            Html::redirect($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");

@@ -98,7 +98,7 @@ class NotificationTargetContract extends NotificationTarget {
          }
 
          $tmp['##contract.url##']          = urldecode($CFG_GLPI["url_base"].
-                                                          "/index.php?redirect=contract_".$id);
+                                                          "/index.php?redirect=Contract_".$id);
          $tmp['##contract.items.number##'] = 0;
          $tmp['##contract.items##']        = '';
          if (isset($contract['items']) && count($contract['items'])) {

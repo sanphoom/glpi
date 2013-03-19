@@ -593,7 +593,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                      $interv[$key]['itemtype']  = $itemtype;
                      $interv[$data["begin"]."$$$".$i]["url"]
                                                 = $CFG_GLPI["url_base"]."/index.php?redirect=".
-                                                   strtolower($parentitemtype)."_".
+                                                   $parentitemtype."_".
                                                    $item->fields[$parentitem->getForeignKeyField()];
 
                      $interv[$key][$item->getForeignKeyField()] = $data["id"];
