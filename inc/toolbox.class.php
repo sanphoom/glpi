@@ -1714,11 +1714,10 @@ class Toolbox {
                Html::redirect($decoded_where);
             }
             // Redirect based on GLPI_ROOT : URL must be rawurlencoded
-            if ($decoded_where[0] = '/') {
+            if ($decoded_where[0] == '/') {
 //                echo $decoded_where;exit();
                Html::redirect($CFG_GLPI["root_doc"].$decoded_where);
             }
-            
 
 
             $data = explode("_", $where);
