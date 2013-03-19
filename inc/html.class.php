@@ -49,7 +49,7 @@ class Html {
    **/
    static function clean($value) {
 
-      $value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
+      $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
       $value = preg_replace("/(&nbsp;| )+/", " ", $value);
 
       include_once(GLPI_HTMLAWED);
