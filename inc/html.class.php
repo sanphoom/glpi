@@ -419,7 +419,33 @@ class Html {
       exit();
    }
 
+   /**
+    * Redirection to Login page
+    *
+    * @return nothing
+   **/
+   static function redirectToLogin() {
+      global $CFG_GLPI;
+      $dest = $CFG_GLPI["root_doc"] . "/index.php";
+      $url_dest = str_replace($CFG_GLPI["root_doc"],'',$_SERVER['REQUEST_URI']);
+      $dest.= "?redirect=".rawurlencode($url_dest);
+      
+      $toadd = '';
+      if (!strpos($dest,"?")) {
+         $toadd = '&tokonq='.Toolbox::getRandomString(5);
+      }
 
+      echo "<script language=javascript>
+            NomNav = navigator.appName;
+            if (NomNav=='Konqueror') {
+               window.location='".$dest.$toadd."';
+            } else {
+               window.location='".$dest."';
+            }
+         </script>";
+      exit();
+   }
+   
    /**
     * Display common message for item not found
     *

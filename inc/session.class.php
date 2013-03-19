@@ -664,7 +664,7 @@ class Session {
           || ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
          // Gestion timeout session
          if (!self::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
+            Html::redirectToLogin();
             exit ();
          }
          Html::displayRightError();
@@ -699,13 +699,12 @@ class Session {
           || ($_SESSION["glpiactiveprofile"]["interface"] != "helpdesk")) {
          // Gestion timeout session
          if (!self::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
+            Html::redirectToLogin();
             exit ();
          }
          Html::displayRightError();
       }
    }
-
 
    /**
     * Check if I am logged in
@@ -718,7 +717,7 @@ class Session {
       if (!isset($_SESSION["glpiname"])) {
          // Gestion timeout session
          if (!Session::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
+            Html::redirectToLogin();
             exit ();
          }
          Html::displayRightError();
@@ -740,7 +739,7 @@ class Session {
       if (!self::haveRight($module, $right)) {
          // Gestion timeout session
          if (!self::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
+            Html::redirectToLogin();
             exit ();
          }
          Html::displayRightError();
@@ -777,7 +776,7 @@ class Session {
       if (!$valid) {
          // Gestion timeout session
          if (!self::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
+            Html::redirectToLogin();
             exit ();
          }
          Html::displayRightError();
