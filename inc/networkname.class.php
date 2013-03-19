@@ -120,9 +120,11 @@ class NetworkName extends FQDNLabel {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }

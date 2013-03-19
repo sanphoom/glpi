@@ -572,13 +572,16 @@ class Rule extends CommonDBTM {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['ko']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             } else {
                $res['noright']++;
+               $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
             }
             break;
 
@@ -586,10 +589,16 @@ class Rule extends CommonDBTM {
             $rulecollection = new RuleCollection();
             if (isset($input["item"]) && count($input["item"])) {
                foreach ($input["item"] as $key => $val) {
-                  if ($rulecollection->duplicateRule($key)) {
-                     $res['ok']++;
+                  if ($this->getFromDB($key)) {
+                     if ($rulecollection->duplicateRule($key)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                     }
                   } else {
                      $res['ko']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             }

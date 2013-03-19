@@ -356,6 +356,7 @@ class Lock {
 
       $ok    = 0;
       $ko    = 0;
+      $messages = array();
       $infos = self::getLocksQueryInfosByItemType($itemtype, $baseitemtype);
 
       if ($item = getItemForItemtype($infos['type'])) {
@@ -369,14 +370,16 @@ class Lock {
                      $ok++;
                   } else {
                      $ko++;
+                     $messages[] = $this->getErrorMessage(ERROR_ON_ACTION);
                   }
                }
             }
          }
       }
 
-      return array('ok' => $ok,
-                   'ko' => $ko);
+      return array('ok'       => $ok,
+                   'ko'       => $ko,
+                   'messages' => $messages);
    }
 
 

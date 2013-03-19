@@ -2234,7 +2234,7 @@ class Html {
       if (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id])) {
          $sel = "checked";
       }
-      return "<input type='checkbox' id='massaction_item_$id' name='item[".$id."]' value='1' $sel>";
+      return "<input type='checkbox' id='massaction_item_$id' name=\"item[".$id."]\" value='1' $sel>";
    }
 
 

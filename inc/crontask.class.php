@@ -1200,13 +1200,16 @@ class CronTask extends CommonDBTM{
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['ko']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             } else {
                $res['noright']++;
+               $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
             }
             break;
 

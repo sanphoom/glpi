@@ -948,17 +948,25 @@ class NetworkPort extends CommonDBChild {
          case "assign_vlan" :
             if (!empty($input["vlans_id"])) {
                $networkportvlan = new NetworkPort_Vlan();
+               $networkport = new NetworkPort();
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
-                     if ($this->can($key,'w')) {
-                        if ($networkportvlan->assignVlan($key, $input["vlans_id"],
-                                                         (isset($input['tagged']) ? '1' : '0'))) {
-                           $res['ok']++;
+                     if ($networkport->getFromDB($key)) {
+                        if ($this->can($key,'w')) {
+                           if ($networkportvlan->assignVlan($key, $input["vlans_id"],
+                                                            (isset($input['tagged']) ? '1' : '0'))) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
+                           }
                         } else {
-                           $res['ko']++;
+                           $res['noright']++;
+                           $res['messages'][] = $networkport->getErrorMessage(ERROR_RIGHT);
                         }
                      } else {
-                        $res['noright']++;
+                        $res['messages'][] = $networkport->getErrorMessage(ERROR_NOT_FOUND);
+                        $res['ko']++;
                      }
                   }
                }
@@ -970,21 +978,29 @@ class NetworkPort extends CommonDBChild {
          case "unassign_vlan" :
             if (!empty($input["vlans_id"])) {
                $networkportvlan = new NetworkPort_Vlan();
+               $networkport = new NetworkPort();
                foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     if ($this->can($key,'w')) {
-                        if ($networkportvlan->unassignVlan($key, $input["vlans_id"])) {
-                           $res['ok']++;
+                  if ($networkport->getFromDB($key)) {
+                     if ($val == 1) {
+                        if ($this->can($key,'w')) {
+                           if ($networkportvlan->unassignVlan($key, $input["vlans_id"])) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
+                           }
                         } else {
-                           $res['ko']++;
+                           $res['noright']++;
+                           $res['messages'][] = $networkport->getErrorMessage(ERROR_RIGHT);
                         }
-                     } else {
-                        $res['noright']++;
                      }
-                  }
+                     } else {
+                        $res['messages'][] = $networkport->getErrorMessage(ERROR_NOT_FOUND);
+                        $res['ko']++;
+                     }
                }
             } else {
-               $nbko++;
+               $res['ko']++;
             }
             break;
 
@@ -1003,12 +1019,15 @@ class NetworkPort extends CommonDBChild {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $this->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['noright']++;
+                           $this->getErrorMessage(ERROR_RIGHT);
                         }
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                      }
                   }
                }

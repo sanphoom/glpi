@@ -2251,16 +2251,19 @@ abstract class CommonITILObject extends CommonDBTM {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }
             break;
 
          case "add_task" :
-            $taskitemtype = $_POST['itemtype'].'Task';
+            $taskitemtype = $input['itemtype'].'Task';
+            $item = new $input['itemtype']();
             if (!($task = getItemForItemtype($taskitemtype))) {
                return false;
             }
@@ -2268,17 +2271,24 @@ abstract class CommonITILObject extends CommonDBTM {
 
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  $input2 = array($field              => $key,
-                                  'taskcategories_id' => $input['taskcategories_id'],
-                                  'content'           => $input['content']);
-                  if ($task->can(-1,'w',$input2)) {
-                     if ($task->add($input2)) {
-                        $res['ok']++;
+                  if ($item->getFromDB($key)) {
+                     $input2 = array($field              => $key,
+                                    'taskcategories_id' => $input['taskcategories_id'],
+                                    'content'           => $input['content']);
+                     if ($task->can(-1,'w',$input2)) {
+                        if ($task->add($input2)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        }
                      } else {
-                        $res['ko']++;
+                        $res['noright']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                      }
                   } else {
-                     $res['noright']++;
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             }

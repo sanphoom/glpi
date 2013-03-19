@@ -170,12 +170,15 @@ class Problem_Ticket extends CommonDBRelation{
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $ticket->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }

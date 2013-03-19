@@ -394,12 +394,15 @@ class NetworkPortMigration extends CommonDBChild {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $networkport->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }

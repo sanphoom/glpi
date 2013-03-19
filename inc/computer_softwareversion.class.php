@@ -151,9 +151,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }
@@ -175,9 +177,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }

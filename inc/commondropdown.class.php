@@ -446,6 +446,7 @@ abstract class CommonDropdown extends CommonDBTM {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $input2 = $this->fields;
@@ -472,10 +473,12 @@ abstract class CommonDropdown extends CommonDBTM {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                         }
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }

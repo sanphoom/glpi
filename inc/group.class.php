@@ -402,13 +402,16 @@ class Group extends CommonTreeDropdown {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['noright']++;
+                           $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                         }
                      }
                   } else {
                      $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             } else {

@@ -1841,9 +1841,11 @@ class Ticket extends CommonITILObject {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['noright']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                         }
                      }
                   }
@@ -1855,17 +1857,25 @@ class Ticket extends CommonITILObject {
             $valid = new TicketValidation();
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  $input2 = array('tickets_id'         => $key,
-                                  'users_id_validate'  => $input['users_id_validate'],
-                                  'comment_submission' => $input['comment_submission']);
-                  if ($valid->can(-1,'w',$input2)) {
-                     if ($valid->add($input2)) {
-                        $res['ok']++;
+                  $ticket = new Ticket();
+                  if ($ticket->getFromDB($key)) {
+                     $input2 = array('tickets_id'         => $key,
+                                    'users_id_validate'  => $input['users_id_validate'],
+                                    'comment_submission' => $input['comment_submission']);
+                     if ($valid->can(-1,'w',$input2)) {
+                        if ($valid->add($input2)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                              $res['messages'][] = $ticket->getErrorMessage(ERROR_ON_ACTION);
+                        }
                      } else {
-                        $res['ko']++;
+                        $res['noright']++;
+                        $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
                      }
                   } else {
-                     $res['noright']++;
+                     $res['ko']++;
+                     $res['messages'][] = $ticket->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             }
@@ -1875,18 +1885,26 @@ class Ticket extends CommonITILObject {
             $fup = new TicketFollowup();
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  $input2 = array('tickets_id'      => $key,
-                                  'is_private'      => $input['is_private'],
-                                  'requesttypes_id' => $input['requesttypes_id'],
-                                  'content'         => $input['content']);
-                  if ($fup->can(-1,'w',$input2)) {
-                     if ($fup->add($input2)) {
-                        $res['ok']++;
+                  $ticket = new Ticket();
+                  if ($ticket->getFromDB($key)) {               
+                     $input2 = array('tickets_id'      => $key,
+                                    'is_private'      => $input['is_private'],
+                                    'requesttypes_id' => $input['requesttypes_id'],
+                                    'content'         => $input['content']);
+                     if ($fup->can(-1,'w',$input2)) {
+                        if ($fup->add($input2)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $ticket->getErrorMessage(ERROR_ON_ACTION);
+                        }
                      } else {
-                        $res['ko']++;
+                        $res['noright']++;
+                        $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
                      }
                   } else {
-                     $res['noright']++;
+                     $res['ko']++;
+                     $res['messages'][] = $ticket->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             }

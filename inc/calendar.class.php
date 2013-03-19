@@ -141,15 +141,19 @@ class Calendar extends CommonDropdown {
                               if ($this->duplicate($options)) {
                                  $res['ok']++;
                               } else {
+                                 $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                                  $res['ko']++;
                               }
                            } else {
+                              $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                               $res['noright']++;
                            }
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_COMPAT);
                         }
                      } else {
+                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                         $res['ko']++;
                      }
                   }

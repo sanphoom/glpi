@@ -3020,6 +3020,11 @@ class CommonDBTM extends CommonGLPI {
             $doc = new Document;
             return $doc->doSpecificMassiveActions($input);
 
+         case 'add_contract_item' :
+         case 'remove_contract_item' :
+            $contract = new Contract;
+            return $contract->doSpecificMassiveActions($input);
+            
          case "add_transfer_list" :
             if (!isset($_SESSION['glpitransfer_list'])) {
                $_SESSION['glpitransfer_list'] = array();
@@ -3044,9 +3049,11 @@ class CommonDBTM extends CommonGLPI {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }
@@ -3067,9 +3074,11 @@ class CommonDBTM extends CommonGLPI {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }
@@ -3083,9 +3092,11 @@ class CommonDBTM extends CommonGLPI {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }
@@ -3135,15 +3146,19 @@ class CommonDBTM extends CommonGLPI {
                                     $res['ok']++;
                                  } else {
                                     $res['ko']++;
+                                    $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                                  }
                               } else {
                                  $res['noright']++;
+                                 $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                               }
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_COMPAT);
                            }
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                         }
                      }
                   }
@@ -3190,12 +3205,15 @@ class CommonDBTM extends CommonGLPI {
                                  $res['ok']++;
                               } else {
                                  $res['ko']++;
+                                 $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                               }
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_COMPAT);
                            }
                         } else {
                            $res['noright']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                         }
                      }
                   }
@@ -3211,90 +3229,22 @@ class CommonDBTM extends CommonGLPI {
                                     'items_id' => $key);
                      if (!$ic->getFromDBforDevice($input['itemtype'], $key)) {
                            if ($ic->can(-1,'w',$input)) {
-                           if ($ic->add($input)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                           }
-                           } else {
-                           $res['noright']++;
-                           }
-                     } else {
-                        $res['ko']++;
-                     }
-                  }
-               }
-            break;
-
-         case "add_contract_item" :
-            $contractitem = new Contract_Item();
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['items_id'])) {
-                  // Add items to contracts
-                  $input = array('itemtype'     => $input["item_itemtype"],
-                                 'items_id'     => $input["items_id"],
-                                 'contracts_id' => $key);
-               }  if (isset($input['contracts_id'])) { // Add contract to item
-                  $input = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $key,
-                                 'contracts_id' => $input['contracts_id']);
-               } else {
-                  return false;
-               }
-               if ($contractitem->can(-1, 'w', $input)) {
-               if ($contractitem->add($input)) {
-                     $res['ok']++;
-                  } else {
-                     $res['ko']++;
-                  }
-               } else {
-                  $res['noright']++;
-               }
-            }
-            break;
-
-         case "remove_contract_item" :
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['items_id'])) {
-                  // Remove item to contracts
-                  $input = array('itemtype'     => $input["item_itemtype"],
-                                 'items_id'     => $input["items_id"],
-                                 'contracts_id' => $key);
-               } else {
-                  // Remove contract to items
-                  $input = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $key,
-                                 'contracts_id' => $input['contracts_id']);
-
-               }
-               $contractitem = new Contract_Item();
-               if ($contractitem->can(-1, 'w', $input)) {
-                  if ($item = getItemForItemtype($input["itemtype"])) {
-                     if ($item->getFromDB($input['items_id'])) {
-                        $contract = new Contract();
-                        if ($contract->getFromDB($input['contracts_id'])) {
-                           if ($contractitem->getFromDBForItems($contract, $item)) {
-                              if ($contractitem->delete(array('id' => $contractitem->getID()))) {
+                              if ($ic->add($input)) {
                                  $res['ok']++;
                               } else {
                                  $res['ko']++;
+                                 $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                               }
                            } else {
-                              $res['ko']++;
+                              $res['noright']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                            }
-                        } else {
-                           $res['ko']++;
-                        }
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
-                  } else {
-                     $res['ko']++;
                   }
-               } else {
-                  $res['noright']++;
                }
-            }
             break;
 
          //Lock management

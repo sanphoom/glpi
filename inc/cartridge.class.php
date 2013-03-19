@@ -158,8 +158,10 @@ class Cartridge extends CommonDBChild {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      $res['noright']++;
                   }
                }
@@ -176,8 +178,10 @@ class Cartridge extends CommonDBChild {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
+                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                         $res['noright']++;
                      }
                   }

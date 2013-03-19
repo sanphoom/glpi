@@ -749,17 +749,13 @@ class Document extends CommonDBTM {
                   } else {
                      $res['ko']++;
                      if ($item) {
-                        $res['messages'][] = sprintf(__('%1$s: %2$s'),
-                                                     $item->getLink(),
-                                                     __('Error on executing the action'));
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                      }
                   }
                } else {
                   $res['noright']++;
                   if ($item) {
-                     $res['messages'][] = sprintf(__('%1$s: %2$s'),
-                                                   $item->getLink(),
-                                                   __('Authorization error'));
+                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }
@@ -783,7 +779,7 @@ class Document extends CommonDBTM {
                                   'documents_id' => $input['documents_id']);
                   if ($refitem = getItemForItemtype($input2["itemtype"])) {
                      $refitem->getFromDB($input2['items_id']);
-                  }                                  
+                  }
                } else {
                   return false;
                }
@@ -799,51 +795,27 @@ class Document extends CommonDBTM {
                                  $res['ok']++;
                               } else {
                                  $res['ko']++;
-                                 if ($refitem) {
-                                    $res['messages'][] = sprintf(__('%1$s: %2$s'),
-                                                               $refitem->getLink(),
-                                                               __('Error on executing the action'));
-                                 }
+                                 $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
                               }
                            } else {
                               $res['ko']++;
-                              if ($refitem) {
-                                 $res['messages'][] = sprintf(__('%1$s: %2$s'),
-                                                            $refitem->getLink(),
-                                                            __('Unable to get item'));
-                              }
+                              $res['messages'][] = $refitem->getErrorMessage(ERROR_NOT_FOUND);
                            }
                         } else {
-                           if ($doc) {
-                              $res['messages'][] = sprintf(__('%1$s: %2$s'),
-                                                         $doc->getLink(),
-                                                         __('Unable to get item'));
-                           }
+                           $res['messages'][] = $doc->getErrorMessage(ERROR_NOT_FOUND);
                            $res['ko']++;
                         }
                      } else {
-                        if ($item) {
-                           $res['messages'][] = sprintf(__('%1$s: %2$s'),
-                                                      $item->getLink(),
-                                                      __('Unable to get item'));
-                        }
+                        $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
                         $res['ko']++;
                      }
                   } else {
-                     if ($item) {
-                        $res['messages'][] = sprintf(__('%1$s: %2$s'),
-                                                   $item->getLink(),
-                                                   __('Unable to get item'));
-                     }
+                     $res['messages'][] = $refitem->getErrorMessage(ERROR_NOT_FOUND);
                      $res['ko']++;
                   }
                } else {
                   $res['noright']++;
-                  if ($refitem) {
-                     $res['messages'][] = sprintf(__('%1$s: %2$s'),
-                                                   $refitem->getLink(),
-                                                   __('Authorization error'));
-                  }
+                  $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
                }
             }
             break;

@@ -245,12 +245,13 @@ class AuthLDAP extends CommonDBTM {
                   $key = key($input["item"]);
                   unset($input["item"][$key]);
                   if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
-                                                               'value'  => $key),
+                                                               'value'  => '--'.$key),
                                                          $input["mode"],
                                                          $input["authldaps_id"], true)) {
                      $input['res']['ok']++;
                   }  else {
                      $input['res']['ko']++;
+                     $input['res']['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION,$key);
                   }
                   if (count($input["item"])) {
                      // more to do -> redirect
@@ -268,9 +269,10 @@ class AuthLDAP extends CommonDBTM {
                   $input["ldap_process_count"]  = 0;
                   $input["authldaps_id"]        = $_SESSION['ldap_import']['authldaps_id'];
                   $input["mode"]                = $_SESSION['ldap_import']['mode'];
-                  $input['res']                 = array('ok'      => 0,
-                                                        'ko'      => 0,
-                                                        'noright' => 0);
+                  $input['res']                 = array('ok'       => 0,
+                                                        'ko'       => 0,
+                                                        'noright'  => 0,
+                                                        'messages' => array());
                   foreach ($input['item'] as $key => $val) {
                      if ($val) {
                         $input["ldap_process_count"]++;
@@ -319,6 +321,7 @@ class AuthLDAP extends CommonDBTM {
                      $input['res']['ok']++;
                   }  else {
                      $input['res']['ko']++;
+                     $input['res']['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION,$key);
                   }
                   if (count($input["item"])) {
                      // more to do -> redirect
@@ -337,7 +340,8 @@ class AuthLDAP extends CommonDBTM {
                   $input["authldaps_id"]        = $_SESSION['ldap_server'];
                   $input['res']                 = array('ok'      => 0,
                                                         'ko'      => 0,
-                                                        'noright' => 0);
+                                                        'noright' => 0,
+                                                        'messages' => array());
                   foreach ($input['item'] as $key => $val) {
                      if ($val) {
                         $input["ldap_process_count"]++;
@@ -1339,7 +1343,10 @@ class AuthLDAP extends CommonDBTM {
 
                echo "<tr class='tab_bg_2 center'>";
                //Need to use " instead of ' because it doesn't work with names with ' inside !
-               echo "<td><input type='checkbox' name=\"item[" . $user . "]\" value='1'></td>";
+               echo "<td>";
+               echo Html::getMassiveActionCheckBox(__CLASS__,$user);
+               //echo "<input type='checkbox' name=\"item[" . $user . "]\" value='1'>";
+               echo "</td>";
                echo "<td>" . $link . "</td>";
 
                if ($stamp != '') {

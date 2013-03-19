@@ -354,9 +354,11 @@ class Software extends CommonDBTM {
                      $res['ok']++;
                   } else {
                      $res['ko']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                   }
                } else {
                   $res['noright']++;
+                  $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                }
             } else {
                $res['ko']++;
@@ -384,9 +386,11 @@ class Software extends CommonDBTM {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }
@@ -401,6 +405,7 @@ class Software extends CommonDBTM {
                      $ids[] = $key;
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }

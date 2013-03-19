@@ -686,16 +686,23 @@ class Computer extends CommonDBTM {
                $inst = new Computer_SoftwareVersion();
                foreach ($input['item'] as $key => $val) {
                   if ($val == 1) {
-                     $input2 = array('computers_id'        => $key,
-                                     'softwareversions_id' => $input['softwareversions_id']);
-                     if ($inst->can(-1, 'w', $input2)) {
-                        if ($inst->add($input2)) {
-                           $res['ok']++;
+                     if ($this->getFromDB($key)) {
+                        $input2 = array('computers_id'        => $key,
+                                       'softwareversions_id' => $input['softwareversions_id']);
+                        if ($inst->can(-1, 'w', $input2)) {
+                           if ($inst->add($input2)) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                           }
                         } else {
-                           $res['ko']++;
+                           $res['noright']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                         }
                      } else {
-                        $res['noright']++;
+                        $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
                      }
                   }
                }

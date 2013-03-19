@@ -531,12 +531,15 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_COMPAT);
                         }
                      } else {
                         $res['noright']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }

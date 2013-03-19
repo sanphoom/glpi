@@ -55,7 +55,6 @@ class CommonGLPI {
    public $get_item_to_display_tab = false;
    static protected $othertabs = array();
 
-
    /**
     * Return the localized name of the current Type
     * Should be overloaded in each new class
@@ -1161,6 +1160,7 @@ class CommonGLPI {
 
       return array();
    }
+   
    /**
     * Get link for display options
     *
@@ -1180,6 +1180,34 @@ class CommonGLPI {
       $link .= "left=100, scrollbars=yes'); w.focus();\">";
 
       return $link;
+   }
+   /**
+    * Get error message for item
+    *
+    * @since version 0.85
+    * @param $error error type see define.php for ERROR_*
+    * @param $object string string to use instead of item link
+    * @return link
+   **/
+   function getErrorMessage($error, $object='') {
+
+      if (empty($object)) {
+         $object = $this->getLink();
+      }
+      switch ($error) {
+         case ERROR_NOT_FOUND :
+            return sprintf(__('%1$s: %2$s'), $object,  __('Unable to get item'));
+
+         case ERROR_RIGHT :
+            return sprintf(__('%1$s: %2$s'), $object,  __('Authorization error'));
+
+         case ERROR_COMPAT :
+            return sprintf(__('%1$s: %2$s'), $object,  __('Incompatible items'));
+
+         case ERROR_ON_ACTION :
+            return sprintf(__('%1$s: %2$s'), $object,  __('Error on executing the action'));
+
+      }
    }
 }
 ?>

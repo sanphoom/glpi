@@ -174,6 +174,13 @@ define("MAIL_SMTPTLS",3);
 define("INFO",0);
 define("ERROR",1);
 
+// ACTIONS_ERROR
+
+define("ERROR_NOT_FOUND",1);
+define("ERROR_RIGHT",2);
+define("ERROR_COMPAT",3);
+define("ERROR_ON_ACTION",4);
+
 
 // For plugins
 $PLUGIN_HOOKS     = array();

@@ -82,20 +82,27 @@ class Contact_Supplier extends CommonDBRelation{
                if (isset($input['contacts_id'])) {
                   $input = array('suppliers_id' => $key,
                                  'contacts_id'  => $input['contacts_id']);
+                  $refitem = new Supplier();
+                  $refitem->getFromDB($key);
                } else if (isset($input['suppliers_id'])) {
                   $input = array('suppliers_id' => $input['suppliers_id'],
                                  'contacts_id'  => $key);
+                  $refitem = new Contact();
+                  $refitem->getFromDB($key);
                } else {
                   return false;
                }
+               
                if ($contactsupplier->can(-1, 'w', $input)) {
                   if ($contactsupplier->add($input)) {
                      $res['ok']++;
                   } else {
                      $res['ko']++;
+                     $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
                   }
                } else {
                   $res['noright']++;
+                  $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
                }
             }
             break;

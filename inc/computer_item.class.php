@@ -308,10 +308,17 @@ class Computer_Item extends CommonDBRelation{
                      $input2 = array('computers_id' => $input["computers_id"],
                                     'itemtype'      => $input["itemtype"],
                                     'items_id'      => $key);
+                     if ($refitem = getItemForItemtype($input2["itemtype"])) {
+                        $refitem->getFromDB($input2['items_id']);
+                     }
+                     
                   } else if (isset($input["items_id"])) {
                      $input2 = array('computers_id' => $key,
                                     'itemtype'      => $input["item_itemtype"],
                                     'items_id'      => $input["items_id"]);
+                     if ($refitem = getItemForItemtype('Computer')) {
+                        $refitem->getFromDB($input2['computers_id']);
+                     }
                   } else {
                      return false;
                   }
@@ -320,9 +327,11 @@ class Computer_Item extends CommonDBRelation{
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }
@@ -339,9 +348,11 @@ class Computer_Item extends CommonDBRelation{
                         $res['ok']++;
                      } else {
                         $res['ko']++;
+                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                   }
                }
             }

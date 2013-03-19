@@ -572,9 +572,13 @@ class Group_User extends CommonDBRelation{
                      // Add users to groups
                      $input2 = array('groups_id' => $key,
                                      'users_id'  => $input['users_id']);
+                     $refitem = new Group();
+                     $refitem->getFromDB($key);
                   } else if (isset($input['groups_id'])) { // Add groups to users
                      $input2 = array('groups_id' => $input["groups_id"],
-                     'users_id'  => $key);
+                                     'users_id'  => $key);
+                     $refitem = new User();
+                     $refitem->getFromDB($key);
                   } else {
                      return false;
                   }
@@ -599,9 +603,11 @@ class Group_User extends CommonDBRelation{
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['noright']++;
+                           $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
                         }
                      } else {
                         if ($this->can(-1,'w',$input2)) {
@@ -609,9 +615,11 @@ class Group_User extends CommonDBRelation{
                               $res['ok']++;
                            } else {
                               $res['ko']++;
+                              $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);                              
                            }
                         } else {
                            $res['noright']++;
+                           $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
                         }
                      }
                   } else {
