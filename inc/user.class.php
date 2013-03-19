@@ -649,12 +649,15 @@ class User extends CommonDBTM {
 
             return false;
          }
+         // Unlink old picture (clean on changing format)
+         self::dropPictureFiles($this->fields['picture']);
          // Move uploaded file
          $filename = $this->fields['id'];
          $tmp = explode(".", $_FILES['picture']['name']);
          $extension = array_pop($tmp);
          $picture_path = GLPI_DOC_DIR."/_pictures/$filename.".$extension;
-         @unlink($picture_path);
+         self::dropPictureFiles($filename.".".$extension);
+         
          if (Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
             Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
             // For display
@@ -1794,15 +1797,11 @@ class User extends CommonDBTM {
       }
 
       if (!empty($this->fields["name"])) {
-         echo "<td rowspan='6'>" . __('Picture') . "</td>";
-         echo "<td rowspan='6'>";
-         echo "<div class='user_picture_border'>";
-         if (!empty($this->fields["picture"])) {
-            echo "<img src='".$CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".
-               $this->fields["picture"]."' class='user_picture'/>";
-         } else {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/picture.png' class='user_picture' />";
-         }
+         echo "<td rowspan='3'>" . __('Picture') . "</td>";
+         echo "<td rowspan='3'>";
+         echo "<div class='user_picture_border_small'>";
+         echo "<img class='user_picture_small' src='".User::getThumbnailURLForPicture($this->fields['picture'])."' />";
+//         echo "<img src='".self::getURLForPicture($this->fields["picture"])."' class='user_picture'/>";
          echo "</div>";
          echo "<input type='file' name='picture' accept='image/gif, image/jpeg, image/png'>";
          echo "</td>";
@@ -1828,23 +1827,35 @@ class User extends CommonDBTM {
          echo "<td><input id='password' type='password' name='password' value='' size='20'
                     autocomplete='off' onkeyup=\"return passwordCheck();\">";
          echo "</td>";
+         echo "<td rowspan='2'>".__('Password security policy')."</td>";
+         echo "<td rowspan='2'>";
+         Config::displayPasswordSecurityChecks();
+         echo "</td>";
          echo "</tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Password confirmation') . "</td>";
          echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
          echo "</td>";
          echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Password security policy')."</td>";
-         echo "<td>";
-         Config::displayPasswordSecurityChecks();
-         echo "</td>";
-         echo "</tr>";
       }
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Active')."</td><td>";
+      Dropdown::showYesNo('is_active',$this->fields['is_active']);
+      echo "</td>";
+      echo "<td>" . _n('Email','Emails',2);
+      UserEmail::showAddEmailButton($this);
+      echo "</td><td>";
+      UserEmail::showForUser($this);
+      echo "</td>";
+      echo "<td>&nbsp;</td>";
+      echo "</tr>";
 
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>" .  __('Phone') . "</td><td>";
+      Html::autocompletionTextField($this, "phone");
+      echo "</td>";
       //Authentications information : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
@@ -1871,29 +1882,9 @@ class User extends CommonDBTM {
       } else {
          echo "<td colspan='2'>---<input type='hidden' name='authtype' value='1'></td>";
       }
+
       echo "</tr>";
 
-
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . _n('Email','Emails',2);
-      UserEmail::showAddEmailButton($this);
-      echo "</td><td>";
-      UserEmail::showForUser($this);
-      echo "</td>";
-      echo "<td>&nbsp;</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" .  __('Phone') . "</td><td>";
-      Html::autocompletionTextField($this, "phone");
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Active')."</td><td>";
-      Dropdown::showYesNo('is_active',$this->fields['is_active']);
-      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Mobile phone') . "</td><td>";
@@ -3849,7 +3840,11 @@ class User extends CommonDBTM {
       return false;
    }
 
-
+   /**
+    * Check if default passwords always used
+    *
+    * @return array of login using default passwords
+   **/
    static function checkDefaultPasswords() {
 
       $passwords = array('glpi'      => 'glpi',
@@ -3869,5 +3864,63 @@ class User extends CommonDBTM {
       return $default_password_set;
    }
 
+   /**
+    * Get picture URL from picture field
+    *
+    * @param $picture picture field
+    * @return string URL to show picture
+   **/
+   static function getURLForPicture($picture) {
+      global $CFG_GLPI;
+      if (!empty($picture)) {
+         return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/$picture";
+      } else {
+         return $CFG_GLPI["root_doc"]."/pics/picture.png";
+      }
+   }
+
+   /**
+    * Get picture URL from picture field
+    *
+    * @param $picture picture field
+    * @return string URL to show picture
+   **/
+   static function getThumbnailURLForPicture($picture) {
+      global $CFG_GLPI;
+      if (!empty($picture)) {
+         $tmp = explode(".", $picture);
+         if (count($tmp) ==2) {
+            return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".$tmp[0]."_min.".$tmp[1];
+         }
+
+         return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
+      }
+      return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
+      if (!empty($picture)) {
+         
+      }
+   }
+   
+   /**
+    * Drop existing files for user picture
+    *
+    * @param $picture picture field
+    * @return nothing
+   **/
+   static function dropPictureFiles($picture) {
+      if (!empty($picture)) {
+         // unlink main file
+         if (file_exists(GLPI_DOC_DIR."/_pictures/$picture")) {
+            @unlink(GLPI_DOC_DIR."/_pictures/$picture");
+         }
+         // unlink Thunmnail
+         $tmp = explode(".", $picture);
+         if (count($tmp) ==2) {
+            if (file_exists(GLPI_DOC_DIR."/_pictures/".$tmp[0]."_min.".$tmp[1])) {
+               @unlink(GLPI_DOC_DIR."/_pictures/".$tmp[0]."_min.".$tmp[1]);
+            }
+         }
+      }
+   }
 }
 ?>

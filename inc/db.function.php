@@ -1228,12 +1228,8 @@ function getUserName($ID, $link=0) {
             }
 
             if (!empty($data['picture'])) {
-               $last_dot_index = strrpos($data['picture'], '.');
-               $thumbnail = $data['picture'];
-               $thumbnail = substr_replace($data['picture'], "_min.", $last_dot_index, 1);
                $user['comment'] = "<div class='tooltip_picture_border'>".
-                  "<img  class='tooltip_picture' src='".$CFG_GLPI["root_doc"].
-                  "/front/document.send.php?file=_pictures/$thumbnail' /></div>".
+                  "<img  class='tooltip_picture' src='".User::getThumbnailURLForPicture($data['picture'])."' /></div>".
                   "<div class='tooltip_text'>".$user['comment']."</div>";
             }
          } else {

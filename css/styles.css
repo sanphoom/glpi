@@ -814,6 +814,21 @@ li.auto_comp {
    border-radius: 5px;
 }
 
+.user_picture_border_small {
+   padding:2px;
+   border-radius: 6px;
+   border: 3px inset #D0D99D;
+   width:72px;
+   height:72px;
+   margin-right:5px;
+   background-color: #FFF
+}
+.user_picture_small {
+   margin: 0 auto;
+   width:71px;
+   height:71px;
+   border-radius: 5px;
+}
 /* ################--------------- Space to replace &nbsp; ---------------#################### */
 
 /* 2 space */
