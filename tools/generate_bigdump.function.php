@@ -1451,9 +1451,9 @@ function generate_entity($ID_entity) {
 
    for ($i=0 ; $i<$MAX['users_sadmin'] ; $i++) {
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "sadmin '$i-$ID_entity",
-                                   'password'           => "sadmin '$i",
-                                   'password2'          => "sadmin '$i",
+                             array('name'               => "sadmin'$i-$ID_entity",
+                                   'password'           => "sadmin'$i",
+                                   'password2'          => "sadmin'$i",
                                    'phone'              => "tel $i",
                                    'phone2'             => "tel2 $i",
                                    'mobile'             => "mobile $i",
