@@ -1706,7 +1706,6 @@ class Toolbox {
 
       if (!empty($where)) {
          $data = explode("_", $where);
-
          if (isset($_SESSION["glpiactiveprofile"]["interface"])
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
             $forcetab = '';
@@ -1724,17 +1723,30 @@ class Toolbox {
                      // Use for compatibility with old name
                      case "tracking" :
                      case "ticket" :
-                        // Check entity
-                        if (($item = getItemForItemtype($data[0]))
-                           && $item->isEntityAssign()) {
-                           if ($item->getFromDB($data[1])) {
-                              if (!Session::haveAccessToEntity($item->getEntityID())) {
-                                 Session::changeActiveEntities($item->getEntityID(),1);
+                        $data[0] = 'Ticket';
+                        // redirect to item
+                        if (isset($data[1])
+                              && is_numeric($data[1])
+                              && ($data[1] > 0)) {
+                           // Check entity
+                           if (($item = getItemForItemtype($data[0]))
+                              && $item->isEntityAssign()) {
+                              if ($item->getFromDB($data[1])) {
+                                 if (!Session::haveAccessToEntity($item->getEntityID())) {
+                                    Session::changeActiveEntities($item->getEntityID(),1);
+                                 }
                               }
                            }
+                           Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
+                                          "&$forcetab");
+                        // redirect to list
+                        } else if (!empty($data[0])) {
+                           if ($item = getItemForItemtype($data[0])) {
+                              Html::redirect($item->getSearchURL()."?$forcetab");
+                           }
                         }
-                        Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
-                                       "&$forcetab");
+                        
+                        Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
                         break;
 
                      case "preference" :
@@ -1742,7 +1754,7 @@ class Toolbox {
                         break;
 
                      default :
-                        Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?$forcetab");
+                        Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
                         break;
                   }
                   break;
@@ -1759,22 +1771,32 @@ class Toolbox {
                         $data[0] = "Ticket";
 
                      default :
-                        if (!empty($data[0] )&& ($data[1] > 0)) {
+
+                        // redirect to item
+                        if (!empty($data[0] )
+                              && isset($data[1])
+                              && is_numeric($data[1])
+                              && ($data[1] > 0)) {
                            // Check entity
-                           if (($item = getItemForItemtype($data[0]))
-                              && $item->isEntityAssign()) {
-                              if ($item->getFromDB($data[1])) {
-                                 if (!Session::haveAccessToEntity($item->getEntityID())) {
-                                    Session::changeActiveEntities($item->getEntityID(),1);
+                           if ($item = getItemForItemtype($data[0])) {
+                              if ($item->isEntityAssign()) {
+                                 if ($item->getFromDB($data[1])) {
+                                    if (!Session::haveAccessToEntity($item->getEntityID())) {
+                                       Session::changeActiveEntities($item->getEntityID(),1);
+                                    }
                                  }
                               }
+                              Html::redirect($item->getFormURL()."?id=".
+                                          $data[1]."&$forcetab");
                            }
-                           $item = new $data[0]();
-                           Html::redirect($item->getFormURL()."?id=".
-                                       $data[1]."&$forcetab");
-                        } else {
-                           Html::redirect($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
+                        // redirect to list
+                        } else if (!empty($data[0] )) {
+                           if ($item = getItemForItemtype($data[0])) {
+                              Html::redirect($item->getSearchURL()."?$forcetab");
+                           }
                         }
+                        
+                        Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
                         break;
                   }
                   break;
