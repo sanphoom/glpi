@@ -50,7 +50,15 @@ class Html {
    static function clean($value) {
 
       $value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
+      $value = preg_replace("/(&nbsp;| )+/", " ", $value);
 
+      include_once(GLPI_HTMLAWED);
+
+      $value = htmLawed($value, array('elements' => 'none',
+                                      'keep_bad' => 2));
+
+
+/*      
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
       $value         = preg_replace($specialfilter, ' ', $value);
 
@@ -61,10 +69,9 @@ class Html {
 
       $value = preg_replace($search, ' ', $value);
 
-      $value = preg_replace("/(&nbsp;| )+/", " ", $value);
       // nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
       $value = str_replace("&#8217;", "'", $value);
-
+*/
    // Problem with this regex : may crash
    //   $value = preg_replace("/ +/u", " ", $value);
       $value = preg_replace("/\n{2,}/", "\n\n", $value,-1);
