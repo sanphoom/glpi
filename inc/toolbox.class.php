@@ -1705,9 +1705,23 @@ class Toolbox {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       if (!empty($where)) {
-         $data = explode("_", $where);
+      
          if (isset($_SESSION["glpiactiveprofile"]["interface"])
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
+            $decoded_where = rawurldecode($where);
+            // redirect to URL : URL must be rawurlencoded
+            if ($link = preg_match('/https?:\/\/.+/',$decoded_where)) {
+               Html::redirect($decoded_where);
+            }
+            // Redirect based on GLPI_ROOT : URL must be rawurlencoded
+            if ($decoded_where[0] = '/') {
+//                echo $decoded_where;exit();
+               Html::redirect($CFG_GLPI["root_doc"].$decoded_where);
+            }
+            
+
+
+            $data = explode("_", $where);
             $forcetab = '';
             // forcetab for simple items
             if (isset($data[1])) {

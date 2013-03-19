@@ -58,10 +58,10 @@ if (isset($_POST['login_password'])) {
 // Redirect management
 $REDIRECT = "";
 if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
-   $REDIRECT = "?redirect=" .$_POST['redirect'];
+   $REDIRECT = "?redirect=" .rawurlencode($_POST['redirect']);
 
 } else if (isset($_GET['redirect']) && strlen($_GET['redirect'])>0) {
-   $REDIRECT = "?redirect=" .$_GET['redirect'];
+   $REDIRECT = "?redirect=" .rawurlencode($_GET['redirect']);
 }
 
 $auth = new Auth();
