@@ -129,6 +129,9 @@ if (isset($_REQUEST['forcetab'])) {
    if (preg_match('/([a-zA-Z]+).form.php/',$_SERVER['PHP_SELF'],$matches)) {
       $itemtype = $matches[1];
       Session::setActiveTab($matches[1], $_REQUEST['forcetab']);
+   } else if (preg_match('/([a-zA-Z]+).php/',$_SERVER['PHP_SELF'],$matches)) {
+      $itemtype = $matches[1];
+      Session::setActiveTab($matches[1], $_REQUEST['forcetab']);
    }
 }
 // Manage tabs

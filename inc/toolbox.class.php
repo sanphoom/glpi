@@ -1707,67 +1707,26 @@ class Toolbox {
       if (!empty($where)) {
          $data = explode("_", $where);
 
-         if ((count($data) >= 2)
-             && isset($_SESSION["glpiactiveprofile"]["interface"])
+         if (isset($_SESSION["glpiactiveprofile"]["interface"])
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
-
             $forcetab = '';
+            // forcetab for simple items
+            if (isset($data[1])) {
+               $forcetab = 'forcetab='.$data[1];
+            }
             if (isset($data[2])) {
                $forcetab = 'forcetab='.$data[2];
-            }
-            // Plugin tab
-            if (isset($data[3])) {
-               $forcetab .= '_'.$data[3];
             }
 
             switch ($_SESSION["glpiactiveprofile"]["interface"]) {
                case "helpdesk" :
                   switch (strtolower($data[0])) {
-                     case "plugin" :
-                        $plugin = $data[1];
-                        $valid  = false;
-                        if (isset($PLUGIN_HOOKS['redirect_page'][$plugin])
-                            && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
-                           // Simple redirect
-                           if (!is_array($PLUGIN_HOOKS['redirect_page'][$plugin])) {
-                              if (isset($data[2]) && ($data[2] > 0)) {
-                                 $valid = true;
-                                 $id    = $data[2];
-                                 $page  = $PLUGIN_HOOKS['redirect_page'][$plugin];
-                              }
-                              $forcetabnum = 3 ;
-                           } else { // Complex redirect
-                              if (isset($data[2]) && !empty($data[2])
-                                  && isset($data[3]) && ($data[3] > 0)
-                                  && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
-                                  && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
-                                 $valid = true;
-                                 $id    = $data[3];
-                                 $page  = $PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]];
-                              }
-                              $forcetabnum = 4 ;
-                           }
-                        }
-
-                        if (isset($data[$forcetabnum])) {
-                           $forcetab = 'forcetab='.$data[$forcetabnum];
-                        }
-
-                        if ($valid) {
-                           Html::redirect($CFG_GLPI["root_doc"].
-                                          "/plugins/$plugin/$page?id=$id&$forcetab");
-                        } else {
-                           Html::redirect($CFG_GLPI["root_doc"].
-                                          "/front/helpdesk.public.php?$forcetab");
-                        }
-                        break;
-
                      // Use for compatibility with old name
                      case "tracking" :
                      case "ticket" :
                         // Check entity
                         if (($item = getItemForItemtype($data[0]))
-                            && $item->isEntityAssign()) {
+                           && $item->isEntityAssign()) {
                            if ($item->getFromDB($data[1])) {
                               if (!Session::haveAccessToEntity($item->getEntityID())) {
                                  Session::changeActiveEntities($item->getEntityID(),1);
@@ -1790,44 +1749,6 @@ class Toolbox {
 
                case "central" :
                   switch (strtolower($data[0])) {
-                     case "plugin" :
-                        $plugin = $data[1];
-                        $valid  = false;
-                        if (isset($PLUGIN_HOOKS['redirect_page'][$plugin])
-                            && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
-                           // Simple redirect
-                           if (!is_array($PLUGIN_HOOKS['redirect_page'][$plugin])) {
-                              if (isset($data[2]) && ($data[2] > 0)) {
-                                 $valid = true;
-                                 $id    = $data[2];
-                                 $page  = $PLUGIN_HOOKS['redirect_page'][$plugin];
-                              }
-                              $forcetabnum = 3 ;
-                           } else { // Complex redirect
-                              if (isset($data[2]) && !empty($data[2])
-                                  && isset($data[3]) && ($data[3] > 0)
-                                  && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
-                                  && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
-                                 $valid = true;
-                                 $id    = $data[3];
-                                 $page  = $PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]];
-                              }
-                              $forcetabnum = 4 ;
-                           }
-                        }
-
-                        if (isset($data[$forcetabnum])) {
-                           $forcetab = 'forcetab='.$data[$forcetabnum];
-                        }
-
-                        if ($valid) {
-                           Html::redirect($CFG_GLPI["root_doc"].
-                                          "/plugins/$plugin/$page?id=$id&$forcetab");
-                        } else {
-                           Html::redirect($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
-                        }
-                        break;
-
                      case "preference" :
                         Html::redirect($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
                         break;
@@ -1841,7 +1762,7 @@ class Toolbox {
                         if (!empty($data[0] )&& ($data[1] > 0)) {
                            // Check entity
                            if (($item = getItemForItemtype($data[0]))
-                               && $item->isEntityAssign()) {
+                              && $item->isEntityAssign()) {
                               if ($item->getFromDB($data[1])) {
                                  if (!Session::haveAccessToEntity($item->getEntityID())) {
                                     Session::changeActiveEntities($item->getEntityID(),1);
@@ -1850,7 +1771,7 @@ class Toolbox {
                            }
                            $item = new $data[0]();
                            Html::redirect($item->getFormURL()."?id=".
-                                        $data[1]."&$forcetab");
+                                       $data[1]."&$forcetab");
                         } else {
                            Html::redirect($CFG_GLPI["root_doc"]."/front/central.php?$forcetab");
                         }
