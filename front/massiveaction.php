@@ -149,6 +149,13 @@ if (isset($_POST["action"])
                                  $nbnoright, $nbko);
    }
    Session::addMessageAfterRedirect($message);
+   if (isset($res['messages'])
+        && is_array($res['messages'])
+        && count($res['messages'])) {
+      foreach($res['messages'] as $message) {
+         Session::addMessageAfterRedirect($message, false, ERROR);
+      }
+   }
    Html::redirect($REDIRECT);
 
 } else { //action, itemtype or item not defined

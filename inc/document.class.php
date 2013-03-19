@@ -729,10 +729,16 @@ class Document extends CommonDBTM {
                   $input2 = array('itemtype'     => $input["item_itemtype"],
                                   'items_id'     => $input["items_id"],
                                   'documents_id' => $key);
+                  if ($item = getItemForItemtype('Document')) {
+                     $item->getFromDB($input2['documents_id']);
+                  }
                } else if (isset($input['documents_id'])) { // Add document to item
                   $input2 = array('itemtype'     => $input["itemtype"],
                                   'items_id'     => $key,
                                   'documents_id' => $input['documents_id']);
+                  if ($item = getItemForItemtype($input2["itemtype"])) {
+                     $item->getFromDB($input2['items_id']);
+                  }
                } else {
                   return false;
                }
@@ -742,9 +748,19 @@ class Document extends CommonDBTM {
                      $res['ok']++;
                   } else {
                      $res['ko']++;
+                     if ($item) {
+                        $res['messages'][] = sprintf(__('%1$s: %2$s'),
+                                                     $item->getLink(),
+                                                     __('Error on executing the action'));
+                     }
                   }
                } else {
                   $res['noright']++;
+                  if ($item) {
+                     $res['messages'][] = sprintf(__('%1$s: %2$s'),
+                                                   $item->getLink(),
+                                                   __('Authorization error'));
+                  }
                }
             }
             break;
@@ -757,14 +773,21 @@ class Document extends CommonDBTM {
                   $input2 = array('itemtype'     => $input["item_itemtype"],
                                   'items_id'     => $input["items_id"],
                                   'documents_id' => $key);
+                  if ($refitem = getItemForItemtype('Document')) {
+                     $refitem->getFromDB($input2['documents_id']);
+                  }                                  
                } else if (isset($input['documents_id'])) {
                   // Remove contract to items
                   $input2 = array('itemtype'     => $input["itemtype"],
                                   'items_id'     => $key,
                                   'documents_id' => $input['documents_id']);
+                  if ($refitem = getItemForItemtype($input2["itemtype"])) {
+                     $refitem->getFromDB($input2['items_id']);
+                  }                                  
                } else {
                   return false;
                }
+
                $docitem = new Document_Item();
                if ($docitem->can(-1, 'w', $input2)) {
                   if ($item = getItemForItemtype($input2["itemtype"])) {
@@ -776,21 +799,51 @@ class Document extends CommonDBTM {
                                  $res['ok']++;
                               } else {
                                  $res['ko']++;
+                                 if ($refitem) {
+                                    $res['messages'][] = sprintf(__('%1$s: %2$s'),
+                                                               $refitem->getLink(),
+                                                               __('Error on executing the action'));
+                                 }
                               }
                            } else {
                               $res['ko']++;
+                              if ($refitem) {
+                                 $res['messages'][] = sprintf(__('%1$s: %2$s'),
+                                                            $refitem->getLink(),
+                                                            __('Unable to get item'));
+                              }
                            }
                         } else {
+                           if ($doc) {
+                              $res['messages'][] = sprintf(__('%1$s: %2$s'),
+                                                         $doc->getLink(),
+                                                         __('Unable to get item'));
+                           }
                            $res['ko']++;
                         }
                      } else {
+                        if ($item) {
+                           $res['messages'][] = sprintf(__('%1$s: %2$s'),
+                                                      $item->getLink(),
+                                                      __('Unable to get item'));
+                        }
                         $res['ko']++;
                      }
                   } else {
+                     if ($item) {
+                        $res['messages'][] = sprintf(__('%1$s: %2$s'),
+                                                   $item->getLink(),
+                                                   __('Unable to get item'));
+                     }
                      $res['ko']++;
                   }
                } else {
                   $res['noright']++;
+                  if ($refitem) {
+                     $res['messages'][] = sprintf(__('%1$s: %2$s'),
+                                                   $refitem->getLink(),
+                                                   __('Authorization error'));
+                  }
                }
             }
             break;
