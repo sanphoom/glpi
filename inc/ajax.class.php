@@ -274,14 +274,15 @@ class Ajax {
 // 
 //                   success: function() {}
 //                });  ";
-         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST'},
-                  // Show loading indicator
+         echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST',
+          // Show loading indicator
                   beforeSend: function() {
                      $('#loadingindicator$rand').show()
                   },
-                   success: function() {},
+                  complete: function() {
+                     $('#loadingindicator$rand').hide()
+                  }},
          activate : function( event, ui ){
-            $('#loadingindicator$rand').hide()
             //  Get future value
             var newIndex = ui.newTab.parent().children().index(ui.newTab);
             $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
