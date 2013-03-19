@@ -592,7 +592,7 @@ class CommonGLPI {
          }
          foreach ($options as $key => $val) {
             // Do not include id options
-            if (($key[0] != '_') && ($key != 'id')) {
+            if ($key != 'id') {
                $extraparamhtml .= "&amp;$key=$val";
                $extraparam     .= "&$key=$val";
             }
@@ -958,7 +958,6 @@ class CommonGLPI {
     * @param $options   array
    **/
    function display($options=array()) {
-
       if (isset($options['id'])) {
          $this->getFromDB($options['id']);
       }
