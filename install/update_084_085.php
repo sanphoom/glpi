@@ -361,6 +361,25 @@ function update084to085() {
                         array('comment' => "json encoded array of from/dest allowed status change"));
 
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'drop rules cache'));
+   $migration->dropTable('glpi_rulecachecomputermodels');
+   $migration->dropTable('glpi_rulecachecomputertypes');
+   $migration->dropTable('glpi_rulecachemanufacturers');
+   $migration->dropTable('glpi_rulecachemonitormodels');
+   $migration->dropTable('glpi_rulecachemonitortypes');
+   $migration->dropTable('glpi_rulecachenetworkequipmentmodels');
+   $migration->dropTable('glpi_rulecachenetworkequipmenttypes');
+   $migration->dropTable('glpi_rulecacheoperatingsystems');
+   $migration->dropTable('glpi_rulecacheoperatingsystemservicepacks');
+   $migration->dropTable('glpi_rulecacheoperatingsystemversions');
+   $migration->dropTable('glpi_rulecacheperipheralmodels');
+   $migration->dropTable('glpi_rulecacheperipheraltypes');
+   $migration->dropTable('glpi_rulecachephonemodels');
+   $migration->dropTable('glpi_rulecachephonetypes');
+   $migration->dropTable('glpi_rulecacheprintermodels');
+   $migration->dropTable('glpi_rulecacheprinters');
+   $migration->dropTable('glpi_rulecacheprintertypes');
+   $migration->dropTable('glpi_rulecachesoftwares');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_rules'));
 
