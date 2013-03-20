@@ -2003,7 +2003,7 @@ class User extends CommonDBTM {
          return false;
       }
       echo "<table class='tab_glpi left' width='100%'>";
-      echo "<tr class='tab_bg_2'>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td class='b' width='20%'>";
       _e('Name');
       echo "</td><td width='30%'>";
@@ -2016,7 +2016,7 @@ class User extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td class='b'>";
       _e('Phone 2');
       echo "</td><td>";
@@ -2029,7 +2029,7 @@ class User extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td class='b'>";
       _e('Location');
       echo "</td><td>";
