@@ -144,7 +144,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       return $this->getFromDBByQuery("WHERE `" . $this->getTable() . "`.`" . $this->getIndexName() .
-                                     "` = '" . Toolbox::cleanInteger($ID) . "'");
+                                     "` = '" . Toolbox::cleanInteger($ID) . "' LIMIT 1");
    }
 
    /**
