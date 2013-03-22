@@ -5266,7 +5266,7 @@ class Ticket extends CommonITILObject {
 
       if ($item->getID()
           && ($item->getType() == 'User')
-          Session::haveRight('create_ticket', 1)) {
+          && Session::haveRight('create_ticket', 1)) {
          echo "<tr><td class='tab_bg_2 center b' colspan='11'>";
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
