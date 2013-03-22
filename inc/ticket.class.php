@@ -1886,7 +1886,7 @@ class Ticket extends CommonITILObject {
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   $ticket = new Ticket();
-                  if ($ticket->getFromDB($key)) {               
+                  if ($ticket->getFromDB($key)) {
                      $input2 = array('tickets_id'      => $key,
                                     'is_private'      => $input['is_private'],
                                     'requesttypes_id' => $input['requesttypes_id'],
@@ -5236,7 +5236,8 @@ class Ticket extends CommonITILObject {
       echo "<div class='firstbloc'>";
       // Link to open a new ticket
       if ($item->getID()
-          && Ticket::isPossibleToAssignType($item->getType())) {
+          && Ticket::isPossibleToAssignType($item->getType())
+          && Session::haveRight('create_ticket', 1)) {
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
                               array('itemtype' => $item->getType(),
@@ -5264,7 +5265,8 @@ class Ticket extends CommonITILObject {
       }
 
       if ($item->getID()
-          && ($item->getType() == 'User')) {
+          && ($item->getType() == 'User')
+          Session::haveRight('create_ticket', 1)) {
          echo "<tr><td class='tab_bg_2 center b' colspan='11'>";
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
