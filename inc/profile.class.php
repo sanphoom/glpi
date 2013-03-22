@@ -284,7 +284,39 @@ class Profile extends CommonDBTM {
          }
       }
 
+      // check if right if the last write profile on Profile object
+      if (($this->fields['profile'] == 'w')
+          && isset($input['profile']) && ($input['profile'] != 'w')
+          && (countElementsInTable("glpi_profilerights",
+                                   "`name` = 'profile' AND `right` = 'w'") == 1)) {
+         Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
+         false, ERROR);
+         Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
+         unset($input["profile"]);
+      }
+
       return $input;
+   }
+
+
+
+   /**
+    * check right before delete
+    *
+    * @return boolean
+    **/
+   function pre_deleteItem() {
+      global $DB;
+
+      if (($this->fields['profile'] == 'w')
+          && (countElementsInTable("glpi_profilerights",
+                                   "`name` = 'profile' AND `right` = 'w'") == 1)) {
+          Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
+                                           false, ERROR);
+          Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
+          return false;
+      }
+      return true;
    }
 
 
