@@ -74,7 +74,12 @@ if (isset($_GET['popup'])) {
    Html::popFooter();
 
 } else {
-   Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'assets', 'networkalias');
+   if (!isset($_GET["id"])) {
+      $_GET["id"] = "";
+   }
+
+   Session::checkRight("internet","w");
+   Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'assets');
 
    $alias->display($_GET);
    Html::footer();

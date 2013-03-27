@@ -54,6 +54,13 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
+   function defineTabs($options=array()) {
+
+      $ong  = array();
+      $this->addDefaultFormTab($ong);
+
+      return $ong;
+   }
    /**
     * Get the full name (internet name) of a NetworkName
     *
