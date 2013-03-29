@@ -176,6 +176,7 @@ class Location extends CommonTreeDropdown {
       global $DB, $CFG_GLPI;
 
       $locations_id = $this->fields['id'];
+      $crit         = Session::getSavedOption(__CLASS__, 'criterion', '');
 
       if (!$this->can($locations_id,'r')) {
          return false;
@@ -183,22 +184,39 @@ class Location extends CommonTreeDropdown {
 
       $first = 1;
       $query = '';
-      foreach ($CFG_GLPI['location_types'] as $type) {
-         $table = getTableForItemType($type);
 
-         $query .= ($first ? "SELECT " : " UNION SELECT  ")."`id`, '$type' AS type
-                  FROM `$table`
-                  WHERE `$table`.`locations_id` = '$locations_id' ".
-                      getEntitiesRestrictRequest(" AND", $table, "entities_id");
-         $first = 0;
+      if ($crit) {
+         $table = getTableForItemType($crit);
+         $query = "SELECT `$table`.`id`, '$crit' AS type
+                   FROM `$table`
+                   WHERE `$table`.`locations_id` = '$locations_id' ".
+                         getEntitiesRestrictRequest(" AND", $table, "entities_id");
+      } else {
+         foreach ($CFG_GLPI['location_types'] as $type) {
+            $table = getTableForItemType($type);
+            $query .= ($first ? "SELECT " : " UNION SELECT  ")."`id`, '$type' AS type
+                      FROM `$table`
+                      WHERE `$table`.`locations_id` = '$locations_id' ".
+                            getEntitiesRestrictRequest(" AND", $table, "entities_id");
+            $first = 0;
+         }
       }
-    //  toolbox::logdebug("requete", $query);
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
       if ($start >= $number) {
          $start = 0;
       }
+      // Mini Search engine
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Type')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>";
+      echo __('Type')."&nbsp;";
+      Dropdown::showItemType($CFG_GLPI['location_types'],
+                             array('value'      => $crit,
+                                   'on_change'  => 'reloadTab("start=0&criterion="+this.value)'));
+      echo "</td></tr></table>";
 
       if ($number) {
          echo "<div class='spaced'>";
