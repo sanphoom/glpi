@@ -669,7 +669,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $canedit      = Session::haveRight("software", "w");
       $entities_id  = $comp->fields["entities_id"];
 
-      $crit         = Session::getSavedOption(__CLASS__, 'criterion', '');
+      $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
 
       $where        = '';
       if ($crit > -1) {
