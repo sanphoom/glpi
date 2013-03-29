@@ -321,7 +321,7 @@ class Toolbox {
       $in  = array('<', '>');
       $out = array('&lt;', '&gt;');
 
-      $value = is_array($value) ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'),
+      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'),
                                             $value)
                                 : (is_null($value)
                                    ? NULL : (is_resource($value)
@@ -345,7 +345,7 @@ class Toolbox {
       $in  = array('<', '>');
       $out = array('&lt;', '&gt;');
 
-      $value = is_array($value) ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'),
+      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'),
                                             $value)
                                 : (is_null($value)
                                    ? NULL : (is_resource($value)
@@ -371,7 +371,7 @@ class Toolbox {
       $in  = array('<', '>');
       $out = array('&lt;', '&gt;');
 
-      $value = is_array($value) ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'),
+      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'),
                                             $value)
                                 : (is_null($value)
                                    ? NULL : (is_resource($value)
@@ -655,7 +655,7 @@ class Toolbox {
    static function addslashes_deep($value) {
       global $DB;
 
-      $value = is_array($value) ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
+      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
                                 : (is_null($value)
                                    ? NULL : (is_resource($value)
                                              ? $value : $DB->escape($value)));
@@ -673,7 +673,7 @@ class Toolbox {
    **/
    static function stripslashes_deep($value) {
 
-      $value = is_array($value) ? array_map(array(__CLASS__, 'stripslashes_deep'), $value)
+      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'stripslashes_deep'), $value)
                                 : (is_null($value)
                                    ? NULL : (is_resource($value)
                                              ? $value :stripslashes($value)));
