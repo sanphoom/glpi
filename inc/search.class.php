@@ -1518,7 +1518,7 @@ class Search {
       }
       echo "<td>";
 
-      echo "<table id='searchcriteriastable'>";
+      echo "<table id='searchcriteriastable' width='100%'>";
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
          echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='50%'>";

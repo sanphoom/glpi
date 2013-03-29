@@ -71,7 +71,7 @@ if (isset($_POST["itemtype"])
    $dropdownname = "searchtype$addmeta".$_POST["itemtype"].$_POST["num"];
    $searchopt    = array();
 
-   echo "<table><tr><td>";
+   echo "<table width='100%'><tr><td width='25%'>";
    if (count($actions)>0) {
 
       // get already get search options

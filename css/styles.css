@@ -242,7 +242,6 @@ select {
    color: black;
    background-color: white;
    line-height: 19px; /* do not set height because using multiple select*/
-   width: 200px;
   border: 1px solid #bbb;
 }}
 
