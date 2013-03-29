@@ -425,7 +425,8 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"],
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_computer`='1'"));
       echo "</td></tr>\n";
 

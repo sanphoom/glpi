@@ -145,9 +145,9 @@ class Phone extends CommonDBTM {
             }
          }
       }
-      
+
       $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);      
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
    }
 
 
@@ -181,7 +181,8 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"],
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_phone`='1'"));
       echo "</td></tr>\n";
 

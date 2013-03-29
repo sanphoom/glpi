@@ -51,11 +51,23 @@ class State extends CommonTreeDropdown {
       return _n('Status of items', 'Statuses of items', $nb);
    }
 
+
+
+   static function canCreate() {
+      return Session::haveRight('entity_dropdown', 'w');
+   }
+
+
+   static function canView() {
+      return Session::haveRight('entity_dropdown', 'r');
+   }
+
+
    function getAdditionalFields() {
-   
+
       $fields   = parent::getAdditionalFields();
       $fields[] = array('label' => __('Visibility'), 'name' => 'header');
-      
+
       foreach ($this->visibility_fields as $type => $field) {
          $fields[] = array('name'  => $field,
                            'label' => $type::getTypeName(),
@@ -64,7 +76,7 @@ class State extends CommonTreeDropdown {
       }
       return $fields;
    }
-    
+
    /**
     * Dropdown of states for behaviour config
     *
@@ -206,7 +218,7 @@ class State extends CommonTreeDropdown {
       }
    }
 
-   
+
    function getEmpty() {
       parent::getEmpty();
       //initialize is_visible_* fields at true to keep the same behavior as in older versions
@@ -234,6 +246,6 @@ class State extends CommonTreeDropdown {
       }
       return $input;
    }
-   
+
 }
 ?>

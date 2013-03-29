@@ -150,7 +150,7 @@ class Peripheral extends CommonDBTM {
       }
 
       $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);      
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
    }
 
 
@@ -184,7 +184,8 @@ class Peripheral extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".__('Status')."</td>\n";
       echo "<td>";
-      State::dropdown(array('value' => $this->fields["states_id"],
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
                             'condition' => "`is_visible_peripheral`='1'"));
       echo "</td></tr>\n";
 
