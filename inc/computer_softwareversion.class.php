@@ -785,12 +785,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
 
-//            if ($data["softwarecategories_id"] != $cat) {
-//               self::displayCategoryFooter($cat, $rand, $canedit);
-//               $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
-//            }
-
-
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
                $licids = self::softsByCategory($data, $computers_id, $crit, $withtemplate,
                                                $canedit, true);
@@ -805,7 +799,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $installed[] = $licid;
             }
          }
-//         self::displayCategoryFooter($cat, $rand, $canedit);
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
@@ -876,14 +869,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<table class='tab_cadre_fixe'>";
          $cat = true;
          foreach ($req as $data) {
-            if ($cat) {
-               self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
-               $cat = false;
-            }
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
             Session::addToNavigateListItems('SoftwareLicense', $data["id"]);
          }
-//         self::displayCategoryFooter(NULL, $rand, $canedit);
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] = false;
@@ -894,87 +882,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       echo "</div>\n";
 
-   }
-
-
-   /**
-    * Display category footer for Computer_SoftwareVersion::showForComputer function
-    *
-    * @param $cat                current category ID
-    * @param $rand               random for unicity / no more used
-    * @param $canedit   boolean / no more used
-    *
-    * @return new category ID
-   **/
-   private static function displayCategoryFooter($cat, $rand, $canedit) {
-
-      // Close old one
-      if ($cat != -1) {
-         echo "</table>";
-
-         echo "</div></td></tr>";
-      }
-   }
-
-
-   /**
-    * Display category header for Computer_SoftwareVersion::showForComputer function
-    *
-    * @param $computers_ID             ID of the computer
-    * @param $data                     data used to display
-    * @param $rand                     random for unicity
-    * @param $canedit         boolean
-    *
-    * @return new category ID
-   **/
-   private static function displayCategoryHeader($computers_ID, $data, $rand, $canedit) {
-      global $CFG_GLPI;
-
-      $display = "none";
-
-      if (isset($data["softwarecategories_id"])) {
-         $cat = $data["softwarecategories_id"];
-
-         if ($cat) {
-            // Categorized
-            $catname = Dropdown::getDropdownName('glpi_softwarecategories', $cat);
-            $display = $_SESSION["glpiis_categorized_soft_expanded"];
-         } else {
-            // Not categorized
-            $catname = __('Uncategorized software');
-            $display = $_SESSION["glpiis_not_categorized_soft_expanded"];
-         }
-
-      } else {
-         // Not installed
-         $cat     = '';
-         $catname = __('Affected licenses of not installed software');
-         $display = true;
-      }
-
-      echo "<tr class='tab_bg_2'><td class='center' colspan='5'>";
-      echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . $CFG_GLPI['root_doc'] .
-             "/pics/folder.png','" . $CFG_GLPI['root_doc'] . "/pics/folder-open.png');\">";
-      echo "<img alt='' name='imgcat$cat' src='".$CFG_GLPI['root_doc']."/pics/folder".
-             (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>". $catname. "</span>";
-      echo "</a></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td colspan='5'>";
-      echo "<div class='center' id='softcat$cat$rand' ".(!$display ?"style=\"display:none;\"" :'').">";
-
-      echo "<table class='tab_cadre_fixe'><tr>";
-      if ($canedit) {
-         echo "<th width='10'>";
-         Html::checkAllAsCheckbox("softcat$cat$rand");
-         echo "</th>";
-      }
-      echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-      echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
-      if (isset($data['is_dynamic'])) {
-         echo "<th>".__('Automatic inventory')."</th>";
-      }
-      echo "</tr>\n";
-      return $cat;
    }
 
 
