@@ -67,6 +67,7 @@ class Dropdown {
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice : Display emptychoice ? (default true)
     *    - display             : boolean / display or get string (default true)
+    *    - width           : specific width needed (default not set)    
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -85,6 +86,7 @@ class Dropdown {
       $params['entity']      = -1;
       $params['entity_sons'] = false;
       $params['toupdate']    = '';
+      $params['width']    = '';
       $params['used']        = array();
       $params['toadd']       = array();
       $params['on_change']   = '';
@@ -1157,6 +1159,8 @@ class Dropdown {
          $out .= "<option value='$i' ".(($i == $params['value']) ?" selected ":"").">$txt</option>";
       }
       $out .= "</select>";
+      $out .= Html::jsAdaptDropdown("$myname".$params['rand']);
+      
       if ($params['display']) {
          echo $out;
          return $params['rand'];
@@ -1605,10 +1609,8 @@ class Dropdown {
          }
 
       }
-      
-      echo "<script type='text/javascript'>\n";
-      echo "$(document).ready(function() { $('#$field_id').select2(); });";
-      echo "</script>\n";
+
+      $output .= Html::jsAdaptDropdown($field_id);
 
       if ($param['display']) {
          echo $output;

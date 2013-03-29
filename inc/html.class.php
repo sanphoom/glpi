@@ -3783,5 +3783,21 @@ class Html {
    static function jsGetElementbyID($id) {
       return "$('#$id')";
    }
+   
+   /**
+    * Adapt dropdown to clean JS
+    *
+    * @param $id string id of the dom element
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function jsAdaptDropdown($id) {
+      $out = "<script type='text/javascript'>\n";
+      $out .= "$(document).ready(function() { $('#$id').select2(); });";
+      $out .= "</script>\n";
+      return $out;
+   }
 }
 ?>
