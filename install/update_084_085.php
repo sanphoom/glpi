@@ -471,6 +471,13 @@ function update084to085() {
       $migration->addKey('glpi_states', $field);
    }
 
+
+   // glpi_domains by entity
+   $migration->addField('glpi_domains', 'entities_id', 'integer', array('after' => 'name'));
+   $migration->addField('glpi_domains', 'is_recursive', 'bool', array('update' => '1',
+                                                                      'after'  => 'entities_id'));
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
