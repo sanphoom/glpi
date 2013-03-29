@@ -1467,275 +1467,375 @@ class Profile extends CommonDBTM {
 
       $tab['inventory']          = __('Assets');
 
-      $tab[20]['table']          = $this->getTable();
-      $tab[20]['field']          = 'computer';
+      $tab[20]['table']          = 'glpi_profilerights';
+      $tab[20]['field']          = 'right';
       $tab[20]['name']           = _n('Computer', 'Computers', 2);
       $tab[20]['datatype']       = 'right';
+      $tab[20]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_all_planning'");
 
-      $tab[21]['table']          = $this->getTable();
-      $tab[21]['field']          = 'monitor';
+      $tab[21]['table']          = 'glpi_profilerights';
+      $tab[21]['field']          = 'right';
       $tab[21]['name']           = _n('Monitor', 'Monitors', 2);
       $tab[21]['datatype']       = 'right';
+      $tab[21]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'monitor'");
 
-      $tab[22]['table']          = $this->getTable();
-      $tab[22]['field']          = 'software';
+      $tab[22]['table']          = 'glpi_profilerights';
+      $tab[22]['field']          = 'right';
       $tab[22]['name']           = _n('Software', 'Software', 2);
       $tab[22]['datatype']       = 'right';
+      $tab[22]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'software'");
 
-      $tab[23]['table']          = $this->getTable();
-      $tab[23]['field']          = 'networking';
+      $tab[23]['table']          = 'glpi_profilerights';
+      $tab[23]['field']          = 'right';
       $tab[23]['name']           = _n('Network', 'Networks', 2);
       $tab[23]['datatype']       = 'right';
+      $tab[23]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'networking'");
 
-      $tab[24]['table']          = $this->getTable();
-      $tab[24]['field']          = 'printer';
+      $tab[24]['table']          = 'glpi_profilerights';
+      $tab[24]['field']          = 'right';
       $tab[24]['name']           = _n('Printer', 'Printers',2);
       $tab[24]['datatype']       = 'right';
+      $tab[24]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'printer'");
 
-      $tab[25]['table']          = $this->getTable();
-      $tab[25]['field']          = 'peripheral';
+      $tab[25]['table']          = 'glpi_profilerights';
+      $tab[25]['field']          = 'right';
       $tab[25]['name']           = _n('Device', 'Devices', 2);
       $tab[25]['datatype']       = 'right';
+      $tab[25]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'peripheral'");
 
-      $tab[26]['table']          = $this->getTable();
-      $tab[26]['field']          = 'cartridge';
+      $tab[26]['table']          = 'glpi_profilerights';
+      $tab[26]['field']          = 'right';
       $tab[26]['name']           = _n('Cartridge', 'Cartridges', 2);
       $tab[26]['datatype']       = 'right';
+      $tab[26]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'cartridge'");
 
-      $tab[27]['table']          = $this->getTable();
-      $tab[27]['field']          = 'consumable';
+      $tab[27]['table']          = 'glpi_profilerights';
+      $tab[27]['field']          = 'right';
       $tab[27]['name']           = _n('Consumable', 'Consumables', 2);
       $tab[27]['datatype']       = 'right';
+      $tab[27]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'consumable'");
 
-      $tab[28]['table']          = $this->getTable();
-      $tab[28]['field']          = 'phone';
+      $tab[28]['table']          = 'glpi_profilerights';
+      $tab[28]['field']          = 'right';
       $tab[28]['name']           = _n('Phone', 'Phones', 2);
       $tab[28]['datatype']       = 'right';
+      $tab[28]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'phone'");
 
-      $tab[29]['table']          = $this->getTable();
-      $tab[29]['field']          = 'notes';
+      $tab[29]['table']          = 'glpi_profilerights';
+      $tab[29]['field']          = 'right';
       $tab[29]['name']           = __('Notes');
       $tab[29]['datatype']       = 'right';
+      $tab[29]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'notes'");
 
-      $tab[29]['table']          = $this->getTable();
-      $tab[29]['field']          = 'internet';
-      $tab[29]['name']           = __('Internet');
-      $tab[29]['datatype']       = 'right';
+      $tab[129]['table']         = 'glpi_profilerights';
+      $tab[129]['field']         = 'right';
+      $tab[129]['name']          = __('Internet');
+      $tab[129]['datatype']      = 'right';
+      $tab[129]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'internet'");
 
       $tab['management']         = __('Management');
 
-      $tab[30]['table']          = $this->getTable();
-      $tab[30]['field']          = 'contact_enterprise';
+      $tab[30]['table']          = 'glpi_profilerights';
+      $tab[30]['field']          = 'right';
       $tab[30]['name']           = __('Contact')." / ".__('Supplier');
       $tab[30]['datatype']       = 'right';
+      $tab[30]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'contact_enterprise'");
 
-      $tab[31]['table']          = $this->getTable();
-      $tab[31]['field']          = 'document';
+      $tab[31]['table']          = 'glpi_profilerights';
+      $tab[31]['field']          = 'right';
       $tab[31]['name']           = _n('Document', 'Documents', 2);
       $tab[31]['datatype']       = 'right';
+      $tab[31]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'document'");
 
-      $tab[32]['table']          = $this->getTable();
-      $tab[32]['field']          = 'contract';
+      $tab[32]['table']          ='glpi_profilerights';
+      $tab[32]['field']          = 'right';
       $tab[32]['name']           = _n('Contract', 'Contracts', 2);
       $tab[32]['datatype']       = 'right';
+      $tab[32]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'contract'");
 
-      $tab[33]['table']          = $this->getTable();
-      $tab[33]['field']          = 'infocom';
+      $tab[33]['table']          = 'glpi_profilerights';
+      $tab[33]['field']          = 'right';
       $tab[33]['name']           = __('Financial and administratives information');
       $tab[33]['datatype']       = 'right';
+      $tab[33]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'infocom'");
 
-      $tab[101]['table']         = $this->getTable();
-      $tab[101]['field']         = 'budget';
+      $tab[101]['table']         = 'glpi_profilerights';
+      $tab[101]['field']         = 'right';
       $tab[101]['name']          = __('Budget');
       $tab[101]['datatype']      = 'right';
+      $tab[101]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'budget'");
 
       $tab['tools']              = __('Tools');
 
-      $tab[34]['table']          = $this->getTable();
-      $tab[34]['field']          = 'knowbase';
+      $tab[34]['table']          = 'glpi_profilerights';
+      $tab[34]['field']          = 'right';
       $tab[34]['name']           = __('Knowledge base');
       $tab[34]['datatype']       = 'right';
+      $tab[34]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'knowbase'");
 
-      $tab[35]['table']          = $this->getTable();
-      $tab[35]['field']          = 'faq';
+      $tab[35]['table']          = 'glpi_profilerights';
+      $tab[35]['field']          = 'right';
       $tab[35]['name']           = __('FAQ');
       $tab[35]['datatype']       = 'right';
+      $tab[35]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'faq'");
 
-      $tab[36]['table']          = $this->getTable();
-      $tab[36]['field']          = 'reservation_helpdesk';
+      $tab[36]['table']          = 'glpi_profilerights';
+      $tab[36]['field']          = 'right';
       $tab[36]['name']           = _n('Reservation', 'Reservations', 2);
       $tab[36]['datatype']       = 'bool';
+      $tab[36]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'reservation_helpdesk'");
 
-      $tab[37]['table']          = $this->getTable();
-      $tab[37]['field']          = 'reservation_central';
+      $tab[37]['table']          = 'glpi_profilerights';
+      $tab[37]['field']          = 'right';
       $tab[37]['name']           = __('Administration of reservations');
       $tab[37]['datatype']       = 'bool';
+      $tab[37]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'reservation_central'");
 
-      $tab[38]['table']          = $this->getTable();
-      $tab[38]['field']          = 'reports';
+      $tab[38]['table']          = 'glpi_profilerights';
+      $tab[38]['field']          = 'right';
       $tab[38]['name']           = _n('Report', 'Reports', 2);
       $tab[38]['datatype']       = 'right';
       $tab[38]['nowrite']        = true;
+      $tab[38]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'reports'");
 
       $tab['config']             = __('Setup');
 
-      $tab[42]['table']          = $this->getTable();
-      $tab[42]['field']          = 'dropdown';
+      $tab[42]['table']          = 'glpi_profilerights';
+      $tab[42]['field']          = 'right';
       $tab[42]['name']           = _n('Dropdown', 'Dropdowns', 2);
       $tab[42]['datatype']       = 'right';
+      $tab[42]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'dropdown'");
 
-      $tab[43]['table']          = $this->getTable();
-      $tab[43]['field']          = 'entity_dropdown';
+      $tab[43]['table']          = 'glpi_profilerights';
+      $tab[43]['field']          = 'right';
       $tab[43]['name']           = __('Entity dropdowns');
       $tab[43]['datatype']       = 'right';
+      $tab[43]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'entity_dropdown'");
 
-      $tab[44]['table']          = $this->getTable();
-      $tab[44]['field']          = 'device';
+      $tab[44]['table']          = 'glpi_profilerights';
+      $tab[44]['field']          = 'right';
       $tab[44]['name']           = _n('Component', 'Components', 2);
       $tab[44]['datatype']       = 'right';
       $tab[44]['noread']         = true;
+      $tab[44]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'device'");
 
-      $tab[106]['table']         = $this->getTable();
-      $tab[106]['field']         = 'notification';
+      $tab[106]['table']         = 'glpi_profilerights';
+      $tab[106]['field']         = 'right';
       $tab[106]['name']          = _n('Notification', 'Notifications',2);
       $tab[106]['datatype']      = 'right';
+      $tab[106]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'notification'");
 
-      $tab[45]['table']          = $this->getTable();
-      $tab[45]['field']          = 'typedoc';
+      $tab[45]['table']          = 'glpi_profilerights';
+      $tab[45]['field']          = 'right';
       $tab[45]['name']           = __('Document type');
       $tab[45]['datatype']       = 'right';
+      $tab[45]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'typedoc'");
 
-      $tab[46]['table']          = $this->getTable();
-      $tab[46]['field']          = 'link';
+      $tab[46]['table']          = 'glpi_profilerights';
+      $tab[46]['field']          = 'right';
       $tab[46]['name']           = _n('External link', 'External links',2);
       $tab[46]['datatype']       = 'right';
+      $tab[46]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'link'");
 
-      $tab[47]['table']          = $this->getTable();
-      $tab[47]['field']          = 'config';
+      $tab[47]['table']          = 'glpi_profilerights';
+      $tab[47]['field']          = 'right';
       $tab[47]['name']           = __('General setup');
       $tab[47]['datatype']       = 'right';
       $tab[47]['noread']         = true;
+      $tab[47]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'config'");
 
-      $tab[52]['table']          = $this->getTable();
-      $tab[52]['field']          = 'search_config';
+      $tab[52]['table']          = 'glpi_profilerights';
+      $tab[52]['field']          = 'right';
       $tab[52]['name']           = __('Search result user display');
       $tab[52]['datatype']       = 'right';
       $tab[52]['noread']         = true;
+      $tab[52]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'search_config'");
 
-      $tab[53]['table']          = $this->getTable();
-      $tab[53]['field']          = 'search_config_global';
+      $tab[53]['table']          = 'glpi_profilerights';
+      $tab[53]['field']          = 'right';
       $tab[53]['name']           = __('Search result default display');
       $tab[53]['datatype']       = 'right';
       $tab[53]['noread']         = true;
+      $tab[53]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'search_config_global'");
 
-      $tab[107]['table']         = $this->getTable();
-      $tab[107]['field']         = 'calendar';
+      $tab[107]['table']         = 'glpi_profilerights';
+      $tab[107]['field']         = 'right';
       $tab[107]['name']          = _n('Calendar', 'Calendars', 2);
       $tab[107]['datatype']      = 'right';
+      $tab[107]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'calendar'");
 
       $tab['admin']              = __('Administration');
 
-      $tab[48]['table']          = $this->getTable();
-      $tab[48]['field']          = 'rule_ticket';
+      $tab[48]['table']          = 'glpi_profilerights';
+      $tab[48]['field']          = 'right';
       $tab[48]['name']           = __('Business rules for tickets');
       $tab[48]['datatype']       = 'right';
       $tab[48]['nowrite']        = true;
+      $tab[48]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'rule_ticket'");
 
-      $tab[105]['table']         = $this->getTable();
-      $tab[105]['field']         = 'rule_mailcollector';
+      $tab[105]['table']         = 'glpi_profilerights';
+      $tab[105]['field']         = 'right';
       $tab[105]['name']          = __('Rules for assigning a ticket created through a mails receiver');
       $tab[105]['datatype']      = 'right';
+      $tab[105]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'rule_mailcollector'");
 
-      $tab[49]['table']          = $this->getTable();
-      $tab[49]['field']          = 'rule_import';
+      $tab[49]['table']          = 'glpi_profilerights';
+      $tab[49]['field']          = 'right';
       $tab[49]['name']           = __('Rules for assigning a computer to an entity');
       $tab[49]['datatype']       = 'right';
+      $tab[49]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'rule_import'");
 
-      $tab[50]['table']          = $this->getTable();
-      $tab[50]['field']          = 'rule_ldap';
+      $tab[50]['table']          = 'glpi_profilerights';
+      $tab[50]['field']          = 'right';
       $tab[50]['name']           = __('Authorizations assignment rules');
       $tab[50]['datatype']       = 'right';
+      $tab[50]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'rule_ldap'");
 
-      $tab[51]['table']          = $this->getTable();
-      $tab[51]['field']          = 'rule_softwarecategories';
+      $tab[51]['table']          = 'glpi_profilerights';
+      $tab[51]['field']          = 'right';
       $tab[51]['name']           = __('Rules for assigning a category to a software');
       $tab[51]['datatype']       = 'right';
+      $tab[51]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'rule_softwarecategories'");
 
-      $tab[90]['table']          = $this->getTable();
-      $tab[90]['field']          = 'rule_dictionnary_software';
+      $tab[90]['table']          = 'glpi_profilerights';
+      $tab[90]['field']          = 'right';
       $tab[90]['name']           = __('Software dictionary');
       $tab[90]['datatype']       = 'right';
+      $tab[90]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'rule_dictionnary_software'");
 
-      $tab[91]['table']          = $this->getTable();
-      $tab[91]['field']          = 'rule_dictionnary_dropdown';
+      $tab[91]['table']          = 'glpi_profilerights';
+      $tab[91]['field']          = 'right';
       $tab[91]['name']           =__('Dropdowns dictionary');
       $tab[91]['datatype']       = 'right';
+      $tab[91]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'rule_dictionnary_dropdown'");
 
-      $tab[93]['table']          = $this->getTable();
-      $tab[93]['field']          = 'entity_rule_ticket';
+      $tab[93]['table']          = 'glpi_profilerights';
+      $tab[93]['field']          = 'right';
       $tab[93]['name']           = __('Business rules for tickets (entity)');
       $tab[93]['datatype']       = 'right';
+      $tab[93]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'entity_rule_ticket'");
 
-      $tab[54]['table']          = $this->getTable();
-      $tab[54]['field']          = 'check_update';
+      $tab[54]['table']          = 'glpi_profilerights';
+      $tab[54]['field']          = 'right';
       $tab[54]['name']           = __('Check for upgrade');
       $tab[54]['datatype']       = 'right';
       $tab[54]['nowrite']        = true;
+      $tab[54]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'check_update'");
 
-      $tab[55]['table']          = $this->getTable();
-      $tab[55]['field']          = 'profile';
+      $tab[55]['table']          = 'glpi_profilerights';
+      $tab[55]['field']          = 'right';
       $tab[55]['name']           = self::getTypeName(2);
       $tab[55]['datatype']       = 'right';
+      $tab[55]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'profile'");
 
-      $tab[56]['table']          = $this->getTable();
-      $tab[56]['field']          = 'user';
+      $tab[56]['table']          = 'glpi_profilerights';
+      $tab[56]['field']          = 'right';
       $tab[56]['name']           = _n('User', 'Users', 2);
       $tab[56]['datatype']       = 'right';
+      $tab[56]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'user'");
 
-      $tab[57]['table']          = $this->getTable();
-      $tab[57]['field']          = 'user_authtype';
+      $tab[57]['table']          = 'glpi_profilerights';
+      $tab[57]['field']          = 'right';
       $tab[57]['name']           = __('Method for user authentication and synchronization');
       $tab[57]['datatype']       = 'right';
+      $tab[57]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'user_authtype'");
 
-      $tab[104]['table']         = $this->getTable();
-      $tab[104]['field']         = 'import_externalauth_users';
+      $tab[104]['table']         = 'glpi_profilerights';
+      $tab[104]['field']         = 'right';
       $tab[104]['name']          = __('Add users from an external source');
       $tab[104]['datatype']      = 'right';
       $tab[104]['noread']        = true;
+      $tab[104]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'import_externalauth_users'");
 
-      $tab[58]['table']          = $this->getTable();
-      $tab[58]['field']          = 'group';
+      $tab[58]['table']          = 'glpi_profilerights';
+      $tab[58]['field']          = 'right';
       $tab[58]['name']           = _n('Group', 'Groups', 2);
       $tab[58]['datatype']       = 'right';
+      $tab[58]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'group'");
 
-      $tab[59]['table']          = $this->getTable();
-      $tab[59]['field']          = 'entity';
+      $tab[59]['table']          = 'glpi_profilerights';
+      $tab[59]['field']          = 'right';
       $tab[59]['name']           = _n('Entity', 'Entities', 2);
       $tab[59]['datatype']       = 'right';
+      $tab[59]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'entity'");
 
-      $tab[60]['table']          = $this->getTable();
-      $tab[60]['field']          = 'transfer';
+      $tab[60]['table']          = 'glpi_profilerights';
+      $tab[60]['field']          = 'right';
       $tab[60]['name']           = __('Transfer');
       $tab[60]['datatype']       = 'right';
+      $tab[60]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'transfer'");
 
-      $tab[61]['table']          = $this->getTable();
-      $tab[61]['field']          = 'logs';
+      $tab[61]['table']          = 'glpi_profilerights';
+      $tab[61]['field']          = 'right';
       $tab[61]['name']           = _n('Log', 'Logs', 2);
       $tab[61]['datatype']       = 'right';
       $tab[61]['nowrite']        = true;
+      $tab[61]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'logs'");
 
-      $tab[62]['table']          = $this->getTable();
-      $tab[62]['field']          = 'backup';
+      $tab[62]['table']          = 'glpi_profilerights';
+      $tab[62]['field']          = 'right';
       $tab[62]['name']           = __('Maintenance');
       $tab[62]['datatype']       = 'right';
       $tab[62]['noread']         = true;
+      $tab[62]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'backup'");
 
       $tab['ticket']             = __('Assistance');
 
-      $tab[102]['table']         = $this->getTable();
-      $tab[102]['field']         = 'create_ticket';
+      $tab[102]['table']         = 'glpi_profilerights';
+      $tab[102]['field']         = 'right';
       $tab[102]['name']          = __('Create a ticket');
       $tab[102]['datatype']      = 'bool';
+      $tab[102]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'create_ticket'");
 
       $tab[108]['table']         = 'glpi_tickettemplates';
       $tab[108]['field']         = 'name';
@@ -1743,110 +1843,152 @@ class Profile extends CommonDBTM {
       $tab[108]['datatype']      = 'dropdown';
       $tab[108]['condition']     = '`entities_id` = 0 AND `is_recursive` = 1';
 
-      $tab[103]['table']         = $this->getTable();
-      $tab[103]['field']         = 'tickettemplate';
+      $tab[103]['table']         = 'glpi_profilerights';
+      $tab[103]['field']         = 'right';
       $tab[103]['name']          = _n('Ticket template', 'Ticket templates', 2);
       $tab[103]['datatype']      = 'right';
+      $tab[103]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'tickettemplate'");
 
-      $tab[65]['table']          = $this->getTable();
-      $tab[65]['field']          = 'delete_ticket';
+      $tab[65]['table']          = 'glpi_profilerights';
+      $tab[65]['field']          = 'right';
       $tab[65]['name']           = __("Ticket's deletion");
       $tab[65]['datatype']       = 'bool';
+      $tab[65]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'delete_ticket'");
 
-      $tab[66]['table']          = $this->getTable();
-      $tab[66]['field']          = 'add_followups';
+      $tab[66]['table']          = 'glpi_profilerights';
+      $tab[66]['field']          = 'right';
       $tab[66]['name']           = __('Add a followup to tickets (requester)');
       $tab[66]['datatype']       = 'bool';
+      $tab[66]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'add_followups'");
 
-      $tab[67]['table']          = $this->getTable();
-      $tab[67]['field']          = 'global_add_followups';
+      $tab[67]['table']          = 'glpi_profilerights';
+      $tab[67]['field']          = 'right';
       $tab[67]['name']           = __('Add a followup to all tickets');
       $tab[67]['datatype']       = 'bool';
+      $tab[67]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'global_add_followups'");
 
-      $tab[68]['table']          = $this->getTable();
-      $tab[68]['field']          = 'update_ticket';
+      $tab[68]['table']          = 'glpi_profilerights';
+      $tab[68]['field']          = 'right';
       $tab[68]['name']           = __('Update a ticket');
       $tab[68]['datatype']       = 'bool';
+      $tab[68]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'update_ticket'");
 
-      $tab[69]['table']          = $this->getTable();
-      $tab[69]['field']          = 'own_ticket';
+      $tab[69]['table']          = 'glpi_profilerights';
+      $tab[69]['field']          = 'right';
       $tab[69]['name']           = __('To be in charge of a ticket');
       $tab[69]['datatype']       = 'bool';
+      $tab[69]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'own_ticket'");
 
-      $tab[70]['table']          = $this->getTable();
-      $tab[70]['field']          = 'steal_ticket';
+      $tab[70]['table']          = 'glpi_profilerights';
+      $tab[70]['field']          = 'right';
       $tab[70]['name']           = __('Steal a ticket');
       $tab[70]['datatype']       = 'bool';
+      $tab[70]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'steal_ticket'");
 
-      $tab[71]['table']          = $this->getTable();
-      $tab[71]['field']          = 'assign_ticket';
+      $tab[71]['table']          = 'glpi_profilerights';
+      $tab[71]['field']          = 'right';
       $tab[71]['name']           = __('Assign a ticket');
       $tab[71]['datatype']       = 'bool';
+      $tab[71]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'assign_ticket'");
 
-      $tab[72]['table']          = $this->getTable();
-      $tab[72]['field']          = 'show_all_ticket';
+      $tab[72]['table']          = 'glpi_profilerights';
+      $tab[72]['field']          = 'right';
       $tab[72]['name']           = __('See all tickets');
       $tab[72]['datatype']       = 'bool';
+      $tab[72]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_all_ticket'");
 
-      $tab[73]['table']          = $this->getTable();
-      $tab[73]['field']          = 'show_assign_ticket';
+      $tab[73]['table']          = 'glpi_profilerights';
+      $tab[73]['field']          = 'right';
       $tab[73]['name']           = __('See assigned tickets (personnal + group associated)');
       $tab[73]['datatype']       = 'bool';
+      $tab[73]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_assign_ticket'");
 
-      $tab[74]['table']          = $this->getTable();
-      $tab[74]['field']          = 'show_full_ticket';
+      $tab[74]['table']          = 'glpi_profilerights';
+      $tab[74]['field']          = 'right';
       $tab[74]['name']           = __('See all followups and tasks (public and private)');
       $tab[74]['datatype']       = 'bool';
+      $tab[74]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_full_ticket'");
 
-      $tab[75]['table']          = $this->getTable();
-      $tab[75]['field']          = 'observe_ticket';
+      $tab[75]['table']          = 'glpi_profilerights';
+      $tab[75]['field']          = 'right';
       $tab[75]['name']           = __('See public followups and tasks');
       $tab[75]['datatype']       = 'bool';
+      $tab[75]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'observe_ticket'");
 
-      $tab[76]['table']          = $this->getTable();
-      $tab[76]['field']          = 'update_followups';
+      $tab[76]['table']          = 'glpi_profilerights';
+      $tab[76]['field']          = 'right';
       $tab[76]['name']           = __('Update all followups');
       $tab[76]['datatype']       = 'bool';
+      $tab[76]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'update_followups'");
 
-      $tab[77]['table']          = $this->getTable();
-      $tab[77]['field']          = 'show_planning';
+      $tab[77]['table']          = 'glpi_profilerights';
+      $tab[77]['field']          = 'right';
       $tab[77]['name']           = __('See personnal planning');
       $tab[77]['datatype']       = 'bool';
+      $tab[77]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_planning'");
 
-      $tab[78]['table']          = $this->getTable();
-      $tab[78]['field']          = 'show_group_planning';
+      $tab[78]['table']          = 'glpi_profilerights';
+      $tab[78]['field']          = 'right';
       $tab[78]['name']           = __('See schedule of people in my groups');
       $tab[78]['datatype']       = 'bool';
-
-      $tab[79]['table']          = $this->getTable();
-      $tab[79]['field']          = 'show_all_planning';
+      $tab[78]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_group_planning'");
+                                        
+      $tab[79]['table']          = 'glpi_profilerights';
+      $tab[79]['field']          = 'right';
       $tab[79]['name']           = __('See all plannings');
       $tab[79]['datatype']       = 'bool';
+      $tab[79]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_all_planning'");
 
-      $tab[80]['table']          = $this->getTable();
-      $tab[80]['field']          = 'update_own_followups';
+      $tab[80]['table']          = 'glpi_profilerights';
+      $tab[80]['field']          = 'right';
       $tab[80]['name']           = __('Update followups (author)');
       $tab[80]['datatype']       = 'bool';
+      $tab[80]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'update_own_followups'");
 
-      $tab[81]['table']          = $this->getTable();
-      $tab[81]['field']          = 'delete_followups';
+      $tab[81]['table']          = 'glpi_profilerights';
+      $tab[81]['field']          = 'right';
       $tab[81]['name']           = __('Delete all followups');
       $tab[81]['datatype']       = 'bool';
+      $tab[81]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'delete_followups'");
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'delete_validations';
+      $tab[121]['table']          ='glpi_profilerights';
+      $tab[121]['field']          = 'right';
       $tab[121]['name']           = __('Delete all validations');
       $tab[121]['datatype']       = 'bool';
+      $tab[121]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'delete_validations'");
 
-      $tab[85]['table']          = $this->getTable();
-      $tab[85]['field']          = 'statistic';
+      $tab[85]['table']          = 'glpi_profilerights';
+      $tab[85]['field']          = 'right';
       $tab[85]['name']           = __('Statistics');
       $tab[85]['datatype']       = 'bool';
+      $tab[85]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'statistic'");
 
-      $tab[119]['table']         = $this->getTable();
-      $tab[119]['field']         = 'ticketcost';
+      $tab[119]['table']         = 'glpi_profilerights';
+      $tab[119]['field']         = 'right';
       $tab[119]['name']          = _n('Ticket cost', 'Ticket costs', 2);
       $tab[119]['datatype']      = 'right';
+      $tab[119]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'ticketcost'");
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'helpdesk_hardware';
@@ -1860,55 +2002,75 @@ class Profile extends CommonDBTM {
       $tab[87]['massiveaction']  = false;
       $tab[87]['datatype']       = 'specific';
 
-      $tab[88]['table']          = $this->getTable();
-      $tab[88]['field']          = 'show_group_ticket';
+      $tab[88]['table']          = 'glpi_profilerights';
+      $tab[88]['field']          = 'right';
       $tab[88]['name']           = __('See tickets created by my groups');
       $tab[88]['datatype']       = 'bool';
+      $tab[88]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_group_ticket'");
 
-      $tab[89]['table']          = $this->getTable();
-      $tab[89]['field']          = 'show_group_hardware';
+      $tab[89]['table']          = 'glpi_profilerights';
+      $tab[89]['field']          = 'right';
       $tab[89]['name']           = __('See hardware of my groups');
       $tab[89]['datatype']       = 'bool';
+      $tab[89]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_group_hardware'");
 
-      $tab[94]['table']          = $this->getTable();
-      $tab[94]['field']          = 'group_add_followups';
+      $tab[94]['table']          = 'glpi_profilerights';
+      $tab[94]['field']          = 'right';
       $tab[94]['name']           = __('Add a followup to tickets of associated groups');
       $tab[94]['datatype']       = 'bool';
+      $tab[94]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'group_add_followups'");
 
-      $tab[95]['table']          = $this->getTable();
-      $tab[95]['field']          = 'global_add_tasks';
+      $tab[95]['table']          = 'glpi_profilerights';
+      $tab[95]['field']          = 'right';
       $tab[95]['name']           = __('Add a task to all tickets');
       $tab[95]['datatype']       = 'bool';
+      $tab[95]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'global_add_tasks'");
 
-      $tab[96]['table']          = $this->getTable();
-      $tab[96]['field']          = 'update_priority';
+      $tab[96]['table']          = 'glpi_profilerights';
+      $tab[96]['field']          = 'right';
       $tab[96]['name']           = __('Change the priority');
       $tab[96]['datatype']       = 'bool';
+      $tab[96]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'update_priority'");
 
-      $tab[97]['table']          = $this->getTable();
-      $tab[97]['field']          = 'update_tasks';
+      $tab[97]['table']          = 'glpi_profilerights';
+      $tab[97]['field']          = 'right';
       $tab[97]['name']           = __('Edit all tasks');
       $tab[97]['datatype']       = 'bool';
+      $tab[97]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'update_tasks'");
 
-      $tab[98]['table']          = $this->getTable();
-      $tab[98]['field']          = 'validate_request';
+      $tab[98]['table']          = 'glpi_profilerights';
+      $tab[98]['field']          = 'right';
       $tab[98]['name']           = __('Validate a request');
       $tab[98]['datatype']       = 'bool';
+      $tab[98]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'validate_request'");
 
-      $tab[123]['table']          = $this->getTable();
-      $tab[123]['field']          = 'validate_incident';
+      $tab[123]['table']          = 'glpi_profilerights';
+      $tab[123]['field']          = 'right';
       $tab[123]['name']           = __('Validate an incident');
       $tab[123]['datatype']       = 'bool';
+      $tab[123]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'validate_incident'");
 
-      $tab[99]['table']          = $this->getTable();
-      $tab[99]['field']          = 'create_request_validation';
+      $tab[99]['table']          = 'glpi_profilerights';
+      $tab[99]['field']          = 'right';
       $tab[99]['name']           = __('Create a validation request for a request');
       $tab[99]['datatype']       = 'bool';
+      $tab[99]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'create_request_validation'");
 
-      $tab[122]['table']          = $this->getTable();
-      $tab[122]['field']          = 'create_incident_validation';
+      $tab[122]['table']          = 'glpi_profilerights';
+      $tab[122]['field']          = 'right';
       $tab[122]['name']           = __('Create a validation request for an incident');
       $tab[122]['datatype']       = 'bool';
+      $tab[122]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'create_incident_validation'");
 
       $tab[100]['table']         = $this->getTable();
       $tab[100]['field']         = 'ticket_status';
@@ -1924,20 +2086,26 @@ class Profile extends CommonDBTM {
       $tab[110]['datatype']      = 'text';
       $tab[110]['massiveaction'] = false;
 
-      $tab[112]['table']         = $this->getTable();
-      $tab[112]['field']         = 'show_my_problem';
+      $tab[112]['table']         = 'glpi_profilerights';
+      $tab[112]['field']         = 'right';
       $tab[112]['name']          = __('See problems (author)');
       $tab[112]['datatype']      = 'bool';
+      $tab[112]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_my_problem'");
 
-      $tab[113]['table']         = $this->getTable();
-      $tab[113]['field']         = 'show_all_problem';
+      $tab[113]['table']         = 'glpi_profilerights';
+      $tab[113]['field']         = 'right';
       $tab[113]['name']          = __('See all problems');
       $tab[113]['datatype']      = 'bool';
+      $tab[113]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_all_problem'");
 
-      $tab[114]['table']         = $this->getTable();
-      $tab[114]['field']         = 'edit_all_problem';
+      $tab[114]['table']         = 'glpi_profilerights';
+      $tab[114]['field']         = 'right';
       $tab[114]['name']          = __('Update all problems');
       $tab[114]['datatype']      = 'bool';
+      $tab[114]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'edit_all_problem'");
 
       $tab[111]['table']         = $this->getTable();
       $tab[111]['field']         = 'change_status';
@@ -1946,42 +2114,56 @@ class Profile extends CommonDBTM {
       $tab[111]['datatype']      = 'text';
       $tab[111]['massiveaction'] = false;
 
-      $tab[115]['table']         = $this->getTable();
-      $tab[115]['field']         = 'show_my_change';
+      $tab[115]['table']         = 'glpi_profilerights';
+      $tab[115]['field']         = 'right';
       $tab[115]['name']          =__('See changes (author)');
       $tab[115]['datatype']      = 'bool';
+      $tab[115]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_my_change'");
 
-      $tab[116]['table']         = $this->getTable();
-      $tab[116]['field']         = 'show_all_change';
+      $tab[116]['table']         = 'glpi_profilerights';
+      $tab[116]['field']         = 'right';
       $tab[116]['name']          = __('See all changes');
       $tab[116]['datatype']      = 'bool';
+      $tab[116]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'show_all_change'");
 
-      $tab[117]['table']         = $this->getTable();
-      $tab[117]['field']         = 'edit_all_change';
+      $tab[117]['table']         = 'glpi_profilerights';
+      $tab[117]['field']         = 'right';
       $tab[117]['name']          = __('Update all changes');
       $tab[117]['datatype']      = 'bool';
+      $tab[117]['joinparams']    = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'edit_all_change'");
 
       $tab['other']              = __('Other');
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'password_update';
+      $tab[4]['table']           = 'glpi_profilerights';
+      $tab[4]['field']           = 'right';
       $tab[4]['name']            = __('Update password');
       $tab[4]['datatype']        = 'bool';
+      $tab[4]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'password_update'");
 
-      $tab[63]['table']          = $this->getTable();
-      $tab[63]['field']          = 'reminder_public';
+      $tab[63]['table']          = 'glpi_profilerights';
+      $tab[63]['field']          = 'right';
       $tab[63]['name']           = _n('Public reminder', 'Public reminders', 2);
       $tab[63]['datatype']       = 'right';
+      $tab[63]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'reminder_public'");
 
-      $tab[64]['table']          = $this->getTable();
-      $tab[64]['field']          = 'bookmark_public';
+      $tab[64]['table']          = 'glpi_profilerights';
+      $tab[64]['field']          = 'right';
       $tab[64]['name']           = _n('Public bookmark', 'Public bookmarks', 2);
       $tab[64]['datatype']       = 'right';
+      $tab[64]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'bookmark_public'");
 
-      $tab[120]['table']          = $this->getTable();
-      $tab[120]['field']          = 'rssfeed_public';
+      $tab[120]['table']          = 'glpi_profilerights';
+      $tab[120]['field']          = 'right';
       $tab[120]['name']           = _n('Public RSS feed', 'Public RSS feeds', 2);
       $tab[120]['datatype']       = 'right';
+      $tab[120]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'rssfeed_public'");
 
       return $tab;
    }
