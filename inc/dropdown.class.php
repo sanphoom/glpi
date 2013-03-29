@@ -86,7 +86,7 @@ class Dropdown {
       $params['entity']      = -1;
       $params['entity_sons'] = false;
       $params['toupdate']    = '';
-      $params['width']       = '150px';
+      $params['width']       = '90%';
       $params['used']        = array();
       $params['toadd']       = array();
       $params['on_change']   = '';
@@ -202,16 +202,14 @@ class Dropdown {
 // 
 //       $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default,
 //                                 $params['rand'], false);
-      $field_id = "dropdown_".$params['name'].$params['rand'];
-      $output .= "<input type='hidden' id='$field_id' value=\"".$params['value']."\"";
-      if (!empty($param["width"])) {
-         $output .= " style='width:".$param["width"]."'";
-      }
-      $output .= "/>";
+      $field_id = Html::cleanId("dropdown_".$params['name'].$params['rand']);
+      $output .= "<input type='hidden' id='$field_id' name='".$params['name']."' value='".$params['value']."'>";
       
-      $output .= "<script type='text/javascript' >\n";
-      $output .= "$('#$field_id').select2({
-                        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+      $output .= "<script type='text/javascript'>\n";
+      $output .= " $('#$field_id').select2({
+                        width: '".$params['width']."',
+                        minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
+                        ajax: { 
                            url: '".$CFG_GLPI['root_doc']."/ajax/getDropdownValue.php',
                            dataType: 'json',
                            data: function (term, page) {
@@ -224,7 +222,7 @@ class Dropdown {
                                  used : ".json_encode($params['used']).",
                                  toadd : ".json_encode($params['toadd']).",
                                  entity_restrict : ".json_encode($params['entity']).",
-                                 searchText: term, // search term
+                                 searchText: term, 
                                  page_limit: 10
                               };
                            },
@@ -236,8 +234,7 @@ class Dropdown {
                            var data = {id: ".json_encode($params['value']).",
                                       text: ".json_encode($name)."};
                            callback(data);
-                        },
- 
+                        }
                      });";
       $output .= "</script>\n";
       
