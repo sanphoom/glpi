@@ -778,18 +778,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
          echo "<th>".__('Automatic inventory')."</th>";
-         if ($crit == -1) {
-            echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
-         }
+         echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
          echo "</tr>\n";
 
          for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
 
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
-               $licids = self::softsByCategory($data, $computers_id, $crit, $withtemplate,
+               $licids = self::softsByCategory($data, $computers_id, $withtemplate,
                                                $canedit, true);
             } else {
-               $licids = self::softsByCategory($data, $computers_id, $crit, $withtemplate,
+               $licids = self::softsByCategory($data, $computers_id, $withtemplate,
                                                $canedit, false);
             }
             Session::addToNavigateListItems('Software', $data["softwares_id"]);
@@ -890,14 +888,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $data                     data used to display
     * @param $computers_id             ID of the computer
-    * @param $crit           integer   if category selected
     * @param $withtemplate             template case of the view process
     * @param $canedit         boolean  user can edit software ?
     * @param $display         boolean  display and calculte if true or juste calculate
     *
     * @return array of found license id
    **/
-   private static function softsByCategory($data, $computers_id, $crit, $withtemplate, $canedit,
+   private static function softsByCategory($data, $computers_id, $withtemplate, $canedit,
                                            $display) {
       global $DB, $CFG_GLPI;
 
@@ -975,13 +972,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "<td class='center'>";
             echo Dropdown::getYesNo($data['is_dynamic']);
             echo "</td>";
-         }
-         if ($crit == -1) {
+         } else {
             echo "<td>&nbsp;</td>";
-            echo "<td class='center'>". Dropdown::getDropdownName("glpi_softwarecategories",
-                                                                  $data['softwarecategories_id']);
-            echo "</td>";
          }
+         echo "<td class='center'>". Dropdown::getDropdownName("glpi_softwarecategories",
+                                                                  $data['softwarecategories_id']);
+         echo "</td>";
 
          echo "</tr>\n";
       }
