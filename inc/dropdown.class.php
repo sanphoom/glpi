@@ -234,6 +234,18 @@ class Dropdown {
                            var data = {id: ".json_encode($params['value']).",
                                       text: ".json_encode($name)."};
                            callback(data);
+                        },
+                        formatResult: function (item) {
+                           if (item.level) {
+                              var a='';
+                              var i=item.level;
+                              while (i>0) {
+                                 a = a+'&nbsp;&nbsp;&nbsp;';
+                                 i=i-1;
+                              }
+                              return a+item.text;
+                           }
+                           return item.text;
                         }
                      });";
       $output .= "</script>\n";

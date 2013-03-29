@@ -270,7 +270,7 @@ if ($item instanceof CommonTreeDropdown) {
                $raquo = "";
             }
 
-//             if ($_SESSION['glpiuse_flat_dropdowntree']) {
+            if ($_SESSION['glpiuse_flat_dropdowntree']) {
                $outputval = $data['completename'];
                if ($level > 1) {
                   $class = "";
@@ -278,68 +278,72 @@ if ($item instanceof CommonTreeDropdown) {
                   $level = 0;
                }
 
-//             } else { // Need to check if parent is the good one
-//                if ($level > 1) {
-//                   // Last parent is not the good one need to display arbo
-//                   if (!isset($last_level_displayed[$level-1])
-//                       || ($last_level_displayed[$level-1] != $data[$item->getForeignKeyField()])) {
-// 
-//                      $work_level    = $level-1;
-//                      $work_parentID = $data[$item->getForeignKeyField()];
-//                      $to_display    = '';
-// 
-//                      do {
-//                         // Get parent
-//                         if ($item->getFromDB($work_parentID)) {
-//                            $title = $item->fields['completename'];
-// 
-//                            if (isset($item->fields["comment"])) {
-//                               $title = sprintf(__('%1$s - %2$s'), $title, $item->fields["comment"]);
-//                            }
-//                            $output2 = $item->getName();
-//                            if (Toolbox::strlen($output2)>$_GET["limit"]) {
-//                               $output2 = Toolbox::substr($output2, 0 ,$_GET["limit"])."&hellip;";
-//                            }
-// 
-//                            $class2 = " class='tree' ";
-//                            $raquo2 = "&raquo;";
-// 
-//                            if ($work_level==1) {
-//                               $class2 = " class='treeroot'";
-//                               $raquo2 = "";
-//                            }
-// 
+            } else { // Need to check if parent is the good one
+               if ($level > 1) {
+                  // Last parent is not the good one need to display arbo
+                  if (!isset($last_level_displayed[$level-1])
+                      || ($last_level_displayed[$level-1] != $data[$item->getForeignKeyField()])) {
+
+                     $work_level    = $level-1;
+                     $work_parentID = $data[$item->getForeignKeyField()];
+                     $to_display    = '';
+
+                     do {
+                        // Get parent
+                        if ($item->getFromDB($work_parentID)) {
+                           $title = $item->fields['completename'];
+
+                           if (isset($item->fields["comment"])) {
+                              $title = sprintf(__('%1$s - %2$s'), $title, $item->fields["comment"]);
+                           }
+                           $output2 = $item->getName();
+                           if (Toolbox::strlen($output2)>$_GET["limit"]) {
+                              $output2 = Toolbox::substr($output2, 0 ,$_GET["limit"])."&hellip;";
+                           }
+
+                           $class2 = " class='tree' ";
+                           $raquo2 = "&raquo;";
+
+                           if ($work_level==1) {
+                              $class2 = " class='treeroot'";
+                              $raquo2 = "";
+                           }
+
 //                            $to_display = "<option disabled value='$work_parentID' $class2
 //                                            title=\"".Html::cleanInputText($title)."\">".
 //                                          str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
 //                                          $raquo2.$output2."</option>".$to_display;
-// 
-//                            $last_level_displayed[$work_level] = $item->fields['id'];
-//                            $work_level--;
-//                            $work_parentID = $item->fields[$item->getForeignKeyField()];
-// 
-//                         } else { // Error getting item : stop
-//                            $work_level = -1;
-//                         }
-// 
-//                      } while (($work_level >= 1)
-//                               && (!isset($last_level_displayed[$work_level])
-//                                   || ($last_level_displayed[$work_level] != $work_parentID)));
-// 
-//                      echo $to_display;
-//                   }
-//                }
-//                $last_level_displayed[$level] = $data['id'];
-//             }
+                           array_push($datastoadd, array ('id'      => $ID,
+                                                         'text'     => $output2,
+                                                         'level'    => $work_level,
+                                                         'disabled' => true));
 
-//             if (Toolbox::strlen($outputval) > $_GET["limit"]) {
-// 
-//                if ($_SESSION['glpiuse_flat_dropdowntree']) {
-//                   $outputval = "&hellip;".Toolbox::substr($outputval, -$_GET["limit"]);
-//                } else {
-//                   $outputval = Toolbox::substr($outputval, 0, $_GET["limit"])."&hellip;";
-//                }
-//             }
+                           $last_level_displayed[$work_level] = $item->fields['id'];
+                           $work_level--;
+                           $work_parentID = $item->fields[$item->getForeignKeyField()];
+
+                        } else { // Error getting item : stop
+                           $work_level = -1;
+                        }
+
+                     } while (($work_level >= 1)
+                              && (!isset($last_level_displayed[$work_level])
+                                  || ($last_level_displayed[$work_level] != $work_parentID)));
+
+//                      echo $to_display;
+                  }
+               }
+               $last_level_displayed[$level] = $data['id'];
+            }
+
+            if (Toolbox::strlen($outputval) > $_GET["limit"]) {
+
+               if ($_SESSION['glpiuse_flat_dropdowntree']) {
+                  $outputval = "&hellip;".Toolbox::substr($outputval, -$_GET["limit"]);
+               } else {
+                  $outputval = Toolbox::substr($outputval, 0, $_GET["limit"])."&hellip;";
+               }
+            }
 
             if ($_SESSION["glpiis_ids_visible"]
                 || (Toolbox::strlen($outputval) == 0)) {
@@ -351,7 +355,8 @@ if ($item instanceof CommonTreeDropdown) {
                $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
             }
             array_push($datastoadd, array ('id'    => $ID,
-                                           'text'  => $outputval));
+                                           'text'  => $outputval,
+                                           'level' => $level));
             
 //             echo "<option value='$ID' $class title=\"".Html::cleanInputText($title).
 //                  "\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$outputval.
