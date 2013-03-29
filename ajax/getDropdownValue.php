@@ -312,7 +312,7 @@ if ($item instanceof CommonTreeDropdown) {
       }
    } else {
       if (count($datastoadd)) {
-         $datas += $datastoadd;
+         $datas = array_merge($datas, $datastoadd);
       }
    }
 } else { // Not a dropdowntree
@@ -383,7 +383,6 @@ if ($item instanceof CommonTreeDropdown) {
       $query .= " ORDER BY $field
                  $LIMIT";
    }
-
    if ($result = $DB->query($query)) {
 
 /// TODO   
@@ -458,11 +457,11 @@ if ($item instanceof CommonTreeDropdown) {
          if ($multi) {
             if (count($datastoadd)) {
                array_push($datas, array('text'     => Dropdown::getDropdownName("glpi_entities", $prev),
-                                       'children' => $datastoadd));
+                                        'children' => $datastoadd));
             }
          } else {
             if (count($datastoadd)) {
-               $datas += $datastoadd;
+               $datas = array_merge($datas, $datastoadd);
             }
          }
       }
@@ -481,6 +480,6 @@ if ($item instanceof CommonTreeDropdown) {
 // 
 // Ajax::commonDropdownUpdateItem($_GET);
 $ret['results'] = $datas;
-
+Toolbox::logDebug($datas);
 echo json_encode($ret);
 ?>
