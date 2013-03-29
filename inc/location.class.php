@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -88,7 +88,7 @@ class Location extends CommonTreeDropdown {
       $tab[91]['name']          = __('Building number');
       $tab[91]['massiveaction'] = false;
       $tab[91]['datatype']      = 'string';
-      
+
 
       $tab[92]['table']         = 'glpi_locations';
       $tab[92]['field']         = 'room';
@@ -133,6 +133,7 @@ class Location extends CommonTreeDropdown {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Netpoint', $ong, $options);
+      $this->addStandardTab(__CLASS__,$ong, $options);
 
       return $ong;
    }
@@ -142,6 +143,70 @@ class Location extends CommonTreeDropdown {
 
       Rule::cleanForItemAction($this);
       Rule::cleanForItemCriteria($this, 'users_locations');
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               return _n('Item', 'Items', 2);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType() == __CLASS__) {
+         $item->showItems();
+      }
+      return true;
+   }
+
+
+   /**
+    * Print the HTML array of items for a location
+    *
+    * @return Nothing (display)
+    **/
+   function showItems() {
+      global $DB, $CFG_GLPI;
+
+      $locations_id = $this->fields['id'];
+
+      if (!$this->can($locations_id,'r')) {
+         return false;
+      }
+
+      $first = 1;
+      $query = '';
+      foreach ($CFG_GLPI['location_types'] as $type) {
+         $table = getTableForItemType($type);
+
+         $query .= ($first ? "SELECT " : " UNION SELECT  ")."`id`, '$type' AS type
+                  FROM `$table`
+                  WHERE `$table`.`locations_id` = '$locations_id' ".
+                      getEntitiesRestrictRequest(" AND", $table, "entities_id");
+         $first = 0;
+      }
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='2'>";
+      Html::printPagerForm();
+      echo "</th><th colspan='4'>";
+      if ($DB->numrows($result) == 0) {
+         _e('No associated item');
+      } else {
+         echo _n('Associated item', 'Associated items', $DB->numrows($result));
+      }
+      echo "</th></tr>";
+
+      echo "</table></div>";
+
    }
 
 }

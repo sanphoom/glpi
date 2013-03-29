@@ -233,6 +233,11 @@ $CFG_GLPI["linkuser_tech_types"]          = array('Computer', 'Monitor', 'Networ
 $CFG_GLPI["linkgroup_tech_types"]         = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
+$CFG_GLPI["location_types"]               = array('CartridgeItem', 'ConsumableItem', 'Computer',
+                                                  'Location', 'Monitor', 'Netpoint',
+                                                  'NetworkEquipment', 'Peripheral', 'Phone',
+                                                  'Printer', 'Software', 'User');
+
 $CFG_GLPI["ticket_types"]                 = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
