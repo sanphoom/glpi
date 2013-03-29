@@ -669,11 +669,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $canedit      = Session::haveRight("software", "w");
       $entities_id  = $comp->fields["entities_id"];
 
-      $add_dynamic = '';
+      $crit         = Session::getSavedOption(__CLASS__, 'criterion', '');
+      $where        = '';
+      if ($crit > -1) {
+         $where = " AND `glpi_softwares`.`softwarecategories_id` = $crit";
+      }
+
+      $add_dynamic  = '';
       if (Plugin::haveImport()) {
          $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
       }
-      
+
       $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
                        `glpi_softwares`.`name` AS softname,
                        `glpi_computers_softwareversions`.`id`,
@@ -692,6 +698,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'
+                      $where
                 ORDER BY `softwarecategories_id`, `softname`, `version`";
       $result = $DB->query($query);
       $i      = 0;
@@ -729,6 +736,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                      sprintf(__('%1$s = %2$s'),
                                              Computer::getTypeName(1), $comp->getName()));
 
+      // Mini Search engine
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>";
+      echo __('Category')."&nbsp;";
+      SoftwareCategory::dropdown(array('value'      => $crit,
+                                       'toadd'      => array('-1' =>  __('All categories')),
+                                       'emptylabel' => __('Uncategorized software'),
+                                       'on_change'  => 'reloadTab("start=0&criterion="+this.value)'));
+      echo "</td></tr></table>";
+
       $installed = array();
       if ($number = $DB->numrows($result)) {
          if ($canedit) {
@@ -742,11 +760,21 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
          echo "<table class='tab_cadre_fixe'>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox("softcat$cat$rand");
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         echo "<th>".__('Automatic inventory')."</th>";
+         echo "</tr>\n";
+
          while ($data = $DB->fetch_assoc($result)) {
-            if ($data["softwarecategories_id"] != $cat) {
-               self::displayCategoryFooter($cat, $rand, $canedit);
-               $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
-            }
+//            if ($data["softwarecategories_id"] != $cat) {
+//               self::displayCategoryFooter($cat, $rand, $canedit);
+//               $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
+//            }
 
             $licids = self::displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit);
             Session::addToNavigateListItems('Software', $data["softwares_id"]);
@@ -756,13 +784,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $installed[] = $licid;
             }
          }
-         self::displayCategoryFooter($cat, $rand, $canedit);
+//         self::displayCategoryFooter($cat, $rand, $canedit);
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
             Html::showMassiveActions(__CLASS__, $paramsma);
             Html::closeForm();
          }
+      } else {
+         _e('No item found');
       }
       echo "</div>\n";
       if ((empty($withtemplate) || ($withtemplate != 2))
@@ -1001,14 +1031,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       echo "</td>";
-      
+
       echo "</td>";
       if (isset($data['is_dynamic'])) {
          echo "<td class='center'>";
          echo Dropdown::getYesNo($data['is_dynamic']);
          echo "</td>";
-      }  
-      
+      }
+
       echo "</tr>\n";
 
       return $licids;
