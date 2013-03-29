@@ -673,7 +673,7 @@ class Search {
             $numrows    = $DBread->result($result_num,0,0);
          }
       }
-
+      
       // If export_all reset LIMIT condition
       if ($p['export_all']) {
          $LIMIT = "";
@@ -808,6 +808,7 @@ class Search {
              || $p['export_all']) {
             $numrows = $DBread->numrows($result);
          }
+
          // Contruct Pager parameters
          $globallinkto = self::getArrayUrlLink("field", $p['field']).
                          self::getArrayUrlLink("link", $p['link']).
@@ -891,12 +892,13 @@ class Search {
             // Define begin and end var for loop
             // Search case
             $begin_display = $p['start'];
-            $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
+
+            $end_display   = min($numrows-$p['start'], $p['start']+$LIST_LIMIT);
 
             // No search Case
             if ($nosearch) {
                $begin_display = 0;
-               $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
+               $end_display   = min($numrows-$p['start'], $p['start']+$LIST_LIMIT);
             }
 
             // Export All case
