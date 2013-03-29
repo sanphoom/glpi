@@ -86,7 +86,7 @@ class Dropdown {
       $params['entity']      = -1;
       $params['entity_sons'] = false;
       $params['toupdate']    = '';
-      $params['width']    = '';
+      $params['width']       = '150px';
       $params['used']        = array();
       $params['toadd']       = array();
       $params['on_change']   = '';
@@ -116,9 +116,7 @@ class Dropdown {
          $params['value'] = 0;
       }
 
-      if (isset($params['toadd'][$params['value']])) {
-         $name = $params['toadd'][$params['value']];
-      } else if (($params['value'] > 0)
+      if (($params['value'] > 0)
          || (($itemtype == "Entity")
              && ($params['value'] >= 0))) {
          $tmpname = self::getDropdownName($table, $params['value'], 1);
@@ -198,12 +196,51 @@ class Dropdown {
                       'displaywith'         => $params['displaywith'],
                       'display'             => false);
 
-      $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
-                    $params['rand']."'>";
-      $default .= "<option value='".$params['value']."'>$name</option></select>";
-      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default,
-                                $params['rand'], false);
-
+//       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
+//                     $params['rand']."'>";
+//       $default .= "<option value='".$params['value']."'>$name</option></select>";
+// 
+//       $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default,
+//                                 $params['rand'], false);
+      $field_id = "dropdown_".$params['name'].$params['rand'];
+      $output .= "<input type='hidden' id='$field_id' value=\"".$params['value']."\"";
+      if (!empty($param["width"])) {
+         $output .= " style='width:".$param["width"]."'";
+      }
+      $output .= "/>";
+      
+      $output .= "<script type='text/javascript' >\n";
+      $output .= "$('#$field_id').select2({
+                        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                           url: '".$CFG_GLPI['root_doc']."/ajax/getDropdownValue.php',
+                           dataType: 'json',
+                           data: function (term, page) {
+                              return {
+                                 itemtype: '$itemtype',
+                                 display_emptychoice : '".$params['display_emptychoice']."',
+                                 displaywith : ".json_encode($params['displaywith']).",
+                                 emptylabel : ".json_encode($params['emptylabel']).",
+                                 condition : ".json_encode($params['condition']).",
+                                 used : ".json_encode($params['used']).",
+                                 toadd : ".json_encode($params['toadd']).",
+                                 entity_restrict : ".json_encode($params['entity']).",
+                                 searchText: term, // search term
+                                 page_limit: 10
+                              };
+                           },
+                           results: function (data, page) { 
+                              return {results: data.results};
+                           }
+                        },
+                        initSelection: function (element, callback) {
+                           var data = {id: ".json_encode($params['value']).",
+                                      text: ".json_encode($name)."};
+                           callback(data);
+                        },
+ 
+                     });";
+      $output .= "</script>\n";
+      
       // Display comment
       if ($params['comments']) {
          $options_tooltip = array('contentid' => "comment_".$params['name'].$params['rand'],
@@ -1539,7 +1576,7 @@ class Dropdown {
          $output  .= "<select name='$field_name' id='$field_id'";
 
          if (!empty($param["width"])) {
-            $output .= " style='".$param["width"]."'";
+            $output .= " style='width:".$param["width"]."'";
          }
          if (!empty($param["on_change"])) {
             $output .= " onChange='".$param["on_change"]."'";
