@@ -437,7 +437,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . __('BaseDN') . "</td>";
          echo "<td colspan='3'>";
-         echo "<input type='text' name='basedn' size='100' value=\""".$this->fields["basedn"]."\">";
+         echo "<input type='text' name='basedn' size='100' value=\"".$this->fields["basedn"]."\">";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('RootDN (for non anonymous binds)') . "</td>";
