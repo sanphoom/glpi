@@ -86,7 +86,7 @@ class Dropdown {
       $params['entity']      = -1;
       $params['entity_sons'] = false;
       $params['toupdate']    = '';
-      $params['width']       = '90%';
+      $params['width']       = '80%';
       $params['used']        = array();
       $params['toadd']       = array();
       $params['on_change']   = '';
@@ -1599,7 +1599,7 @@ class Dropdown {
          if (!empty($param["width"])) {
             $output .= " style='width:".$param["width"]."'";
          } else {
-            $output .= " style='width:90%'";
+            $output .= " style='width:80%'";
          }
          
          if (!empty($param["on_change"])) {
