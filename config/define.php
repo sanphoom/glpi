@@ -234,7 +234,7 @@ $CFG_GLPI["linkgroup_tech_types"]         = array('Computer', 'Monitor', 'Networ
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
 $CFG_GLPI["location_types"]               = array('CartridgeItem', 'ConsumableItem', 'Computer',
-                                                  'Location', 'Monitor', 'Netpoint',
+                                                  'Monitor', 'Netpoint',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'User');
 

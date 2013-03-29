@@ -192,19 +192,37 @@ class Location extends CommonTreeDropdown {
                       getEntitiesRestrictRequest(" AND", $table, "entities_id");
          $first = 0;
       }
+    //  toolbox::logdebug("requete", $query);
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>";
-      Html::printPagerForm();
-      echo "</th><th colspan='4'>";
-      if ($DB->numrows($result) == 0) {
-         _e('No associated item');
-      } else {
-         echo _n('Associated item', 'Associated items', $DB->numrows($result));
+      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      if ($start >= $number) {
+         $start = 0;
       }
-      echo "</th></tr>";
 
+      if ($number) {
+         echo "<div class='spaced'>";
+         Html::printAjaxPager('',  $start, $number);
+
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".__('Type')."</th>";
+         echo "<th>".__('Entity')."</th>";
+         echo "<th>".__('Name')."</th>";
+         echo "</tr>";
+
+         for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
+            if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
+            $item = getItemForItemtype($data['type']);
+            $item->getFromDB($data['id']);
+            echo "<tr><td class='center top'>".$item->getTypeName()."</td>";
+            echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                 $item->getEntityID());
+            echo "</td><td class='center'>".$item->getLink()."</td></tr>";
+            }
+         }
+      } else {
+         echo "<p class='center b'>".__('No item found')."</p>";
+      }
       echo "</table></div>";
 
    }
