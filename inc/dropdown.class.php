@@ -178,23 +178,23 @@ class Dropdown {
          }
       }
 
-      $param = array('searchText'           => '__VALUE__',
-                      'value'               => $params['value'],
-                      'itemtype'            => $itemtype,
-                      'myname'              => $params['name'],
-                      'limit'               => $limit_length,
-                      'toadd'               => $params['toadd'],
-                      'comment'             => $params['comments'],
-                      'rand'                => $params['rand'],
-                      'entity_restrict'     => $params['entity'],
-                      'update_item'         => $params['toupdate'],
-                      'used'                => $params['used'],
-                      'on_change'           => $params['on_change'],
-                      'condition'           => $params['condition'],
-                      'emptylabel'          => $params['emptylabel'],
-                      'display_emptychoice' => $params['display_emptychoice'],
-                      'displaywith'         => $params['displaywith'],
-                      'display'             => false);
+//       $param = array('searchText'           => '__VALUE__',
+//                       'value'               => $params['value'],
+//                       'itemtype'            => $itemtype,
+//                       'myname'              => $params['name'],
+//                       'limit'               => $limit_length,
+//                       'toadd'               => $params['toadd'],
+//                       'comment'             => $params['comments'],
+//                       'rand'                => $params['rand'],
+//                       'entity_restrict'     => $params['entity'],
+//                       'update_item'         => $params['toupdate'],
+//                       'used'                => $params['used'],
+//                       'on_change'           => $params['on_change'],
+//                       'condition'           => $params['condition'],
+//                       'emptylabel'          => $params['emptylabel'],
+//                       'display_emptychoice' => $params['display_emptychoice'],
+//                       'displaywith'         => $params['displaywith'],
+//                       'display'             => false);
 
 //       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
 //                     $params['rand']."'>";
@@ -257,7 +257,8 @@ class Dropdown {
 
       // Display comment
       if ($params['comments']) {
-         $options_tooltip = array('contentid' => "comment_".$params['name'].$params['rand'],
+         $comment_id = Html::cleanId("comment_".$params['name'].$params['rand']);
+         $options_tooltip = array('contentid' => $comment_id,
                                   'display'   => false);
 
          if ($item->canView()
@@ -294,8 +295,14 @@ class Dropdown {
                $output .= '&nbsp;'.$item->getLinks();
             }
          }
+         $paramscomment = array('value' => '__VALUE__',
+                                 'table' => $table);
 
-      }
+         Ajax::updateItemOnSelectEvent($field_id,
+                                       $comment_id,
+                                       $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment);
+         Ajax::commonDropdownUpdateItem($params);
+     }
       if ($params['display']) {
          echo $output;
          return $params['rand'];
@@ -1593,7 +1600,8 @@ class Dropdown {
             $output .= " style='width:".$param["width"]."'";
          } else {
             $output .= " style='width:90%'";
-         }         
+         }
+         
          if (!empty($param["on_change"])) {
             $output .= " onChange='".$param["on_change"]."'";
          }

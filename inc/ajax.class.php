@@ -468,11 +468,23 @@ class Ajax {
     *                and may have moreparams)
    **/
    static function commonDropdownUpdateItem($options) {
-
+      $field     = '';
+      $fieldname = '';
+      // Old scheme
       if (isset($options["update_item"])
           && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))) {
+         $field = "update_item";
+         $fieldname = 'myname';
+      }
+      // New scheme
+      if (isset($options["toupdate"])
+          && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))) {
+         $field = "toupdate";
+         $fieldname = 'name';
+      }
 
-         $datas = $options["update_item"];
+      if (!empty($field)) {
+         $datas = $options[$field];
          if (is_array($datas) && count($datas)) {
             // Put it in array
             if (isset($datas['to_update'])) {
@@ -493,7 +505,7 @@ class Ajax {
                   }
                }
 
-             self::updateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
+             self::updateItemOnSelectEvent("dropdown_".$options["name"].$options["rand"],
                                            $data['to_update'], $data['url'], $paramsupdate);
             }
          }
