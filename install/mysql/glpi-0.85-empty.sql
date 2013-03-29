@@ -543,6 +543,7 @@ CREATE TABLE `glpi_computermodels` (
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS `glpi_computers`;
+CREATE TABLE `glpi_computers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
