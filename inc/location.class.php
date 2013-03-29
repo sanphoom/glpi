@@ -226,16 +226,25 @@ class Location extends CommonTreeDropdown {
          echo "<tr><th>".__('Type')."</th>";
          echo "<th>".__('Entity')."</th>";
          echo "<th>".__('Name')."</th>";
+         echo "<th>".__('Serial number')."</th>";
+         echo "<th>".__('Inventory number')."</th>";
          echo "</tr>";
 
          $DB->data_seek($result, $start);
          for ($row=0 ; ($data=$DB->fetch_assoc($result)) && ($row<$_SESSION['glpilist_limit']) ; $row++) {
             $item = getItemForItemtype($data['type']);
             $item->getFromDB($data['id']);
+            toolbox::logdebug("item", $item);
             echo "<tr><td class='center top'>".$item->getTypeName()."</td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                  $item->getEntityID());
-            echo "</td><td class='center'>".$item->getLink()."</td></tr>";
+            echo "</td><td class='center'>".$item->getLink()."</td>";
+            echo "<td class='center'>".
+                  (isset($item->fields["serial"])? "".$item->fields["serial"]."" :"-");
+            echo "</td>";
+            echo "<td class='center'>".
+                  (isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-");
+            echo "</td></tr>";
          }
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";
