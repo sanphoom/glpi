@@ -114,7 +114,9 @@ class Dropdown {
          $params['value'] = 0;
       }
 
-      if (($params['value'] > 0)
+      if (isset($params['toadd'][$params['value']])) {
+         $name = $params['toadd'][$params['value']];
+      } else if (($params['value'] > 0)
          || (($itemtype == "Entity")
              && ($params['value'] >= 0))) {
          $tmpname = self::getDropdownName($table, $params['value'], 1);
