@@ -935,6 +935,8 @@ class Html {
       echo "<link rel='stylesheet' type='text/css' href='".
              $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css' media='screen' >\n";
       echo "<link rel='stylesheet' type='text/css' href='".
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css' media='screen' >\n";
+      echo "<link rel='stylesheet' type='text/css' href='".
             $CFG_GLPI["root_doc"]."/css/jquery-glpi.css' media='screen' >\n";
 
       echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
@@ -951,13 +953,15 @@ class Html {
 //              $CFG_GLPI["root_doc"]."/css/ext-all-glpi.css' media='screen' >\n";
 
       // PLugins jquery
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js'></script>\n";
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js'></script>\n";
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
-              "</script>\n";
+      echo "<script type='text/javascript' src='".
+               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js'></script>\n";
+      echo "<script type='text/javascript' src='".
+               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js'></script>\n";
+      echo "<script type='text/javascript' src='".
+               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js'></script>\n";
+      echo "<script type='text/javascript' src='".
+               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
+            "</script>\n";
 
       if (isset($_SESSION['glpilanguage'])) {
          echo "<script type='text/javascript' src='".

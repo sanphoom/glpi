@@ -1597,6 +1597,10 @@ class Dropdown {
          }
 
       }
+      
+      echo "<script type='text/javascript'>\n";
+      echo "$(document).ready(function() { $('#$field_id').select2(); });";
+      echo "</script>\n";
 
       if ($param['display']) {
          echo $output;
