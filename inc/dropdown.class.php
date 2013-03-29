@@ -222,6 +222,7 @@ class Dropdown {
                                  used : ".json_encode($params['used']).",
                                  toadd : ".json_encode($params['toadd']).",
                                  entity_restrict : ".json_encode($params['entity']).",
+                                 limit: $limit_length,
                                  searchText: term, 
                                  page_limit: 10
                               };
@@ -239,11 +240,11 @@ class Dropdown {
                            if (item.level) {
                               var a='';
                               var i=item.level;
-                              while (i>0) {
+                              while (i>1) {
                                  a = a+'&nbsp;&nbsp;&nbsp;';
                                  i=i-1;
                               }
-                              return a+item.text;
+                              return a+'&raquo;'+item.text;
                            }
                            return item.text;
                         }
