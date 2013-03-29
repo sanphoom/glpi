@@ -99,7 +99,7 @@ if ($_GET['searchText']==$CFG_GLPI["ajax_wildcard"]) {
 }
 
 $where .=" AND `$table`.`id` NOT IN ('".$_GET['value']."'";
-Toolbox::logDebug($_GET);
+
 if (isset($_GET['used'])) {
    $used = $_GET['used'];
 
@@ -225,7 +225,7 @@ if ($item instanceof CommonTreeDropdown) {
 //       }
 
       $last_level_displayed = array();
-
+      $datastoadd = array();
       if ($DB->numrows($result)) {
          $prev = -1;
 
@@ -248,17 +248,19 @@ if ($item instanceof CommonTreeDropdown) {
                   }
                }
             }
-///TODO
-//             if ($multi
-//                 && ($data["entities_id"] != $prev)) {
-//                if ($prev >= 0) {
-//                   echo "</optgroup>";
-//                }
-//                $prev = $data["entities_id"];
-//                echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
-//                // Reset last level displayed :
-//                $last_level_displayed = array();
-//             }
+
+            if ($multi
+                && ($data["entities_id"] != $prev)) {
+               if ($prev >= 0) {
+                  if (count($datastoadd)) {
+                     array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities", $prev),
+                                             'children' => $datastoadd));
+                  }
+               }
+               $prev = $data["entities_id"];
+               // Reset last level displayed :
+               $datastoadd = array();
+            }
 
             $class = " class='tree' ";
             $raquo = "&raquo;";
@@ -348,20 +350,26 @@ if ($item instanceof CommonTreeDropdown) {
             if (isset($data["comment"])) {
                $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
             }
-            array_push($datas, array ('id'    => $ID,
-                                      'text'  => $outputval));
+            array_push($datastoadd, array ('id'    => $ID,
+                                           'text'  => $outputval));
             
 //             echo "<option value='$ID' $class title=\"".Html::cleanInputText($title).
 //                  "\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$outputval.
 //                  "</option>";
          }
-//          if ($multi) {
-//             echo "</optgroup>";
-//          }
       }
 //       echo "</select>";
    }
-
+   if ($multi) {
+      if (count($datastoadd)) {
+         array_push($datas, array('text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                                  'children' => $datastoadd));
+      }
+   } else {
+      if (count($datastoadd)) {
+         $datas += $datastoadd;
+      }
+   }
 } else { // Not a dropdowntree
    $multi = false;
 
@@ -475,10 +483,24 @@ if ($item instanceof CommonTreeDropdown) {
 //          echo "<option selected value='".$_GET['value']."'>".$outputval."</option>";
 //       }
 
+      $datastoadd = array();
+
       if ($DB->numrows($result)) {
          $prev = -1;
 
          while ($data =$DB->fetch_assoc($result)) {
+            if ($multi
+                && ($data["entities_id"] != $prev)) {
+               if ($prev >= 0) {
+                  if (count($datastoadd)) {
+                     array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities", $prev),
+                                             'children' => $datastoadd));
+                  }
+               }
+               $prev = $data["entities_id"];
+               $datastoadd = array();
+            }
+            
             $outputval = $data[$field];
 
             if ($displaywith) {
@@ -506,24 +528,21 @@ if ($item instanceof CommonTreeDropdown) {
                //TRANS: %1$s is the name, %2$s the ID
                $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
             }
-/// TODO
-//             if ($multi
-//                 && ($data["entities_id"] != $prev)) {
-//                if ($prev >= 0) {
-//                   echo "</optgroup>";
-//                }
-//                $prev = $data["entities_id"];
-//                echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
-//             }
-            array_push($datas, array ('id'    => $ID,
-                                      'text'  => $outputval));
+            array_push($datastoadd, array ('id'    => $ID,
+                                           'text'  => $outputval));
 //             echo "<option value='$ID' title=\"".Html::cleanInputText($title)."\">".
 //                   Toolbox::substr($outputval, 0, $_GET["limit"])."</option>";
          }
-
-//          if ($multi) {
-//             echo "</optgroup>";
-//          }
+         if ($multi) {
+            if (count($datastoadd)) {
+               array_push($datas, array('text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                                       'children' => $datastoadd));
+            }
+         } else {
+            if (count($datastoadd)) {
+               $datas += $datastoadd;
+            }
+         }
       }
 //       echo "</select>";
    }
@@ -541,7 +560,6 @@ if ($item instanceof CommonTreeDropdown) {
 // 
 // Ajax::commonDropdownUpdateItem($_GET);
 $ret['results'] = $datas;
-$ret['more'] = false;
-Toolbox::logDebug($ret);
+
 echo json_encode($ret);
 ?>

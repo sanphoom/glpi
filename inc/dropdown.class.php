@@ -1574,7 +1574,9 @@ class Dropdown {
 
          if (!empty($param["width"])) {
             $output .= " style='width:".$param["width"]."'";
-         }
+         } else {
+            $output .= " style='width:90%'";
+         }         
          if (!empty($param["on_change"])) {
             $output .= " onChange='".$param["on_change"]."'";
          }
