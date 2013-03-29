@@ -794,9 +794,21 @@ class MailCollector  extends CommonDBTM {
                for ($i = ($begin_strip+1); $i < $length; $i++) {
                   unset($content[$i]);
                }
-               $tkt['content'] = implode("\n",$content);
             }
 
+            $to_keep        = array();
+            // Aditional clean for thunderbird
+            foreach ($content as $ID => $val) {
+               if (!isset($val[0]) || ($val[0] !=  '>')) {
+                  $to_keep[$ID] = $ID;
+               }
+            }
+            
+            $tkt['content'] = "";
+            foreach ($to_keep as $ID ) {
+               $tkt['content'] .= $content[$ID]."\n";
+            }
+            
             // Do not play rules for followups : WRONG : play rules only for refuse options
             //$play_rules = false;
 
