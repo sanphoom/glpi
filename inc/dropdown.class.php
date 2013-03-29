@@ -1463,6 +1463,7 @@ class Dropdown {
     *    - other           : boolean or string if not false, then we can use an "other" value
     *                        if it is a string, then the default value will be this string
     *    - rand            : specific rand if needed (default is generated one)
+    *    - width           : specific width needed (default not set)
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1477,12 +1478,14 @@ class Dropdown {
       $param['used']            = array();
       $param['readonly']        = false;
       $param['on_change']       = '';
+      $param['width']           = '';
       $param['multiple']        = false;
       $param['size']            = 1;
       $param['mark_unmark_all'] = false;
       $param['display']         = true;
       $param['other']           = false;
       $param['rand']            = mt_rand();
+      
 
       if (is_array($options) && count($options)) {
          if (!empty($options['value'])) {
@@ -1529,6 +1532,9 @@ class Dropdown {
          $field_id = Html::cleanId("dropdown_".$name.$param['rand']);
          $output  .= "<select name='$field_name' id='$field_id'";
 
+         if (!empty($param["width"])) {
+            $output .= " style='".$param["width"]."'";
+         }
          if (!empty($param["on_change"])) {
             $output .= " onChange='".$param["on_change"]."'";
          }
