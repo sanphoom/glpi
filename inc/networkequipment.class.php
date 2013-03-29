@@ -90,7 +90,11 @@ class NetworkEquipment extends CommonDBTM {
       return Session::haveRight('networking', 'r');
    }
 
-
+   function cleanDBonPurge() {
+      $ip = new Item_Problem();
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+   }
+   
    /**
     * @see CommonDBTM::useDeletedToLockIfDynamic()
     *

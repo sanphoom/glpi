@@ -379,6 +379,9 @@ class Computer extends CommonDBTM {
 
       $csl = new Computer_SoftwareLicense();
       $csl->cleanDBonItemDelete('Computer', $this->fields['id']);
+
+      $ip = new Item_Problem();
+      $ip->cleanDBonItemDelete('Computer', $this->fields['id']);
       
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
