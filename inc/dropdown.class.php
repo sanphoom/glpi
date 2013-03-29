@@ -209,6 +209,7 @@ class Dropdown {
       $output .= " $('#$field_id').select2({
                         width: '".$params['width']."',
                         minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
+                        quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
                         ajax: { 
                            url: '".$CFG_GLPI['root_doc']."/ajax/getDropdownValue.php',
                            dataType: 'json',
