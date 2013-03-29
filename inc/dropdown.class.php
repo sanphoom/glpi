@@ -209,6 +209,9 @@ class Dropdown {
       $output .= " $('#$field_id').select2({
                         width: '".$params['width']."',
                         minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
+                        matcher: function(term, text) {
+                           return text.toUpperCase().indexOf(term.toUpperCase())>=0;
+                           },
                         ajax: { 
                            url: '".$CFG_GLPI['root_doc']."/ajax/getDropdownValue.php',
                            dataType: 'json',
@@ -236,21 +239,24 @@ class Dropdown {
                                       text: ".json_encode($name)."};
                            callback(data);
                         },
-                        formatResult: function (item) {
-                           if (item.level) {
+                        formatResult: function(result, container, query, escapeMarkup) {
+                           var markup=[];
+                           window.Select2.util.markMatch(result.text, query.term, markup, escapeMarkup);
+                           if (result.level) {
                               var a='';
-                              var i=item.level;
+                              var i=result.level;
                               while (i>1) {
                                  a = a+'&nbsp;&nbsp;&nbsp;';
                                  i=i-1;
                               }
-                              return a+'&raquo;'+item.text;
+                              return a+'&raquo;'+markup.join('');
                            }
-                           return item.text;
+                           return markup.join('');
                         }
+
                      });";
       $output .= "</script>\n";
-      
+
       // Display comment
       if ($params['comments']) {
          $options_tooltip = array('contentid' => "comment_".$params['name'].$params['rand'],
