@@ -209,9 +209,6 @@ class Dropdown {
       $output .= " $('#$field_id').select2({
                         width: '".$params['width']."',
                         minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
-                        matcher: function(term, text) {
-                           return text.toUpperCase().indexOf(term.toUpperCase())>=0;
-                           },
                         ajax: { 
                            url: '".$CFG_GLPI['root_doc']."/ajax/getDropdownValue.php',
                            dataType: 'json',
