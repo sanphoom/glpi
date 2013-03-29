@@ -670,6 +670,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $entities_id  = $comp->fields["entities_id"];
 
       $crit         = Session::getSavedOption(__CLASS__, 'criterion', '');
+
       $where        = '';
       if ($crit > -1) {
          $where = " AND `glpi_softwares`.`softwarecategories_id` = $crit";
@@ -746,9 +747,18 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                        'emptylabel' => __('Uncategorized software'),
                                        'on_change'  => 'reloadTab("start=0&criterion="+this.value)'));
       echo "</td></tr></table>";
+      $number = $DB->numrows($result);
+      $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
+      if ($start >= $number) {
+         $start = 0;
+      }
 
       $installed = array();
-      if ($number = $DB->numrows($result)) {
+
+      if ($number) {
+         echo "<div class='spaced'>";
+         Html::printAjaxPager('',  $start, $number);
+
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -770,13 +780,19 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<th>".__('Automatic inventory')."</th>";
          echo "</tr>\n";
 
-         while ($data = $DB->fetch_assoc($result)) {
+         for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
+
 //            if ($data["softwarecategories_id"] != $cat) {
 //               self::displayCategoryFooter($cat, $rand, $canedit);
 //               $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
 //            }
 
-            $licids = self::displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit);
+
+            if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
+               $licids = self::softsByCategory($data, $computers_id, $withtemplate, $canedit, true);
+            } else {
+               $licids = self::softsByCategory($data, $computers_id, $withtemplate, $canedit, false);
+            }
             Session::addToNavigateListItems('Software', $data["softwares_id"]);
 
             foreach ($licids as $licid) {
@@ -832,7 +848,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 LEFT JOIN `glpi_states`
                      ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
                 WHERE `glpi_computers_softwarelicenses`.`computers_id` = '$computers_id'
-                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'";
+                      AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'
+                      $where";
 
       if (count($installed)) {
          $query .= " AND `glpi_softwarelicenses`.`id` NOT IN (".implode(',',$installed).")";
@@ -963,32 +980,37 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $computers_id             ID of the computer
     * @param $withtemplate             template case of the view process
     * @param $canedit         boolean  user can edit software ?
+    * @param $display         boolean  display and calculte if true or juste calculate
     *
     * @return array of found license id
    **/
-   private static function displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit) {
+   private static function softsByCategory($data, $computers_id, $withtemplate, $canedit,
+                                           $display) {
       global $DB, $CFG_GLPI;
 
       $ID       = $data["id"];
       $verid    = $data["verid"];
       $multiple = false;
 
-      echo "<tr class='tab_bg_1'>";
-      if ($canedit) {
-         echo "<td>";
-         Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-         echo "</td>";
-      }
-      echo "<td class='center b'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".$data['softwares_id']."'>";
-      echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
-                                                      $data["softname"], $data['softwares_id'])
-                                            : $data["softname"]);
-      echo "</a></td>";
-      echo "<td>" . $data["state"] . "</td>";
+      if ($display) {
+         echo "<tr class='tab_bg_1'>";
+         if ($canedit) {
+            echo "<td>";
+            Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+            echo "</td>";
+         }
+         echo "<td class='center b'>";
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".
+                        $data['softwares_id']."'>";
+         echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
+                                                         $data["softname"], $data['softwares_id'])
+                                               : $data["softname"]);
+         echo "</a></td>";
+         echo "<td>" . $data["state"] . "</td>";
 
-      echo "<td>" . $data["version"];
-      echo "</td><td>";
+         echo "<td>" . $data["version"];
+         echo "</td><td>";
+      }
 
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_softwarelicensetypes`.`name` AS type
@@ -1013,33 +1035,37 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $licserial = sprintf(__('%1$s (%2$s)'), $licserial, $licdata['type']);
          }
 
-         echo "<span class='b'>". $licdata['name']. "</span> - ".$licserial;
+         if ($display) {
+            echo "<span class='b'>". $licdata['name']. "</span> - ".$licserial;
 
-         $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
-         $link      = $link_item."?id=".$licdata['id'];
-         $comment   = "<table><tr><td>".__('Name')."</td><td>".$licdata['name']."</td></tr>".
-                        "<tr><td>".__('Serial number')."</td><td>".$licdata['serial']."</td></tr>".
-                        "<tr><td>". __('Comments').'</td><td>'.$licdata['comment'].'</td></tr>".
-                      "</table>';
+            $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
+            $link      = $link_item."?id=".$licdata['id'];
+            $comment   = "<table><tr><td>".__('Name')."</td><td>".$licdata['name']."</td></tr>".
+                         "<tr><td>".__('Serial number')."</td><td>".$licdata['serial']."</td></tr>".
+                         "<tr><td>". __('Comments').'</td><td>'.$licdata['comment'].'</td></tr>".
+                         "</table>';
 
-         Html::showToolTip($comment, array('link' => $link));
-         echo "<br>";
+            Html::showToolTip($comment, array('link' => $link));
+            echo "<br>";
+         }
       }
 
-      if (!count($licids)) {
-         echo "&nbsp;";
-      }
+      if ($display) {
+         if (!count($licids)) {
+            echo "&nbsp;";
+         }
 
-      echo "</td>";
-
-      echo "</td>";
-      if (isset($data['is_dynamic'])) {
-         echo "<td class='center'>";
-         echo Dropdown::getYesNo($data['is_dynamic']);
          echo "</td>";
-      }
 
-      echo "</tr>\n";
+         echo "</td>";
+         if (isset($data['is_dynamic'])) {
+            echo "<td class='center'>";
+            echo Dropdown::getYesNo($data['is_dynamic']);
+            echo "</td>";
+         }
+
+         echo "</tr>\n";
+      }
 
       return $licids;
    }
