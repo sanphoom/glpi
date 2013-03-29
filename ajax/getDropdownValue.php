@@ -64,11 +64,6 @@ if (!isset($_GET['value'])) {
    $_GET['value'] = '';
 }
 
-// No define rand
-if (!isset($_GET['rand'])) {
-   $_GET['rand'] = mt_rand();
-}
-
 if (isset($_GET['condition']) && !empty($_GET['condition'])) {
    $_GET['condition'] = rawurldecode(stripslashes($_GET['condition']));
 }
@@ -94,10 +89,6 @@ if ($item->maybeTemplate()) {
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
 
-if ($_GET['searchText']==$CFG_GLPI["ajax_wildcard"]) {
-   $LIMIT = "";
-}
-
 $where .=" AND `$table`.`id` NOT IN ('".$_GET['value']."'";
 
 if (isset($_GET['used'])) {
@@ -122,9 +113,8 @@ if (isset($_GET['condition']) && $_GET['condition'] != '') {
 
 if ($item instanceof CommonTreeDropdown) {
 
-   if ($_GET['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-      $where .= " AND `completename` ".Search::makeTextSearch($_GET['searchText']);
-   }
+   $where .= " AND `completename` ".Search::makeTextSearch($_GET['searchText']);
+
    $multi = false;
 
    // Manage multiple Entities dropdowns
@@ -177,6 +167,7 @@ if ($item instanceof CommonTreeDropdown) {
              $LIMIT";
 
    if ($result = $DB->query($query)) {
+/// TODO
 //       echo "<select id='".Html::cleanId("dropdown_".$_GET["myname"].$_GET["rand"])."'
 //              name='".$_GET['myname']."' size='1'";
 //    
@@ -186,43 +177,18 @@ if ($item instanceof CommonTreeDropdown) {
 //       }
 //       echo ">";
 
-//       if (isset($_GET['searchText'])
-//           && ($_GET['searchText'] != $CFG_GLPI["ajax_wildcard"])
-//           && ($DB->numrows($result) == $NBMAX)) {
-//          echo "<option class='tree' value='0'>--".__('Limited view')."--</option>";
-//       }
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
             array_push($datas, array('id'   => $key,
                                      'text' => $val));
-//             echo "<option class='tree' ".($_GET['value']==$key?'selected':'').
-//                  " value='$key' title=\"".Html::cleanInputText($val)."\">".
-//                   Toolbox::substr($val, 0, $_GET["limit"])."</option>";
          }
       }
 
       if ($_GET['display_emptychoice']) {
             array_push($datas, array ('id'   => 0,
                                       'text' => $_GET['emptylabel']));
-//          echo "<option class='tree' value='0'>".$_GET['emptylabel']."</option>";
       }
-
-//       $outputval = Dropdown::getDropdownName($table, $_GET['value']);
-// 
-//       if ((Toolbox::strlen($outputval) != 0)
-//           && ($outputval != "&nbsp;")) {
-// 
-//          if (Toolbox::strlen($outputval) > $_GET["limit"]) {
-//             // Completename for tree dropdown : keep right
-//             $outputval = "&hellip;".Toolbox::substr($outputval, -$_GET["limit"]);
-//          }
-//          if ($_SESSION["glpiis_ids_visible"]
-//              || (Toolbox::strlen($outputval) == 0)) {
-//             $outputval .= " (".$_GET['value'].")";
-//          }
-//          echo "<option class='tree' selected value='".$_GET['value']."'>".$outputval."</option>";
-//       }
 
       $last_level_displayed = array();
       $datastoadd = array();
@@ -262,19 +228,10 @@ if ($item instanceof CommonTreeDropdown) {
                $datastoadd = array();
             }
 
-            $class = " class='tree' ";
-            $raquo = "&raquo;";
-
-            if ($level == 1) {
-               $class = " class='treeroot'";
-               $raquo = "";
-            }
 
             if ($_SESSION['glpiuse_flat_dropdowntree']) {
                $outputval = $data['completename'];
                if ($level > 1) {
-                  $class = "";
-                  $raquo = "";
                   $level = 0;
                }
 
@@ -301,18 +258,6 @@ if ($item instanceof CommonTreeDropdown) {
                               $output2 = Toolbox::substr($output2, 0 ,$_GET["limit"])."&hellip;";
                            }
 
-                           $class2 = " class='tree' ";
-                           $raquo2 = "&raquo;";
-
-                           if ($work_level==1) {
-                              $class2 = " class='treeroot'";
-                              $raquo2 = "";
-                           }
-
-//                            $to_display = "<option disabled value='$work_parentID' $class2
-//                                            title=\"".Html::cleanInputText($title)."\">".
-//                                          str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
-//                                          $raquo2.$output2."</option>".$to_display;
                            array_push($datastoadd, array ('id'      => $ID,
                                                          'text'     => $output2,
                                                          'level'    => $work_level,
@@ -330,7 +275,6 @@ if ($item instanceof CommonTreeDropdown) {
                               && (!isset($last_level_displayed[$work_level])
                                   || ($last_level_displayed[$work_level] != $work_parentID)));
 
-//                      echo $to_display;
                   }
                }
                $last_level_displayed[$level] = $data['id'];
@@ -357,13 +301,9 @@ if ($item instanceof CommonTreeDropdown) {
             array_push($datastoadd, array ('id'    => $ID,
                                            'text'  => $outputval,
                                            'level' => $level));
-            
-//             echo "<option value='$ID' $class title=\"".Html::cleanInputText($title).
-//                  "\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$outputval.
-//                  "</option>";
+
          }
       }
-//       echo "</select>";
    }
    if ($multi) {
       if (count($datastoadd)) {
@@ -403,15 +343,13 @@ if ($item instanceof CommonTreeDropdown) {
       $field = "designation";
    }
 
-   if ($_GET['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
-      $search = Search::makeTextSearch($_GET['searchText']);
-      $where .=" AND  (`$table`.`$field` ".$search;
+   $search = Search::makeTextSearch($_GET['searchText']);
+   $where .=" AND  (`$table`.`$field` ".$search;
 
-      if ($_GET['itemtype']=="SoftwareLicense") {
-         $where .= " OR `glpi_softwares`.`name` ".$search;
-      }
-      $where .= ')';
+   if ($_GET['itemtype']=="SoftwareLicense") {
+      $where .= " OR `glpi_softwares`.`name` ".$search;
    }
+   $where .= ')';
 
    switch ($_GET['itemtype']) {
       case "Contact" :
@@ -447,46 +385,27 @@ if ($item instanceof CommonTreeDropdown) {
    }
 
    if ($result = $DB->query($query)) {
-//       echo "<select id='".Html::cleanId("dropdown_".$_GET["myname"].$_GET["rand"])."'
-//              name='".$_GET['myname']."' size='1'";
-             
+
+/// TODO   
 //       if (isset($_GET["on_change"]) && !empty($_GET["on_change"])) {
 //          echo " onChange='".stripslashes($_GET["on_change"])."'";
 //       }
 // 
 //       echo ">";
 
-//       if (isset($_GET['searchText'])
-//           && ($_GET['searchText'] != $CFG_GLPI["ajax_wildcard"])
-//           && ($DB->numrows($result) == $NBMAX)) {
-//          echo "<option value='0'>--".__('Limited view')."--</option>";
-// 
-//       } else
       if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
          array_push($datas, array ('id'    => 0,
                                    'text'  => $_GET["emptylabel"]));
-//          echo "<option value='0'>".$_GET["emptylabel"]."</option>";
       }
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
             array_push($datas, array ('id'    => $key,
                                       'text'  => $val));
-         
-//             echo "<option title=\"".Html::cleanInputText($val)."\" value='$key' ".
-//                   ($_GET['value']==$key?'selected':'').">".
-//                   Toolbox::substr($val, 0, $_GET["limit"])."</option>";
          }
       }
 
       $outputval = Dropdown::getDropdownName($table,$_GET['value']);
-
-//       if ((strlen($outputval) != 0) && ($outputval != "&nbsp;")) {
-//          if ($_SESSION["glpiis_ids_visible"]) {
-//             $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $_GET['value']);
-//          }
-//          echo "<option selected value='".$_GET['value']."'>".$outputval."</option>";
-//       }
 
       $datastoadd = array();
 
@@ -535,8 +454,6 @@ if ($item instanceof CommonTreeDropdown) {
             }
             array_push($datastoadd, array ('id'    => $ID,
                                            'text'  => $outputval));
-//             echo "<option value='$ID' title=\"".Html::cleanInputText($title)."\">".
-//                   Toolbox::substr($outputval, 0, $_GET["limit"])."</option>";
          }
          if ($multi) {
             if (count($datastoadd)) {
@@ -549,7 +466,6 @@ if ($item instanceof CommonTreeDropdown) {
             }
          }
       }
-//       echo "</select>";
    }
 }
 
