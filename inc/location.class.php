@@ -210,15 +210,14 @@ class Location extends CommonTreeDropdown {
          echo "<th>".__('Name')."</th>";
          echo "</tr>";
 
-         for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
-            if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
+         $DB->data_seek($result, $start);
+         for ($row=0 ; ($data=$DB->fetch_assoc($result)) && ($row<$_SESSION['glpilist_limit']) ; $row++) {
             $item = getItemForItemtype($data['type']);
             $item->getFromDB($data['id']);
             echo "<tr><td class='center top'>".$item->getTypeName()."</td>";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                  $item->getEntityID());
             echo "</td><td class='center'>".$item->getLink()."</td></tr>";
-            }
          }
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";
