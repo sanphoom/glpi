@@ -543,7 +543,6 @@ CREATE TABLE `glpi_computermodels` (
 ### Dump table glpi_computers
 
 DROP TABLE IF EXISTS `glpi_computers`;
-CREATE TABLE `glpi_computers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -5521,6 +5520,8 @@ DROP TABLE IF EXISTS `glpi_states`;
 CREATE TABLE `glpi_states` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `states_id` int(11) NOT NULL DEFAULT '0',
   `completename` text COLLATE utf8_unicode_ci,
