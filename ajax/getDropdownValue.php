@@ -468,18 +468,7 @@ if ($item instanceof CommonTreeDropdown) {
    }
 }
 
-/// TODO
-// if (isset($_GET["comment"]) && $_GET["comment"]) {
-//    $paramscomment = array('value' => '__VALUE__',
-//                           'table' => $table);
-// 
-//    Ajax::updateItemOnSelectEvent("dropdown_".$_GET["myname"].$_GET["rand"],
-//                                  "comment_".$_GET["myname"].$_GET["rand"],
-//                                  $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment);
-// }
-// 
-// Ajax::commonDropdownUpdateItem($_GET);
 $ret['results'] = $datas;
-Toolbox::logDebug($datas);
+
 echo json_encode($ret);
 ?>
