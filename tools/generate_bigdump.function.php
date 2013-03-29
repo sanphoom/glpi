@@ -704,19 +704,6 @@ function generateGlobalDropdowns() {
    }
 
 
-   $items = array("SP2MI", "CAMPUS"," IUT86", "PRESIDENCE", "CEAT", "D'omaine");
-   $dp    = new Domain();
-   for ($i=0 ; $i<$MAX['domain'] ; $i++) {
-      if (isset($items[$i])) {
-         $val = $items[$i];
-      } else {
-         $val = "domain '$i";
-      }
-      $dp->add(toolbox::addslashes_deep(array('name'    => $val,
-                                              'comment' => "comment $val")));
-   }
-
-
    $items = array("Fournisseur", "Transporteur", "SSII", "Revendeur d'", "Assembleur", "SSLL",
                   "Financeur", "Assureur");
    $dp    = new SupplierType();
@@ -1407,6 +1394,27 @@ function generate_entity($ID_entity) {
    regenerateTreeCompleteName("glpi_entities");
 
    $current_year = date("Y");
+
+
+   // DOMAIN
+   $items = array("SP2MI", "CAMPUS"," IUT86", "PRESIDENCE", "CEAT", "D'omaine");
+   $dp    = new Domain();
+   $FIRST["domain"] = getMaxItem("glpi_domains")+1;
+
+   for ($i=0 ; $i<$MAX['domain'] ; $i++) {
+      if (isset($items[$i])) {
+         $val = $items[$i];
+      } else {
+         $val = "domain $ID_entity '$i";
+      }
+      $dp->add(toolbox::addslashes_deep(array('name'         => $val,
+                                              'entities_id'  => $ID_entity,
+                                              'is_recursive' => 1,
+                                              'comment'      => "comment $val")));
+   }
+   $LAST["domain"] = getMaxItem("glpi_domains");
+
+
 
    // glpi_groups
    $FIRST["groups"] = getMaxItem("glpi_groups")+1;
@@ -2206,7 +2214,7 @@ function generate_entity($ID_entity) {
       $techID     = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
       $gtechID    = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
       $infoIP     = getNextIP();
-      $domainID   = mt_rand(1,$MAX['domain']);
+      $domainID   = mt_rand($FIRST['domain'],$LAST['domain']);
       $networkID  = mt_rand(1,$MAX['network']);
 
       // insert networking
@@ -2378,7 +2386,7 @@ function generate_entity($ID_entity) {
       $userID    = mt_rand($FIRST['users_normal'],$LAST['users_postonly']);
       $groupID   = mt_rand($FIRST["groups"],$LAST["groups"]);
       $gtechID   = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
-      $domainID  = mt_rand(1,$MAX['domain']);
+      $domainID  = mt_rand($FIRST['domain'],$LAST['domain']);
       $networkID = mt_rand(1,$MAX['network']);
 
       $compID = $c->add(toolbox::addslashes_deep(
