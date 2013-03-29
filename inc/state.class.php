@@ -66,13 +66,15 @@ class State extends CommonTreeDropdown {
    function getAdditionalFields() {
 
       $fields   = parent::getAdditionalFields();
-      $fields[] = array('label' => __('Visibility'), 'name' => 'header');
+      $fields[] = array('label' => __('Visibility'),
+                        'name'  => 'header',
+                        'list'  => false);
 
       foreach ($this->visibility_fields as $type => $field) {
          $fields[] = array('name'  => $field,
                            'label' => $type::getTypeName(),
                            'type'  => 'bool',
-                           'list'  => false);
+                           'list'  => true);
       }
       return $fields;
    }
