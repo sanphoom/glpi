@@ -455,10 +455,8 @@ function update084to085() {
    Config::setConfigurationValues('core', array('use_unicodefont' => 0));
    $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
    $migration->addField("glpi_users", 'picture', "string", array('value' => 'NULL'));
-   $migration->migrationOneTable('glpi_users');
 
    $migration->addField("glpi_authldaps", 'picture_field','string');
-   $migration->migrationOneTable('glpi_authldaps');
 
    $migration->addField('glpi_links', 'open_window', 'bool', array('value' => 1));
 
