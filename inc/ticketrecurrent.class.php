@@ -35,8 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Ticket Recurrent class
-/// since version 0.83
+/**
+ * Ticket Recurrent class
+ *
+ * @since version 0.83
+**/
 class TicketRecurrent extends CommonDropdown {
 
    // From CommonDBTM

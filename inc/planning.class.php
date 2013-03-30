@@ -61,6 +61,9 @@ class Planning extends CommonGLPI {
    }
 
 
+   /**
+    * @since version 0.85
+   **/
    static function canView() {
 
       return (Session::haveRight("show_planning","1")

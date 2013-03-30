@@ -89,7 +89,7 @@ class SoftwareLicense extends CommonDBTM {
 
       $csl = new Computer_SoftwareLicense();
       $csl->cleanDBonItemDelete('SoftwareLicense', $this->fields['id']);
-   
+
       $class = new Alert();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
@@ -758,7 +758,7 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Get fields to display in the unicity error message
     *
-    * @return an aray which contains field => label
+    * @return an array which contains field => label
    */
    function getUnicityFieldsToDisplayInErrorMessage() {
 

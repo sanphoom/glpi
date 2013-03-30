@@ -35,21 +35,26 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// NetworkPortInstantiation class
-/// Represents the type of a given network port. As such, its ID field is the same one than the ID
-/// of the network port it instantiates. This class don't have any table associated. It just
-/// provides usefull and default methods for the instantiations.
-/// Several kind of instanciations are available for a given port :
-///   - NetworkPortLocal
-///   - NetworkPortEthernet
-///   - NetworkPortWifi
-///   - NetworkPortAggregate
-///   - NetworkPortAlias
-/// @since 0.84
+/**
+ * NetworkPortInstantiation class
+ *
+ * Represents the type of a given network port. As such, its ID field is the same one than the ID
+ * of the network port it instantiates. This class don't have any table associated. It just
+ * provides usefull and default methods for the instantiations.
+ * Several kind of instanciations are available for a given port :
+ *    - NetworkPortLocal
+ *    - NetworkPortEthernet
+ *    - NetworkPortWifi
+ *    - NetworkPortAggregate
+ *    - NetworkPortAlias
+ *
+ * @since 0.84
+ *
+**/
 class NetworkPortInstantiation extends CommonDBChild {
 
    // From CommonDBTM
-   var $auto_message_on_action = false;
+   var $auto_message_on_action   = false;
 
    // From CommonDBChild
    static public $itemtype       = 'NetworkPort';

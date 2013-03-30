@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -54,7 +54,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addDefaultFormTab($ong);      
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab($this->getType(), $ong, $options);
       if ($this->dohistory) {
          $this->addStandardTab('Log',$ong, $options);

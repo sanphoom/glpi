@@ -35,13 +35,18 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// NetworkPort class : There is two parts for a given NetworkPort. The first one, generic, only
-/// contains the link to the item, the name, and the type of network port. All specific
-/// characteristics are owned by the instanciation of the network port : NetworkPortInstantiation.
-/// Whenever a port is display (through its form or though item port listing), the NetworkPort class
-/// load its instantiation from the instantiation database to display the elements.
-/// Moreover, in NetworkPort form, if there is no more than one NetworkName attached to the current
-/// port, then, the fields of NetworkName are display. Thus, NetworkPort UI remain similar to 0.83
+
+/**
+ * NetworkPort Class
+ *
+ * There is two parts for a given NetworkPort.
+ * The first one, generic, only contains the link to the item, the name and the type of network port.
+ * All specific characteristics are owned by the instanciation of the network port : NetworkPortInstantiation.
+ * Whenever a port is display (through its form or though item port listing), the NetworkPort class
+ * load its instantiation from the instantiation database to display the elements.
+ * Moreover, in NetworkPort form, if there is no more than one NetworkName attached to the current
+ * port, then, the fields of NetworkName are display. Thus, NetworkPort UI remain similar to 0.83
+**/
 class NetworkPort extends CommonDBChild {
 
    // From CommonDBChild

@@ -226,7 +226,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
-///    TODO MoYo : Why add this field ?
+///    TODO MoYo 0.84 : Why add this field ?
 //    echo "<input type='hidden' name='itemtype' value='".$this->getType()."'>";
       if ($this instanceof CommonDevice) {
          // Awfull hack for CommonDevice where name is designation

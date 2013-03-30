@@ -35,12 +35,17 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class NetworkName : represent the internet name of an element. It is compose of the name itself,
-/// its domain and one or several IP addresses (IPv4 and/or IPv6).
-/// An address can be affected to an item, or can be "free" to be reuse by another item (for
-/// instance, in case of maintenance, when you change the network card of a computer, but not its
-/// network information
-/// since version 0.84
+/**
+ * NetworkName Class
+ *
+ * represent the internet name of an element.
+ * It is compose of the name itself, its domain and one or several IP addresses (IPv4 and/or IPv6).
+ * An address can be affected to an item, or can be "free" to be reuse by another item
+ * (for instance, in case of maintenance, when you change the network card of a computer,
+ *  but not its network information)
+ *
+ * @since version 0.84
+**/
 class NetworkName extends FQDNLabel {
 
    // From CommonDBChild
@@ -212,7 +217,7 @@ class NetworkName extends FQDNLabel {
       IPNetwork::showIPNetworkProperties($this->getEntityID());
       echo "</td></tr>\n";
 
-      
+
       $this->showFormButtons($options);
 
       return true;

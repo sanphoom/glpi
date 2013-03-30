@@ -649,7 +649,7 @@ class Ticket extends CommonITILObject {
 
       $pt = new Problem_Ticket();
       $pt->cleanDBonItemDelete('Ticket', $this->fields['id']);
-      
+
       $ts = new TicketCost();
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
@@ -4223,7 +4223,8 @@ class Ticket extends CommonITILObject {
          }
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
          if ($tt->isPredefinedField('global_validation')) {
-            echo "<input type='hidden' name='global_validation' value='".$tt->predefined['global_validation']."'>";
+            echo "<input type='hidden' name='global_validation' value='".
+                   $tt->predefined['global_validation']."'>";
          }
       } else {
          echo $tt->getBeginHiddenFieldValue('global_validation');

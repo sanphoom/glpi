@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// class Ajax
+/**
+ * Ajax Class
+**/
 class Ajax {
 
 
@@ -221,14 +223,14 @@ class Ajax {
     *                                                                url    => 'url_toload',
     *                                                                params => 'url_params')...
     * @param $type                     itemtype for active tab
-    * @param $ID                       ID of element for active tab
+    * @param $ID                       ID of element for active tab (default 0)
     * @param $orientation              orientation of tabs (default vertical may also be horizontal)
     * @param $size                     width of tabs panel (default 950)
     *
     * @return nothing
    **/
    static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type, $ID = 0, $orientation='vertical', $size=950) {
+                              $type, $ID=0, $orientation='vertical', $size=950) {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
@@ -271,7 +273,7 @@ class Ajax {
          echo "<script type='text/javascript'>";
 //          echo "$.ajaxSetup({
 //                   cache:false,
-// 
+//
 //                   success: function() {}
 //                });  ";
          echo "$('#tabs$rand').tabs({ active: $selected_tab, ajaxOptions: {type: 'POST',

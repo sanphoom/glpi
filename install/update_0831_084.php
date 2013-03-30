@@ -176,8 +176,8 @@ function update0831to084() {
    }
 
    // Update Rules
-   $changes = array();
-   $changes['RuleTicket']              = 'status';
+   $changes                = array();
+   $changes['RuleTicket']  = 'status';
 
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    foreach ($changes as $ruletype => $field) {
@@ -196,7 +196,7 @@ function update0831to084() {
                $query = "UPDATE `glpi_ruleactions`
                          SET `value` = '$new'
                          WHERE `field` = '$field'
-                              AND `value` = '$old'
+                               AND `value` = '$old'
                                AND `rules_id` IN ($rules)";
 
                $DB->queryOrDie($query, "0.84 update datas for rules actions");
@@ -1031,7 +1031,7 @@ function update0831to084() {
          $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
       }
    }
-   
+
    // copy table to keep value of fields deleted after
    $migration->copyTable('glpi_profiles', 'ocs_glpi_profiles');
 
@@ -1073,7 +1073,7 @@ function update0831to084() {
                               true);
    $migration->displayWarning("You can delete ocs_* tables if you do not use OCS syncrhonisation.",
                               true);
-   
+
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
    $migration->addField('glpi_authldaps', 'ldap_maxlimit', 'integer');
    $migration->addField('glpi_authldaps', 'can_support_pagesize', 'bool');
@@ -1169,7 +1169,7 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
 
-   $changes = array();
+   $changes                            = array();
    $changes['RuleTicket']              = array('suppliers_id_assign' => '_suppliers_id_assign');
    $changes['RuleDictionnarySoftware'] = array('_ignore_ocs_import' => '_ignore_import');
    $changes['RuleImportEntity']        = array('_ignore_ocs_import' => '_ignore_import');
@@ -1448,7 +1448,7 @@ function update0831to084() {
              WHERE `glpi_problems_tickets`.`problems_id`
                      NOT IN (SELECT `glpi_problems`.`id`
                              FROM `glpi_problems`)";
-   $DB->queryOrDie($query, "0.84 clean glpi_problems_tickets");   
+   $DB->queryOrDie($query, "0.84 clean glpi_problems_tickets");
 
    // Clean unlinked softwarelicense_computer
    $query = "DELETE
@@ -1484,7 +1484,7 @@ function update0831to084() {
                         NOT IN (SELECT `".getTableForItemType($type)."`.`id`
                               FROM `".getTableForItemType($type)."`)";
       $DB->queryOrDie($query, "0.84 clean glpi_items_problems");
-   }   
+   }
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

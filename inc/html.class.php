@@ -58,7 +58,7 @@ class Html {
                                       'keep_bad' => 2));
 
 
-/*      
+/*
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
       $value         = preg_replace($specialfilter, ' ', $value);
 
@@ -443,7 +443,7 @@ class Html {
       $dest = $CFG_GLPI["root_doc"] . "/index.php";
       $url_dest = str_replace($CFG_GLPI["root_doc"],'',$_SERVER['REQUEST_URI']);
       $dest.= "?redirect=".rawurlencode($url_dest);
-      
+
       $toadd = '';
       if (!strpos($dest,"?")) {
          $toadd = '&tokonq='.Toolbox::getRandomString(5);
@@ -459,7 +459,7 @@ class Html {
          </script>";
       exit();
    }
-   
+
    /**
     * Display common message for item not found
     *
@@ -2130,7 +2130,7 @@ class Html {
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
     * @param $ontop              display on top of the list (false by default)
     * @param $onright            display on right of the list (false by default)
-    * \deprecated
+    * \deprecated since 0.84
    **/
    static function openArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
       global $CFG_GLPI;
@@ -2171,7 +2171,7 @@ class Html {
     *
     * @param $actions array of action : $name -> $label
     * @param $confirm array of confirmation string (optional)
-    * \deprecated
+    * \deprecated since 0.84
    **/
    static function closeArrowMassives($actions, $confirm=array()) {
 
@@ -2437,7 +2437,7 @@ class Html {
     * @param $displayYear  should we set/diplay the year? (true by default)
     *
     * @return rand value used
-    * \deprecated used showDateField instead
+    * \deprecated since 0.84 used Html::showDateField instead
    **/
    static function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
                                     $minDate='', $maxDate='', $displayYear=true) {
@@ -2562,7 +2562,7 @@ class Html {
     * @param $maxTime      maximum allowed time (default '')
     *
     * @return rand value used
-    * \deprecated used showDateTimeField instead
+    * \deprecated since 0.84 used Html::showDateTimeField instead
    **/
    static function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=true,
                                         $can_edit=true, $minDate='', $maxDate='', $minTime='',
@@ -3783,7 +3783,7 @@ class Html {
    static function jsGetElementbyID($id) {
       return "$('#$id')";
    }
-   
+
    /**
     * Adapt dropdown to clean JS
     *

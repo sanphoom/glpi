@@ -60,6 +60,9 @@ class Report extends CommonGLPI{
    }
 
 
+   /**
+    * @since version 0.85
+   **/
    static function canView() {
       return Session::haveRight("reports","r");
    }

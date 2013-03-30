@@ -43,6 +43,7 @@ if (!defined('GLPI_ROOT')) {
  * \see Cartridge
 **/
 class CartridgeItem extends CommonDBTM {
+
    // From CommonDBTM
    static protected $forward_entity_to = array('Cartridge', 'Infocom');
    public $dohistory                   = true;

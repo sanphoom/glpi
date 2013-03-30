@@ -1316,7 +1316,7 @@ class AuthLDAP extends CommonDBTM {
             $num = 0;
             echo Search::showHeaderItem(Search::HTML_OUTPUT, _n('User', 'Users', 2), $num,
                                         $_SERVER['PHP_SELF'].
-                                                "?order=".($values['order']=="DESC"?"ASC":"DESC"));
+                                            "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             echo "<th>".__('Last update in the LDAP directory')."</th>";
             if ($_SESSION['ldap_import']['mode']) {
                echo "<th>".__('Last update in GLPI')."</th>";
@@ -2025,7 +2025,8 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return  nothing
    **/
-   static function ldapImportUserByServerId($params=array(), $action, $ldap_server, $display=false) {
+   static function ldapImportUserByServerId($params=array(), $action, $ldap_server,
+                                            $display=false) {
       global $DB;
       static $conn_cache = array();
 
@@ -2052,7 +2053,8 @@ class AuthLDAP extends CommonDBTM {
          $search_parameters['fields'][self::IDENTIFIER_LOGIN] = $config_ldap->fields['login_field'];
 
          if ($params['method'] == self::IDENTIFIER_EMAIL) {
-            $search_parameters['fields'][self::IDENTIFIER_EMAIL] = $config_ldap->fields['email1_field'];
+            $search_parameters['fields'][self::IDENTIFIER_EMAIL]
+                                       = $config_ldap->fields['email1_field'];
          }
 
          //Get the user's dn & login

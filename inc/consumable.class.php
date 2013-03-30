@@ -58,10 +58,16 @@ class Consumable extends CommonDBTM {
       return $forbidden;
    }
 
+
+   /**
+    * since version 0.84
+    *
+    * @see CommonDBTM::getNameField()
+   **/
    function getNameField() {
       return 'id';
    }
-   
+
    static function getTypeName($nb=0) {
       return _n('Consumable', 'Consumables', $nb);
    }
@@ -123,6 +129,7 @@ class Consumable extends CommonDBTM {
       return false;
    }
 
+
    /**
     * @since version 0.84
     *
@@ -136,7 +143,8 @@ class Consumable extends CommonDBTM {
       }
       return '';
    }
-   
+
+
    /**
     * UnLink a consumable linked to a printer
     *

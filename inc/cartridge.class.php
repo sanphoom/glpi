@@ -78,11 +78,18 @@ class Cartridge extends CommonDBChild {
       }
       return false;
    }
-   
+
+
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::getNameField()
+   **/
    function getNameField() {
       return 'id';
    }
-   
+
+
    static function getTypeName($nb=0) {
       return _n('Cartridge', 'Cartridges', $nb);
    }
@@ -124,6 +131,7 @@ class Cartridge extends CommonDBChild {
       parent::post_updateItem($history);
    }
 
+
    /**
     * @since version 0.84
     *
@@ -137,7 +145,7 @@ class Cartridge extends CommonDBChild {
       }
       return '';
    }
-   
+
    /**
     * @since version 0.84
     *
@@ -167,7 +175,7 @@ class Cartridge extends CommonDBChild {
                }
             }
             break;
-            
+
          case "updatepages" :
             if (isset($input['pages'])) {
                foreach ($input["item"] as $key => $val) {
@@ -190,7 +198,7 @@ class Cartridge extends CommonDBChild {
                $res['ko']++;
             }
             break;
-            
+
          default :
             return parent::doSpecificMassiveActions($input);
       }
