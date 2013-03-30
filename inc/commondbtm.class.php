@@ -3024,7 +3024,7 @@ class CommonDBTM extends CommonGLPI {
          case 'remove_contract_item' :
             $contract = new Contract;
             return $contract->doSpecificMassiveActions($input);
-            
+
          case "add_transfer_list" :
             if (!isset($_SESSION['glpitransfer_list'])) {
                $_SESSION['glpitransfer_list'] = array();
@@ -3825,7 +3825,8 @@ class CommonDBTM extends CommonGLPI {
                                                 $this->input[$field]);
                         }
 
-                        $doubles      = getAllDatasFromTable($this->table, "1 $where $where_global");
+                        $doubles      = getAllDatasFromTable($this->gettable(),
+                                                             "1 $where $where_global");
                         $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {
