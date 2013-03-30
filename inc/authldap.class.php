@@ -1588,7 +1588,7 @@ class AuthLDAP extends CommonDBTM {
 
                 //If user is marked as coming from LDAP, but is not present in it anymore
                 if (!$user['is_deleted']
-                   && ($user['auths_id'] == $options['ldapservers_id'])) {
+                    && ($user['auths_id'] == $options['ldapservers_id'])) {
                    User::manageDeletedUserInLdap($user['id']);
                    $results[self::USER_DELETED_LDAP] ++;
                 }

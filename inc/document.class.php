@@ -200,10 +200,8 @@ class Document extends CommonDBTM {
       }
 
       // Set default category for document linked to tickets
-      if (isset($input['itemtype'])
-         && $input['itemtype'] == 'Ticket'
-         && (!isset($input['documentcategories_id'])
-            || $input['documentcategories_id'] == 0)) {
+      if (isset($input['itemtype']) && ($input['itemtype'] == 'Ticket')
+          && (!isset($input['documentcategories_id']) || ($input['documentcategories_id'] == 0))) {
          $input['documentcategories_id'] = $CFG_GLPI["documentcategories_id_forticket"];
       }
 
@@ -771,7 +769,7 @@ class Document extends CommonDBTM {
                                   'documents_id' => $key);
                   if ($refitem = getItemForItemtype('Document')) {
                      $refitem->getFromDB($input2['documents_id']);
-                  }                                  
+                  }
                } else if (isset($input['documents_id'])) {
                   // Remove contract to items
                   $input2 = array('itemtype'     => $input["itemtype"],

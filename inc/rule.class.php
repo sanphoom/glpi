@@ -105,9 +105,11 @@ class Rule extends CommonDBTM {
 
 
    /**
-   *  Get correct Rule object for specific rule
-   *
-   *  @param $rules_id ID of the rule
+    *  Get correct Rule object for specific rule
+    *
+    *  @since version 0.84
+    *
+    *  @param $rules_id ID of the rule
    **/
    static function getRuleObjectByID($rules_id) {
 
@@ -2803,7 +2805,8 @@ class Rule extends CommonDBTM {
 
             default:
                if ($item instanceof Rule) {
-                  return sprintf('%1$s / %2$s', _n('Criterion', 'Criteria', 2), _n('Action', 'Actions', 2));
+                  return sprintf(__('%1$s / %2$s'), _n('Criterion', 'Criteria', 2),
+                                 _n('Action', 'Actions', 2));
                }
          }
       }

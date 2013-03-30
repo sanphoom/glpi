@@ -657,7 +657,7 @@ class User extends CommonDBTM {
          $extension = array_pop($tmp);
          $picture_path = GLPI_DOC_DIR."/_pictures/$filename.".$extension;
          self::dropPictureFiles($filename.".".$extension);
-         
+
          if (Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
             Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
             // For display
@@ -2481,7 +2481,7 @@ class User extends CommonDBTM {
                         }
                      } else {
                         $res['noright']++;
-                        
+
                         $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      }
                   }
@@ -3173,8 +3173,10 @@ class User extends CommonDBTM {
 
          $where = implode("','",$IDs);
          $query = "UPDATE `glpi_users`
-                   SET `authtype` = '$authtype', `auths_id` = '$server', `password` = '',
-                       `is_deleted_ldap`='0'
+                   SET `authtype` = '$authtype',
+                       `auths_id` = '$server',
+                       `password` = '',
+                       `is_deleted_ldap` = '0'
                    WHERE `id` IN ('$where')";
          if ($DB->query($query)) {
             foreach ($IDs as $ID) {
@@ -3481,7 +3483,7 @@ class User extends CommonDBTM {
       //User is present in DB but not in the directory : it's been deleted in LDAP
       $tmp['id']              = $users_id;
       $tmp['is_deleted_ldap'] = 1;
-      $myuser                 = new User();
+      $myuser                 = new self();
       $myuser->getFromDB($users_id);
 
       //User is already considered as delete from ldap
@@ -3910,10 +3912,10 @@ class User extends CommonDBTM {
       }
       return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
       if (!empty($picture)) {
-         
+
       }
    }
-   
+
    /**
     * Drop existing files for user picture
     *
