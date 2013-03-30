@@ -673,7 +673,7 @@ class Search {
             $numrows    = $DBread->result($result_num,0,0);
          }
       }
-      
+
       // If export_all reset LIMIT condition
       if ($p['export_all']) {
          $LIMIT = "";
@@ -4622,7 +4622,7 @@ class Search {
                $withdays = true;
                if (isset($searchopt[$ID]['withdays'])) {
                   $withdays = $searchopt[$ID]['withdays'];
-               }               
+               }
                return Html::timestampToString($data[$NAME.$num],$withseconds, $withdays);
 
             case "email" :
@@ -5645,7 +5645,6 @@ class Search {
             $pdf->SetFont($font, '', 8);
             $pdf->AddPage();
             $PDF_TABLE.='</table>';
-//            print_r($PDF_TABLE);
             $pdf->writeHTML($PDF_TABLE, true, false, false, false, '');
             $pdf->Output('glpi.pdf', 'I');
             break;

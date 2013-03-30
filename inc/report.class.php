@@ -67,7 +67,6 @@ class Report extends CommonGLPI{
 
    /**
     * Show report title
-    *
    **/
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
@@ -161,6 +160,8 @@ class Report extends CommonGLPI{
 
    /**
     * Show Default Report
+    *
+    * @since version 0.84
    **/
    static function showDefaultReport() {
       global $DB;
@@ -279,7 +280,7 @@ class Report extends CommonGLPI{
     * @param$order                  (default '')
     * @param $field                 (default '')
     * @param $extra                 (default '')
-    */
+   **/
    static function reportForNetworkInformations($networkport_prefix, $networkport_crit,
                                                 $where_crit, $order='', $field='', $extra='') {
       global $DB;
@@ -327,7 +328,8 @@ class Report extends CommonGLPI{
                     ON (ADDR_2.`itemtype` = 'NetworkName'
                         AND NAME_2.`id` = ADDR_2.`items_id`
                         AND ADDR_2.`is_deleted` = 0)
-                WHERE $where_crit GROUP BY PORT_1.`id`";
+                WHERE $where_crit
+                GROUP BY PORT_1.`id`";
 
       if (!empty($order)) {
          $query .= "ORDER BY $order";

@@ -49,7 +49,7 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
 
    Report::reportForNetworkInformations("`glpi_networkequipments` AS ITEM",
                                         "PORT_1.`itemtype` = 'NetworkEquipment'
-                                         AND PORT_1.`items_id` = ITEM.`id`",
+                                              AND PORT_1.`items_id` = ITEM.`id`",
                                         "ITEM.`id` = '".$_POST["switch"]."'");
 
    Html::footer();
