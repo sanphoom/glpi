@@ -93,11 +93,19 @@ class Link extends CommonDBTM {
       $DB->query($query2);
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::getEmpty()
+   **/
    function getEmpty() {
+
       parent::getEmpty();
       //Keep the same behavior as in previous versions
       $this->fields['open_window'] = 1;
    }
+
 
    /**
    * Print the link form
@@ -123,8 +131,7 @@ class Link extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Open in a new window')."</td><td>";
       Dropdown::showYesNo('open_window', $this->fields['open_window']);
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
       echo "<td colspan='2'>";
@@ -386,7 +393,7 @@ class Link extends CommonDBTM {
                        `glpi_links`.`name` AS name ,
                        `glpi_links`.`data` AS data,
                        `glpi_links`.`open_window` AS open_window
-            FROM `glpi_links`
+                FROM `glpi_links`
                 INNER JOIN `glpi_links_itemtypes`
                      ON `glpi_links`.`id` = `glpi_links_itemtypes`.`links_id`
                 WHERE `glpi_links_itemtypes`.`itemtype`='".$item->getType()."' " .

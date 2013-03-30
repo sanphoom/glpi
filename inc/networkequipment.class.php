@@ -35,8 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES Networking
 
+/**
+ * Network equipment Class
+**/
 class NetworkEquipment extends CommonDBTM {
 
    // From CommonDBTM

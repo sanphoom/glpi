@@ -652,9 +652,9 @@ class User extends CommonDBTM {
          // Unlink old picture (clean on changing format)
          self::dropPictureFiles($this->fields['picture']);
          // Move uploaded file
-         $filename = $this->fields['id'];
-         $tmp = explode(".", $_FILES['picture']['name']);
-         $extension = array_pop($tmp);
+         $filename     = $this->fields['id'];
+         $tmp          = explode(".", $_FILES['picture']['name']);
+         $extension    = array_pop($tmp);
          $picture_path = GLPI_DOC_DIR."/_pictures/$filename.".$extension;
          self::dropPictureFiles($filename.".".$extension);
 
@@ -667,8 +667,7 @@ class User extends CommonDBTM {
             $thumb_path = GLPI_DOC_DIR."/_pictures/".$filename."_min.".$extension;
             Toolbox::resizePicture($picture_path, $thumb_path);
          } else {
-            Session::addMessageAfterRedirect(
-                     __('Potential upload attack or file too large. Moving temporary file failed.'),
+            Session::addMessageAfterRedirect(__('Potential upload attack or file too large. Moving temporary file failed.'),
                                              false, ERROR);
          }
       } else {
@@ -1020,12 +1019,16 @@ class User extends CommonDBTM {
       }
    }
 
+
    /**
     * Synchronise picture (photo) of the user
+    *
+    * ÷@since version 0.85
     *
     * @return string : the filename to be stored in user picture field
    **/
    function syncLdapPhoto() {
+
       if (isset($this->fields["authtype"])
           && (($this->fields["authtype"] == Auth::LDAP))) {
 
@@ -1041,7 +1044,9 @@ class User extends CommonDBTM {
             if ($ds) {
                //get picture fields
                $picture_field = $config_ldap->fields['picture_field'];
-               if (empty($picture_field)) return "";
+               if (empty($picture_field)) {
+                  return "";
+               }
 
                //get picture content in ldap
                $info = AuthLdap::getUserByDn($ds, $this->fields['user_dn'],
@@ -1053,9 +1058,9 @@ class User extends CommonDBTM {
                   return "";
                }
                //prepare paths
-               $img = array_pop($info[$picture_field]);
-               $filename = $this->fields["id"];
-               $file = GLPI_PICTURE_DIR . "/" . $filename . '.jpg';
+               $img       = array_pop($info[$picture_field]);
+               $filename  = $this->fields["id"];
+               $file      = GLPI_PICTURE_DIR . "/" . $filename . '.jpg';
 
                //save picture
                $outjpeg = fopen($file, 'wb');
@@ -1770,9 +1775,9 @@ class User extends CommonDBTM {
          $caneditpassword = true;
       }
 
-      $extauth         = !(($this->fields["authtype"] == Auth::DB_GLPI)
-                           || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
-                               && !empty($this->fields["password"])));
+      $extauth = !(($this->fields["authtype"] == Auth::DB_GLPI)
+                   || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
+                       && !empty($this->fields["password"])));
 
       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
@@ -1785,44 +1790,41 @@ class User extends CommonDBTM {
          echo "<td><input name='name' value=\"" . $this->fields["name"] . "\"></td>";
          // si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 
+      } else if (!empty($this->fields["password"])
+                 || ($this->fields["authtype"] == Auth::DB_GLPI)) {
+               echo "<td>";
+               echo "<input name='name' value=\"" . $this->fields["name"] . "\"></td>";
       } else {
-         if (!empty($this->fields["password"])
-             || ($this->fields["authtype"] == Auth::DB_GLPI)) {
-            echo "<td>";
-            echo "<input name='name' value=\"" . $this->fields["name"] . "\">";
-         } else {
-            echo "<td class='b'>" . $this->fields["name"];
-            echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
-         }
-         echo "</td>";
+         echo "<td class='b'>" . $this->fields["name"];
+         echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\"></td>";
       }
 
       if (!empty($this->fields["name"])) {
          echo "<td rowspan='3'>" . __('Picture') . "</td>";
          echo "<td rowspan='3'>";
          echo "<div class='user_picture_border_small' id='picture$rand'>";
-         echo "<img class='user_picture_small' src='".User::getThumbnailURLForPicture($this->fields['picture'])."' />";
+         echo "<img class='user_picture_small' src='".
+                User::getThumbnailURLForPicture($this->fields['picture'])."' />";
 //         echo "<img src='".self::getURLForPicture($this->fields["picture"])."' class='user_picture'/>";
          echo "</div>";
          $full_picture = "<div class='user_picture_border'>";
-         $full_picture .= "<img class='user_picture' src='".User::getURLForPicture($this->fields['picture'])."' />";
+         $full_picture .= "<img class='user_picture' src='".
+                            User::getURLForPicture($this->fields['picture'])."' />";
          $full_picture .= "</div>";
 
          Html::showTooltip($full_picture, array('applyto' => "picture$rand"));
          echo "<input type='file' name='picture' accept='image/gif, image/jpeg, image/png'>";
          echo "</td>";
-         echo "</tr>";
       }
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Surname') . "</td><td>";
       Html::autocompletionTextField($this,"realname");
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('First name') . "</td><td>";
       Html::autocompletionTextField($this, "firstname");
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       //do some rights verification
       if (Session::haveRight("user", "w")
@@ -1831,18 +1833,16 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Password')."</td>";
          echo "<td><input id='password' type='password' name='password' value='' size='20'
-                    autocomplete='off' onkeyup=\"return passwordCheck();\">";
-         echo "</td>";
+                    autocomplete='off' onkeyup=\"return passwordCheck();\"></td>";
          echo "<td rowspan='2'>".__('Password security policy')."</td>";
          echo "<td rowspan='2'>";
          Config::displayPasswordSecurityChecks();
-         echo "</td>";
-         echo "</tr>";
+         echo "</td></tr>";
+
          echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Password confirmation') . "</td>";
          echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
-         echo "</td>";
-         echo "</tr>";
+         echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";

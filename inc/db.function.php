@@ -1223,14 +1223,16 @@ function getUserName($ID, $link=0) {
                $user['comment'] = $user['comment'];
                foreach ($comments as $datas) {
                   $user['comment'] .= sprintf(__('%1$s: %2$s')."<br>",
-                                   "<span class='b'>".$datas['name']."</span>", $datas['value']);
+                                              "<span class='b'>".$datas['name']."</span>",
+                                              $datas['value']);
                }
             }
 
             if (!empty($data['picture'])) {
                $user['comment'] = "<div class='tooltip_picture_border'>".
-                  "<img  class='tooltip_picture' src='".User::getThumbnailURLForPicture($data['picture'])."' /></div>".
-                  "<div class='tooltip_text'>".$user['comment']."</div>";
+                                  "<img  class='tooltip_picture' src='".
+                                     User::getThumbnailURLForPicture($data['picture'])."' /></div>".
+                                  "<div class='tooltip_text'>".$user['comment']."</div>";
             }
          } else {
             $user = $username;

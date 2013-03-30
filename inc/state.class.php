@@ -39,12 +39,12 @@ if (!defined('GLPI_ROOT')) {
 class State extends CommonTreeDropdown {
 
    protected $visibility_fields = array('Computer'         => 'is_visible_computer',
-                                    'SoftwareVersion'  => 'is_visible_softwareversion',
-                                    'Monitor'          => 'is_visible_monitor',
-                                    'Printer'          => 'is_visible_printer',
-                                    'Peripheral'       => 'is_visible_peripheral',
-                                    'Phone'            => 'is_visible_phone',
-                                    'NetworkEquipment' => 'is_visible_networkequipment');
+                                        'SoftwareVersion'  => 'is_visible_softwareversion',
+                                        'Monitor'          => 'is_visible_monitor',
+                                        'Printer'          => 'is_visible_printer',
+                                        'Peripheral'       => 'is_visible_peripheral',
+                                        'Phone'            => 'is_visible_phone',
+                                        'NetworkEquipment' => 'is_visible_networkequipment');
 
 
    static function getTypeName($nb=0) {
@@ -63,6 +63,11 @@ class State extends CommonTreeDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see CommonTreeDropdown::getAdditionalFields()
+   **/
    function getAdditionalFields() {
 
       $fields   = parent::getAdditionalFields();
@@ -78,6 +83,7 @@ class State extends CommonTreeDropdown {
       }
       return $fields;
    }
+
 
    /**
     * Dropdown of states for behaviour config
@@ -221,7 +227,13 @@ class State extends CommonTreeDropdown {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::getEmpty()
+   **/
    function getEmpty() {
+
       parent::getEmpty();
       //initialize is_visible_* fields at true to keep the same behavior as in older versions
       foreach ($this->visibility_fields as $type => $field) {
@@ -229,12 +241,19 @@ class State extends CommonTreeDropdown {
       }
    }
 
+
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see CommonTreeDropdown::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
+
       $input = parent::prepareInputForAdd($input);
 
       $state = new self();

@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')) {
 
 
 // class Toolbox
+/**
+ * Toolbox Class
+**/
 class Toolbox {
 
    /**
@@ -847,7 +850,7 @@ class Toolbox {
       }
       echo "</tr>";
 
-      //Test for session auto_start
+      // Test for session auto_start
       if (ini_get('session.auto_start')==1) {
          echo "<tr class='tab_bg_1'><td class='b'>".__('Test session auto start')."</td>";
          echo "<td class='red'>";
@@ -857,8 +860,9 @@ class Toolbox {
          $error = 2;
       }
 
-      //Test for option session use trans_id loaded or not.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test if Session_use_trans_sid is used')."</td>";
+      // Test for option session use trans_id loaded or not.
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='left b'>".__('Test if Session_use_trans_sid is used')."</td>";
 
       if (isset($_POST[session_name()]) || isset($_GET[session_name()])) {
          echo "<td class='red'>";
@@ -868,14 +872,15 @@ class Toolbox {
 
       } else {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
-               __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
-               "\" title=\"". __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
-               "\"></td>";
+                    __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
+                    "\" title=\"". __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
+                    "\"></td>";
       }
       echo "</tr>";
 
-      //Test for sybase extension loaded or not.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('magic_quotes_sybase extension test')."</td>";
+      // Test for sybase extension loaded or not.
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='left b'>".__('magic_quotes_sybase extension test')."</td>";
 
       if (ini_get('magic_quotes_sybase')) {
          echo "<td class='red'>";
@@ -893,7 +898,7 @@ class Toolbox {
       }
       echo "</tr>";
 
-      //Test for ctype extension loaded or not (forhtmlawed)
+      // Test for ctype extension loaded or not (forhtmlawed)
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Test ctype functions')."</td>";
 
       if (!function_exists('ctype_digit')) {
@@ -908,24 +913,23 @@ class Toolbox {
       }
       echo "</tr>";
 
-      //Test for json_encode function.
+      // Test for json_encode function.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Test json functions')."</td>";
 
       if (!function_exists('json_encode') || !function_exists('json_decode')) {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                     __("GLPI can't work correctly without the json_encode and json_decode functions").
-               "></td>";
+                   "></td>";
          $error = 2;
 
       } else {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                __s('The functionality is found - Perfect!'). "\" title=\"".
-               __s('The functionality is found - Perfect!').
-               "\"></td>";
+               __s('The functionality is found - Perfect!')."\"></td>";
       }
       echo "</tr>";
 
-      //Test for mbstring extension.
+      // Test for mbstring extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Mbstring extension test')."</td>";
 
       if (!extension_loaded('mbstring')) {
@@ -936,24 +940,22 @@ class Toolbox {
       } else {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                __s('The functionality is found - Perfect!'). "\" title=\"".
-               __s('The functionality is found - Perfect!').
-               "\"></td>";
+               __s('The functionality is found - Perfect!')."\"></td>";
       }
       echo "</tr>";
 
-      //Test for GD extension.
+      // Test for GD extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('GD extension test')."</td>";
 
       if (!extension_loaded('gd')) {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
-               __('GD extension of your parser PHP is not installed')."></td>";
+                     __('GD extension of your parser PHP is not installed')."></td>";
          $error = 2;
 
       } else {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
-               __s('The functionality is found - Perfect!'). "\" title=\"".
-               __s('The functionality is found - Perfect!').
-               "\"></td>";
+                     __s('The functionality is found - Perfect!'). "\" title=\"".
+                     __s('The functionality is found - Perfect!')."\"></td>";
       }
       echo "</tr>";
 
@@ -972,13 +974,13 @@ class Toolbox {
 
          case 2: //Insufficient memory
             $showmem = $mem/1048576;
-            echo "<td class='red'><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'><span class='b'>".
-                  sprintf(__('%1$s: %2$s'), __('Allocated memory'),
-                          sprintf(__('%1$s %2$s'), $showmem, __('Mio'))).
-                  "</span>".
-                  "<br>".__('A minimum of 64MB is commonly required for GLPI.').
-                  "<br>".__('Try increasing the memory_limit parameter in the php.ini file.').
-                  "</td>";
+            echo "<td class='red'><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
+                 "<span class='b'>".sprintf(__('%1$s: %2$s'), __('Allocated memory'),
+                                            sprintf(__('%1$s %2$s'), $showmem, __('Mio'))).
+                 "</span>".
+                 "<br>".__('A minimum of 64MB is commonly required for GLPI.').
+                 "<br>".__('Try increasing the memory_limit parameter in the php.ini file.').
+                 "</td>";
             $error = 2;
             break;
 
@@ -1143,16 +1145,20 @@ class Toolbox {
       }
    }
 
+
    /**
     * Resize a picture to the new size
     *
-    * @param $source_path string : path of the picture to be resized
-    * @param $dest_path string : path of the new resized picture
-    * @param $new_width string : new width after resized
-    * @param $new_height string : new height after resized
+    * @since version 0.85
+    *
+    * @param $source_path   string   path of the picture to be resized
+    * @param $dest_path     string   path of the new resized picture
+    * @param $new_width     string   new width after resized (default 71)
+    * @param $new_height    string   new height after resized (default 71)
+    *
     * @return bool : true or false
    **/
-   static function resizePicture($source_path, $dest_path, $new_width = 71, $new_height = 71) {
+   static function resizePicture($source_path, $dest_path, $new_width=71, $new_height=71) {
 
       //get img informations (dimensions and extension)
       $img_infos  = getimagesize($source_path);
@@ -1161,19 +1167,23 @@ class Toolbox {
       $img_type   = $img_infos[2];
 
       switch ($img_type) {
-         case IMAGETYPE_BMP:
+         case IMAGETYPE_BMP :
             $source_res = imagecreatefromwbmp($source_path);
             break;
-         case IMAGETYPE_GIF:
+
+         case IMAGETYPE_GIF :
             $source_res = imagecreatefromgif($source_path);
             break;
-         case IMAGETYPE_JPEG:
+
+         case IMAGETYPE_JPEG :
             $source_res = imagecreatefromjpeg($source_path);
             break;
-         case IMAGETYPE_PNG:
+
+         case IMAGETYPE_PNG :
             $source_res = imagecreatefrompng($source_path);
             break;
-         default:
+
+         default :
             return false;
       }
 
@@ -1705,7 +1715,7 @@ class Toolbox {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       if (!empty($where)) {
-      
+
          if (isset($_SESSION["glpiactiveprofile"]["interface"])
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
             $decoded_where = rawurldecode($where);
@@ -1758,7 +1768,7 @@ class Toolbox {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }
                         }
-                        
+
                         Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
                         break;
 
@@ -1808,7 +1818,7 @@ class Toolbox {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }
                         }
-                        
+
                         Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
                         break;
                   }

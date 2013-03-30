@@ -799,8 +799,7 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . __('Picture') . "</td>";
       echo "<td><input type='text' name='picture_field' value='".
-                 $this->fields["picture_field"]."'></td>";
-
+                 $this->fields["picture_field"]."'></td></tr>";
 
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
@@ -2495,6 +2494,7 @@ class AuthLDAP extends CommonDBTM {
     * @param condition           the LDAP filter to use for the search
     * @param $dn        string   DN of the object
     * @param attrs      array    of the attributes to retreive
+    * @param $clean              (true by default)
    **/
    static function getObjectByDn($ds, $condition, $dn, $attrs=array(), $clean=true) {
 
@@ -2516,8 +2516,9 @@ class AuthLDAP extends CommonDBTM {
     * @param $ds
     * @param $user_dn
     * @param $attrs
+    * @param $clean      (true by default)
    **/
-   static function getUserByDn($ds, $user_dn, $attrs, $clean = true) {
+   static function getUserByDn($ds, $user_dn, $attrs, $clean=true) {
       return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs, $clean);
    }
 
