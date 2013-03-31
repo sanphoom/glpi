@@ -64,6 +64,12 @@ class Cartridge extends CommonDBChild {
       return $forbidden;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
    function showSpecificMassiveActionsParameters($input=array()) {
 
       switch ($input['action']) {
@@ -286,14 +292,14 @@ class Cartridge extends CommonDBChild {
 
       if ($this->getFromDB($ID)) {
          $printer = new Printer();
-         $toadd = '';
+         $toadd   = '';
          if ($printer->getFromDB($this->getField("printers_id"))) {
-            $toadd.= ", `pages` = '".$printer->fields['last_pages_counter']."' ";
+            $toadd .= ", `pages` = '".$printer->fields['last_pages_counter']."' ";
          }
 
          $query = "UPDATE`".$this->getTable()."`
                    SET `date_out` = '".date("Y-m-d")."'
-                     $toadd
+                       $toadd
                    WHERE `id`='$ID'";
 
          if ($result = $DB->query($query)
@@ -777,7 +783,8 @@ class Cartridge extends CommonDBChild {
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'rand'             => $rand,
-                           'extraparams'      => array('maxpages' => $printer->fields['last_pages_counter']));
+                           'extraparams'      => array('maxpages'
+                                                       => $printer->fields['last_pages_counter']));
          Html::showMassiveActions(__CLASS__, $paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";

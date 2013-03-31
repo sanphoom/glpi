@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Computer and Items (monitor, printer, phone, peripheral only)
+/**
+ * Computer_Item Class
+ *
+ * Relation between Computer and Items (monitor, printer, phone, peripheral only)
+**/
 class Computer_Item extends CommonDBRelation{
 
    // From CommonDBRelation
@@ -311,7 +315,7 @@ class Computer_Item extends CommonDBRelation{
                      if ($refitem = getItemForItemtype($input2["itemtype"])) {
                         $refitem->getFromDB($input2['items_id']);
                      }
-                     
+
                   } else if (isset($input["items_id"])) {
                      $input2 = array('computers_id' => $key,
                                     'itemtype'      => $input["item_itemtype"],
@@ -516,9 +520,7 @@ class Computer_Item extends CommonDBRelation{
                   ((isset($data['is_deleted']) && $data['is_deleted'])?"class='tab_bg_2_2'":"").
                  ">".$name."</td>";
             if (Plugin::haveImport()) {
-               echo "<td>";
-               echo Dropdown::getYesNo($data['assoc_is_dynamic']);
-               echo "</td>";
+               echo "<td>".Dropdown::getYesNo($data['assoc_is_dynamic'])."</td>";
             }
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $data['entities_id']);
@@ -643,9 +645,7 @@ class Computer_Item extends CommonDBRelation{
                   ($comp->getField('is_deleted')?"class='tab_bg_2_2'":"").
                  ">".$comp->getLink()."</td>";
             if (Plugin::haveImport()) {
-               echo "<td>";
-               echo Dropdown::getYesNo($dynamic[$key]);
-               echo "</td>";
+               echo "<td>".Dropdown::getYesNo($dynamic[$key])."</td>";
             }
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                $comp->getField('entities_id'));

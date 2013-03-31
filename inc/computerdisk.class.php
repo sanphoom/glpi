@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Disk class
+/**
+ * Disk Class
+**/
 class ComputerDisk extends CommonDBChild {
 
    // From CommonDBChild
@@ -273,9 +275,7 @@ class ComputerDisk extends CommonDBChild {
                echo "<tr class='tab_bg_2'>";
                echo "<td>".$disk->getLink()."</td>";
                if (Plugin::haveImport()) {
-                  echo "<td>";
-                  echo Dropdown::getYesNo($data['is_dynamic']);
-                  echo "</td>";
+                  echo "<td>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
                }
                echo "<td>".$data['device']."</td>";
                echo "<td>".$data['mountpoint']."</td>";

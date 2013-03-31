@@ -41,19 +41,20 @@ if (!defined('GLPI_ROOT')) {
 class CommonGLPI {
 
    /// GLPI Item type cache : set dynamically calling getType
-   protected $type        = -1;
+   protected $type                 = -1;
 
    /// Display list on Navigation Header
-   protected $displaylist = true;
+   protected $displaylist          = true;
 
    /// Show Debug
-   public $showdebug      = false;
+   public $showdebug               = false;
 
    /// Tab orientation : horizontal or vertical
-   public $taborientation = 'horizontal';
+   public $taborientation          = 'horizontal';
    /// Need to get item to show tab
    public $get_item_to_display_tab = false;
-   static protected $othertabs = array();
+   static protected $othertabs     = array();
+
 
    /**
     * Return the localized name of the current Type
@@ -1160,7 +1161,7 @@ class CommonGLPI {
 
       return array();
    }
-   
+
    /**
     * Get link for display options
     *

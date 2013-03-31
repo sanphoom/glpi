@@ -969,9 +969,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo "</td>";
          if (isset($data['is_dynamic'])) {
-            echo "<td class='center'>";
-            echo Dropdown::getYesNo($data['is_dynamic']);
-            echo "</td>";
+            echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
          } else {
             echo "<td>&nbsp;</td>";
          }

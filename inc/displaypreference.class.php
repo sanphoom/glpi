@@ -38,13 +38,14 @@ if (!defined('GLPI_ROOT')) {
 class DisplayPreference extends CommonDBTM {
 
    // From CommonGLPI
-   public $taborientation = 'horizontal';
+   public $taborientation          = 'horizontal';
    public $get_item_to_display_tab = false;
 
    // From CommonDBTM
-   var $auto_message_on_action = false;
+   var $auto_message_on_action     = false;
 
-   protected $displaylist = false;
+   protected $displaylist          = false;
+
 
    /**
     * @see CommonDBTM::prepareInputForAdd()

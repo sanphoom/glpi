@@ -170,14 +170,18 @@ class Link_Itemtype extends CommonDBChild {
       return true;
    }
 
+
    /**
     *
     * Remove all associations for an itemtype
+    *
     * @since 0.85
+    *
     * @param $itemtype itemtype for which all link associations must be removed
     */
    static function deleteForItemtype($itemtype) {
       global $DB;
+
       $query = "DELETE
                 FROM `".self::getTable()."`
                 WHERE `itemtype` LIKE '%Plugin$itemtype%'";

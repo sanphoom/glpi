@@ -1010,24 +1010,27 @@ function update0831to084() {
    // Delete OCS rules
    $DB->query("SET SESSION group_concat_max_len = 4194304;");
    $query = "SELECT GROUP_CONCAT(`id`)
-               FROM `glpi_rules`
-               WHERE `sub_type` = 'RuleImportEntity'
-               GROUP BY `sub_type`";
+             FROM `glpi_rules`
+             WHERE `sub_type` = 'RuleImportEntity'
+             GROUP BY `sub_type`";
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
          // Get rule string
          $rules = $DB->result($result,0,0);
-         $query = "DELETE FROM `glpi_ruleactions`
-                     WHERE `rules_id` IN ($rules)";
+         $query = "DELETE
+                   FROM `glpi_ruleactions`
+                   WHERE `rules_id` IN ($rules)";
 
          $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
 
-         $query = "DELETE FROM `glpi_rulecriterias`
-                     WHERE `rules_id` IN ($rules)";
+         $query = "DELETE
+                   FROM `glpi_rulecriterias`
+                   WHERE `rules_id` IN ($rules)";
          $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
 
-         $query = "DELETE FROM `glpi_rules`
-                     WHERE `id` IN ($rules)";
+         $query = "DELETE
+                   FROM `glpi_rules`
+                   WHERE `id` IN ($rules)";
          $DB->queryOrDie($query, "0.84 clean RuleImportEntity datas");
       }
    }

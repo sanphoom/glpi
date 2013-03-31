@@ -35,9 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// class Html
+/**
+ * Html Class
+**/
 class Html {
-
 
 
    /**
@@ -594,7 +595,6 @@ class Html {
          echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
 
 
-
          echo "<div id='debugtabs$rand'><ul>";
          if ($CFG_GLPI["debug_sql"]) {
             echo "<li><a href='#debugsql$rand'>SQL REQUEST</a></li>";
@@ -636,9 +636,7 @@ class Html {
             echo "</div>";
          }
          if ($CFG_GLPI["debug_vars"]) {
-            echo "<div id='debugautoload$rand'>";
-            echo implode(', ', $DEBUG_AUTOLOAD);
-            echo "</div>";
+            echo "<div id='debugautoload$rand'>".implode(', ', $DEBUG_AUTOLOAD)."</div>";
             echo "<div id='debugpost$rand'>";
             self::printCleanArray($_POST, 0, true);
             echo "</div>";
@@ -3371,9 +3369,9 @@ class Html {
     * Clean Printing of and array in a table
     * ONLY FOR DEBUG
     *
-    * @param $tab    the array to display
-    * @param $pad    Pad used (default 0)
-    * @param $jsexpand    Expand using JS ? (default  false)
+    * @param $tab          the array to display
+    * @param $pad          Pad used (default 0)
+    * @param $jsexpand     Expand using JS ? (default  false)
     *
     * @return nothing
    **/
@@ -3387,8 +3385,8 @@ class Html {
          foreach ($tab as $key => $val) {
             echo "<tr class='tab_bg_1'><td class='top right'>";
             echo $key;
-            $is_array=is_array($val);
-            $rand = mt_rand();
+            $is_array = is_array($val);
+            $rand     = mt_rand();
             echo "</td><td class='top'>";
             if ($jsexpand && $is_array) {
                echo "<a class='pointer' onclick=\"javascript:showHideDiv('content$key$rand','','','')\">=></a>";

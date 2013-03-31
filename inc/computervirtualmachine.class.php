@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class to manage virtual machines
+/**
+ * ComputerVirtualMachine Class
+ *
+ * Class to manage virtual machines
+**/
 class ComputerVirtualMachine extends CommonDBChild {
 
    // From CommonDBChild
@@ -332,9 +336,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$vm->getLink()."</td>";
             if (Plugin::haveImport()) {
-               echo "<td>";
-               echo Dropdown::getYesNo($vm->isDynamic());
-               echo "</td>";
+               echo "<td>".Dropdown::getYesNo($vm->isDynamic())."</td>";
             }
             echo "<td>";
             echo Dropdown::getDropdownName('glpi_virtualmachinetypes',

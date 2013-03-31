@@ -71,9 +71,14 @@ class Bookmark extends CommonDBTM {
    }
 
 
-   // Special case: a private bookmark has entities_id==-1 => we cannot check it through
-   //               CommonDBTM::canCreateItem ...
+   /**
+    * Special case: a private bookmark has entities_id==-1 => we cannot check it
+    * @see CommonDBTM::canCreateItem()
+    *
+    * @since version 0.85
+   **/
    function canCreateItem() {
+
       if (($this->fields['is_private'] == 1)
           && ($this->fields['users_id'] == Session::getLoginUserID())) {
          return true;
@@ -82,9 +87,14 @@ class Bookmark extends CommonDBTM {
    }
 
 
-   // Special case: a private bookmark has entities_id==-1 => we cannot check it through
-   //               CommonDBTM::canViewItem ...
+   /**
+    *  Special case: a private bookmark has entities_id==-1 => we cannot check it
+    * @see CommonDBTM::canViewItem()
+    *
+    * @since version 0.85
+   **/
    function canViewItem() {
+
       if (($this->fields['is_private'] == 1)
           && ($this->fields['users_id'] == Session::getLoginUserID())) {
          return true;
