@@ -456,7 +456,7 @@ class Computer_Item extends CommonDBRelation{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Connect an item')."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td class='right'>";
+         echo "<tr class='tab_bg_1'><td>";
 //          Dropdown::showAllItems("items_id", 0, 0, $comp->fields['entities_id'],
 //                                 $CFG_GLPI["directconnect_types"], false, true);
          if (!empty($withtemplate)) {
@@ -464,7 +464,7 @@ class Computer_Item extends CommonDBRelation{
          }
          self::dropdownAllConnect('Computer', "items_id", $comp->fields["entities_id"],
                                   $withtemplate, $used);
-         echo "</td><td class='center'>";
+         echo "</td><td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Connect')."\" class='submit'>";
          echo "<input type='hidden' name='computers_id' value='".$comp->fields['id']."'>";
          echo "</td></tr>";
@@ -756,10 +756,10 @@ class Computer_Item extends CommonDBRelation{
          if ($onlyglobal) {
             $params['condition'] = "`is_global` = '1'";
          }
-         Ajax::updateItemOnSelectEvent("itemtype$rand", "show_$myname$rand",
+         Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_$myname$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownConnect.php", $params);
 
-         echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
+         echo "<br><div id='show_$myname$rand'>---&nbsp;</div>\n";
       }
       return $rand;
 

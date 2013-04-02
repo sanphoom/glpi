@@ -3796,9 +3796,15 @@ class Html {
     *
     * @return String
    **/
-   static function jsAdaptDropdown($id) {
+   static function jsAdaptDropdown($id, $params= array()) {
+      $width = '80%';
+      if (isset($params["width"])) {
+         $width = $params["width"];
+         unset($params["width"]);
+      }   
       $out = "<script type='text/javascript'>\n";
       $out .= "$(document).ready(function() { $('#$id').select2({
+                  width: '$width',
                   minimumResultsForSearch: 5,}); });";
       $out .= "</script>\n";
       return $out;
