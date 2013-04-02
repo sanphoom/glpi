@@ -41,15 +41,15 @@ define("GLPI_CSRF_MAX_TOKENS","100");
 
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
-$CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |jqeury| tinymce|english names|
-      array('ar_SA' => array('العَرَبِيَّةُ',        'ar_SA.mo','en-GB', 'ar','arabic'),
+$CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |jquery| tinymce|english names|
+      array('ar_SA' => array('العَرَبِيَّةُ',        'ar_SA.mo','ar',    'ar','arabic'),
             'bg_BG' => array('Български',            'bg_BG.mo','bg',    'bg','bulgarian'),
             'id_ID' => array('Bahasa Indonesia',     'id_ID.mo','id',    'id','indonesian'),
             'ca_ES' => array('Català',               'ca_ES.mo','ca',    'ca','catalan'), // ca_CA
             'cs_CZ' => array('Čeština',              'cs_CZ.mo','cs',    'cs','czech'),
             'de_DE' => array('Deutsch',              'de_DE.mo','de',    'de','german'),
             'da_DK' => array('Dansk',                'da_DK.mo','da',    'da','danish'), // dk_DK
-            'et_EE' => array('Eesti',                'et_EE.mo','en-GB', 'et','estonian'), // ee_ET
+            'et_EE' => array('Eesti',                'et_EE.mo','et',     'et','estonian'), // ee_ET
             'en_GB' => array('English',              'en_GB.mo','en-GB', 'en','english'),
             'en_US' => array('English (US)',         'en_US.mo','en-GB', 'en','english'),
             'es_AR' => array('Español (Argentina)',  'es_AR.mo','es',    'es','spanish'),
@@ -57,9 +57,9 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |jqeury| tinymc
             'es_ES' => array('Español (España)',     'es_ES.mo','es',    'es','spanish'),
             'es_MX' => array('Español (Mexico)',     'es_MX.mo','es',    'es','spanish'),
             'es_VE' => array('Español (Venezuela)',  'es_VE.mo','es',    'es','spanish'),
-            'eu_ES' => array('Euskara',              'eu_ES.mo','en',    'en','basque'),
+            'eu_ES' => array('Euskara',              'eu_ES.mo','eu',    'en','basque'),
             'fr_FR' => array('Français',             'fr_FR.mo','fr',    'fr','french'),
-            'gl_ES' => array('Galego',               'gl_ES.mo','es',    'gl','galician'),
+            'gl_ES' => array('Galego',               'gl_ES.mo','gl',    'gl','galician'),
             'el_GR' => array('Ελληνικά',             'el_GR.mo','el',    'el','greek'), // el_EL
             'he_IL' => array('עברית',                 'he_IL.mo','he',    'he','hebrew'), // he_HE
             'hr_HR' => array('Hrvatski',             'hr_HR.mo','hr',    'hr','croatian'),

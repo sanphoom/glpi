@@ -970,6 +970,11 @@ class Html {
          if (file_exists(GLPI_ROOT.$filename)) {
             echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."$filename'></script>\n";
          }
+         $filename = "/lib/jqueryplugins/select2/select2_locale_".
+                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+         if (file_exists(GLPI_ROOT.$filename)) {
+            echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."$filename'></script>\n";
+         }
       }
 
 
