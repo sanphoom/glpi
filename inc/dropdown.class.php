@@ -1787,24 +1787,18 @@ class Dropdown {
    static function showOutputFormat() {
       global $CFG_GLPI;
 
-      $rand = mt_rand();
-      echo "<select name='display_type' id='display_type$rand'>";
-      echo "<option value='".Search::PDF_OUTPUT_LANDSCAPE."'>".__('Current page in landscape PDF').
-           "</option>";
-      echo "<option value='".Search::PDF_OUTPUT_PORTRAIT."'>".__('Current page in portrait PDF').
-           "</option>";
-      echo "<option value='".Search::SYLK_OUTPUT."'>".__('Current page in SLK')."</option>";
-      echo "<option value='".Search::CSV_OUTPUT."'>".__('Current page in CSV')."</option>";
-      echo "<option value='-".Search::PDF_OUTPUT_LANDSCAPE."'>".__('All pages in landscape PDF').
-           "</option>";
-      echo "<option value='-".Search::PDF_OUTPUT_PORTRAIT."'>".__('All pages in portrait PDF').
-           "</option>";
-      echo "<option value='-".Search::SYLK_OUTPUT."'>".__('All pages in SLK')."</option>";
-      echo "<option value='-".Search::CSV_OUTPUT."'>".__('All pages in CSV')."</option>";
-      echo "</select>&nbsp;";
+      $values[Search::PDF_OUTPUT_LANDSCAPE]     = __('Current page in landscape PDF');
+      $values[Search::PDF_OUTPUT_PORTRAIT]      = __('Current page in portrait PDF');
+      $values[Search::SYLK_OUTPUT]              = __('Current page in SLK');
+      $values[Search::CSV_OUTPUT]               = __('Current page in CSV');
+      $values['-'.Search::PDF_OUTPUT_LANDSCAPE] = __('All pages in landscape PDF');
+      $values['-'.Search::PDF_OUTPUT_PORTRAIT]  = __('All pages in portrait PDF');
+      $values['-'.Search::SYLK_OUTPUT]          = __('All pages in SLK');
+      $values['-'.Search::CSV_OUTPUT]           = __('All pages in CSV');
+      
+      Dropdown::showFromArray('display_type', $values);
       echo "<input type='image' name='export' src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
              title=\"".__s('Export')."\" value=\"".__s('Export')."\">";
-      echo Html::jsAdaptDropdown("display_type$rand");
    }
 
 
