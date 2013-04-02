@@ -3787,6 +3787,20 @@ class Html {
    }
 
    /**
+    * Set dropdown value
+    *
+    * @param $id string id of the dom element
+    * @param $value string value to set
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function jsSetDropdownValue($id, $value) {
+      return self::jsGetElementbyID($id).".select2('val','$value');";
+   }
+   
+   /**
     * Adapt dropdown to clean JS
     *
     * @param $id string id of the dom element

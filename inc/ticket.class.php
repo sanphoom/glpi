@@ -4352,7 +4352,7 @@ class Ticket extends CommonITILObject {
       if ($canupdate || $canupdate_descr) {
          $params = array('urgency'  => '__VALUE0__',
                          'impact'   => '__VALUE1__',
-                         'priority' => $idpriority);
+                         'priority' => 'dropdown_priority'.$idpriority);
          Ajax::updateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
                                        $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       }

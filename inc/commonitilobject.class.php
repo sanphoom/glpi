@@ -1531,47 +1531,30 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      $id     = "select_".$p['name'].mt_rand();
-      $output = "<select id='$id' name='".$p['name']."'>";
+      $values = array();
+
       if ($p['showtype'] == 'search') {
-         $output .= "<option value='0' ".(($p['value'] == 0)?" selected ":"").">".
-                      _x('priority', 'All')."</option>";
-         $output .= "<option value='-5' ".(($p['value'] == -5)?" selected ":"").">".
-                     _x('priority', 'At least very high')."</option>";
-         $output .= "<option value='-4' ".(($p['value'] == -4)?" selected ":"").">".
-                     _x('priority', 'At least high')."</option>";
-         $output .= "<option value='-3' ".(($p['value'] == -3)?" selected ":"").">".
-                     _x('priority', 'At least medium')."</option>";
-         $output .= "<option value='-2' ".(($p['value'] == -2)?" selected ":"").">".
-                     _x('priority', 'At least low')."</option>";
-         $output .= "<option value='-1' ".(($p['value'] == -1)?" selected ":"").">".
-                     _x('priority', 'At least very low')."</option>";
+         $values[0] = _x('priority', 'All');
+         $values[-5] = _x('priority', 'At least very high');
+         $values[-4] = _x('priority', 'At least high');
+         $values[-3] = _x('priority', 'At least medium');
+         $values[-2] = _x('priority', 'At least low');
+         $values[-1] = _x('priority', 'At least very low');
       }
 
       if (($p['showtype'] == 'search')
           || $p['withmajor']) {
-         $output .= "<option value='6' ".(($p['value'] == 6)?" selected ":"").">".
-                     _x('priority', 'Major')."</option>";
-      }
+         $values[6] = _x('priority', 'Major');
+     }
+      $values[5] = _x('priority', 'Very high');
+      $values[4] = _x('priority', 'High');
+      $values[3] = _x('priority', 'Medium');
+      $values[2] = _x('priority', 'Low');
+      $values[1] = _x('priority', 'Very low');
 
-      $output .= "<option value='5' ".(($p['value'] == 5)?" selected ":"").">".
-                  _x('priority', 'Very high')."</option>";
-      $output .= "<option value='4' ".(($p['value'] == 4)?" selected ":"").">".
-                  _x('priority', 'High')."</option>";
-      $output .= "<option value='3' ".(($p['value'] == 3)?" selected ":"").">".
-                  _x('priority', 'Medium')."</option>";
-      $output .= "<option value='2' ".(($p['value'] == 2)?" selected ":"").">".
-                  _x('priority', 'Low')."</option>";
-      $output .= "<option value='1' ".(($p['value' ]== 1)?" selected ":"").">".
-                  _x('priority', 'Very low')."</option>";
 
-      $output .= "</select>";
+      return Dropdown::showFromArray($p['name'],$values, $p);
 
-      if ($p['display']) {
-         echo $output;
-         return $id;
-      }
-      return $output;
    }
 
 

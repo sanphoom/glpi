@@ -865,7 +865,7 @@ class Change extends CommonITILObject {
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
       $params = array('urgency'  => '__VALUE0__',
                       'impact'   => '__VALUE1__',
-                      'priority' => $idpriority);
+                      'priority' => 'dropdown_priority'.$idpriority);
       Ajax::updateItemOnSelectEvent(array($idurgency, $idimpact), $idajax,
                                     $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       echo "</td>";
