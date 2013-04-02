@@ -57,27 +57,47 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $use_ajax = true;
    }
 
-   $paramsallitems = array('searchText'          => '__VALUE__',
-                           'table'               => $table,
-                           'itemtype'            => $_POST["idtable"],
-                           'rand'                => $rand,
-                           'myname'              => $_POST["myname"],
-                           'displaywith'         => array('otherserial', 'serial'),
-                           'display_emptychoice' => true);
+// //    $paramsallitems = array('searchText'          => '__VALUE__',
+// //                            'table'               => $table,
+// //                            'itemtype'            => $_POST["idtable"],
+// //                            'rand'                => $rand,
+// //                            'myname'              => $_POST["myname"],
+// //                            'displaywith'         => array('otherserial', 'serial'),
+// //                            'display_emptychoice' => true);
+// 
+//    if (isset($_POST['value'])) {
+//       $paramsallitems['value'] = $_POST['value'];
+//    }
+//    if (isset($_POST['entity_restrict'])) {
+//       $paramsallitems['entity_restrict'] = $_POST['entity_restrict'];
+//    }
+//    if (isset($_POST['condition'])) {
+//       $paramsallitems['condition'] = stripslashes($_POST['condition']);
+//    }
+// 
+//    $default = "<select name='".$_POST["myname"]."'><option value='0'>".Dropdown::EMPTY_VALUE.
+//               "</option></select>";
+//    Ajax::dropdown($use_ajax, "/ajax/$link", $paramsallitems, $default, $rand);
 
-   if (isset($_POST['value'])) {
-      $paramsallitems['value'] = $_POST['value'];
-   }
-   if (isset($_POST['entity_restrict'])) {
-      $paramsallitems['entity_restrict'] = $_POST['entity_restrict'];
-   }
-   if (isset($_POST['condition'])) {
-      $paramsallitems['condition'] = stripslashes($_POST['condition']);
-   }
-
-   $default = "<select name='".$_POST["myname"]."'><option value='0'>".Dropdown::EMPTY_VALUE.
-              "</option></select>";
-   Ajax::dropdown($use_ajax, "/ajax/$link", $paramsallitems, $default, $rand);
-
+      $field_id = Html::cleanId("dropdown_".$_POST["myname"].$rand);
+      
+      $p = array('value'               => 0,
+                 'valuename'           => Dropdown::EMPTY_VALUE,
+                 'itemtype'            => $_POST["idtable"],
+                 'display_emptychoice' => true,
+                 'displaywith'         => array('otherserial', 'serial'),
+                );
+      if (isset($_POST['value'])) {
+         $p['value'] = $_POST['value'];
+      }
+      if (isset($_POST['entity_restrict'])) {
+         $p['entity_restrict'] = $_POST['entity_restrict'];
+      }
+      if (isset($_POST['condition'])) {
+         $p['condition'] = $_POST['condition'];
+      }
+      echo  Html::jsAjaxDropdown($_POST["myname"], $field_id,
+                                 $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
+                                 $p);
 }
 ?>

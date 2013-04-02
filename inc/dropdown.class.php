@@ -1115,25 +1115,29 @@ class Dropdown {
          }
       }
       asort($options);
+      if ($params['display_emptychoice']) {
+         $options = array_merge(array(0=>$params['emptylabel']), $options);
+      }
 
       if (count($options)) {
-         echo "<select name='".$params['name']."' id='itemtype".$params['rand']."'";
-         if ($params['on_change']) {
-            echo " onChange='".$params['on_change']."'>";
-         } else {
-            echo ">";
-         }
-         if ($params['display_emptychoice']) {
-            echo "<option value='0'>".$params['emptylabel']."</option>\n";
-         }
-
-         foreach ($options as $key => $val) {
-            $sel = (($key === $params['value']) ? 'selected' : '');
-            echo "<option value='".$key."' $sel>".$val."</option>";
-         }
-         echo "</select>";
-
-         return $params['rand'];
+         return Dropdown::showFromArray($params['name'], $options,
+                                          array('value'     => $params['value'],
+                                                'on_change' => $params['on_change']));
+         
+//          echo "<select name='".$params['name']."' id='itemtype".$params['rand']."'";
+//          if ($params['on_change']) {
+//             echo " onChange='".$params['on_change']."'>";
+//          } else {
+//             echo ">";
+//          }
+// 
+//          foreach ($options as $key => $val) {
+//             $sel = (($key === $params['value']) ? 'selected' : '');
+//             echo "<option value='".$key."' $sel>".$val."</option>";
+//          }
+//          echo "</select>";
+// 
+//          return $params['rand'];
       }
       return 0;
    }
@@ -1171,7 +1175,8 @@ class Dropdown {
          if ($onlyglobal) {
             $params['condition'] = "`is_global` = '1'";
          }
-         Ajax::updateItemOnSelectEvent("itemtype$rand", "show_$myname$rand",
+         $field_id = Html::cleanId("dropdown_".$options['name'].$rand);
+         Ajax::updateItemOnSelectEvent($field_id, "show_$myname$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $params);
 
          echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
@@ -1550,6 +1555,8 @@ class Dropdown {
     *                        if it is a string, then the default value will be this string
     *    - rand            : specific rand if needed (default is generated one)
     *    - width           : specific width needed (default not set)
+    *    - emptylabel      : empty label if empty displayed (default self::EMPTY_VALUE)
+    *    - display_emptychoice : display empty choice (default is false)
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1582,7 +1589,7 @@ class Dropdown {
             $param[$key] = $val;
          }
       }
-
+      
       if ($param['other'] !== false) {
          $other_select_option = $name . '_other_value';
          $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
