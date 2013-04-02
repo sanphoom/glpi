@@ -167,16 +167,6 @@ if ($item instanceof CommonTreeDropdown) {
              $LIMIT";
 
    if ($result = $DB->query($query)) {
-/// TODO
-//       echo "<select id='".Html::cleanId("dropdown_".$_GET["myname"].$_GET["rand"])."'
-//              name='".$_GET['myname']."' size='1'";
-//    
-// 
-//       if (isset($_GET["on_change"]) && !empty($_GET["on_change"])) {
-//          echo " onChange='".stripslashes($_GET["on_change"])."'";
-//       }
-//       echo ">";
-
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
@@ -384,13 +374,6 @@ if ($item instanceof CommonTreeDropdown) {
                  $LIMIT";
    }
    if ($result = $DB->query($query)) {
-
-/// TODO   
-//       if (isset($_GET["on_change"]) && !empty($_GET["on_change"])) {
-//          echo " onChange='".stripslashes($_GET["on_change"])."'";
-//       }
-// 
-//       echo ">";
 
       if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
          array_push($datas, array ('id'    => 0,

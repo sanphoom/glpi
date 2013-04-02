@@ -252,7 +252,13 @@ class Dropdown {
                            return markup.join('');
                         }
 
-                     });";
+                     });
+         ";
+      if (isset($params["on_change"]) && !empty($params["on_change"])) {
+         $output .= " $('#$field_id').on('change', function(e) {".
+                  stripslashes($params["on_change"])."});";
+      }
+      
       $output .= "</script>\n";
 
       // Display comment
