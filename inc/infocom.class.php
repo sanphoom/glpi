@@ -955,7 +955,8 @@ class Infocom extends CommonDBChild {
                echo Dropdown::getDropdownName("glpi_suppliers", $ic->fields["suppliers_id"]);
             } else {
                Supplier::dropdown(array('value'  => $ic->fields["suppliers_id"],
-                                        'entity' => $item->getEntityID()));
+                                        'entity' => $item->getEntityID(),
+                                        'width'  => '70%'));
             }
             echo "</td>";
             if (Session::haveRight("budget","r")) {

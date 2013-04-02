@@ -142,8 +142,8 @@ $query = "SELECT DISTINCT `$table`.`id`,
           $LIMIT";
 
 $result = $DB->query($query);
-
-echo "<select name='".$_POST['myname']."' size='1'>";
+$rand = mt_rand();
+echo "<select name='".$_POST['myname']."' id='dropdown_connect$rand' size='1'>";
 
 if (isset($_POST['searchText'])
     && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
@@ -186,4 +186,5 @@ if ($DB->numrows($result)) {
    }
 }
 echo "</select>";
+echo Html::jsAdaptDropdown("dropdown_connect$rand");
 ?>

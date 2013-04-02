@@ -298,18 +298,18 @@ class Monitor extends CommonDBTM {
       echo "<td>".('Flags')."</td>";
       echo "<td><table>";
       // micro?
-      echo "<tr><td>".__('Microphone')."</td><td>";
+      echo "<tr><td width='20%'>".__('Microphone')."</td><td width='30%'>";
       Dropdown::showYesNo("have_micro", $this->fields["have_micro"]);
       // speakers?
-      echo "</td><td>".__('Speakers')."</td><td>";
+      echo "</td><td width='20%'>".__('Speakers')."</td><td width='30%'>";
       Dropdown::showYesNo("have_speaker", $this->fields["have_speaker"]);
       echo "</td></tr>";
 
      // sub-d?
-      echo "<tr><td>".__('Sub-D')."</td><td>";
+      echo "<tr><td width='20%'>".__('Sub-D')."</td><td width='30%'>";
       Dropdown::showYesNo("have_subd", $this->fields["have_subd"]);
       // bnc?
-      echo "</td><td>".__('BNC')."</td><td>";
+      echo "</td><td width='20%'>".__('BNC')."</td><td width='30%'>";
       Dropdown::showYesNo("have_bnc", $this->fields["have_bnc"]);
       echo "</td></tr>";
 

@@ -561,7 +561,7 @@ class Document_Item extends CommonDBRelation{
 
          echo "<td class='center'>";
          _e('Heading');
-         echo '</td><td>';
+         echo "</td><td width='20%'>";
          DocumentCategory::dropdown(array('entity' => $entities));
          echo "</td>";
          echo "<td class='right'>";

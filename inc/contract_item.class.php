@@ -382,7 +382,7 @@ class Contract_Item extends CommonDBRelation{
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Add a contract')."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td class='right'>";
+         echo "<tr class='tab_bg_1'><td>";
          Contract::dropdown(array('entity' => $item->getEntityID(),
                                   'used'   => $used));
 

@@ -3791,6 +3791,7 @@ class Html {
     * Adapt dropdown to clean JS
     *
     * @param $id string id of the dom element
+    * @param $params array of parameters
     *
     * @since version 0.85.
     *

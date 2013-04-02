@@ -1276,7 +1276,7 @@ class Document extends CommonDBTM {
          echo "<option value='".$data['id']."'>".$data['name']."</option>";
       }
       echo "</select>";
-
+      echo Html::jsAdaptDropdown("rubdoc$rand", array('width'=>'30%'));
       $params = array('rubdoc' => '__VALUE__',
                       'entity' => $p['entity'],
                       'rand'   => $rand,
@@ -1285,7 +1285,6 @@ class Document extends CommonDBTM {
 
       Ajax::updateItemOnSelectEvent("rubdoc$rand","show_".$p['name']."$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php", $params);
-
       echo "<span id='show_".$p['name']."$rand'>";
       $_POST["entity"] = $p['entity'];
       $_POST["rubdoc"] = 0;

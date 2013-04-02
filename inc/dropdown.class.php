@@ -1699,13 +1699,14 @@ class Dropdown {
 
       } else {
          if ($params['management_restrict'] == 2) {
-            echo "<select name='".$params['name']."'>";
+            $rand = mt_rand();
+            echo "<select name='".$params['name']."' id='".$params['name']."$rand'>";
             echo "<option value='".MANAGEMENT_UNITARY."' ".
                   (!$params['value']?" selected":"").">".__('Unit management')."</option>";
             echo "<option value='".MANAGEMENT_GLOBAL."' ".
                   ($params['value']?" selected":"").">".__('Global management')."</option>";
             echo "</select>";
-
+            echo Html::jsAdaptDropdown($params['name']."$rand");
          } else {
             // Templates edition
             if (!empty($params['withtemplate'])) {

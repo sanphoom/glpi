@@ -1240,6 +1240,7 @@ class Contract extends CommonDBTM {
       $p['name']           = 'contracts_id';
       $p['value']          = '';
       $p['entity']         = '';
+      $p['rand']           = mt_rand();
       $p['entity_sons']    = false;
       $p['used']           = array();
       $p['nochecklimit']   = false;
@@ -1278,7 +1279,7 @@ class Contract extends CommonDBTM {
                          `glpi_contracts`.`name` ASC,
                          `glpi_contracts`.`begin_date` DESC";
       $result = $DB->query($query);
-      echo "<select name='".$p['name']."'";
+      echo "<select name='".$p['name']."' id='dropdown_".$p['name'].$p['rand']."'";
       if (!empty($p["on_change"])) {
          echo " onChange='".$p["on_change"]."'";
       }
@@ -1325,6 +1326,7 @@ class Contract extends CommonDBTM {
          echo "</optgroup>";
       }
       echo "</select>";
+      echo Html::jsAdaptDropdown("dropdown_".$p['name'].$p['rand']);
    }
 
 
