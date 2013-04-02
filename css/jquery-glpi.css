@@ -92,3 +92,26 @@ html .ui-autocomplete {
    max-width: 350px;
    margin : auto;
 }
+
+/* SELECT2 */
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
+{
+  font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+  font-size: 11px;
+}
+.select2-results li {
+   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-size: 11px;
+}
+.select2-search input {
+   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-size: 11px;
+}
+
+.select2-container .select2-choice {
+    height: 20px;
+    padding: 0 0 0 8px;
+    font-weight: normal;
+    margin-top: 10px;
+}

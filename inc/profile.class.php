@@ -596,10 +596,10 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Create a ticket')."</td><td>";
+      echo "<td width='25%'>".__('Create a ticket')."</td><td width='25%'>";
       Dropdown::showYesNo("create_ticket", $this->fields["create_ticket"]);
       echo "</td>";
-      echo "<td>".__('Add a followup to tickets (requester)')."</td><td>";
+      echo "<td width='25%'>".__('Add a followup to tickets (requester)')."</td><td width='25%'>";
       Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
       echo "</td></tr>\n";
 
@@ -721,13 +721,13 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assets')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Computer', 'Computers', 2)."</td><td>";
+      echo "<td width='18%'>"._n('Computer', 'Computers', 2)."</td><td width='15%'>";
       self::dropdownRight("computer", array('value' => $this->fields["computer"]));
       echo "</td>";
-      echo "<td>"._n('Monitor', 'Monitors', 2)."</td><td>";
+      echo "<td width='18%'>"._n('Monitor', 'Monitors', 2)."</td><td width='15%'>";
       self::dropdownRight("monitor", array('value' => $this->fields["monitor"]));
       echo "</td>";
-      echo "<td>"._n('Software', 'Software', 2)."</td><td>";
+      echo "<td width='18%'>"._n('Software', 'Software', 2)."</td><td width='15%'>";
       self::dropdownRight("software", array('value' => $this->fields["software"]));
       echo "</td></tr>\n";
 
@@ -869,13 +869,13 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Create a ticket')."</td><td>";
+      echo "<td width='18%'>".__('Create a ticket')."</td><td width='15%'>";
       Dropdown::showYesNo("create_ticket", $this->fields["create_ticket"]);
       echo "</td>";
-      echo "<td>".__('Add a followup to tickets (requester)')."</td><td>";
+      echo "<td width='18%'>".__('Add a followup to tickets (requester)')."</td><td width='15%'>";
       Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
       echo "</td>";
-      echo "<td>".__('Add a followup to all tickets')."</td><td>";
+      echo "<td width='18%'>".__('Add a followup to all tickets')."</td><td width='15%'>";
       Dropdown::showYesNo("global_add_followups", $this->fields["global_add_followups"]);
       echo "</td></tr>\n";
 
@@ -1105,7 +1105,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td class='b center'>".__("From \ To");
       echo "<input type='hidden' name='_cycles_ticket' value='1'</td>";
       foreach ($tabstatus as $label) {
-         echo "<td class='center'>$label</td>";
+         echo "<td class='center' width='15%'>$label</td>";
       }
       echo "</tr>\n";
 
@@ -1133,7 +1133,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
       echo "<input type='hidden' name='_cycles_problem' value='1'</td>";
       foreach ($tabstatus as $label) {
-         echo "<td class='center'>$label</td>";
+         echo "<td class='center' width='11%'>$label</td>";
       }
       echo "</tr>\n";
 
@@ -1162,7 +1162,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
       echo "<input type='hidden' name='_cycles_change' value='1'</td>";
       foreach ($tabstatus as $label) {
-         echo "<td class='center'>$label</td>";
+         echo "<td class='center' width='9%'>$label</td>";
       }
       echo "</tr>\n";
 
@@ -1222,14 +1222,14 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Administration')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('User', 'Users', 2)."</td><td>";
+      echo "<td width='18%'>"._n('User', 'Users', 2)."</td><td width='15%'>";
       self::dropdownRight("user", array('value' => $this->fields["user"]));
 
       echo "</td>";
-      echo "<td>"._n('Group', 'Groups', 2)."</td><td>";
+      echo "<td width='18%'>"._n('Group', 'Groups', 2)."</td><td width='15%'>";
       self::dropdownRight("group", array('value' => $this->fields["group"]));
       echo "</td>";
-      echo "<td>".__('Method for user authentication and synchronization')."</td><td>";
+      echo "<td width='18%'>".__('Method for user authentication and synchronization')."</td><td width='15%'>";
       self::dropdownRight("user_authtype", array('value' => $this->fields["user_authtype"]));
       echo "</td></tr>\n";
 
@@ -1349,17 +1349,17 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Setup')."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('General setup')."</td><td>";
+      echo "<td width='18%'>".__('General setup')."</td><td width='15%'>";
       self::dropdownRight("config", array('value'   => $this->fields["config"],
                                           'noread'  => true));
 
       echo "</td>";
-      echo "<td>".__('Search result default display')."</td><td>";
+      echo "<td width='18%'>".__('Search result default display')."</td><td width='15%'>";
       self::dropdownRight("search_config_global",
                           array('value'   => $this->fields["search_config_global"],
                                 'noread'  => true));
       echo "</td>";
-      echo "<td class='tab_bg_2'>".__('Search result user display')."</td>";
+      echo "<td  width='18%' class='tab_bg_2'>".__('Search result user display')."</td width='15%'>";
       echo "<td class='tab_bg_2'>";
       self::dropdownRight("search_config", array('value'   => $this->fields["search_config"],
                                                  'noread'  => true));
