@@ -3797,5 +3797,93 @@ class Html {
       $out .= "</script>\n";
       return $out;
    }
+
+   /**
+    * Create Ajax dropdown to clean JS
+    *
+    * @param $field_id string id of the dom element
+    * @param $url string URL to get datas
+    * @param $params array of parameters
+    *            must contains :
+    *                   - 'value' : default value selected
+    *                   - 'valuename' : default name of selected value
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function jsAjaxDropdown($name, $field_id, $url, $params = array()) {
+      global $CFG_GLPI;
+
+      $value = $params['value'];
+      $valuename = $params['valuename'];
+      $on_change = '';
+      if (isset($params["on_change"])) {
+         $on_change = $params["on_change"];
+         unset($params["on_change"]);
+      }
+      $width = '80%';
+      if (isset($params["width"])) {
+         $width = $params["width"];
+         unset($params["width"]);
+      }      
+      unset($params['value']);
+      unset($params['valuename']);
+
+      $output = "<input type='hidden' id='$field_id' name='".$name."' value='$value'>";
+
+      $output .= "<script type='text/javascript'>\n";
+      $output .= " $('#$field_id').select2({
+                        width: '$width',
+                        minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
+                        quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
+                        ajax: {
+                           url: '$url',
+                           dataType: 'json',
+                           data: function (term, page) {
+                              return { ";
+      foreach ($params as $key => $val) {
+         $output .= "$key: ".json_encode($val).",\n";
+      }
+
+      $output .= "               searchText: term,
+                                 page_limit: 10
+                              };
+                           },
+                           results: function (data, page) {
+                              return {results: data.results};
+                           }
+                        },
+                        initSelection: function (element, callback) {
+                           var data = {id: ".json_encode($value).",
+                                      text: ".json_encode($valuename)."};
+                           callback(data);
+                        },
+                        formatResult: function(result, container, query, escapeMarkup) {
+                           var markup=[];
+                           window.Select2.util.markMatch(result.text, query.term, markup, escapeMarkup);
+                           if (result.level) {
+                              var a='';
+                              var i=result.level;
+                              while (i>1) {
+                                 a = a+'&nbsp;&nbsp;&nbsp;';
+                                 i=i-1;
+                              }
+                              return a+'&raquo;'+markup.join('');
+                           }
+                           return markup.join('');
+                        }
+
+                     });";
+      if (!empty($on_change)) {
+         $output .= " $('#$field_id').on('change', function(e) {".
+                  stripslashes($on_change)."});";
+      }
+
+      $output .= "</script>\n";
+      return $output;
+   }
+
+   
 }
 ?>

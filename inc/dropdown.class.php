@@ -203,64 +203,79 @@ class Dropdown {
 //       $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default,
 //                                 $params['rand'], false);
       $field_id = Html::cleanId("dropdown_".$params['name'].$params['rand']);
-      $output .= "<input type='hidden' id='$field_id' name='".$params['name']."' value='".$params['value']."'>";
-      
-      $output .= "<script type='text/javascript'>\n";
-      $output .= " $('#$field_id').select2({
-                        width: '".$params['width']."',
-                        minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
-                        quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
-                        ajax: { 
-                           url: '".$CFG_GLPI['root_doc']."/ajax/getDropdownValue.php',
-                           dataType: 'json',
-                           data: function (term, page) {
-                              return {
-                                 itemtype: '$itemtype',
-                                 display_emptychoice : '".$params['display_emptychoice']."',
-                                 displaywith : ".json_encode($params['displaywith']).",
-                                 emptylabel : ".json_encode($params['emptylabel']).",
-                                 condition : ".json_encode($params['condition']).",
-                                 used : ".json_encode($params['used']).",
-                                 toadd : ".json_encode($params['toadd']).",
-                                 entity_restrict : ".json_encode($params['entity']).",
-                                 limit: $limit_length,
-                                 searchText: term, 
-                                 page_limit: 10
-                              };
-                           },
-                           results: function (data, page) { 
-                              return {results: data.results};
-                           }
-                        },
-                        initSelection: function (element, callback) {
-                           var data = {id: ".json_encode($params['value']).",
-                                      text: ".json_encode($name)."};
-                           callback(data);
-                        },
-                        formatResult: function(result, container, query, escapeMarkup) {
-                           var markup=[];
-                           window.Select2.util.markMatch(result.text, query.term, markup, escapeMarkup);
-                           if (result.level) {
-                              var a='';
-                              var i=result.level;
-                              while (i>1) {
-                                 a = a+'&nbsp;&nbsp;&nbsp;';
-                                 i=i-1;
-                              }
-                              return a+'&raquo;'+markup.join('');
-                           }
-                           return markup.join('');
-                        }
-
-                     });
-         ";
-      if (isset($params["on_change"]) && !empty($params["on_change"])) {
-         $output .= " $('#$field_id').on('change', function(e) {".
-                  stripslashes($params["on_change"])."});";
-      }
-      
-      $output .= "</script>\n";
-
+//       $output .= "<input type='hidden' id='$field_id' name='".$params['name']."' value='".$params['value']."'>";
+//       
+//       $output .= "<script type='text/javascript'>\n";
+//       $output .= " $('#$field_id').select2({
+//                         width: '".$params['width']."',
+//                         minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
+//                         quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
+//                         ajax: { 
+//                            url: '".$CFG_GLPI['root_doc']."/ajax/getDropdownValue.php',
+//                            dataType: 'json',
+//                            data: function (term, page) {
+//                               return {
+//                                  itemtype: '$itemtype',
+//                                  display_emptychoice : '".$params['display_emptychoice']."',
+//                                  displaywith : ".json_encode($params['displaywith']).",
+//                                  emptylabel : ".json_encode($params['emptylabel']).",
+//                                  condition : ".json_encode($params['condition']).",
+//                                  used : ".json_encode($params['used']).",
+//                                  toadd : ".json_encode($params['toadd']).",
+//                                  entity_restrict : ".json_encode($params['entity']).",
+//                                  limit: $limit_length,
+//                                  searchText: term, 
+//                                  page_limit: 10
+//                               };
+//                            },
+//                            results: function (data, page) { 
+//                               return {results: data.results};
+//                            }
+//                         },
+//                         initSelection: function (element, callback) {
+//                            var data = {id: ".json_encode($params['value']).",
+//                                       text: ".json_encode($name)."};
+//                            callback(data);
+//                         },
+//                         formatResult: function(result, container, query, escapeMarkup) {
+//                            var markup=[];
+//                            window.Select2.util.markMatch(result.text, query.term, markup, escapeMarkup);
+//                            if (result.level) {
+//                               var a='';
+//                               var i=result.level;
+//                               while (i>1) {
+//                                  a = a+'&nbsp;&nbsp;&nbsp;';
+//                                  i=i-1;
+//                               }
+//                               return a+'&raquo;'+markup.join('');
+//                            }
+//                            return markup.join('');
+//                         }
+// 
+//                      });
+//          ";
+//       if (isset($params["on_change"]) && !empty($params["on_change"])) {
+//          $output .= " $('#$field_id').on('change', function(e) {".
+//                   stripslashes($params["on_change"])."});";
+//       }
+//       
+//       $output .= "</script>\n";
+      $p = array('value'               => $params['value'],
+                 'valuename'           => $name,
+                 'width'               => $params['width'],
+                 'itemtype'            => $itemtype,
+                 'display_emptychoice' => $params['display_emptychoice'],
+                 'displaywith'         => $params['displaywith'],
+                 'emptylabel'          => $params['emptylabel'],
+                 'condition'           => $params['condition'],
+                 'used'                => $params['used'],
+                 'toadd'               => $params['toadd'],
+                 'entity_restrict'     => $params['entity'],
+                 'limit'               => $limit_length,
+                );
+      $output = Html::jsAjaxDropdown($params['name'], $field_id,
+                                     $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
+                                     $p);
       // Display comment
       if ($params['comments']) {
          $comment_id = Html::cleanId("comment_".$params['name'].$params['rand']);
