@@ -1147,8 +1147,8 @@ class MailCollector  extends CommonDBTM {
 
             //else { return $text; }
             if ($structure->subtype && ($structure->subtype == "HTML")) {
-               $text = str_replace("\r", "", $text);
-               $text = str_replace("\n", "", $text);
+               $text = str_replace("\r", " ", $text);
+               $text = str_replace("\n", " ", $text);
             }
 
             if (count($structure->parameters)>0) {
