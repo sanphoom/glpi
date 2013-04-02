@@ -1521,7 +1521,7 @@ class Search {
       echo "<table id='searchcriteriastable' width='100%'>";
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='50%'>";
+         echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='45%'>";
          // First line display add / delete images for normal and meta search items
          if ($i == 0) {
             echo "<input type='hidden' disabled id='add_search_count' name='add_search_count'
@@ -1729,7 +1729,7 @@ class Search {
             echo "<tr><td class='left' colspan='2'>";
             $rand = mt_rand();
 
-            echo "<table width='100%'><tr class='left'><td width='35%'>";
+            echo "<table width='100%'><tr class='left'><td width='30%'>";
             // Display link item (not for the first item)
             echo "<select name='link2[$i]'>";
             echo "<option value='AND' ";
