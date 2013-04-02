@@ -3045,44 +3045,9 @@ class User extends CommonDBTM {
       }
       $user = getUserName($p['value'], 2);
 
-      $default_display  = "<select id='dropdown_".$p['name'].$p['rand']."' name='".$p['name']."'>";
-      $default_display .= "<option value='".$p['value']."'>";
-      $default_display .= Toolbox::substr($user["name"], 0, $_SESSION["glpidropdown_chars_limit"]);
-      $default_display .= "</option></select>";
 
       $view_users = (Session::haveRight("user", "r"));
 
-//       $params = array('searchText'       => '__VALUE__',
-//                       'value'            => $p['value'],
-//                       'myname'           => $p['name'],
-//                       'all'              => $p['all'],
-//                       'right'            => $p['right'],
-//                       'comment'          => $p['comments'],
-//                       'rand'             => $p['rand'],
-//                       'on_change'        => $p['on_change'],
-//                       'entity_restrict'  => $p['entity'],
-//                       'used'             => $p['used'],
-//                       'update_item'      => $p['toupdate'],);
-//       if ($view_users) {
-//          $params['update_link'] = $view_users;
-//       }
-      
-
-//       $default = "";
-//       if (!empty($p['value']) && ($p['value'] > 0)) {
-//          $default = $default_display;
-// 
-//       } else {
-//          $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$p['rand']."'>";
-//          if ($p['all']) {
-//             $default.= "<option value='0'>--".__('All')."--</option></select>";
-//          } else {
-//             $default.= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>\n";
-//          }
-//       }
-// 
-//       $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default,
-//                                 $p['rand'], false);
 
       if (!empty($p['value']) && ($p['value'] > 0)) {
           $default = $user["name"];
@@ -3094,7 +3059,6 @@ class User extends CommonDBTM {
          }
       }
       $field_id = Html::cleanId("dropdown_".$p['name'].$p['rand']);
-      /// TODO : update_item / update_link / comment
       $param = array('value'               => $p['value'],
                      'valuename'           => $default,
                      'width'               => $p['width'],
