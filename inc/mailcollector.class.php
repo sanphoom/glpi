@@ -1146,12 +1146,10 @@ class MailCollector  extends CommonDBTM {
             }
 
             //else { return $text; }
-            /// Do not drop new line for HTML : will be done later on postprocessing
-            /// Make trouble with word/Outlook emails
-//             if ($structure->subtype && ($structure->subtype == "HTML")) {
-//                $text = str_replace("\r", "", $text);
-//                $text = str_replace("\n", "", $text);
-//             }
+            if ($structure->subtype && ($structure->subtype == "HTML")) {
+               $text = str_replace("\r", "", $text);
+               $text = str_replace("\n", "", $text);
+            }
 
             if (count($structure->parameters)>0) {
                foreach ($structure->parameters as $param) {
