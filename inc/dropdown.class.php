@@ -1568,12 +1568,6 @@ class Dropdown {
 
          $field_id = Html::cleanId("dropdown_".$name.$param['rand']);
          $output  .= "<select name='$field_name' id='$field_id'";
-
-         if (!empty($param["width"])) {
-            $output .= " style='width:".$param["width"]."'";
-         } else {
-            $output .= " style='width:80%'";
-         }
          
          if (!empty($param["on_change"])) {
             $output .= " onChange='".$param["on_change"]."'";
@@ -1644,7 +1638,8 @@ class Dropdown {
 
       }
 
-      $output .= Html::jsAdaptDropdown($field_id);
+      // Width set on select
+      $output .= Html::jsAdaptDropdown($field_id, array('width' => $param["width"]));
 
       if ($param['display']) {
          echo $output;
@@ -1792,7 +1787,8 @@ class Dropdown {
    static function showOutputFormat() {
       global $CFG_GLPI;
 
-      echo "<select name='display_type'>";
+      $rand = mt_rand();
+      echo "<select name='display_type' id='display_type$rand'>";
       echo "<option value='".Search::PDF_OUTPUT_LANDSCAPE."'>".__('Current page in landscape PDF').
            "</option>";
       echo "<option value='".Search::PDF_OUTPUT_PORTRAIT."'>".__('Current page in portrait PDF').
@@ -1808,6 +1804,7 @@ class Dropdown {
       echo "</select>&nbsp;";
       echo "<input type='image' name='export' src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
              title=\"".__s('Export')."\" value=\"".__s('Export')."\">";
+      echo Html::jsAdaptDropdown("display_type$rand");
    }
 
 
@@ -1820,13 +1817,6 @@ class Dropdown {
    **/
    static function showListLimit($onchange='') {
       global $CFG_GLPI;
-
-      echo "<select name='glpilist_limit'";
-      if ($onchange) {
-         echo " onChange='$onchange'>";
-      } else {
-         echo ">";
-      }
 
       if (isset($_SESSION['glpilist_limit'])) {
          $list_limit = $_SESSION['glpilist_limit'];
@@ -1861,10 +1851,10 @@ class Dropdown {
          $values[$max-10] = $max-10;
       }
       ksort($values);
-      foreach ($values as $val) {
-         echo "<option value='$val' ".(($list_limit==$val)?" selected ":"").">$val</option>";
-      }
-      echo "</select>";
+      return self::showFromArray('glpilist_limit', $values,
+                                 array('on_change' => $onchange,
+                                       'value'     => $list_limit,
+                                       'width'     => '20%'));
    }
 
 }

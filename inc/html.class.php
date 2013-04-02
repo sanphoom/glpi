@@ -3812,10 +3812,10 @@ class Html {
    **/
    static function jsAdaptDropdown($id, $params= array()) {
       $width = '80%';
-      if (isset($params["width"])) {
+      if (isset($params["width"]) && !empty($params["width"])) {
          $width = $params["width"];
          unset($params["width"]);
-      }   
+      }
       $out = "<script type='text/javascript'>\n";
       $out .= "$(document).ready(function() { $('#$id').select2({
                   width: '$width',
