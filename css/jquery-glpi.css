@@ -113,5 +113,13 @@ html .ui-autocomplete {
     height: 20px;
     padding: 0 0 0 8px;
     font-weight: normal;
-    margin-top: 10px;
+    margin-top: 0px;
+    vertical-align: top;
+}
+.select2-container .select2-choice span {
+    margin-top: -2px;
+}
+
+.select2-container .select2-choice div b {
+    margin-top: -2px;
 }

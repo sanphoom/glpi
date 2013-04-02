@@ -927,7 +927,7 @@ class Html {
       }
 
       echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.9.2.custom.min.css' media='screen' >\n";
+             $CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.9.2.custom.css' media='screen' >\n";
       echo "<link rel='stylesheet' type='text/css' href='".
              $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/themes/classic/style.css' media='screen' >\n";
       echo "<link rel='stylesheet' type='text/css' href='".
