@@ -67,7 +67,7 @@ class Dropdown {
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice : Display emptychoice ? (default true)
     *    - display             : boolean / display or get string (default true)
-    *    - width           : specific width needed (default not set)    
+    *    - width               : specific width needed (default 80%)    
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -272,6 +272,7 @@ class Dropdown {
                  'toadd'               => $params['toadd'],
                  'entity_restrict'     => $params['entity'],
                  'limit'               => $limit_length,
+                 'on_change'           => $params['on_change'],
                 );
       $output = Html::jsAjaxDropdown($params['name'], $field_id,
                                      $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",

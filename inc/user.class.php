@@ -2997,6 +2997,7 @@ class User extends CommonDBTM {
     *    - ldap_import
     *    - on_change    : string / value to transmit to "onChange"
     *    - display      : boolean / display or get string (default true)
+    *    - width               : specific width needed (default 80%)    
     *
     * @return rand value if displayed / string if not
    **/
@@ -3010,6 +3011,7 @@ class User extends CommonDBTM {
       $p['all']            = 0;
       $p['on_change']      = '';
       $p['comments']       = 1;
+      $p['width']          = '80%';
       $p['entity']         = -1;
       $p['entity_sons']    = false;
       $p['used']           = array();
@@ -3053,36 +3055,61 @@ class User extends CommonDBTM {
 
       $view_users = (Session::haveRight("user", "r"));
 
-      $params = array('searchText'       => '__VALUE__',
-                      'value'            => $p['value'],
-                      'myname'           => $p['name'],
-                      'all'              => $p['all'],
-                      'right'            => $p['right'],
-                      'comment'          => $p['comments'],
-                      'rand'             => $p['rand'],
-                      'on_change'        => $p['on_change'],
-                      'entity_restrict'  => $p['entity'],
-                      'used'             => $p['used'],
-                      'update_item'      => $p['toupdate'],);
-      if ($view_users) {
-         $params['update_link'] = $view_users;
-      }
+//       $params = array('searchText'       => '__VALUE__',
+//                       'value'            => $p['value'],
+//                       'myname'           => $p['name'],
+//                       'all'              => $p['all'],
+//                       'right'            => $p['right'],
+//                       'comment'          => $p['comments'],
+//                       'rand'             => $p['rand'],
+//                       'on_change'        => $p['on_change'],
+//                       'entity_restrict'  => $p['entity'],
+//                       'used'             => $p['used'],
+//                       'update_item'      => $p['toupdate'],);
+//       if ($view_users) {
+//          $params['update_link'] = $view_users;
+//       }
+      
 
-      $default = "";
+//       $default = "";
+//       if (!empty($p['value']) && ($p['value'] > 0)) {
+//          $default = $default_display;
+// 
+//       } else {
+//          $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$p['rand']."'>";
+//          if ($p['all']) {
+//             $default.= "<option value='0'>--".__('All')."--</option></select>";
+//          } else {
+//             $default.= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>\n";
+//          }
+//       }
+// 
+//       $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default,
+//                                 $p['rand'], false);
+
       if (!empty($p['value']) && ($p['value'] > 0)) {
-         $default = $default_display;
-
+          $default = $user["name"];
       } else {
-         $default = "<select name='".$p['name']."' id='dropdown_".$p['name'].$p['rand']."'>";
          if ($p['all']) {
-            $default.= "<option value='0'>--".__('All')."--</option></select>";
+            $default = __('All');
          } else {
-            $default.= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>\n";
+            $default = Dropdown::EMPTY_VALUE;
          }
       }
-
-      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default,
-                                $p['rand'], false);
+      $field_id = Html::cleanId("dropdown_".$p['name'].$p['rand']);
+      /// TODO : update_item / update_link / comment
+      $param = array('value'               => $p['value'],
+                     'valuename'           => $default,
+                     'width'               => $p['width'],
+                     'all'                 => $p['all'],
+                     'right'               => $p['right'],
+                     'on_change'           => $p['on_change'],
+                     'used'                => $p['used'],
+                     'entity_restrict'     => $p['entity'],
+                );
+      $output = Html::jsAjaxDropdown($p['name'], $field_id,
+                                     $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php",
+                                     $param);
 
       // Display comment
       if ($p['comments']) {
