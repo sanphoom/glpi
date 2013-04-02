@@ -590,13 +590,12 @@ class CommonGLPI {
          if (isset($options['withtemplate'])) {
             $withtemplate = $options['withtemplate'];
          }
-         foreach ($options as $key => $val) {
-            // Do not include id options
-            if ($key != 'id') {
-               $extraparamhtml .= "&amp;$key=$val";
-               $extraparam     .= "&$key=$val";
-            }
+         $cleaned_options = $options;
+         if (isset($cleaned_options['id'])) {
+            unset($cleaned_options['id']);
          }
+         $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
+         $extraparam     = "&".Toolbox::append_params($cleaned_options);
       }
       echo "<div id='tabspanel' class='center-h'></div>";
       $current_tab = 0;

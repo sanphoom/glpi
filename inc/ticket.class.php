@@ -3389,7 +3389,7 @@ class Ticket extends CommonITILObject {
       echo "<td>".sprintf(__('%1$s%2$s'), __('Type'), $tt->getMandatoryMark('type'))."</td>";
       echo "<td>";
       self::dropdownType('type', array('value'     => $values['type'],
-                                       'on_change' => 'submit()'));
+                                       'on_change' => 'this.form.submit()'));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -3408,7 +3408,7 @@ class Ticket extends CommonITILObject {
       }
       $opt = array('value'     => $values['itilcategories_id'],
                    'condition' => $condition,
-                   'on_change' => 'submit()');
+                   'on_change' => 'this.form.submit()');
 
       if ($values['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
          $opt['display_emptychoice'] = false;
@@ -4069,7 +4069,7 @@ class Ticket extends CommonITILObject {
          $opt = array('value' => $this->fields["type"]);
          /// Auto submit to load template
          if (!$ID) {
-            $opt['on_change'] = 'submit()';
+            $opt['on_change'] = 'this.form.submit()';
          }
          $rand = self::dropdownType('type', $opt);
          if ($ID) {
@@ -4103,7 +4103,7 @@ class Ticket extends CommonITILObject {
          }
          /// Auto submit to load template
          if (!$ID) {
-            $opt['on_change'] = 'submit()';
+            $opt['on_change'] = 'this.form.submit()';
          }
          /// if category mandatory, no empty choice
          /// no empty choice is default value set on ticket creation, else yes

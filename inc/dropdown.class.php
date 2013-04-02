@@ -323,8 +323,8 @@ class Dropdown {
          $output .= Ajax::updateItemOnSelectEvent($field_id,
                                        $comment_id,
                                        $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);
-         $output .= Ajax::commonDropdownUpdateItem($params, false);
-     }
+      }
+      $output .= Ajax::commonDropdownUpdateItem($params, false);
       if ($params['display']) {
          echo $output;
          return $params['rand'];

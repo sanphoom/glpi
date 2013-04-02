@@ -440,6 +440,7 @@ class User extends CommonDBTM {
       if (!isset($this->fields['id'])) {
          return '';
       }
+
       return UserEmail::getDefaultForUser($this->fields['id']);
    }
 
@@ -3134,8 +3135,8 @@ class User extends CommonDBTM {
          $output .= Ajax::updateItemOnSelectEvent($field_id,
                                        $comment_id,
                                        $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);
-         $output .= Ajax::commonDropdownUpdateItem($p, false);
       }
+      $output .= Ajax::commonDropdownUpdateItem($p, false);
 
       if (Session::haveRight('import_externalauth_users','w')
           && $p['ldap_import']

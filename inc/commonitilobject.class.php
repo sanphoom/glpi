@@ -2832,7 +2832,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($this->userentity_oncreate
           && ($type == CommonITILActor::REQUESTER)) {
-         $params['on_change'] = 'submit()';
+         $params['on_change'] = 'this.form.submit()';
       } else { // Force entity search if needed
          $params['entity'] = $options['entities_id'];
       }
@@ -2851,7 +2851,6 @@ abstract class CommonITILObject extends CommonDBTM {
             $paramscomment['alternative_email']
                = $options["_users_id_".$typename."_notif"]['alternative_email'];
          }
-
          $params['toupdate'] = array('value_fieldname'
                                                   => 'value',
                                      'to_update'  => "notif_".$typename."_$rand",
@@ -3092,7 +3091,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<br>";
             $rand = Entity::dropdown(array('value'     => $this->fields["entities_id"],
                                            'entity'    => $this->userentities,
-                                           'on_change' => 'submit()'));
+                                           'on_change' => 'this.form.submit()'));
          } else {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
