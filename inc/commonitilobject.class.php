@@ -1534,7 +1534,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $values = array();
 
       if ($p['showtype'] == 'search') {
-         $values[0] = _x('priority', 'All');
+         $values[0]  = _x('priority', 'All');
          $values[-5] = _x('priority', 'At least very high');
          $values[-4] = _x('priority', 'At least high');
          $values[-3] = _x('priority', 'At least medium');
@@ -1619,60 +1619,42 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      $id = "select_".$p['name'].mt_rand();
-      $output = "<select id='$id' name='".$p['name']."'>";
+      $values = array();
 
       if ($p['showtype'] == 'search') {
-         $output .= "<option value='0' ".(($p['value'] == 0)?" selected ":"").">".
-                     _x('urgency', 'All')."</option>";
-         $output .= "<option value='-5' ".(($p['value'] == -5)?" selected ":"").">".
-                     _x('urgency', 'At least very high')."</option>";
-         $output .= "<option value='-4' ".(($p['value'] == -4)?" selected ":"").">".
-                     _x('urgency','At least high')."</option>";
-         $output .= "<option value='-3' ".(($p['value'] == -3)?" selected ":"").">".
-                     _x('urgency','At least medium')."</option>";
-         $output .= "<option value='-2' ".(($p['value'] == -2)?" selected ":"").">".
-                     _x('urgency','At least low')."</option>";
-         $output .= "<option value='-1' ".(($p['value'] == -1)?" selected ":"").">".
-                     _x('urgency', 'At least very low')."</option>";
+         $values[0]  = _x('urgency', 'All');
+         $values[-5] = _x('urgency', 'At least very high');
+         $values[-4] = _x('urgency','At least high');
+         $values[-3] = _x('urgency','At least medium');
+         $values[-2] = _x('urgency','At least low');
+         $values[-1] = _x('urgency', 'At least very low');
       }
 
       if (isset($CFG_GLPI[static::URGENCY_MASK_FIELD])) {
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<5))) {
-            $output .= "<option value='5' ".(($p['value'] == 5)?" selected ":"").">".
-                        _x('urgency', 'Very high')."</option>";
+            $values[5]  = _x('urgency', 'Very high');
          }
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<4))) {
-            $output .= "<option value='4' ".(($p['value'] == 4)?" selected ":"").">".
-                        _x('urgency', 'High')."</option>";
+            $values[4]  = _x('urgency', 'High');
          }
 
-         $output .= "<option value='3' ".(($p['value'] == 3)?" selected ":"").">".
-                     _x('urgency', 'Medium')."</option>";
+         $values[3]  = _x('urgency', 'Medium');
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<2))) {
-            $output .= "<option value='2' ".(($p['value'] == 2)?" selected ":"").">".
-                        _x('urgency', 'Low')."</option>";
+            $values[2]  = _x('urgency', 'Low');
          }
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<1))) {
-            $output .= "<option value='1' ".(($p['value'] == 1)?" selected ":"").">".
-                        _x('urgency', 'Very low')."</option>";
+            $values[1]  = _x('urgency', 'Very low');
          }
       }
 
-      $output .= "</select>";
-
-      if ($p['display']) {
-         echo $output;
-         return $id;
-      }
-      return $output;
+      return Dropdown::showFromArray($p['name'],$values, $p);
    }
 
 
@@ -1734,61 +1716,43 @@ abstract class CommonITILObject extends CommonDBTM {
             $p[$key] = $val;
          }
       }
+      $values = array();
 
-      $id = "select_".$p['name'].mt_rand();
-      $output = "<select id='$id' name='".$p['name']."'>";
 
       if ($p['showtype'] == 'search') {
-         $output .= "<option value='0' ".(($p['value'] == 0)?" selected ":"").">".
-                     _x('impact', 'All')."</option>";
-         $output .= "<option value='-5' ".(($p['value'] == -5)?" selected ":"").">".
-                     _x('impact', 'At least very high')."</option>";
-         $output .= "<option value='-4' ".(($p['value'] == -4)?" selected ":"").">".
-                     _x('impact', 'At least high')."</option>";
-         $output .= "<option value='-3' ".(($p['value'] == -3)?" selected ":"").">".
-                     _x('impact', 'At least medium')."</option>";
-         $output .= "<option value='-2' ".(($p['value'] == -2)?" selected ":"").">".
-                     _x('impact', 'At least low')."</option>";
-         $output .= "<option value='-1' ".(($p['value'] == -1)?" selected ":"").">".
-                     _x('impact', 'At least very low')."</option>";
+         $values[0]  = _x('impact', 'All');
+         $values[-5] = _x('impact', 'At least very high');
+         $values[-4] = _x('impact', 'At least high');
+         $values[-3] = _x('impact', 'At least medium');
+         $values[-2] = _x('impact', 'At least low');
+         $values[-1] = _x('impact', 'At least very low');
       }
 
       if (isset($CFG_GLPI[static::IMPACT_MASK_FIELD])) {
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<5))) {
-            $output .= "<option value='5' ".(($p['value'] == 5)?" selected ":"").">".
-                        _x('impact', 'Very high')."</option>";
+            $values[5]  = _x('impact', 'Very high');
          }
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<4))) {
-            $output .= "<option value='4' ".(($p['value'] == 4)?" selected ":"").">".
-                        _x('impact', 'High')."</option>";
+            $values[4]  = _x('impact', 'High');
          }
 
-         $output .= "<option value='3' ".(($p['value'] == 3)?" selected ":"").">".
-                     _x('impact', 'Medium')."</option>";
+         $values[2]  = _x('impact', 'Medium');
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<2))) {
-            $output .= "<option value='2' ".(($p['value'] == 2)?" selected ":"").">".
-                        _x('impact', 'Low')."</option>";
+            $values[2]  = _x('impact', 'Low');
          }
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<1))) {
-            $output .= "<option value='1' ".(($p['value'] == 1)?" selected ":"").">".
-                        _x('impact', 'Very low')."</option>";
+            $values[1]  = _x('impact', 'Very low');
          }
       }
 
-      $output .= "</select>";
-
-      if ($p['display']) {
-         echo $output;
-         return $id;
-      }
-      return $output;
+      return Dropdown::showFromArray($p['name'],$values, $p);
    }
 
 
