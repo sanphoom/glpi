@@ -318,12 +318,12 @@ class Dropdown {
             }
          }
          $paramscomment = array('value' => '__VALUE__',
-                                 'table' => $table);
+                                'table' => $table);
 
-         Ajax::updateItemOnSelectEvent($field_id,
+         $output .= Ajax::updateItemOnSelectEvent($field_id,
                                        $comment_id,
-                                       $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment);
-         Ajax::commonDropdownUpdateItem($params);
+                                       $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);
+         $output .= Ajax::commonDropdownUpdateItem($params, false);
      }
       if ($params['display']) {
          echo $output;

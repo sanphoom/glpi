@@ -468,10 +468,13 @@ class Ajax {
     *               (need value_fieldname, to_update,
     *                url (@see Ajax::updateItemOnSelectEvent for information)
     *                and may have moreparams)
+    * @param $display      boolean  display or get string (default true)
    **/
-   static function commonDropdownUpdateItem($options) {
+   static function commonDropdownUpdateItem($options, $display = true) {
       $field     = '';
       $fieldname = '';
+
+      $output = '';
       // Old scheme
       if (isset($options["update_item"])
           && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))) {
@@ -507,11 +510,16 @@ class Ajax {
                   }
                }
 
-             self::updateItemOnSelectEvent("dropdown_".$options["name"].$options["rand"],
-                                           $data['to_update'], $data['url'], $paramsupdate);
+             $output .= self::updateItemOnSelectEvent("dropdown_".$options["name"].$options["rand"],
+                                           $data['to_update'], $data['url'], $paramsupdate, $display);
             }
          }
       }
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }      
    }
 
 

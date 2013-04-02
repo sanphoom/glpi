@@ -148,7 +148,6 @@ class Item_Devices extends CommonDBRelation {
          return false;
       }
       $canedit = (($withtemplate != 2) && $item->can($ID, 'w'));
-
       echo "<div class='spaced'>";
       $rand = mt_rand();
       if ($canedit) {

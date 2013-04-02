@@ -3113,16 +3113,28 @@ class User extends CommonDBTM {
 
       // Display comment
       if ($p['comments']) {
+         $comment_id = Html::cleanId("comment_".$p['name'].$p['rand']);
          if (!$view_users) {
             $user["link"] = '';
          } else if (empty($user["link"])) {
             $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
          }
          $output .= Html::showToolTip($user["comment"],
-                                      array('contentid' => "comment_".$p['name'].$p['rand'],
+                                      array('contentid' => $comment_id,
                                             'display'   => false,
                                             'link'      => $user["link"],
                                             'linkid'    => "comment_link_".$p["name"].$p['rand']));
+
+         $paramscomment = array('value' => '__VALUE__',
+                                'table' => "glpi_users");
+
+         if (isset($p['update_link'])) {
+            $paramscomment['withlink'] = $comment_id;
+         }
+         $output .= Ajax::updateItemOnSelectEvent($field_id,
+                                       $comment_id,
+                                       $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);
+         $output .= Ajax::commonDropdownUpdateItem($p, false);
       }
 
       if (Session::haveRight('import_externalauth_users','w')

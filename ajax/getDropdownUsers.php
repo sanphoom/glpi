@@ -101,7 +101,7 @@ if (count($users)) {
    foreach ($users as $ID => $output) {
       $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
 
-      array_push($datas, array('id'   => 0,
+      array_push($datas, array('id'   => $ID,
                               'text'  => Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]),
                               'title' => $title));
    }
