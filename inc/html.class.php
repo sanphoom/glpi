@@ -1045,8 +1045,7 @@ class Html {
       echo "<body>";
       // Generate array for menu and check right
 
-      if (1
-          || !isset($_SESSION['glpimenu'])
+      if (!isset($_SESSION['glpimenu'])
           || !is_array($_SESSION['glpimenu'])
           || (count($_SESSION['glpimenu']) == 0)) {
 
@@ -1130,11 +1129,11 @@ class Html {
                             'Printer');
 
          foreach ($allassets as $type) {
-            if (isset($menu['inventory']['content'][strtolower($type)])) {
-               $menu['inventory']['content']['state']['title']            = __('Global');
-               $menu['inventory']['content']['state']['shortcut']         = '';
-               $menu['inventory']['content']['state']['page']             = '/front/allassets.php';
-               $menu['inventory']['content']['state']['links']['search']  = '/front/allassets.php';
+            if (isset($menu['assets']['content'][strtolower($type)])) {
+               $menu['assets']['content']['state']['title']            = __('Global');
+               $menu['assets']['content']['state']['shortcut']         = '';
+               $menu['assets']['content']['state']['page']             = '/front/allassets.php';
+               $menu['assets']['content']['state']['links']['search']  = '/front/allassets.php';
                break;
             }
          }
