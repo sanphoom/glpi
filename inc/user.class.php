@@ -2066,6 +2066,7 @@ class User extends CommonDBTM {
          return false;
       }
       if ($this->getFromDB($ID)) {
+         $rand = mt_rand();
          $authtype = $this->getAuthMethodsByID();
 
          $extauth = !(($this->fields["authtype"] == Auth::DB_GLPI)
@@ -2097,17 +2098,20 @@ class User extends CommonDBTM {
          echo "</td>";
 
          if (!empty($this->fields["name"])) {
-            echo "<td rowspan='8'>" . __('Picture') . "</td>";
-            echo "<td rowspan='8'>";
-            echo "<div class='user_picture_border'>";
-            if (!empty($this->fields["picture"])) {
-               echo "<img src='".$CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".
-                  $this->fields["picture"]."' class='user_picture'/>";
-            } else {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/picture.png' class='user_picture' />";
-            }
+            echo "<td rowspan='3'>" . __('Picture') . "</td>";
+            echo "<td rowspan='3'>";
+            echo "<div class='user_picture_border_small' id='picture$rand'>";
+            echo "<img class='user_picture_small' src='".
+                  User::getThumbnailURLForPicture($this->fields['picture'])."' />";
             echo "</div>";
+            $full_picture = "<div class='user_picture_border'>";
+            $full_picture .= "<img class='user_picture' src='".
+                              User::getURLForPicture($this->fields['picture'])."' />";
+            $full_picture .= "</div>";
+
+            Html::showTooltip($full_picture, array('applyto' => "picture$rand"));
             echo "<input type='file' name='picture' accept='image/gif, image/jpeg, image/png'>";
+
             echo "</td>";
             echo "</tr>";
          }
@@ -2123,59 +2127,37 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         //do some rights verification
-         if (!$extauth
-             && Session::haveRight("password_update", "1")) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Password') . "</td>";
-            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='off' onkeyup=\"return passwordCheck();\">";
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Password confirmation') . "</td>";
-            echo "<td><input type='password' name='password2' value='' size='30' autocomplete='off'>";
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Password security policy')."</td>";
-            echo "<td>";
-            Config::displayPasswordSecurityChecks();
-            echo "</td>";
-            echo "</tr>";
-         } else {
-            echo "<tr class='tab_bg_1'><td></td></tr>";
-            echo "<tr class='tab_bg_1'><td></td></tr>";
-         }
-
-
-
-
-
-         echo "<tr class='tab_bg_1'><td class='top'>" . _n('Email', 'Emails',2);
-         UserEmail::showAddEmailButton($this);
-         echo "</td><td>";
-         UserEmail::showForUser($this);
-         echo "</td>";
-
-         echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;:</td><td>";
-
-         if ($extauth
-             && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
-            echo $this->fields["mobile"];
-         } else {
-            Html::autocompletionTextField($this, "mobile");
-         }
-         echo "</td></tr>";
-
-
          echo "<tr class='tab_bg_1'>";
 
          if (!GLPI_DEMO_MODE) {
             echo "<td>" . __('Language') . "</td><td>";
             // Use session variable because field in table may be null if same of the global config
             Dropdown::showLanguages("language", array('value' => $_SESSION["glpilanguage"]));
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
          }
-         echo "</td></tr>";
+         echo "</tr>";
+         
+         //do some rights verification
+         if (!$extauth
+             && Session::haveRight("password_update", "1")) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('Password') . "</td>";
+            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='off' onkeyup=\"return passwordCheck();\">";
+            echo "</td>";
+            echo "<td rowspan='2'>".__('Password security policy')."</td>";
+            echo "<td rowspan='2'>";
+            Config::displayPasswordSecurityChecks();
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>" . __('Password confirmation') . "</td>";
+            echo "<td><input type='password' name='password2' value='' size='30' autocomplete='off'>";
+            echo "</td></tr>";
+
+         }
 
 
          echo "<tr class='tab_bg_1'><td>" .  __('Phone') . "</td><td>";
@@ -2186,10 +2168,23 @@ class User extends CommonDBTM {
          } else {
             Html::autocompletionTextField($this, "phone");
          }
-         echo "</td></tr>";
+         echo "</td>";
+         echo "<td class='top'>" . _n('Email', 'Emails',2);
+         UserEmail::showAddEmailButton($this);
+         echo "</td><td>";
+         UserEmail::showForUser($this);
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;:</td><td>";
 
-
-         echo "<tr class='tab_bg_1'>";
+         if ($extauth
+             && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
+            echo $this->fields["mobile"];
+         } else {
+            Html::autocompletionTextField($this, "mobile");
+         }
+         echo "</td>";
 
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . __('Default profile') . "</td><td>";
@@ -2199,11 +2194,12 @@ class User extends CommonDBTM {
                                                         Profile_User::getUserProfiles($this->fields['id']));
             Dropdown::showFromArray("profiles_id", $options,
                                     array('value' => $this->fields["profiles_id"]));
+            echo "</td>";
 
          } else {
-            echo "<td colspan='2'>&nbsp;";
+            echo "<td colspan='2'>&nbsp;</td>";
          }
-         echo "</td></tr>";
+         echo "</tr>";
 
 
 

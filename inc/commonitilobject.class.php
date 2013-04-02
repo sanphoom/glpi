@@ -1954,17 +1954,7 @@ abstract class CommonITILObject extends CommonDBTM {
             break;
       }
 
-      $output = "<select name='".$p['name']."'>";
-      foreach ($tab as $key => $val) {
-         $output .=  "<option value='$key' ".(($p['value'] == $key)?" selected ":"").">$val</option>";
-      }
-      $output .=  "</select>";
-
-      if ($p['display']) {
-         echo $output;
-      } else {
-         return $output;
-      }
+      return Dropdown::showFromArray($p['name'], $tab, $p);
    }
 
 
