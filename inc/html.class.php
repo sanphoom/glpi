@@ -3798,7 +3798,8 @@ class Html {
    **/
    static function jsAdaptDropdown($id) {
       $out = "<script type='text/javascript'>\n";
-      $out .= "$(document).ready(function() { $('#$id').select2(); });";
+      $out .= "$(document).ready(function() { $('#$id').select2({
+                  minimumResultsForSearch: 5,}); });";
       $out .= "</script>\n";
       return $out;
    }
@@ -3841,6 +3842,7 @@ class Html {
       $output .= " $('#$field_id').select2({
                         width: '$width',
                         minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
+                        minimumResultsForSearch: 5,
                         quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
                         ajax: {
                            url: '$url',
