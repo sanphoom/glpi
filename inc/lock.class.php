@@ -470,7 +470,8 @@ class Lock {
                                '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
                                '`glpi_networknames`.`items_id`'   => '`glpi_networkports`.`id`',
                                '`glpi_networkports`.`itemtype`'   => $baseitemtype);
-            $condition['FIELDS'] = array('glpi_networknames' => 'id');
+            $condition['FIELDS']
+                       = array('glpi_networknames' => 'id');
             $table     = array('glpi_networknames', 'glpi_networkports');
             $field     = '`glpi_networkports`.`items_id`';
             break;
@@ -483,7 +484,8 @@ class Lock {
                                '`glpi_networknames`.`itemtype`'   => 'NetworkPort',
                                '`glpi_networknames`.`items_id`'   => '`glpi_networkports`.`id`',
                                '`glpi_networkports`.`itemtype`'   => $baseitemtype);
-            $condition['FIELDS'] = array('glpi_ipaddresses' => 'id');
+            $condition['FIELDS']
+                       = array('glpi_ipaddresses' => 'id');
             $table     = array('glpi_ipaddresses', 'glpi_networknames', 'glpi_networkports');
             $field     = '`glpi_networkports`.`items_id`';
             break;

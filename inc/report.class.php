@@ -277,6 +277,8 @@ class Report extends CommonGLPI{
 
 
    /**
+    * @since version 0.84
+    *
     * @param $networkport_prefix
     * @param $networkport_crit
     * @param $where_crit

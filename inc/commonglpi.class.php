@@ -957,6 +957,7 @@ class CommonGLPI {
     * @param $options   array
    **/
    function display($options=array()) {
+
       if (isset($options['id'])) {
          $this->getFromDB($options['id']);
       }

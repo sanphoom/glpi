@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Tracking class
+/**
+ * Ticket Class
+**/
 class Ticket extends CommonITILObject {
 
    // From CommonDBTM
@@ -5560,11 +5562,11 @@ class Ticket extends CommonITILObject {
          //tenth column
          $tenth_column = '';
 
-         $plan  = new TicketTask();
-         $items = array();
+         $plan         = new TicketTask();
+         $items        = array();
          foreach ($DB->request("glpi_tickettasks",
                                array('tickets_id' => $job->fields['id'])) as $plan) {
-            $i = $plan['id'];
+            $i                  = $plan['id'];
             $items[$i]['begin'] = $plan['begin'];
             $items[$i]['end']   = $plan['end'];
 
@@ -5572,7 +5574,7 @@ class Ticket extends CommonITILObject {
 
                foreach ($DB->request("glpi_users",
                                      array('id' => $plan['users_id_tech'])) as $user) {
-                  $j = $user['id'];
+                  $j                      = $user['id'];
                   $items[$j]['realname']  = $user['realname'];
                   $items[$j]['firstname'] = $user['firstname'];
                   if (($items[$j]['realname'] == '')

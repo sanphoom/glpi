@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Group_User class - Relation between Group and User
+/**
+ * Group_User Class
+ *
+ *  Relation between Group and User
+**/
 class Group_User extends CommonDBRelation{
 
    // From CommonDBRelation
@@ -410,7 +414,7 @@ class Group_User extends CommonDBRelation{
 
       if ($canedit) {
          self::showAddUserForm($group, $ids, $entityrestrict, $crit);
-      } 
+      }
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
@@ -615,7 +619,7 @@ class Group_User extends CommonDBRelation{
                               $res['ok']++;
                            } else {
                               $res['ko']++;
-                              $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);                              
+                              $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
                            $res['noright']++;

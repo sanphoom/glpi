@@ -67,7 +67,7 @@ class Dropdown {
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice : Display emptychoice ? (default true)
     *    - display             : boolean / display or get string (default true)
-    *    - width               : specific width needed (default 80%)    
+    *    - width               : specific width needed (default 80%)
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -199,7 +199,7 @@ class Dropdown {
 //       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
 //                     $params['rand']."'>";
 //       $default .= "<option value='".$params['value']."'>$name</option></select>";
-// 
+//
 //       $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default,
 //                                 $params['rand'], false);
       $field_id = Html::cleanId("dropdown_".$params['name'].$params['rand']);
@@ -1067,20 +1067,20 @@ class Dropdown {
          return Dropdown::showFromArray($params['name'], $options,
                                           array('value'     => $params['value'],
                                                 'on_change' => $params['on_change']));
-         
+
 //          echo "<select name='".$params['name']."' id='itemtype".$params['rand']."'";
 //          if ($params['on_change']) {
 //             echo " onChange='".$params['on_change']."'>";
 //          } else {
 //             echo ">";
 //          }
-// 
+//
 //          foreach ($options as $key => $val) {
 //             $sel = (($key === $params['value']) ? 'selected' : '');
 //             echo "<option value='".$key."' $sel>".$val."</option>";
 //          }
 //          echo "</select>";
-// 
+//
 //          return $params['rand'];
       }
       return 0;
@@ -1189,7 +1189,7 @@ class Dropdown {
       }
       $out .= "</select>";
       $out .= Html::jsAdaptDropdown("$myname".$params['rand']);
-      
+
       if ($params['display']) {
          echo $out;
          return $params['rand'];
@@ -1522,7 +1522,7 @@ class Dropdown {
       $param['display']         = true;
       $param['other']           = false;
       $param['rand']            = mt_rand();
-      
+
 
       if (is_array($options) && count($options)) {
          if (!empty($options['value'])) {
@@ -1533,7 +1533,7 @@ class Dropdown {
             $param[$key] = $val;
          }
       }
-      
+
       if ($param['other'] !== false) {
          $other_select_option = $name . '_other_value';
          $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
@@ -1568,7 +1568,7 @@ class Dropdown {
 
          $field_id = Html::cleanId("dropdown_".$name.$param['rand']);
          $output  .= "<select name='$field_name' id='$field_id'";
-         
+
          if (!empty($param["on_change"])) {
             $output .= " onChange='".$param["on_change"]."'";
          }
@@ -1795,7 +1795,7 @@ class Dropdown {
       $values['-'.Search::PDF_OUTPUT_PORTRAIT]  = __('All pages in portrait PDF');
       $values['-'.Search::SYLK_OUTPUT]          = __('All pages in SLK');
       $values['-'.Search::CSV_OUTPUT]           = __('All pages in CSV');
-      
+
       Dropdown::showFromArray('display_type', $values);
       echo "<input type='image' name='export' src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
              title=\"".__s('Export')."\" value=\"".__s('Export')."\">";
@@ -1840,8 +1840,8 @@ class Dropdown {
       }
       $values[9999999] = 9999999;
       // Propose max input vars -10
-      $max        = Toolbox::get_max_input_vars();
-      if ($max>10) {
+      $max             = Toolbox::get_max_input_vars();
+      if ($max > 10) {
          $values[$max-10] = $max-10;
       }
       ksort($values);

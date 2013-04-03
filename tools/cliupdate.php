@@ -171,7 +171,7 @@ if (!TableExists("glpi_configs")) {
    // Get current version
    // Use language from session, even if sometime not reliable
    $query = "SELECT `version`, 'language'
-               FROM `glpi_config`";
+             FROM `glpi_config`";
    $result = $DB->queryOrDie($query, "get current version");
 
    $current_version = trim($DB->result($result,0,0));
@@ -180,7 +180,7 @@ if (!TableExists("glpi_configs")) {
 } else if (FieldExists('glpi_configs', 'version')) {
    // Get current version and language
    $query = "SELECT `version`, `language`
-               FROM `glpi_configs`";
+             FROM `glpi_configs`";
    $result = $DB->queryOrDie($query, "get current version");
 
    $current_version = trim($DB->result($result,0,0));
@@ -188,8 +188,8 @@ if (!TableExists("glpi_configs")) {
 } else {
    $configurationValues = Config::getConfigurationValues('core', array('version', 'language'));
 
-   $current_version = $configurationValues['version'];
-   $glpilanguage    = $configurationValues['language'];
+   $current_version     = $configurationValues['version'];
+   $glpilanguage        = $configurationValues['language'];
 }
 
 $migration = new CliMigration($current_version);
@@ -285,7 +285,7 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
    Config::setConfigurationValues('core', array('version'             => GLPI_VERSION,
                                                 'founded_new_version' => ''));
-   
+
    // Update process desactivate all plugins
    $plugin = new Plugin();
    $plugin->unactivateAll();

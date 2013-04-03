@@ -2138,7 +2138,7 @@ class User extends CommonDBTM {
             echo "<td colspan='2'>&nbsp;</td>";
          }
          echo "</tr>";
-         
+
          //do some rights verification
          if (!$extauth
              && Session::haveRight("password_update", "1")) {
@@ -2175,7 +2175,7 @@ class User extends CommonDBTM {
          UserEmail::showForUser($this);
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;:</td><td>";
 
          if ($extauth
@@ -2994,7 +2994,7 @@ class User extends CommonDBTM {
     *    - ldap_import
     *    - on_change    : string / value to transmit to "onChange"
     *    - display      : boolean / display or get string (default true)
-    *    - width               : specific width needed (default 80%)    
+    *    - width               : specific width needed (default 80%)
     *
     * @return rand value if displayed / string if not
    **/
@@ -3879,50 +3879,62 @@ class User extends CommonDBTM {
       return $default_password_set;
    }
 
+
    /**
     * Get picture URL from picture field
     *
+    * @since version 0.85
+    *
     * @param $picture picture field
+    *
     * @return string URL to show picture
    **/
    static function getURLForPicture($picture) {
       global $CFG_GLPI;
+
       if (!empty($picture)) {
          return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/$picture";
-      } else {
-         return $CFG_GLPI["root_doc"]."/pics/picture.png";
       }
+      return $CFG_GLPI["root_doc"]."/pics/picture.png";
    }
+
 
    /**
     * Get picture URL from picture field
     *
+    * @since version 0.85
+    *
     * @param $picture picture field
+    *
     * @return string URL to show picture
    **/
    static function getThumbnailURLForPicture($picture) {
       global $CFG_GLPI;
+
       if (!empty($picture)) {
          $tmp = explode(".", $picture);
          if (count($tmp) ==2) {
-            return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".$tmp[0]."_min.".$tmp[1];
+            return $CFG_GLPI["root_doc"]."/front/document.send.php?file=_pictures/".$tmp[0].
+                   "_min.".$tmp[1];
          }
-
          return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
       }
       return $CFG_GLPI["root_doc"]."/pics/picture_min.png";
-      if (!empty($picture)) {
 
-      }
    }
+
 
    /**
     * Drop existing files for user picture
     *
+    * @since version 0.85
+    *
     * @param $picture picture field
+    *
     * @return nothing
    **/
    static function dropPictureFiles($picture) {
+
       if (!empty($picture)) {
          // unlink main file
          if (file_exists(GLPI_DOC_DIR."/_pictures/$picture")) {
@@ -3930,12 +3942,13 @@ class User extends CommonDBTM {
          }
          // unlink Thunmnail
          $tmp = explode(".", $picture);
-         if (count($tmp) ==2) {
+         if (count($tmp) == 2) {
             if (file_exists(GLPI_DOC_DIR."/_pictures/".$tmp[0]."_min.".$tmp[1])) {
                @unlink(GLPI_DOC_DIR."/_pictures/".$tmp[0]."_min.".$tmp[1]);
             }
          }
       }
    }
+
 }
 ?>

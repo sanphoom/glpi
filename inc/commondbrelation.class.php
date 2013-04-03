@@ -152,6 +152,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       return static::getOppositeByTypeAndID($item->getType(), $item->getID(), $relations_id);
    }
 
+
    /**
     * @since version 0.84
     *

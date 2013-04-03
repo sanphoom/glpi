@@ -819,8 +819,7 @@ class DBmysqlIterator  implements Iterator {
             // NULL condition
             $ret .= "$name IS NULL";
 
-         } else if ((is_numeric($value))
-                    || (preg_match("/^`.*?`$/", $value))) {
+         } else if (is_numeric($value) || preg_match("/^`.*?`$/", $value)) {
             // Integer or field name
             $ret .= "$name=$value";
 
