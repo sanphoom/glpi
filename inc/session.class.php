@@ -85,7 +85,7 @@ class Session {
          $_SESSION = $save;
          // Define default time :
          $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
-         
+
          // Normal mode for this request
          $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
          // Check ID exists and load complete user from DB (plugins...)
@@ -651,16 +651,21 @@ class Session {
       return false;
    }
 
+
    /**
     * Redirect User to login if not logged in
+    *
+    * @since version 0.85
     *
     * @return nothing, just redirect if not logged in
    **/
    static function redirectIfNotLoggedIn() {
+
       if (!self::getLoginUserID()) {
          Html::redirectToLogin();
       }
    }
+
 
    /**
     * Check if I have access to the central interface
@@ -673,6 +678,7 @@ class Session {
       if (!isset($_SESSION["glpiactiveprofile"])
           || ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
          // Gestion timeout session
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
