@@ -3232,7 +3232,7 @@ class CommonDBTM extends CommonGLPI {
                            }
                      } else {
                         $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                        $res['messages'][] = $this->getErrorMessage("ERROR_NOT_FOUND");
                      }
                   }
                }
