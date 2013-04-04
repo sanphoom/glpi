@@ -35,13 +35,16 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// MailCollector class
-// Merge with collect GLPI system after big modification in it
-// modif and debug by  INDEPNET Development Team.
-/* Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
+/**
+ * MailCollector class
+ *
+ * Merge with collect GLPI system after big modification in it
+ *
+ * modif and debug by  INDEPNET Development Team.
+ * Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
  * Description: Reciving mail With Attechment
  * Email: mitulkoradia@gmail.com
- */
+**/
 class MailCollector  extends CommonDBTM {
 
    // Specific one
@@ -803,12 +806,12 @@ class MailCollector  extends CommonDBTM {
                   $to_keep[$ID] = $ID;
                }
             }
-            
+
             $tkt['content'] = "";
             foreach ($to_keep as $ID ) {
                $tkt['content'] .= $content[$ID]."\n";
             }
-            
+
             // Do not play rules for followups : WRONG : play rules only for refuse options
             //$play_rules = false;
 
@@ -1151,7 +1154,7 @@ class MailCollector  extends CommonDBTM {
                $text = str_replace("\n", " ", $text);
             }
 
-            if (count($structure->parameters)>0) {
+            if (count($structure->parameters) > 0) {
                foreach ($structure->parameters as $param) {
                   if ((strtoupper($param->attribute) == 'CHARSET')
                       && function_exists('mb_convert_encoding')
@@ -1196,60 +1199,6 @@ class MailCollector  extends CommonDBTM {
       return count($headers);
    }
 
-
-   /**
-   * GetAttech($mid,$path) / Prefer use getAttached
-   * Save attached file from mail to given path of a particular location
-   *
-   * @param $mid     mail id
-   * @param $path    path where to save
-   *
-   * @return  String of filename with coma separated like a.gif,pio.jpg etc
-  **/
-   /*
-    * // FUNCTION NEVER USED
-
-      function GetAttech($mid, $path) {
-
-      $struckture = imap_fetchstructure($this->marubox,$mid);
-      $ar         = "";
-      if (isset($struckture->parts) && count($struckture->parts)>0) {
-         foreach ($struckture->parts as $key => $value) {
-            $enc = $struckture->parts[$key]->encoding;
-
-            if ($struckture->parts[$key]->ifdparameters) {
-               $name = $struckture->parts[$key]->dparameters[0]->value;
-               $message = imap_fetchbody($this->marubox,$mid,$key+1);
-
-               if ($enc == 0) {
-                  $message = imap_8bit($message);
-               }
-               if ($enc == 1) {
-                  $message = imap_8bit ($message);
-               }
-               if ($enc == 2) {
-                  $message = imap_binary ($message);
-               }
-               if ($enc == 3) {
-                  $message = imap_base64 ($message);
-               }
-               if ($enc == 4) {
-                  $message = quoted_printable_decode($message);
-               }
-               if ($enc == 5) {
-                  $message = $message;
-               }
-               $fp = fopen($path.$name,"w");
-               fwrite($fp,$message);
-               fclose($fp);
-               $ar = $ar.$name.",";
-            }
-         }
-      }
-      $ar = substr($ar, 0, (strlen($ar)-1));
-      return $ar;
-   }
-*/
 
    /**
     * Private function : Recursivly get attached documents

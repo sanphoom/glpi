@@ -1861,7 +1861,7 @@ class Ticket extends CommonITILObject {
             $valid = new TicketValidation();
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  $ticket = new Ticket();
+                  $ticket = new self();
                   if ($ticket->getFromDB($key)) {
                      $input2 = array('tickets_id'         => $key,
                                     'users_id_validate'  => $input['users_id_validate'],
