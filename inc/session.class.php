@@ -651,6 +651,16 @@ class Session {
       return false;
    }
 
+   /**
+    * Redirect User to login if not logged in
+    *
+    * @return nothing, just redirect if not logged in
+   **/
+   static function redirectIfNotLoggedIn() {
+      if (!self::getLoginUserID()) {
+         Html::redirectToLogin();
+      }
+   }
 
    /**
     * Check if I have access to the central interface
@@ -663,10 +673,6 @@ class Session {
       if (!isset($_SESSION["glpiactiveprofile"])
           || ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
          // Gestion timeout session
-         if (!self::getLoginUserID()) {
-            Html::redirectToLogin();
-            exit ();
-         }
          Html::displayRightError();
       }
    }
@@ -698,10 +704,7 @@ class Session {
       if (!isset($_SESSION["glpiactiveprofile"])
           || ($_SESSION["glpiactiveprofile"]["interface"] != "helpdesk")) {
          // Gestion timeout session
-         if (!self::getLoginUserID()) {
-            Html::redirectToLogin();
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
@@ -716,10 +719,7 @@ class Session {
 
       if (!isset($_SESSION["glpiname"])) {
          // Gestion timeout session
-         if (!Session::getLoginUserID()) {
-            Html::redirectToLogin();
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
@@ -738,10 +738,7 @@ class Session {
 
       if (!self::haveRight($module, $right)) {
          // Gestion timeout session
-         if (!self::getLoginUserID()) {
-            Html::redirectToLogin();
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
@@ -775,10 +772,7 @@ class Session {
 
       if (!$valid) {
          // Gestion timeout session
-         if (!self::getLoginUserID()) {
-            Html::redirectToLogin();
-            exit ();
-         }
+         self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }
    }
