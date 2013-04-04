@@ -28,14 +28,16 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Calendar
+/**
+ * Calendar Class
+**/
 class Calendar extends CommonDropdown {
 
    // From CommonDBTM

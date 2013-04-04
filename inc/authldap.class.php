@@ -338,9 +338,9 @@ class AuthLDAP extends CommonDBTM {
                if (count($input['item']) > 0) {
                   $input["ldap_process_count"]  = 0;
                   $input["authldaps_id"]        = $_SESSION['ldap_server'];
-                  $input['res']                 = array('ok'      => 0,
-                                                        'ko'      => 0,
-                                                        'noright' => 0,
+                  $input['res']                 = array('ok'       => 0,
+                                                        'ko'       => 0,
+                                                        'noright'  => 0,
                                                         'messages' => array());
                   foreach ($input['item'] as $key => $val) {
                      if ($val) {

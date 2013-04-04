@@ -999,7 +999,7 @@ class NetworkPort extends CommonDBChild {
          case "assign_vlan" :
             if (!empty($input["vlans_id"])) {
                $networkportvlan = new NetworkPort_Vlan();
-               $networkport = new NetworkPort();
+               $networkport     = new self();
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($networkport->getFromDB($key)) {
@@ -1029,7 +1029,7 @@ class NetworkPort extends CommonDBChild {
          case "unassign_vlan" :
             if (!empty($input["vlans_id"])) {
                $networkportvlan = new NetworkPort_Vlan();
-               $networkport = new NetworkPort();
+               $networkport     = new self();
                foreach ($input["item"] as $key => $val) {
                   if ($networkport->getFromDB($key)) {
                      if ($val == 1) {

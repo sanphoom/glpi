@@ -354,10 +354,10 @@ class Lock {
    static function unlockItems($itemtype, $baseitemtype, $items) {
       global $DB;
 
-      $ok    = 0;
-      $ko    = 0;
+      $ok       = 0;
+      $ko       = 0;
       $messages = array();
-      $infos = self::getLocksQueryInfosByItemType($itemtype, $baseitemtype);
+      $infos    = self::getLocksQueryInfosByItemType($itemtype, $baseitemtype);
 
       if ($item = getItemForItemtype($infos['type'])) {
 

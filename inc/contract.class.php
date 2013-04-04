@@ -158,7 +158,12 @@ class Contract extends CommonDBTM {
          $alert->clear($this->getType(), $this->fields['id'], Alert::NOTICE);
       }
    }
+
+
    /**
+    *
+    * @since version 0.85
+    *
     * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -174,15 +179,15 @@ class Contract extends CommonDBTM {
                if (isset($input['items_id'])) {
                   // Add items to contracts
                   $input2 = array('itemtype'     => $input["item_itemtype"],
-                                 'items_id'     => $input["items_id"],
-                                 'contracts_id' => $key);
+                                  'items_id'     => $input["items_id"],
+                                  'contracts_id' => $key);
                   if ($item = getItemForItemtype('Contract')) {
                      $item->getFromDB($input2['contracts_id']);
                   }
                }  if (isset($input['contracts_id'])) { // Add contract to item
                   $input2 = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $key,
-                                 'contracts_id' => $input['contracts_id']);
+                                  'items_id'     => $key,
+                                  'contracts_id' => $input['contracts_id']);
                   if ($item = getItemForItemtype($input2["itemtype"])) {
                      $item->getFromDB($input2['items_id']);
                   }
@@ -226,7 +231,7 @@ class Contract extends CommonDBTM {
                if ($contractitem->can(-1, 'w', $input2)) {
                   if ($item = getItemForItemtype($input2["itemtype"])) {
                      if ($item->getFromDB($input2['items_id'])) {
-                        $contract = new Contract();
+                        $contract = new self();
                         if ($contract->getFromDB($input2['contracts_id'])) {
                            if ($contractitem->getFromDBForItems($contract, $item)) {
                               if ($contractitem->delete(array('id' => $contractitem->getID()))) {
@@ -263,7 +268,7 @@ class Contract extends CommonDBTM {
       }
       return $res;
    }
-   
+
 
    /**
     * Print the contract form

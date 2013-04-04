@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
 *  Common DataBase Table Manager Class - Persistent Object
-*/
+**/
 class CommonDBTM extends CommonGLPI {
 
    /// Data of the Item

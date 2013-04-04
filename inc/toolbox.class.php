@@ -1752,19 +1752,19 @@ class Toolbox {
                         $data[0] = 'Ticket';
                         // redirect to item
                         if (isset($data[1])
-                              && is_numeric($data[1])
-                              && ($data[1] > 0)) {
+                            && is_numeric($data[1])
+                            && ($data[1] > 0)) {
                            // Check entity
                            if (($item = getItemForItemtype($data[0]))
-                              && $item->isEntityAssign()) {
+                               && $item->isEntityAssign()) {
                               if ($item->getFromDB($data[1])) {
                                  if (!Session::haveAccessToEntity($item->getEntityID())) {
                                     Session::changeActiveEntities($item->getEntityID(),1);
                                  }
                               }
                            }
-                           Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
-                                          "&$forcetab");
+                           Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
+                                          $data[1]."&$forcetab");
                         // redirect to list
                         } else if (!empty($data[0])) {
                            if ($item = getItemForItemtype($data[0])) {
@@ -1797,12 +1797,11 @@ class Toolbox {
                         $data[0] = "Ticket";
 
                      default :
-
                         // redirect to item
                         if (!empty($data[0] )
-                              && isset($data[1])
-                              && is_numeric($data[1])
-                              && ($data[1] > 0)) {
+                            && isset($data[1])
+                            && is_numeric($data[1])
+                            && ($data[1] > 0)) {
                            // Check entity
                            if ($item = getItemForItemtype($data[0])) {
                               if ($item->isEntityAssign()) {
@@ -1812,11 +1811,10 @@ class Toolbox {
                                     }
                                  }
                               }
-                              Html::redirect($item->getFormURL()."?id=".
-                                          $data[1]."&$forcetab");
+                              Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
                            }
                         // redirect to list
-                        } else if (!empty($data[0] )) {
+                        } else if (!empty($data[0])) {
                            if ($item = getItemForItemtype($data[0])) {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }

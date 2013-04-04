@@ -2478,7 +2478,6 @@ class User extends CommonDBTM {
                         }
                      } else {
                         $res['noright']++;
-
                         $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
                      }
                   }

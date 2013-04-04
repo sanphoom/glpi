@@ -1162,6 +1162,7 @@ class CommonGLPI {
       return array();
    }
 
+
    /**
     * Get link for display options
     *
@@ -1182,12 +1183,16 @@ class CommonGLPI {
 
       return $link;
    }
+
+
    /**
     * Get error message for item
     *
     * @since version 0.85
-    * @param $error error type see define.php for ERROR_*
-    * @param $object string string to use instead of item link
+    *
+    * @param $error             error type see define.php for ERROR_*
+    * @param $object    string  string to use instead of item link (default '')
+    *
     * @return link
    **/
    function getErrorMessage($error, $object='') {
@@ -1207,8 +1212,8 @@ class CommonGLPI {
 
          case ERROR_ON_ACTION :
             return sprintf(__('%1$s: %2$s'), $object,  __('Error on executing the action'));
-
       }
    }
+
 }
 ?>

@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// CommonTreeDropdown class - Hirearchical and cross entities
+/**
+ * CommonTreeDropdown Class
+ *
+ * Hierarchical and cross entities
+**/
 abstract class CommonTreeDropdown extends CommonDropdown {
 
 

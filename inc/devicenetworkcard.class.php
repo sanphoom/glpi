@@ -35,7 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class DeviceNetworkCard
+/**
+ * DeviceNetworkCard Class
+**
+ */
 class DeviceNetworkCard extends CommonDevice {
 
    static function getTypeName($nb=0) {
