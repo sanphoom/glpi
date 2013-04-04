@@ -557,36 +557,16 @@ class Session {
          $newfile = "/locales/en_GB.mo";
       }
 
-      $TRANSLATE = null;
+      $TRANSLATE = new Zend\I18n\Translator\Translator;
+      try {
+         $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
 
-      // Test if apc is enable with special check for cli
-      if ((ini_get('apc.enabled') && !isCommandLine())
-          || ini_get('apc.enable_cli') ) { // Try from APC cache
-//          $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
-         $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc',
-                                                           'plugins' => array('exception_handler'
-                                                                               => array('throw_exceptions'
-                                                                                         => false))));
-         $TRANSLATE = new Zend\I18n\Translator\Translator;
-         $TRANSLATE->setCache($cache);
-         $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
-
-//      } else if (function_exists('xcache_get') && !isCommandLine()) { // Try from XCache
-//         // TODO : use xcache adapter of Zend when available (2.1)
-//         // see http://framework.zend.com/issues/browse/ZF2-543
-//         $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
-//         if (@xcache_isset($key)) {
-//            $TRANSLATE = unserialize(xcache_get($key));
-//         }
-//         if (!$TRANSLATE) {
-//            $TRANSLATE = new Zend\I18n\Translator\Translator;
-//            $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
-//         }
-//         $tmp = xcache_set($key, serialize($TRANSLATE));
-      } else {
-         $TRANSLATE = new Zend\I18n\Translator\Translator;
-         $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
+      } catch (Zend\Cache\Exception\ExtensionNotLoadedException $e) {
+         // ignore when APC not available
+         // toolbox::logDebug($e->getMessage());
       }
+      $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
+
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
