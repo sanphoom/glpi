@@ -89,8 +89,6 @@ function choose_language() {
 }
 
 
-
-
 function acceptLicense() {
 
    echo "<div class='center'>";
@@ -243,9 +241,9 @@ function step3($host, $user, $password, $update) {
 
          $DB_list = $link->query("SHOW DATABASES");
          while ($row = $DB_list->fetch_array()) {
-            if (!in_array($row['Database'],array("information_schema",
-                                               "mysql",
-                                               "performance_schema") )) {
+            if (!in_array($row['Database'], array("information_schema",
+                                                  "mysql",
+                                                  "performance_schema") )) {
                echo "<p><input type='radio' name='databasename' value='". $row['Database']."'>";
                echo $row['Database'].".</p>";
             }

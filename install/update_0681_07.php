@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -29,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /// Update from 0.68.1 to 0.7
@@ -1902,5 +1901,4 @@ function computeTicketTco($item_type,$item) {
 function trackingTotalCost($realtime, $cost_time, $cost_fixed, $cost_material) {
    return Html::formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
 }
-
 ?>

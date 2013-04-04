@@ -299,12 +299,13 @@ class Profile extends CommonDBTM {
    }
 
 
-
    /**
     * check right before delete
     *
+    * @since version 0.85
+    *
     * @return boolean
-    **/
+   **/
    function pre_deleteItem() {
       global $DB;
 
@@ -1947,7 +1948,7 @@ class Profile extends CommonDBTM {
       $tab[78]['datatype']       = 'bool';
       $tab[78]['joinparams']     = array('jointype' => 'child',
                                         'condition' => "AND `NEWTABLE`.`name`= 'show_group_planning'");
-                                        
+
       $tab[79]['table']          = 'glpi_profilerights';
       $tab[79]['field']          = 'right';
       $tab[79]['name']           = __('See all plannings');
