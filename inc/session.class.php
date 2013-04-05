@@ -93,7 +93,9 @@ class Session {
              && $auth->user->getFromDB($auth->user->fields['id'])) {
 
             if (!$auth->user->fields['is_deleted']
-                && $auth->user->fields['is_active']) {
+                && ($auth->user->fields['is_active']
+                    || ($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
+                    || ($auth->user->fields['is_active'] > $_SESSION["glpi_currenttime"]))) {
                $_SESSION["glpiID"]              = $auth->user->fields['id'];
                $_SESSION["glpiname"]            = $auth->user->fields['name'];
                $_SESSION["glpirealname"]        = $auth->user->fields['realname'];

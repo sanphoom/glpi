@@ -1861,11 +1861,10 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='2'>" .  __('Validity dates') . "</td>";
-
       echo "<td><span class='tracking_small'>".__('From')."</span>&nbsp;";
       Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
-                                                'timestep'    => 1,
-                                                'maybeempty'  => true));
+                                                  'timestep'    => 1,
+                                                  'maybeempty'  => true));
       echo "</td>";
 
       echo "</tr>";
@@ -1873,9 +1872,7 @@ class User extends CommonDBTM {
       Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
                                                 'timestep'    => 1,
                                                 'maybeempty'  => true));
-      echo "</td>";
-
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" .  __('Phone') . "</td><td>";
@@ -2913,7 +2910,11 @@ class User extends CommonDBTM {
 
 
       $where .= " AND `glpi_users`.`is_deleted` = '0'
-                  AND `glpi_users`.`is_active` = '1' ";
+                  AND `glpi_users`.`is_active` = '1'
+                  AND (`glpi_users`.`begin_date` IS NULL
+                       OR `glpi_users`.`begin_date` < NOW())
+                  AND (`glpi_users`.`end_date` IS NULL
+                       OR `glpi_users`.`end_date` > NOW())";
 
       if ((is_numeric($value) && $value)
           || count($used)) {
@@ -3678,7 +3679,12 @@ class User extends CommonDBTM {
 
       echo "<div class='center'>";
       if ($this->getFromDBbyEmail($input['email'],
-                                  "`glpi_users`.`is_active` AND NOT `glpi_users`.`is_deleted`")) {
+                                  "`glpi_users`.`is_active`
+                                   AND NOT `glpi_users`.`is_deleted`
+                                   AND (`glpi_users`.`begin_date` IS NULL
+                                        OR `glpi_users`.`begin_date` < NOW())
+                                   AND (`glpi_users`.`end_date` IS NULL
+                                        OR `glpi_users`.`end_date` > NOW())")) {
          if (($this->fields["authtype"] == Auth::DB_GLPI)
              || !Auth::useAuthExt()) {
 
@@ -3729,7 +3735,12 @@ class User extends CommonDBTM {
 
       echo "<div class='center'>";
       if ($this->getFromDBbyEmail($email,
-                                  "`glpi_users`.`is_active` AND NOT `glpi_users`.`is_deleted`")) {
+                                  "`glpi_users`.`is_active`
+                                   AND NOT `glpi_users`.`is_deleted`
+                                   AND (`glpi_users`.`begin_date` IS NULL
+                                        OR `glpi_users`.`begin_date` < NOW())
+                                   AND (`glpi_users`.`end_date` IS NULL
+                                        OR `glpi_users`.`end_date` > NOW())")) {
 
          // Send token if auth DB or not external auth defined
          if (($this->fields["authtype"] == Auth::DB_GLPI)
@@ -3899,7 +3910,11 @@ class User extends CommonDBTM {
                                   "`name`='$login' " .
                                        "AND (`password` = SHA1('$password') " .
                                              "OR `password` = MD5('$password'))
-                                        AND `is_active` = '1'")) {
+                                        AND `is_active` = '1'
+                                        AND (`glpi_users`.`begin_date` IS NULL
+                                             OR `glpi_users`.`begin_date` < NOW())
+                                        AND (`glpi_users`.`end_date` IS NULL
+                                             OR `glpi_users`.`end_date` > NOW())")) {
             $default_password_set[] = $login;
          }
       }

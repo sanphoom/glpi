@@ -173,7 +173,7 @@ class NotificationTarget extends CommonDBChild {
    function getContentFooter() {
       return '';
    }
-   
+
    /**
     * @since version 0.84
     *
@@ -517,7 +517,9 @@ class NotificationTarget extends CommonDBChild {
          $user = new User();
          if (!$user->getFromDB($data['users_id'])
              || ($user->getField('is_deleted') == 1)
-             || ($user->getField('is_active') == 0)) {
+             || ($user->getField('is_active') == 0)
+             || ($user->getField('begin_date') < $_SESSION["glpi_currenttime"])
+             || ($user->getField('end_date') > $_SESSION["glpi_currenttime"])) {
             // unknown, deleted or disabled user
             return false;
          }
