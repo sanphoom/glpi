@@ -764,8 +764,8 @@ class Search {
 
                // SOFTWARE HACK
                if ($ctype == 'Software') {
-                  $tmpquery = str_replace("glpi_softwares.serial", "''", $tmpquery);
-                  $tmpquery = str_replace("glpi_softwares.otherserial", "''", $tmpquery);
+                  $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
+                  $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
                }
                $QUERY .= $tmpquery;
             }

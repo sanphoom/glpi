@@ -198,6 +198,12 @@ class ReservationItem extends CommonDBChild {
          $tab[$key]['massiveaction'] = false;
       }
 
+      $tab[6]['table']           = 'reservation_types';
+      $tab[6]['field']           = 'otherserial';
+      $tab[6]['name']            = __('Inventory number');
+      $tab[6]['datatype']        = 'string';
+
+
       $tab[16]['table']          = 'reservation_types';
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
@@ -374,10 +380,15 @@ class ReservationItem extends CommonDBChild {
             continue;
          }
          $itemtable = getTableForItemType($itemtype);
+         $otherserial = "'' AS otherserial";
+         if ($item->isField('otherserial')) {
+            $otherserial = "`$itemtable`.`otherserial`";
+         }
          $query = "SELECT `glpi_reservationitems`.`id`,
                           `glpi_reservationitems`.`comment`,
                           `$itemtable`.`name` AS name,
                           `$itemtable`.`entities_id` AS entities_id,
+                          $otherserial,
                           `glpi_locations`.`completename` AS location,
                           `glpi_reservationitems`.`items_id` AS items_id
                    FROM `glpi_reservationitems`
