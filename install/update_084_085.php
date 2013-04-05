@@ -482,8 +482,8 @@ function update084to085() {
 
 
    // add validity date for a user
-   $migration->addField('glpi_users', 'begin', 'datetime');
-   $migration->addField('glpi_users', 'end', 'datetime');
+   $migration->addField('glpi_users', 'begin_date', 'datetime');
+   $migration->addField('glpi_users', 'end_date', 'datetime');
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
