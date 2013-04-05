@@ -165,7 +165,8 @@ class State extends CommonTreeDropdown {
          echo "<th>".__('Total')."</th>";
          echo "</tr>";
          $query = "SELECT *
-                   FROM `glpi_states`
+                   FROM `glpi_states` ".
+                   getEntitiesRestrictRequest("WHERE", "glpi_states",'','',true)."
                    ORDER BY `completename`";
          $result = $DB->query($query);
 
