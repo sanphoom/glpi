@@ -6056,6 +6056,8 @@ CREATE TABLE `glpi_users` (
   `is_deleted_ldap` tinyint(1) NOT NULL DEFAULT '0',
   `use_unicodefont` int(11) DEFAULT NULL,
   `picture` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'NULL',
+  `begin` datetime DEFAULT NULL,
+  `end` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),
