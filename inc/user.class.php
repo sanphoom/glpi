@@ -1863,22 +1863,14 @@ class User extends CommonDBTM {
       echo "<td rowspan='2'>" .  __('Validity dates') . "</td>";
 
       echo "<td><span class='tracking_small'>".__('From')."</span>&nbsp;";
-      if ($this->fields["begin_date"] == 'NULL') {
-         $this->fields["begin_date"] = '';
-      }
-      $begindate = $this->fields["begin_date"];
-      Html::showDateTimeField("end_date", array('value'       => $begindate,
+      Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
                                                 'timestep'    => 1,
                                                 'maybeempty'  => true));
       echo "</td>";
 
       echo "</tr>";
       echo "<td><span class='tracking_small'>".__('To')."</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-      if ($this->fields["end_date"] == 'NULL') {
-         $this->fields["end_date"] = '';
-      }
-      $enddate = $this->fields["end_date"];
-      Html::showDateTimeField("end_date", array('value'       => $enddate,
+      Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
                                                 'timestep'    => 1,
                                                 'maybeempty'  => true));
       echo "</td>";
@@ -2701,6 +2693,16 @@ class User extends CommonDBTM {
       $tab[77]['massiveaction']        = true;
       $tab[77]['name']                 = __('Default entity');
       $tab[77]['datatype']             = 'dropdown';
+
+      $tab[62]['table']                = $this->getTable();
+      $tab[62]['field']                = 'begin_date';
+      $tab[62]['name']                 = __('Begin date');
+      $tab[62]['datatype']             = 'datetime';
+
+      $tab[63]['table']                = $this->getTable();
+      $tab[63]['field']                = 'end_date';
+      $tab[63]['name']                 = __('End date');
+      $tab[63]['datatype']             = 'datetime';
 
       $tab[60]['table']                = 'glpi_tickets';
       $tab[60]['field']                = 'count';
