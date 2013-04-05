@@ -390,13 +390,13 @@ class ReservationItem extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_2'><td>".__('From')."&nbsp;";
-      Html::showDateTimeFormItem("date1", $_POST["date1"], 1, false);
-//      Html::showDateTimeField("date1", array('value'      => $_POST["date1"]
-//                                             'maybeempty' => false));
+//       Html::showDateTimeFormItem("date1", $_POST["date1"], 1, false);
+     Html::showDateTimeField("date1", array('value'      => $_POST["date1"],
+                                            'maybeempty' => false));
       echo "&nbsp;&nbsp;&nbsp;".__('To')."&nbsp;";
-      Html::showDateTimeFormItem("date2", $_POST["date2"], 1, false);
-//      Html::showDateTimeField("date2", array('value'      => $_POST["date2"]));
-//                                             'maybeempty' => false));
+//       Html::showDateTimeFormItem("date2", $_POST["date2"], 1, false);
+     Html::showDateTimeField("date2", array('value'      => $_POST["date2"],
+                                            'maybeempty' => false));
       echo "</td><td>";
       echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Search')."\">";
       echo "</td></tr>";
