@@ -453,7 +453,7 @@ class ReservationItem extends CommonDBChild {
                                                     $item->maybeRecursive())."
                    ORDER BY `$itemtable`.`entities_id`,
                             `$itemtable`.`name`";
-toolbox::logdebug("query", $query);
+
          if ($result = $DB->query($query)) {
             while ($row = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'><td>";
