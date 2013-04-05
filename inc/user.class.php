@@ -1867,7 +1867,9 @@ class User extends CommonDBTM {
          $this->fields["begin_date"] = '';
       }
       $begindate = $this->fields["begin_date"];
-      Html::showDateTimeFormItem("end_date", $begindate, 1, true);
+      Html::showDateTimeField("end_date", array('value'       => $begindate,
+                                                'timestep'    => 1,
+                                                'maybeempty'  => true));
       echo "</td>";
 
       echo "</tr>";
@@ -1876,7 +1878,9 @@ class User extends CommonDBTM {
          $this->fields["end_date"] = '';
       }
       $enddate = $this->fields["end_date"];
-      Html::showDateTimeFormItem("end_date", $enddate, 1, true);
+      Html::showDateTimeField("end_date", array('value'       => $enddate,
+                                                'timestep'    => 1,
+                                                'maybeempty'  => true));
       echo "</td>";
 
       echo "</tr>";
