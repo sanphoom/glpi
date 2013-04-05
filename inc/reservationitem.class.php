@@ -370,6 +370,41 @@ class ReservationItem extends CommonDBChild {
       $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
 
+      echo "<div class='center'><form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
+      echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
+      echo "<th colspan='2'>".__('Find a free item in a specific period')."</th></tr>";
+
+      if (empty($_POST["date1"]) && empty($_POST["date2"])) {
+         $year           = date("Y")-1;
+         $_POST["date1"] = date("Y-m-d H:i:s",mktime(1,1,1,date("m"),date("d"),$year));
+         $_POST["date2"] = date("Y-m-d H:i:s");
+      }
+
+      if (!empty($_POST["date1"])
+            && !empty($_POST["date2"])
+            && (strcmp($_POST["date2"],$_POST["date1"]) < 0)) {
+
+         $tmp            = $_POST["date1"];
+         $_POST["date1"] = $_POST["date2"];
+         $_POST["date2"] = $tmp;
+      }
+
+      echo "<tr class='tab_bg_2'><td>".__('From')."&nbsp;";
+      Html::showDateTimeFormItem("date1", $_POST["date1"], 1, false);
+//      Html::showDateTimeField("date1", array('value'      => $_POST["date1"]
+//                                             'maybeempty' => false));
+      echo "&nbsp;&nbsp;&nbsp;".__('To')."&nbsp;";
+      Html::showDateTimeFormItem("date2", $_POST["date2"], 1, false);
+//      Html::showDateTimeField("date2", array('value'      => $_POST["date2"]));
+//                                             'maybeempty' => false));
+      echo "</td><td>";
+      echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Search')."\">";
+      echo "</td></tr>";
+
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>";
+
       // GET method passed to form creation
       echo "<div class='center'><form name='form' method='GET' action='reservation.form.php'>";
       echo "<table class='tab_cadre'>";
@@ -384,6 +419,17 @@ class ReservationItem extends CommonDBChild {
          if ($item->isField('otherserial')) {
             $otherserial = "`$itemtable`.`otherserial`";
          }
+
+         if ((isset($_POST["date1"]) && $_POST["date1"])
+             || (isset($_POST["date2"]) && $_POST["date2"])) {
+            $left = "LEFT JOIN `glpi_reservations`
+                        ON (`glpi_reservationitems`.`id` = `glpi_reservations`.`reservationitems_id`
+                            AND '". $_POST["date1"]."' < `glpi_reservations`.`end`
+                            AND '". $_POST["date2"]."' > `glpi_reservations`.`begin`)";
+
+            $where = " AND (`glpi_reservations`.`id` IS NULL) ";
+         }
+
          $query = "SELECT `glpi_reservationitems`.`id`,
                           `glpi_reservationitems`.`comment`,
                           `$itemtable`.`name` AS name,
@@ -392,6 +438,7 @@ class ReservationItem extends CommonDBChild {
                           `glpi_locations`.`completename` AS location,
                           `glpi_reservationitems`.`items_id` AS items_id
                    FROM `glpi_reservationitems`
+                   $left
                    INNER JOIN `$itemtable`
                         ON (`glpi_reservationitems`.`itemtype` = '$itemtype'
                             AND `glpi_reservationitems`.`items_id` = `$itemtable`.`id`)
@@ -399,13 +446,14 @@ class ReservationItem extends CommonDBChild {
                         ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
                    WHERE `glpi_reservationitems`.`is_active` = '1'
                          AND `glpi_reservationitems`.`is_deleted` = '0'
-                         AND `$itemtable`.`is_deleted` = '0'".
+                         AND `$itemtable`.`is_deleted` = '0'
+                         $where ".
                          getEntitiesRestrictRequest(" AND", $itemtable, '',
                                                     $_SESSION['glpiactiveentities'],
                                                     $item->maybeRecursive())."
                    ORDER BY `$itemtable`.`entities_id`,
                             `$itemtable`.`name`";
-
+toolbox::logdebug("query", $query);
          if ($result = $DB->query($query)) {
             while ($row = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'><td>";
