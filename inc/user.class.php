@@ -1860,6 +1860,28 @@ class User extends CommonDBTM {
 
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td rowspan='2'>" .  __('Validity dates') . "</td>";
+
+      echo "<td><span class='tracking_small'>".__('From')."</span>&nbsp;";
+      if ($this->fields["begin_date"] == 'NULL') {
+         $this->fields["begin_date"] = '';
+      }
+      $begindate = $this->fields["begin_date"];
+      Html::showDateTimeFormItem("end_date", $begindate, 1, true);
+      echo "</td>";
+
+      echo "</tr>";
+      echo "<td><span class='tracking_small'>".__('To')."</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      if ($this->fields["end_date"] == 'NULL') {
+         $this->fields["end_date"] = '';
+      }
+      $enddate = $this->fields["end_date"];
+      Html::showDateTimeFormItem("end_date", $enddate, 1, true);
+      echo "</td>";
+
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>" .  __('Phone') . "</td><td>";
       Html::autocompletionTextField($this, "phone");
       echo "</td>";
