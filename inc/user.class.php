@@ -1865,9 +1865,9 @@ class User extends CommonDBTM {
       Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
                                                   'timestep'    => 1,
                                                   'maybeempty'  => true));
-      echo "</td>";
+      echo "</td></tr>";
 
-      echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td><span class='tracking_small'>".__('To')."</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
                                                 'timestep'    => 1,
