@@ -95,7 +95,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       $ipnetworks_ids = IPNetwork::searchNetworksContainingIP($ipaddress, $entity);
       if ($ipnetworks_ids !== false) {
          // Beware that invalid IPaddresses don't have any valid address !
-         $entity = $ipadress->getEntity();
+         $entity = $ipaddress->getEntity();
          foreach (IPNetwork::searchNetworksContainingIP($ipaddress, $entity) as $ipnetworks_id) {
             $input['ipnetworks_id'] = $ipnetworks_id;
             $linkObject->add($input);
