@@ -70,7 +70,7 @@ class Session {
    **/
    static function init(Auth $auth) {
       global $CFG_GLPI;
-
+      toolbox::logdebug("auth", $auth);
       if ($auth->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
          $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens');
@@ -94,8 +94,10 @@ class Session {
 
             if (!$auth->user->fields['is_deleted']
                 && ($auth->user->fields['is_active']
-                    || ($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
-                    || ($auth->user->fields['is_active'] > $_SESSION["glpi_currenttime"]))) {
+                    && (($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
+                        || ($auth->user->fields['begin_date'] == NULL))
+                    && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
+                        || ($auth->user->fields['end_date'] == NULL)))) {
                $_SESSION["glpiID"]              = $auth->user->fields['id'];
                $_SESSION["glpiname"]            = $auth->user->fields['name'];
                $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
