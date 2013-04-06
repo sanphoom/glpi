@@ -370,37 +370,44 @@ class ReservationItem extends CommonDBChild {
       $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
 
+
+      Toolbox::manageBeginAndEndPlanDates($_POST['reserve']);
+
       echo "<div class='center'><form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
-      echo "<th colspan='2'>".__('Find a free item in a specific period')."</th></tr>";
+      echo "<th colspan='3'>".__('Find a free item in a specific period')."</th></tr>";
 
-      if (empty($_POST["date1"]) && empty($_POST["date2"])) {
-         $year           = date("Y")-1;
-         $_POST["date1"] = date("Y-m-d H:i:s",mktime(1,1,1,date("m"),date("d"),$year));
-         $_POST["date2"] = date("Y-m-d H:i:s");
-      }
+      $_POST["begin"] = date("Y-m-d H:i:s",mktime(8,0,0,date("m"),date("d"),date("Y")));
+      $_POST["end"]   = date("Y-m-d H:i:s",mktime(9,0,0,date("m"),date("d"),date("Y")));
 
-      if (!empty($_POST["date1"])
-            && !empty($_POST["date2"])
-            && (strcmp($_POST["date2"],$_POST["date1"]) < 0)) {
-
-         $tmp            = $_POST["date1"];
-         $_POST["date1"] = $_POST["date2"];
-         $_POST["date2"] = $tmp;
-      }
-
-      echo "<tr class='tab_bg_2'><td>".__('From')."&nbsp;";
-//       Html::showDateTimeFormItem("date1", $_POST["date1"], 1, false);
-     Html::showDateTimeField("date1", array('value'      => $_POST["date1"],
+      echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
+      Html::showDateTimeField("reserve[begin]", array('value'      =>  $_POST["begin"],
                                             'maybeempty' => false));
-      echo "&nbsp;&nbsp;&nbsp;".__('To')."&nbsp;";
-//       Html::showDateTimeFormItem("date2", $_POST["date2"], 1, false);
-     Html::showDateTimeField("date2", array('value'      => $_POST["date2"],
-                                            'maybeempty' => false));
-      echo "</td><td>";
+      echo "</td><td rowspan='3'>";
       echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Search')."\">";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
+      $default_delay = floor((strtotime($_POST["end"]) - strtotime($_POST["begin"]))
+                             /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
+                       *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
+
+      Dropdown::showTimeStamp("reserve[_duration]", array('min'        => 0,
+                                                'max'        => 48*HOUR_TIMESTAMP,
+                                                'value'      => $default_delay,
+                                                'emptylabel' => __('Specify an end date')));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
+
+      $values[0] = Dropdown::EMPTY_VALUE;
+      foreach ( $CFG_GLPI["reservation_types"] as $key => $val) {
+         $values[$val] = $val;
+      }
+      Dropdown::showFromArray("reservation_types", $values);
+
+
+      echo "</td></tr>";
       echo "</table>";
       Html::closeForm();
       echo "</div>";
@@ -419,15 +426,19 @@ class ReservationItem extends CommonDBChild {
          if ($item->isField('otherserial')) {
             $otherserial = "`$itemtable`.`otherserial`";
          }
-
-         if ((isset($_POST["date1"]) && $_POST["date1"])
-             || (isset($_POST["date2"]) && $_POST["date2"])) {
+         $begin = $_POST['reserve']["begin"];
+         $end   = $_POST['reserve']["end"];
+         if (isset($begin) && isset($end)) {
             $left = "LEFT JOIN `glpi_reservations`
                         ON (`glpi_reservationitems`.`id` = `glpi_reservations`.`reservationitems_id`
-                            AND '". $_POST["date1"]."' < `glpi_reservations`.`end`
-                            AND '". $_POST["date2"]."' > `glpi_reservations`.`begin`)";
+                            AND '". $begin."' < `glpi_reservations`.`end`
+                            AND '". $end."' > `glpi_reservations`.`begin`)";
 
-            $where = " AND (`glpi_reservations`.`id` IS NULL) ";
+            $where = " AND `glpi_reservations`.`id` IS NULL ";
+         }
+         toolbox::logdebug("type", $_POST["reservation_types"]);
+         if (isset($_POST["reservation_types"]) && ($_POST["reservation_types"])) {
+            $where .= " AND `glpi_reservationitems`.`itemtype` = '".$_POST["reservation_types"]."'";
          }
 
          $query = "SELECT `glpi_reservationitems`.`id`,
