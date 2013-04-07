@@ -428,6 +428,8 @@ class ReservationItem extends CommonDBChild {
          }
          $begin = $_POST['reserve']["begin"];
          $end   = $_POST['reserve']["end"];
+         $left = "";
+         $where = "";
          if (isset($begin) && isset($end)) {
             $left = "LEFT JOIN `glpi_reservations`
                         ON (`glpi_reservationitems`.`id` = `glpi_reservations`.`reservationitems_id`
@@ -436,7 +438,7 @@ class ReservationItem extends CommonDBChild {
 
             $where = " AND `glpi_reservations`.`id` IS NULL ";
          }
-         toolbox::logdebug("type", $_POST["reservation_types"]);
+//          toolbox::logdebug("type", $_POST["reservation_types"]);
          if (isset($_POST["reservation_types"]) && ($_POST["reservation_types"])) {
             $where .= " AND `glpi_reservationitems`.`itemtype` = '".$_POST["reservation_types"]."'";
          }
