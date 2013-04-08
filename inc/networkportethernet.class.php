@@ -41,7 +41,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-     return __('Ethernet');
+      return __('Ethernet port');
    }
 
 
