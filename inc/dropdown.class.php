@@ -1497,17 +1497,18 @@ class Dropdown {
 
       $output = '';
       // readonly mode
+      $field_id = Html::cleanId("dropdown_".$name.$param['rand']);
       if ($param['readonly']) {
+         $to_display = array();
          foreach ($param['values'] as $value) {
             $output .= "<input type='hidden' name='$field_name' value='$value'>";
             if (isset($elements[$value])) {
-               $output .= $elements[$value]." ";
+               $to_display[] = $elements[$value];
             }
          }
-
+         $output .= implode('<br>',$to_display);
       } else {
 
-         $field_id = Html::cleanId("dropdown_".$name.$param['rand']);
 
          $output  .= "<select name='$field_name' id='$field_id'";
 
