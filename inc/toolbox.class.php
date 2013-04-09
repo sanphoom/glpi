@@ -1963,63 +1963,93 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
-      echo "<select name='server_type'>";
-      echo "<option value=''>&nbsp;</option>\n";
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/imap' ".(($tab['type'] == 'imap') ?" selected ":"").">".__('IMAP').
-           "</option>\n";
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/pop' ".(($tab['type'] == 'pop') ? " selected " : "").">".__('POP').
-           "</option>\n";
-      echo "</select>&nbsp;";
+      $values = array('' => '',
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/imap' => __('IMAP'),
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/pop' => __('POP'),);
 
-      echo "<select name='server_ssl'>";
-      echo "<option value=''>&nbsp;</option>\n";
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo "<option value='/ssl' " .(($tab['ssl'] === true) ? " selected " : "").">".__('SSL').
-           "</option>\n";
-      echo "</select>&nbsp;";
+      $svalue = (!empty($tab['type'])?'/'.$tab['type']:'');
+      
+      Dropdown::showFromArray('server_type', $values,
+                              array('value' => $svalue,
+                                    'width' => '10%'));
+      $values = array('' => '',
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/ssl' => __('SSL'));
+                     
+      $svalue = ($tab['ssl']?'/ssl':'');
 
-      echo "<select name='server_tls'>";
-      echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/tls' ".(($tab['tls'] === true) ? " selected " : "").">";
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo __('TLS')."</option>\n";
-      echo "<option value='/notls' ".(($tab['tls'] === false) ?" selected ":"").">";
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo __('NO-TLS')."</option>\n";
-      echo "</select>&nbsp;";
+      Dropdown::showFromArray('server_ssl', $values,
+                              array('value' => $svalue,
+                                    'width' => '10%'));
 
-      echo "<select name='server_cert'>";
-      echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/novalidate-cert' ".(($tab['validate-cert'] === true) ?" selected ":"");
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo ">".__('NO-VALIDATE-CERT')."</option>\n";
-      echo "<option value='/validate-cert' " .(($tab['validate-cert'] === false) ?" selected ":"");
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo ">".__('VALIDATE-CERT')."</option>\n";
-      echo "</select>\n";
+      $values = array('' => '',
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/tls' => __('TLS'),
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/notls' => __('NO-TLS'),);
+                     
+      $svalue = '';
+      if (($tab['tls'] === true)) {
+         $svalue = '/tls';
+      }
+      if (($tab['tls'] === false)) {
+         $svalue = '/notls';
+      }
+      
+      Dropdown::showFromArray('server_tls', $values,
+                              array('value' => $svalue,
+                                    'width' => '14%'));
 
-      echo "<select name='server_rsh'>";
-      echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/norsh' ".(($tab['norsh'] === true) ?" selected ":"");
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo ">".__('NORSH')."</option>\n";
-      echo "</select>\n";
+      $values = array('' => '',
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/novalidate-cert' => __('NO-VALIDATE-CERT'),
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/validate-cert' => __('VALIDATE-CERT'),);
 
-      echo "<select name='server_secure'>";
-      echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/secure' ".(($tab['secure'] === true) ?" selected ":"");
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo ">".__('SECURE')."</option>\n";
-      echo "</select>\n";
+      $svalue = '';
+      if (($tab['validate-cert'] === true)) {
+         $svalue = '/novalidate-cert';
+      }
+      if (($tab['validate-cert'] === false)) {
+         $svalue = '/validate-cert';
+      }
 
-      echo "<select name='server_debug'>";
-      echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/debug' ".(($tab['debug'] === true) ?" selected ":"");
-      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
-      echo ">".__('DEBUG')."</option>\n";
-      echo "</select>\n";
+      Dropdown::showFromArray('server_cert', $values,
+                              array('value' => $svalue,
+                                    'width' => '20%'));
+
+      $values = array('' => '',
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/norsh' => __('NORSH'));
+
+      $svalue = ($tab['norsh'] === true?'/norsh':'');
+
+      Dropdown::showFromArray('server_rsh', $values,
+                              array('value' => $svalue,
+                                    'width' => '12%'));
+
+      $values = array('' => '',
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/secure' => __('SECURE'));
+
+      $svalue = ($tab['secure'] === true?'/secure':'');
+
+      Dropdown::showFromArray('server_secure', $values,
+                              array('value' => $svalue,
+                                    'width' => '12%'));
+                                    
+      $values = array('' => '',
+                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                     '/debug' => __('DEBUG'));
+
+      $svalue = ($tab['debug'] === true?'/debug':'');
+
+      Dropdown::showFromArray('server_debug', $values,
+                              array('value' => $svalue,
+                                    'width' => '12%'));
+
 
       echo "<input type=hidden name=imap_string value='".$value."'>";
       echo "</td></tr>\n";
