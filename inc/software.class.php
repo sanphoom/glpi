@@ -644,30 +644,68 @@ class Software extends CommonDBTM {
     *
     * @param $myname          select name
     * @param $entity_restrict restrict to a defined entity
-    * @param $massiveaction   is it a massiveaction select ? (default 0)
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownSoftwareToInstall($myname, $entity_restrict, $massiveaction=0) {
+   static function dropdownSoftwareToInstall($myname, $entity_restrict) {
       global $CFG_GLPI;
+      
+      // Make a select box
+      $rand  = mt_rand();
+      $where = getEntitiesRestrictRequest('', 'glpi_softwares','entities_id',
+                                          $entity_restrict, true);
 
-      $rand     = mt_rand();
-      $use_ajax = false;
 
-      if ($CFG_GLPI["use_ajax"]) {
-         if (countElementsInTableForEntity("glpi_softwares", $entity_restrict)
-               > $CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax = true;
-         }
-      }
+      $rand = Dropdown::show('Software', array('condition' => $where));
 
-      $params = array('searchText'      => '__VALUE__',
-                      'myname'          => $myname,
-                      'entity_restrict' => $entity_restrict);
 
-      $default = "<select name='$myname'><option value='0'>".Dropdown::EMPTY_VALUE." </option>
-                  </select>";
-      Ajax::dropdown($use_ajax, "/ajax/dropdownSelectSoftware.php", $params, $default, $rand);
+      
+//       $query = "SELECT DISTINCT `glpi_softwares`.`id`,
+//                               `glpi_softwares`.`name`
+//                FROM `glpi_softwares`
+//                WHERE
+//                      $where
+//                ORDER BY `glpi_softwares`.`name`";
+//       $result = $DB->query($query);
+// 
+//       echo "<select name='softwares_id' id='item_type$rand'>\n";
+//       echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>\n";
+// 
+//       if ($DB->numrows($result)) {
+//          while ($data=$DB->fetch_assoc($result)) {
+//             $softwares_id = $data["id"];
+//             $output       = $data["name"];
+//             echo "<option value='$softwares_id' title=\"".Html::cleanInputText($output)."\">".
+//                   Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
+//          }
+//       }
+//       echo "</select>\n";
+
+      $paramsselsoft = array('softwares_id' => '__VALUE__',
+                           'myname'       => $myname);
+
+      Ajax::updateItemOnSelectEvent("dropdown_softwares_id$rand", "show_".$myname.$rand,
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownInstallVersion.php",
+                                    $paramsselsoft);
+
+      echo "<span id='show_".$myname."$rand'>&nbsp;</span>\n";
+
+//       $use_ajax = false;
+// 
+//       if ($CFG_GLPI["use_ajax"]) {
+//          if (countElementsInTableForEntity("glpi_softwares", $entity_restrict)
+//                > $CFG_GLPI["ajax_limit_count"]) {
+//             $use_ajax = true;
+//          }
+//       }
+// 
+//       $params = array('searchText'      => '__VALUE__',
+//                       'myname'          => $myname,
+//                       'entity_restrict' => $entity_restrict);
+// 
+//       $default = "<select name='$myname'><option value='0'>".Dropdown::EMPTY_VALUE." </option>
+//                   </select>";
+//       Ajax::dropdown($use_ajax, "/ajax/dropdownSelectSoftware.php", $params, $default, $rand);
 
       return $rand;
    }

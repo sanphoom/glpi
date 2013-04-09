@@ -659,7 +659,7 @@ class Computer extends CommonDBTM {
       switch ($input['action']) {
          case "install" :
             Software::dropdownSoftwareToInstall("softwareversions_id",
-                                                $_SESSION["glpiactive_entity"], 1);
+                                                $_SESSION["glpiactive_entity"]);
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            __s('Install')."'>";
             return true;

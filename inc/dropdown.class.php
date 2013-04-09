@@ -132,7 +132,7 @@ class Dropdown {
                                       $_SESSION["glpidropdown_chars_limit"]);
 
                   if (Toolbox::strlen($name) > $limit_length) {
-                     $name = "&hellip;".Toolbox::substr($name, -$limit_length);
+                     $name = "...".Toolbox::substr($name, -$limit_length);
                   }
 
                } else {

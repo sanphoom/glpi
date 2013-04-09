@@ -66,7 +66,6 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
                      }).appendTo('#$formname');
          });";
    echo "</script>";
-   
    $params = array('action' => '__VALUE__');
    foreach ($_POST as $key => $val) {
       $params[$key] = $val;
@@ -88,6 +87,12 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
    }
 
    if (count($actions)) {
+      if (isset($params['hidden']) && count($params['hidden'])) {
+         foreach ($params['hidden'] as $key => $val) {
+            echo "<input type='hidden' name=\"$key\" value=\"$val\">";
+         }
+
+      }
       _e('Action');
       echo "&nbsp;";
       echo "<select name='massiveaction' id='massiveaction$rand'>";

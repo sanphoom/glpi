@@ -3060,22 +3060,10 @@ class User extends CommonDBTM {
          }
       }
 
-
       // Make a select box with all glpi users
-      $use_ajax = false;
-
-      if ($CFG_GLPI["use_ajax"]) {
-         $res = self::getSqlSearchResult (true, $p['right'], $p['entity'], $p['value'], $p['used']);
-         $nb  = ($res ? $DB->result($res,0,"CPT") : 0);
-         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax = true;
-         }
-      }
       $user = getUserName($p['value'], 2);
 
-
       $view_users = (Session::haveRight("user", "r"));
-
 
       if (!empty($p['value']) && ($p['value'] > 0)) {
           $default = $user["name"];

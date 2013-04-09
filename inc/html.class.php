@@ -2339,6 +2339,7 @@ class Html {
     *    - check_items_id   : integer ID of the alternate item used to check right / optional (default empty)
     *    - is_deleted       : boolean is massive actions for deleted items ?
     *    - extraparams      : string extra URL parameters to pass to massive actions (default empty)
+    *                         if ([extraparams]['hidden'] is set : add hidden fields to post)
     *    - specific_actions : array of specific actions (do not use standard one)
     *    - confirm          : string of confirm message before massive action
     *

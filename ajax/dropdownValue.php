@@ -211,7 +211,7 @@ if ($item instanceof CommonTreeDropdown) {
 
          if (Toolbox::strlen($outputval) > $_POST["limit"]) {
             // Completename for tree dropdown : keep right
-            $outputval = "&hellip;".Toolbox::substr($outputval, -$_POST["limit"]);
+            $outputval = Toolbox::substr($outputval, -$_POST["limit"]);
          }
          if ($_SESSION["glpiis_ids_visible"]
              || (Toolbox::strlen($outputval) == 0)) {
@@ -292,7 +292,7 @@ if ($item instanceof CommonTreeDropdown) {
                            }
                            $output2 = $item->getName();
                            if (Toolbox::strlen($output2)>$_POST["limit"]) {
-                              $output2 = Toolbox::substr($output2, 0 ,$_POST["limit"])."&hellip;";
+                              $output2 = Toolbox::substr($output2, 0 ,$_POST["limit"]);
                            }
 
                            $class2 = " class='tree' ";
@@ -329,9 +329,9 @@ if ($item instanceof CommonTreeDropdown) {
             if (Toolbox::strlen($outputval) > $_POST["limit"]) {
 
                if ($_SESSION['glpiuse_flat_dropdowntree']) {
-                  $outputval = "&hellip;".Toolbox::substr($outputval, -$_POST["limit"]);
+                  $outputval = Toolbox::substr($outputval, -$_POST["limit"]);
                } else {
-                  $outputval = Toolbox::substr($outputval, 0, $_POST["limit"])."&hellip;";
+                  $outputval = Toolbox::substr($outputval, 0, $_POST["limit"]);
                }
             }
 

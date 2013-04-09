@@ -770,14 +770,17 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
          echo "<table class='tab_cadre_fixe'>";
+         echo "<tr>";
          if ($canedit) {
             echo "<th width='10'>";
-            Html::checkAllAsCheckbox("softcat$cat$rand");
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
          }
          echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
-         echo "<th>".__('Automatic inventory')."</th>";
+         if (isset($data['is_dynamic'])) {
+            echo "<th>".__('Automatic inventory')."</th>";
+         }
          echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
          echo "</tr>\n";
 
@@ -797,6 +800,20 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $installed[] = $licid;
             }
          }
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         if (isset($data['is_dynamic'])) {
+            echo "<th>".__('Automatic inventory')."</th>";
+         }
+         echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
+         echo "</tr>\n";
+         
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
@@ -858,6 +875,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
                               'container'        => 'mass'.__CLASS__.$rand,
+                              'extraparams'      => array ('hidden' =>
+                                                            array('computers_id' => $computers_id)),
                               'specific_actions' => array('install_licenses' => _x('button',
                                                                                    'Install')));
 
@@ -865,11 +884,30 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          }
          echo "<table class='tab_cadre_fixe'>";
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         echo "</tr>\n";
+         
          $cat = true;
          foreach ($req as $data) {
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
             Session::addToNavigateListItems('SoftwareLicense', $data["id"]);
          }
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
+         echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
+         echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         echo "</tr>\n";
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] = false;
@@ -970,9 +1008,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</td>";
          if (isset($data['is_dynamic'])) {
             echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
-         } else {
-            echo "<td>&nbsp;</td>";
          }
+         
          echo "<td class='center'>". Dropdown::getDropdownName("glpi_softwarecategories",
                                                                   $data['softwarecategories_id']);
          echo "</td>";

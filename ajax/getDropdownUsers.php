@@ -102,7 +102,7 @@ if (count($users)) {
       $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
 
       array_push($datas, array('id'   => $ID,
-                              'text'  => Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]),
+                              'text'  => $output,
                               'title' => $title));
    }
 }

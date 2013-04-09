@@ -72,11 +72,6 @@ if (!isset($_GET['emptylabel']) || ($_GET['emptylabel'] == '')) {
    $_GET['emptylabel'] = Dropdown::EMPTY_VALUE;
 }
 
-// Make a select box with preselected values
-if (!isset($_GET["limit"])) {
-   $_GET["limit"] = $_SESSION["glpidropdown_chars_limit"];
-}
-
 $where = "WHERE 1 ";
 
 if ($item->maybeDeleted()) {
@@ -244,9 +239,6 @@ if ($item instanceof CommonTreeDropdown) {
                               $title = sprintf(__('%1$s - %2$s'), $title, $item->fields["comment"]);
                            }
                            $output2 = $item->getName();
-                           if (Toolbox::strlen($output2)>$_GET["limit"]) {
-                              $output2 = Toolbox::substr($output2, 0 ,$_GET["limit"])."&hellip;";
-                           }
 
                            array_push($datastoadd, array ('id'      => $ID,
                                                          'text'     => $output2,
@@ -268,15 +260,6 @@ if ($item instanceof CommonTreeDropdown) {
                   }
                }
                $last_level_displayed[$level] = $data['id'];
-            }
-
-            if (Toolbox::strlen($outputval) > $_GET["limit"]) {
-
-               if ($_SESSION['glpiuse_flat_dropdowntree']) {
-                  $outputval = "&hellip;".Toolbox::substr($outputval, -$_GET["limit"]);
-               } else {
-                  $outputval = Toolbox::substr($outputval, 0, $_GET["limit"])."&hellip;";
-               }
             }
 
             if ($_SESSION["glpiis_ids_visible"]
@@ -373,6 +356,7 @@ if ($item instanceof CommonTreeDropdown) {
       $query .= " ORDER BY $field
                  $LIMIT";
    }
+   Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
 
       if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
