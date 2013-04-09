@@ -516,10 +516,9 @@ class Rule extends CommonDBTM {
 
       switch ($input['action']) {
          case "move_rule" :
-            echo "<select name='move_type'>";
-            echo "<option value='after' selected>".__('After')."</option>";
-            echo "<option value='before'>".__('Before')."</option>";
-            echo "</select>&nbsp;";
+            $values = array('after'  => __('After'),
+                            'before' => __('Before'));
+            Dropdown::showFromArray('move_type', $values, array('width' => '20%'));
 
             if (isset($input['entity_restrict'])) {
                $condition = $input['entity_restrict'];
@@ -528,7 +527,8 @@ class Rule extends CommonDBTM {
             }
             Rule::dropdown(array('sub_type'        => $input['itemtype'],
                                  'name'            => "ranking",
-                                 'entity_restrict' => $condition));
+                                 'entity_restrict' => $condition,
+                                 'width' => '50%'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
@@ -2361,7 +2361,7 @@ class Rule extends CommonDBTM {
       $p['sub_type']        = '';
       $p['name']            = 'rules_id';
       $p['entity_restrict'] = '';
-
+      
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
@@ -2371,31 +2371,9 @@ class Rule extends CommonDBTM {
       if ($p['sub_type'] == '') {
          return false;
       }
-
-      $rand         = mt_rand();
-      $limit_length = $_SESSION["glpidropdown_chars_limit"];
-      $use_ajax     = false;
-
-      if ($CFG_GLPI["use_ajax"]) {
-         $nb = countElementsInTable("glpi_rules", "`sub_type`='".$p['sub_type']."'");
-
-         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax = true;
-         }
-      }
-
-      $params = array('searchText'      => '__VALUE__',
-                      'myname'          => $p['name'],
-                      'limit'           => $limit_length,
-                      'rand'            => $rand,
-                      'type'            => $p['sub_type'],
-                      'entity_restrict' => $p['entity_restrict']);
-
-      $default  = "<select name='".$p['name']."' id='dropdown_".$p['name'].$rand."'>";
-      $default .= "<option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
-      Ajax::dropdown($use_ajax, "/ajax/dropdownRules.php", $params, $default, $rand);
-
-      return $rand;
+      
+      $p['condition'] = "`sub_type` = '".$p['sub_type']."'";
+      return Dropdown::show('Rule',$p);
    }
 
 
