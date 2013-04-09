@@ -580,7 +580,7 @@ class Ajax {
     * @param $default               Default datas to print in case of $use_ajax (default '&nbsp;')
     * @param $rand                  Random parameter used (default 0)
     * @param $display      boolean  display or get string (default true)
-
+    * @deprecated  Since version 0.85
    **/
    static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0,
                             $display=true) {
@@ -623,19 +623,19 @@ class Ajax {
       }
 
       $locoutput .=  "</span>\n";
-//       $locoutput .=  "<script type='text/javascript'>";
-//       $locoutput .=  "function update_results_$rand() {";
-//       if ($use_ajax) {
-//          $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl,
-//                                               $initparams, "search_$rand", false);
-//       } else {
-//          $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
-//          $locoutput               .= self::updateItemJsCode("results_$rand",
-//                                                             $CFG_GLPI['root_doc'].$relativeurl,
-//                                                             $initparams, '', false);
-//       }
-//       $locoutput .=  "}";
-//       $locoutput .=  "</script>";
+      $locoutput .=  "<script type='text/javascript'>";
+      $locoutput .=  "function update_results_$rand() {";
+      if ($use_ajax) {
+         $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl,
+                                              $initparams, "search_$rand", false);
+      } else {
+         $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
+         $locoutput               .= self::updateItemJsCode("results_$rand",
+                                                            $CFG_GLPI['root_doc'].$relativeurl,
+                                                            $initparams, '', false);
+      }
+      $locoutput .=  "}";
+      $locoutput .=  "</script>";
 
       if ($display) {
          echo $locoutput;

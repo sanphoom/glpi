@@ -44,7 +44,6 @@ $obsoleted = array(
    'addslashes_deep'                   =>  'Toolbox::addslashes_deep',
    'addToNavigateListItems'            =>  'Session::addToNavigateListItems',
    'ajaxDisplaySearchTextForDropdown'  =>  'Ajax::displaySearchTextForDropdown',
-   'ajaxDropdown'                      =>  'Ajax::dropdown',
    'ajaxFooter'                        =>  'Html::ajaxFooter',
    'ajaxUpdateItem'                    =>  'Ajax::updateItem' ,
    'ajaxUpdateItemJsCode'              =>  'Ajax::updateItemJsCode',
