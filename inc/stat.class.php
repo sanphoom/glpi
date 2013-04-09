@@ -1535,15 +1535,13 @@ class Stat extends CommonGLPI {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Select statistics to be displayed')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
-      echo "<select name='statmenu' onchange='window.location.href=this.options
-               [this.selectedIndex].value'>";
-      echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
 
-      $i     = 0;
-      $count = count($stat_list);
+      $values = array(-1 => Dropdown::EMPTY_VALUE);         
 
+      $i        = 0;
+      $selected = -1;
+      $count    = count($stat_list);
       foreach ($opt_list as $opt => $group) {
-         echo "<optgroup label=\"". $group ."\">";
          while ($data = each($stat_list[$opt])) {
             $name    = $data[1]["name"];
             $file    = $data[1]["file"];
@@ -1551,13 +1549,15 @@ class Stat extends CommonGLPI {
             if (isset($data[1]["comment"])) {
                $comment = $data[1]["comment"];
             }
-
-            echo "<option value='".$CFG_GLPI["root_doc"]."/front/".$file."'
-                   title=\"".Html::cleanInputText($comment)."\">".$name."</option>";
-            $i++;
+            $key = $CFG_GLPI["root_doc"]."/front/".$file;
+            $values[$group][$key] = $name;
+            if (stripos($_SERVER['REQUEST_URI'],$key) !== false) {
+               $selected = $key;
+            }
          }
-         echo "</optgroup>";
       }
+
+      // Manage plugins
       $names    = array();
       $optgroup = array();
       if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
@@ -1574,18 +1574,21 @@ class Stat extends CommonGLPI {
       }
 
       foreach ($optgroup as $opt => $title) {
-         echo "<optgroup label=\"". $title ."\">";
-
+         $group = $title;
          foreach ($names as $key => $val) {
              if ($opt == $val["plug"]) {
-               echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".$val["name"].
-                    "</option>";
+               $file = $CFG_GLPI["root_doc"]."/plugins/".$key;
+               $values[$group][$file] = $val["name"];
+               if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
+                  $selected = $file;
+               }
              }
          }
-          echo "</optgroup>";
       }
 
-      echo "</select>";
+      Dropdown::showFromArray('statmenu', $values,
+                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
+                                     'value'     => $selected));
       echo "</td>";
       echo "</tr>";
       echo "</table>";

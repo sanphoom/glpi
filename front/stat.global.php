@@ -60,11 +60,13 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
 }
 
 echo "<form method='get' name='form' action='stat.global.php'><div class='center'>";
+// Keep it at first parameter
+echo "<input type='hidden' name='itemtype' value=\"".$_GET['itemtype']."\">";
+
 echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td class='right'>".__('Start date')."</td><td>";
 Html::showDateFormItem("date1", $_GET["date1"]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='hidden' name='itemtype' value=\"".$_GET['itemtype']."\">";
 
 echo "<input type='submit' class='submit' value=\"".__s('Display report')."\"></td></tr>";
 

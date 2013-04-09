@@ -113,18 +113,20 @@ class Report extends CommonGLPI{
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Select the report you want to generate')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
-      echo "<select name='statmenu' onchange='window.location.href=this.options
-             [this.selectedIndex].value'>";
-      echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
 
-      $i     = 0;
-      $count = count($report_list);
+      $count    = count($report_list);
+      $selected = -1;
+      $values   = array(-1 => Dropdown::EMPTY_VALUE);
+      
       while ($data = each($report_list)) {
          $val  = $data[0];
          $name = $report_list["$val"]["name"];
          $file = $report_list["$val"]["file"];
-         echo "<option value='".$CFG_GLPI["root_doc"]."/front/".$file."'>".$name."</option>";
-         $i++;
+         $key = $CFG_GLPI["root_doc"]."/front/".$file;
+         $values[$key] = $name;
+         if (stripos($_SERVER['REQUEST_URI'],$key) !== false) {
+            $selected = $key;
+         }
       }
 
       $names    = array();
@@ -143,18 +145,21 @@ class Report extends CommonGLPI{
       }
 
       foreach ($optgroup as $opt => $title) {
-         echo "<optgroup label=\"". $title ."\">";
-
+         $group = $title;
          foreach ($names as $key => $val) {
              if ($opt == $val["plug"]) {
-               echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".$val["name"].
-                    "</option>";
+               $file = $CFG_GLPI["root_doc"]."/plugins/".$key;
+               $values[$group][$file] = $val["name"];
+               if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
+                  $selected = $file;
+               }
              }
          }
-          echo "</optgroup>";
       }
 
-      echo "</select>";
+      Dropdown::showFromArray('statmenu', $values,
+                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
+                                     'value'     => $selected));
       echo "</td>";
       echo "</tr>";
       echo "</table>";

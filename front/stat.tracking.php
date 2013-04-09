@@ -120,6 +120,9 @@ foreach ($items as $label => $tab) {
 }
 
 echo "<div class='center'><form method='get' name='form' action='stat.tracking.php'>";
+// Keep it first param
+echo "<input type='hidden' name='itemtype' value=\"". $_GET["itemtype"] ."\">";
+
 echo "<table class='tab_cadre'>";
 echo "<tr class='tab_bg_2'><td rowspan='2' class='center'>";
 echo "<select name='type'>".$INSELECT."</select></td>";
@@ -128,7 +131,6 @@ Html::showDateFormItem("date1", $_GET["date1"]);
 echo "</td>";
 echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
-echo "<input type='hidden' name='itemtype' value=\"". $_GET["itemtype"] ."\">";
 echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td>".
      "</tr>";
 

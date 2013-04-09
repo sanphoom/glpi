@@ -1593,84 +1593,39 @@ class Search {
 
 
          $selected = $first = '';
+         $values = array();
          // display select box to define search item
-         echo "<select id='Search$itemtype$i' name=\"field[$i]\" size='1'>";
          if ($CFG_GLPI['allow_search_view'] == 2) {
-            echo "<option value='view' ";
-            if (is_array($p['field'])
-                && isset($p['field'][$i]) && ($p['field'][$i] == "view")) {
-               echo "selected";
-               $selected = 'view';
-            }
-            echo ">".__('Items seen')."</option>\n";
+            $values['view'] = __('Items seen');
          }
 
          reset($options);
-         $first_group = true;
-         $str_limit   = 28; // Not $_SESSION['glpidropdown_chars_limit'] because must be really to short (5 or 10) and search engine will be unusable
-         $nb_in_group = 0;
-         $group       = '';
+         $group = '';
 
          foreach ($options as $key => $val) {
             // print groups
             if (!is_array($val)) {
-               if (!$first_group) {
-                  $group .= "</optgroup>\n";
-               } else {
-                  $first_group = false;
-               }
-               if ($nb_in_group) {
-                  echo $group;
-               }
-               $group       = '';
-               $nb_in_group = 0;
-
-               $group .= "<optgroup label=\"".Toolbox::substr($val,0,$str_limit)."\">";
+               $group = $val;
             } else {
                if (!isset($val['nosearch']) || ($val['nosearch'] == false)) {
-                  $nb_in_group ++;
-                  $group .= "<option title=\"".Html::cleanInputText($val["name"]).
-                                           "\" value='$key'";
-                  if (is_array($p['field'])
-                      && isset($p['field'][$i]) && ($key == $p['field'][$i])) {
-                     $group   .= "selected";
-                     $selected = $key;
-                  } else if (empty($first)) {
-                     $first = $key;
-                  }
-                  $group .= ">". Toolbox::substr($val["name"], 0, $str_limit) ."</option>\n";
+                  $values[$group][$key] = $val["name"];
                }
             }
          }
-         if (!$first_group) {
-            $group .= "</optgroup>\n";
-         }
-         if ($nb_in_group) {
-            echo $group;
-         }
          if ($CFG_GLPI['allow_search_view'] == 1) {
-            echo "<option value='view' ";
-            if (is_array($p['field'])
-                && isset($p['field'][$i]) && ($p['field'][$i] == "view")) {
-               echo "selected";
-               $selected = 'view';
-            }
-            echo ">".__('Items seen')."</option>\n";
+            $values['view'] = __('Items seen');
          }
          if ($CFG_GLPI['allow_search_all']) {
-            echo "<option value='all' ";
-            if (is_array($p['field'])
-                && isset($p['field'][$i]) && ($p['field'][$i] == "all")) {
-               echo "selected";
-               $selected = 'all';
-            }
-            echo ">".__('All')."</option>";
+            $values['all'] = __('All');
          }
-         if (empty($selected)) {
-            $selected = $first;
+         $value = '';
+         if (is_array($p['field']) && isset($p['field'][$i])) {
+            $value = $p['field'][$i];
          }
-         echo "</select>\n";
-
+         $rand = Dropdown::showFromArray("field[$i]", $values,
+                                          array('value' => $value,
+                                                'width' => '60%'));
+         $field_id = Html::cleanId("dropdown_field[$i]$rand");
          echo "</td><td class='left'>";
          echo "<div id='SearchSpan$itemtype$i'>\n";
 
@@ -1683,10 +1638,9 @@ class Search {
 
          $_POST['itemtype']   = $used_itemtype;
 
-
          $_POST['itemtype']   = $itemtype;
          $_POST['num']        = $i;
-         $_POST['field']      = $selected;
+         $_POST['field']      = $value;
          $_POST['searchtype'] = (is_array($p['searchtype'])
                                  && isset($p['searchtype'][$i])?$p['searchtype'][$i]:"" );
          $_POST['value']      = (is_array($p['contains'])
@@ -1699,7 +1653,7 @@ class Search {
                          'num'        => $i,
                          'value'      => $_POST["value"],
                          'searchtype' => $_POST["searchtype"]);
-         Ajax::updateItemOnSelectEvent("Search$itemtype$i", "SearchSpan$itemtype$i",
+         Ajax::updateItemOnSelectEvent($field_id, "SearchSpan$itemtype$i",
                                        $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
 
          echo "</td></tr>\n";
@@ -1724,17 +1678,13 @@ class Search {
                                           'width' => '45%'));
 
             // Display select of the linked item type available
-//             echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
-//             echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
             foreach ($linked as $key) {
                if (!isset($metanames[$key])) {
                   if ($linkitem = getItemForItemtype($key)) {
                      $metanames[$key] = $linkitem->getTypeName();
                   }
                }
-//                echo "<option value='$key'>".Toolbox::substr($metanames[$key], 0, 20)."</option>\n";
             }
-//             echo "</select>&nbsp;";
             $rand = Dropdown::showItemTypes("itemtype2[$i]",$linked, array('width' => '50%',
                                                                            'value' => $p['itemtype2'][$i]));
             $field_id = Html::cleanId("dropdown_itemtype2[$i]$rand");
@@ -1779,33 +1729,7 @@ class Search {
 
       echo "<td width='150px'>";
       echo "<table width='100%'>";
-      // Display sort selection
-/*      echo "<tr><td colspan='2'>".__('sorted by');
-      echo "&nbsp;<select name='sort' size='1'>";
-      reset($options);
-      $first_group=true;
-      foreach ($options as $key => $val) {
-         if (!is_array($val)) {
-            if (!$first_group) {
-               echo "</optgroup>\n";
-            } else {
-               $first_group=false;
-            }
-            echo "<optgroup label=\"$val\">";
-         } else {
-            echo "<option value='$key'";
-            if ($key == $p['sort']) {
-               echo " selected";
-            }
-            echo ">".Toolbox::substr($val["name"],0,20)."</option>\n";
-         }
-      }
-      if (!$first_group) {
-         echo "</optgroup>\n";
-      }
-      echo "</select> ";
-      echo "</td></tr>\n";
-*/
+
       // Display deleted selection
 
       echo "<tr>";

@@ -440,18 +440,10 @@ class TicketValidation  extends CommonDBChild {
       }
 
       $tab = self::getAllStatusArray($p['all'], $p['global']);
-
-      $output = "<select name='$name'>";
-      foreach ($tab as $key => $val) {
-         $output .= "<option value='$key' ".(($p['value'] == $key) ?" selected ":"").">$val</option>";
-      }
-      $output .= "</select>";
-
-      if ($p['display']) {
-         echo $output;
-         return true;
-      }
-      return $output;
+      unset($p['all']);
+      unset($p['global']);
+      
+      return Dropdown::showFromArray($name, $tab, $p);
    }
 
 
