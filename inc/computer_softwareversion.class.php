@@ -700,7 +700,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
                       AND `glpi_computers_softwareversions`.`is_deleted` = '0'
                       $where
-                ORDER BY `softwarecategories_id`, `softname`, `version`";
+                ORDER BY `softname`, `version`";
       $result = $DB->query($query);
       $i      = 0;
 
@@ -867,6 +867,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if (count($installed)) {
          $query .= " AND `glpi_softwarelicenses`.`id` NOT IN (".implode(',',$installed).")";
       }
+      $query .= " ORDER BY `softname`, `version`;";
 
       $req = $DB->request($query);
       if ($number = $req->numrows()) {
