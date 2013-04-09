@@ -134,40 +134,39 @@ class Netpoint extends CommonDropdown {
             $limit_length  = max(Toolbox::strlen($name),$_SESSION["glpidropdown_chars_limit"]);
          }
       }
-      $use_ajax = false;
-      if ($CFG_GLPI["use_ajax"]) {
-         if (($locations_id < 0)
-             || ($devtype == 'NetworkEquipment')) {
-            $nb = countElementsInTableForEntity("glpi_netpoints", $entity_restrict);
-         } else if ($locations_id > 0) {
-            $nb = countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");
-         } else {
-            $nb = countElementsInTable("glpi_netpoints",
-                                       "locations_id=0 ".
-                                          getEntitiesRestrictRequest(" AND ", "glpi_netpoints",
-                                                                     '', $entity_restrict));
-         }
-         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax = true;
-         }
-      }
+//       $use_ajax = false;
+//       if ($CFG_GLPI["use_ajax"]) {
+//          if (($locations_id < 0)
+//              || ($devtype == 'NetworkEquipment')) {
+//             $nb = countElementsInTableForEntity("glpi_netpoints", $entity_restrict);
+//          } else if ($locations_id > 0) {
+//             $nb = countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");
+//          } else {
+//             $nb = countElementsInTable("glpi_netpoints",
+//                                        "locations_id=0 ".
+//                                           getEntitiesRestrictRequest(" AND ", "glpi_netpoints",
+//                                                                      '', $entity_restrict));
+//          }
+//          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
+//             $use_ajax = true;
+//          }
+//       }
 
-      $params = array('searchText'      => '__VALUE__',
-                      'value'           => $value,
-                      'locations_id'    => $locations_id,
-                      'myname'          => $myname,
-                      'limit'           => $limit_length,
-                      'comment'         => $display_comment,
-                      'rand'            => $rand,
-                      'entity_restrict' => $entity_restrict,
-                      'devtype'         => $devtype);
-
-      $default = "<select name='$myname'><option value='$value'>$name</option></select>";
-      Ajax::dropdown($use_ajax,"/ajax/dropdownNetpoint.php",$params,$default,$rand);
+      $field_id = Html::cleanId("dropdown_".$myname.$rand);
+      $param = array('value'               => $myname,
+                     'valuename'           => $name,
+                     'entity_restrict'     => $entity_restrict,
+                     'devtype'             => $devtype,
+                     'locations_id'        => $locations_id,
+                );
+      echo Html::jsAjaxDropdown($myname, $field_id,
+                                $CFG_GLPI['root_doc']."/ajax/getDropdownNetpoint.php",
+                                $param);
 
       // Display comment
       if ($display_comment) {
-         Html::showToolTip($comment);
+         $comment_id = Html::cleanId("comment_".$myname.$rand);
+         Html::showToolTip($comment,array('contentid' => $comment_id));
 
          $item = new self();
          if ($item->canCreate()) {
@@ -177,6 +176,11 @@ class Netpoint extends CommonDropdown {
                   "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
                   "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
          }
+         $paramscomment = array('value' => '__VALUE__',
+                              'table' => "glpi_netpoints");
+         echo Ajax::updateItemOnSelectEvent($field_id,
+                                       $comment_id,
+                                       $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);         
       }
       return $rand;
    }
