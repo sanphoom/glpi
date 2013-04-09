@@ -158,7 +158,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       echo "<br><form method='post' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
       echo "<div class='center'>";
-      echo "<table class='tab_cadre'>";
+      echo "<table class='tab_cadre' width='80%'>";
       echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."</td>";
       echo "<td>";
       if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
@@ -190,17 +190,16 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       } else if (count($emails) > 1) {
          // Several emails : select in the list
-         echo "<select name='alternative_email' value=''>";
-         echo "<option value='' ".(empty($this->fields['alternative_email'])?'selected':'').">".
-                "$default_email</option>";
+         $emailtab = array();
          foreach ($emails as $new_email) {
             if ($new_email != $default_email) {
-               echo "<option value='$new_email' ".
-                     ($this->fields['alternative_email'] == $new_email?'selected':'').
-                     ">$new_email</option>";
+               $emailtab[$new_email] = $new_email;
+            } else {
+               $emailtab[''] = $new_email;
             }
          }
-         echo "</select>";
+         Dropdown::showFromArray("alternative_email",$emailtab,
+                                 array('value'   => $this->fields['alternative_email']));
       } else {
          echo "<input type='text' size='40' name='alternative_email' value='".
                 $this->fields['alternative_email']."'>";

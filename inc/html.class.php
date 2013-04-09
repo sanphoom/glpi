@@ -2810,7 +2810,7 @@ class Html {
 
       $output .= "</td><td width='50%'>";
       $contentid = Html::cleanId("displaygenericdate$element$rand");
-      $output .= "<div id='$contentid'></div>";
+      $output .= "<span id='$contentid'></span>";
 
       $params = array('value'         => '__VALUE__',
                       'name'          => $element,

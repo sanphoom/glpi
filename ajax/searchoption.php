@@ -87,7 +87,7 @@ if (isset($_POST["itemtype"])
                                                   'width'  => '100%'));
       $fieldsearch_id = Html::cleanId("dropdown_searchtype".$addmeta."[".$_POST["num"]."]$randsearch");
    }
-   echo "</td><td  width='80%'>";
+   echo "</td><td width='80%'>";
    echo "<span id='span$dropdownname'>\n";
 
    $_POST['value']      = stripslashes($_POST['value']);

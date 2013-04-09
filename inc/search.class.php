@@ -1622,6 +1622,7 @@ class Search {
          if (is_array($p['field']) && isset($p['field'][$i])) {
             $value = $p['field'][$i];
          }
+         
          $rand = Dropdown::showFromArray("field[$i]", $values,
                                           array('value' => $value,
                                                 'width' => '60%'));

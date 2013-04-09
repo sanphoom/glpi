@@ -1474,7 +1474,7 @@ class Dropdown {
             $param[$key] = $val;
          }
       }
-
+      
       if ($param['other'] !== false) {
          $other_select_option = $name . '_other_value';
          $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
@@ -1534,7 +1534,7 @@ class Dropdown {
                      $output .= "<option value='".$key2."'";
                      // Do not use in_array : trouble with 0 and empty value
                      foreach ($param['values'] as $value) {
-                       if ($key2 === $value) {
+                       if (strcmp($key2,$value)===0) {
                            $output .= " selected";
                            break;
                        } 
@@ -1548,12 +1548,12 @@ class Dropdown {
                   $output .= "<option value='".$key."'";
                   // Do not use in_array : trouble with 0 and empty value
                   foreach ($param['values'] as $value) {
-                     if ($key === $value) {
+                     if (strcmp($key,$value)===0) {
                         $output .= " selected";
                         break;
                      }
                   }
-                  $output .= ">" . $val . "</option>";
+                  $output .= ">" .$val . "</option>";
                }
             }
          }

@@ -109,23 +109,21 @@ $items = array(__('Requester')       => $requester,
                                               'suppliers_id_assign'
                                                    => array('title' => __('Supplier'))));
 
-$INSELECT = "";
+$values = array();
 foreach ($items as $label => $tab) {
-   $INSELECT .= "<optgroup label=\"$label\">";
    foreach ($tab as $key => $val) {
-      $INSELECT .= "<option value='$key' ".(($key == $_GET["type"])?"selected":"").">".$val['title'].
-                   "</option>";
+      $values[$label][$key] = $val['title'];
    }
-   $INSELECT .= "</optgroup>";
 }
 
 echo "<div class='center'><form method='get' name='form' action='stat.tracking.php'>";
 // Keep it first param
 echo "<input type='hidden' name='itemtype' value=\"". $_GET["itemtype"] ."\">";
 
-echo "<table class='tab_cadre'>";
-echo "<tr class='tab_bg_2'><td rowspan='2' class='center'>";
-echo "<select name='type'>".$INSELECT."</select></td>";
+echo "<table class='tab_cadre_fixe'>";
+echo "<tr class='tab_bg_2'><td rowspan='2' class='center' width='30%'>";
+Dropdown::showFromArray('type', $values, array('value' => $_GET['type']));
+echo "</td>";
 echo "<td class='right'>".__('Start date')."</td><td>";
 Html::showDateFormItem("date1", $_GET["date1"]);
 echo "</td>";
