@@ -1303,22 +1303,11 @@ class Contract extends CommonDBTM {
                          `glpi_contracts`.`name` ASC,
                          `glpi_contracts`.`begin_date` DESC";
       $result = $DB->query($query);
-      echo "<select name='".$p['name']."' id='dropdown_".$p['name'].$p['rand']."'";
-      if (!empty($p["on_change"])) {
-         echo " onChange='".$p["on_change"]."'";
-      }
-      echo '>';
+      
 
-      if ($p['value'] > 0) {
-         $output = Dropdown::getDropdownName('glpi_contracts', $p['value']);
-         if ($_SESSION["glpiis_ids_visible"]) {
-            $output = sprintf(__('%1$s (%2$s)'), $output, $p['value']);
-         }
-         echo "<option selected value='".$p['value']."'>".$output."</option>";
-      } else {
-         echo "<option value='-1'>".Dropdown::EMPTY_VALUE."</option>";
-      }
-      $prev = -1;
+      $values = array(0 => Dropdown::EMPTY_VALUE);
+      $group  = '';
+      $prev   = -1;
       while ($data = $DB->fetch_assoc($result)) {
          if ($p['nochecklimit']
              || ($data["max_links_allowed"] == 0)
@@ -1326,11 +1315,8 @@ class Contract extends CommonDBTM {
                                                                    "contracts_id
                                                                      = '".$data['id']."'" ))) {
             if ($data["entities_id"] != $prev) {
-               if ($prev >= 0) {
-                  echo "</optgroup>";
-               }
+               $group = Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
                $prev = $data["entities_id"];
-               echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
             }
 
             $name = $data["name"];
@@ -1339,18 +1325,14 @@ class Contract extends CommonDBTM {
                $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
             }
 
-            echo "<option  value='".$data["id"]."'>";
             $tmp = sprintf(__('%1$s - %2$s'), $name, $data["num"]);
             $tmp = sprintf(__('%1$s - %2$s'), $tmp, Html::convDateTime($data["begin_date"]));
-            echo Toolbox::substr($tmp, 0, $_SESSION["glpidropdown_chars_limit"]);
-            echo "</option>";
+            $values[$group][$data['id']] = $tmp;
          }
       }
-      if ($prev >= 0) {
-         echo "</optgroup>";
-      }
-      echo "</select>";
-      echo Html::jsAdaptDropdown("dropdown_".$p['name'].$p['rand']);
+      return Dropdown::showFromArray($p['name'], $values,
+                                 array('value'     => $p['value'],
+                                       'on_change' => $p['on_change']));
    }
 
 

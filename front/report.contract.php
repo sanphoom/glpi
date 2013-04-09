@@ -43,38 +43,40 @@ Report::title();
 
 echo "<form name='form' method='post' action='report.contract.list.php'>";
 
-echo "<table class='tab_cadre' >";
-echo "<tr><th colspan='2'><span class='big'>".__('Hardware under contract')." </span></th></tr>";
+echo "<table class='tab_cadre_fixe' >";
+echo "<tr><th colspan='4'>".__('Hardware under contract')." </th></tr>";
 
 # 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
-echo "<td class='center' width='200' >";
+echo "<td class='center' width='20%'>";
 
-echo "<p class='b'>".__('Item type')."</p> ";
-echo "<p><select name='item_type[]' size='8' multiple>";
-echo "<option value='0' selected>".__('All')."</option>";
-echo "<option value='Computer'>"._n('Computer', 'Computers', 2)."</option>";
-echo "<option value='Printer'>"._n('Printer', 'Printers', 2)."</option>";
-echo "<option value='NetworkEquipment'>"._n('Network', 'Networks', 2)."</option>";
-echo "<option value='Monitor'>"._n('Monitor', 'Monitors', 2)."</option>";
-echo "<option value='Peripheral'>"._n('Device', 'Devices', 2)."</option>";
-echo "<option value='Software'>"._n('Software', 'Software', 2)."</option>";
-echo "<option value='Phone'>"._n('Phone', 'Phones', 2)."</option>";
-echo "</select></p> </td> ";
+echo __('Item type');
+echo "</td><td width='30%'>";
+$values = array(0 => __('All'));
+foreach ($CFG_GLPI["contract_types"] as $itemtype) {
+   if ($item = getItemForItemtype($itemtype)) {
+      $values[$itemtype] = $item->getTypeName();
+   }
+}
+Dropdown::showFromArray('item_type',$values, array('value'    => 0,
+                                                   'multiple' => true));
+echo "</td> ";
 
-echo "<td class='center' width='200'>";
-echo "<p class='b'>".__('Date')."</p> ";
-echo "<p><select name='annee[]' size='8' multiple>";
-echo "<option value='toutes' selected>".__('All')."</option>";
+echo "<td class='center' width='20%'>";
+echo __('Date');
+echo "</td><td width='30%'>";
 
 $y = date("Y");
-
-for ($i=$y-10 ; $i<=$y ; $i++) {
-   echo " <option value='$i'>$i</option>";
+$values = array( 0 => __('All'));
+for ($i=$y-10 ; $i<$y+10 ; $i++) {
+   $values[$i] = $i;
 }
-echo "</select></p></td></tr>";
+Dropdown::showFromArray('year',$values, array('value'    => $y,
+                                              'multiple' => true));
+                                              
+echo "</td></tr>";
 
-echo "<tr><td class='tab_bg_1 center' colspan='2'>";
+echo "<tr><td class='tab_bg_1 center' colspan='4'>";
 echo "<p><input type='submit' value=\"".__s('Display report')."\" class='submit'></p></td></tr>";
 
 echo "</table>";
