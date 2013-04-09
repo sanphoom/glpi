@@ -194,8 +194,8 @@ class SoftwareVersion extends CommonDBChild {
     * @return nothing (print out an HTML select box)
    **/
    static function dropdown($options=array()) {
-      global $CFG_GLPI;
-
+      global $CFG_GLPI, $DB;
+      
       //$softwares_id,$value=0
       $p['softwares_id'] = 0;
       $p['value']        = 0;
@@ -208,18 +208,38 @@ class SoftwareVersion extends CommonDBChild {
          }
       }
 
-      $rand   = mt_rand();
-      $params = array('softwares_id' => $p['softwares_id'],
-                      'myname'       => $p['name'],
-                      'value'        => $p['value'],
-                      'used'         => $p['used']);
+      $where = '';
+      if (count($p['used'])) {
+         $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','",$p['used'])."')";
+      }
+      // Make a select box
+      $query = "SELECT DISTINCT `glpi_softwareversions`.*,
+                              `glpi_states`.`name` AS sname
+               FROM `glpi_softwareversions`
+               LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
+               WHERE `glpi_softwareversions`.`softwares_id` = '".$p['softwares_id']."'
+                     $where
+               ORDER BY `name`";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
 
-      $default = "<select name='".$p['name']."'><option value='0'>".Dropdown::EMPTY_VALUE."</option>
-                  </select>";
+      $values = array(0 => Dropdown::EMPTY_VALUE);
+      if ($number) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $ID = $data['id'];
+            $output = $data['name'];
 
-      Ajax::dropdown(false,"/ajax/dropdownInstallVersion.php", $params, $default, $rand);
+            if (empty($output) || $_SESSION['glpiis_ids_visible']) {
+               $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
+            }
+            if (!empty($data['sname'])) {
+               $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
+            }
+            $values = array($ID => $output);
+         }
+      }
 
-      return $rand;
+      return Dropdown::showFromArray($p['name'], $values);
    }
 
 
