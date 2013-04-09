@@ -356,7 +356,7 @@ if ($item instanceof CommonTreeDropdown) {
       $query .= " ORDER BY $field
                  $LIMIT";
    }
-   Toolbox::logDebug($query);
+//    Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
 
       if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
