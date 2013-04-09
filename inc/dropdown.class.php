@@ -1457,7 +1457,7 @@ class Dropdown {
    static function showFromArray($name, array $elements, $options=array()) {
 
       $param['value']           = '';
-      $param['values']          = array();
+      $param['values']          = array('');
       $param['used']            = array();
       $param['readonly']        = false;
       $param['on_change']       = '';
