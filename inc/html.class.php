@@ -3231,8 +3231,7 @@ class Html {
          }
       }
       $output = '';
-      if ($CFG_GLPI["use_ajax"]
-          && $CFG_GLPI["use_ajax_autocompletion"]) {
+      if ($CFG_GLPI["use_ajax_autocompletion"]) {
          $rand    = mt_rand();
          $name    = "field_".$params['name'].$rand;
          $output .=  "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
@@ -3838,7 +3837,7 @@ class Html {
       $out = "<script type='text/javascript'>\n";
       $out .= "$(document).ready(function() { $('#$id').select2({
                   width: '$width',
-                  minimumResultsForSearch: 5,}); });";
+                  minimumResultsForSearch: 0,}); });";
       $out .= "</script>\n";
       return $out;
    }
@@ -3860,8 +3859,16 @@ class Html {
    static function jsAjaxDropdown($name, $field_id, $url, $params = array()) {
       global $CFG_GLPI;
 
-      $value = $params['value'];
-      $valuename = $params['valuename'];
+      if (!isset($params['value'])) {
+         $value = 0;
+      } else {
+         $value = $params['value'];
+      }
+      if (!isset($params['value'])) {
+         $valuename = Dropdown::EMPTY_VALUE;
+      } else {
+         $valuename = $params['valuename'];
+      }
       $on_change = '';
       if (isset($params["on_change"])) {
          $on_change = $params["on_change"];
@@ -3881,7 +3888,7 @@ class Html {
       $output .= " $('#$field_id').select2({
                         width: '$width',
                         minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
-                        minimumResultsForSearch: 5,
+                        minimumResultsForSearch: 0,
                         quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
                         ajax: {
                            url: '$url',

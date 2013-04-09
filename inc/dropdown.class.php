@@ -156,52 +156,7 @@ class Dropdown {
          }
       }
 
-      $use_ajax = false;
-      if ($CFG_GLPI["use_ajax"]) {
-         $nb = 0;
 
-         if ($item->isEntityAssign()) {
-            if (!($params['entity'] < 0)) {
-               $nb = countElementsInTableForEntity($table, $params['entity'], $params['condition']);
-            } else {
-               $nb = countElementsInTableForMyEntities($table, $params['condition']);
-            }
-
-         } else {
-            $nb = countElementsInTable($table, $params['condition']);
-         }
-
-         $nb -= count($params['used']);
-
-         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax = true;
-         }
-      }
-
-//       $param = array('searchText'           => '__VALUE__',
-//                       'value'               => $params['value'],
-//                       'itemtype'            => $itemtype,
-//                       'myname'              => $params['name'],
-//                       'limit'               => $limit_length,
-//                       'toadd'               => $params['toadd'],
-//                       'comment'             => $params['comments'],
-//                       'rand'                => $params['rand'],
-//                       'entity_restrict'     => $params['entity'],
-//                       'update_item'         => $params['toupdate'],
-//                       'used'                => $params['used'],
-//                       'on_change'           => $params['on_change'],
-//                       'condition'           => $params['condition'],
-//                       'emptylabel'          => $params['emptylabel'],
-//                       'display_emptychoice' => $params['display_emptychoice'],
-//                       'displaywith'         => $params['displaywith'],
-//                       'display'             => false);
-
-//       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
-//                     $params['rand']."'>";
-//       $default .= "<option value='".$params['value']."'>$name</option></select>";
-//
-//       $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default,
-//                                 $params['rand'], false);
       $field_id = Html::cleanId("dropdown_".$params['name'].$params['rand']);
 
       $p = array('value'               => $params['value'],

@@ -122,7 +122,6 @@ class Netpoint extends CommonDropdown {
       $rand          = mt_rand();
       $name          = Dropdown::EMPTY_VALUE;
       $comment       = "";
-      $limit_length  = $_SESSION["glpidropdown_chars_limit"];
       if (empty($value)) {
          $value = 0;
       }
@@ -131,34 +130,15 @@ class Netpoint extends CommonDropdown {
          if ($tmpname["name"] != "&nbsp;") {
             $name          = $tmpname["name"];
             $comment       = $tmpname["comment"];
-            $limit_length  = max(Toolbox::strlen($name),$_SESSION["glpidropdown_chars_limit"]);
          }
       }
-//       $use_ajax = false;
-//       if ($CFG_GLPI["use_ajax"]) {
-//          if (($locations_id < 0)
-//              || ($devtype == 'NetworkEquipment')) {
-//             $nb = countElementsInTableForEntity("glpi_netpoints", $entity_restrict);
-//          } else if ($locations_id > 0) {
-//             $nb = countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");
-//          } else {
-//             $nb = countElementsInTable("glpi_netpoints",
-//                                        "locations_id=0 ".
-//                                           getEntitiesRestrictRequest(" AND ", "glpi_netpoints",
-//                                                                      '', $entity_restrict));
-//          }
-//          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-//             $use_ajax = true;
-//          }
-//       }
 
       $field_id = Html::cleanId("dropdown_".$myname.$rand);
-      $param = array('value'               => $myname,
+      $param = array('value'               => $value,
                      'valuename'           => $name,
                      'entity_restrict'     => $entity_restrict,
                      'devtype'             => $devtype,
-                     'locations_id'        => $locations_id,
-                );
+                     'locations_id'        => $locations_id);
       echo Html::jsAjaxDropdown($myname, $field_id,
                                 $CFG_GLPI['root_doc']."/ajax/getDropdownNetpoint.php",
                                 $param);

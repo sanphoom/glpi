@@ -452,6 +452,8 @@ function update084to085() {
    $migration->addField('glpi_users', 'is_deleted_ldap', 'bool');
    $migration->addKey('glpi_users', 'is_deleted_ldap');
 
+   Config::deleteConfigurationValues('core', array('use_ajax'));
+   
    Config::setConfigurationValues('core', array('use_unicodefont' => 0));
    $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
    $migration->addField("glpi_users", 'picture', "string", array('value' => 'NULL'));

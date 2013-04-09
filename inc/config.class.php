@@ -285,49 +285,38 @@ class Config extends CommonDBTM {
            "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>". __('Use dynamic display for dropdowns and text fields'). "</td><td>";
-      Dropdown::showYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
+      echo "<td>".
+            __('Maximum number of items to display in the dropdown when wildcard is not used').
+            "</td><td>";
+      Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
       echo "</td>";
-      if ($CFG_GLPI["use_ajax"]) {
-         echo "<td>".__('Minimum text length for dynamic search in dropdowns')."</td><td>";
-         Dropdown::showInteger('ajax_min_textsearch_load', $CFG_GLPI["ajax_min_textsearch_load"],
-                               0, 10, 1);
-      } else {
-         echo "<td colspan='2'>&nbsp;";
-      }
-
+      echo "<td>".__('Minimum text length for dynamic search in dropdowns')."</td><td>";
+      Dropdown::showInteger('ajax_min_textsearch_load', $CFG_GLPI["ajax_min_textsearch_load"],
+                              0, 10, 1);
       echo "</td></tr>";
 
-      if ($CFG_GLPI["use_ajax"]) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>". __("Don't use dynamic display if the number of items is less than")."</td>
-               <td>";
-         Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
-                               array(0 => __('Never')));
-         echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
-         Dropdown::showNumber('ajax_buffertime_load',
-                              array('value' => $CFG_GLPI["ajax_buffertime_load"],
-                                    'min'   => 0,
-                                    'max'   => 5000,
-                                    'step'  => 100,
-                                    'unit'  => 'millisecond'));
-         echo "</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>". __("Don't use dynamic display if the number of items is less than")."</td>
+            <td>";
+      Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
+                              array(0 => __('Never')));
+      echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
+      Dropdown::showNumber('ajax_buffertime_load',
+                           array('value' => $CFG_GLPI["ajax_buffertime_load"],
+                                 'min'   => 0,
+                                 'max'   => 5000,
+                                 'step'  => 100,
+                                 'unit'  => 'millisecond'));
+      echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
-         Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
-         echo "</td><td>". __('Character to force the full display of dropdowns (wildcard)')."</td>";
-         echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
-                    $CFG_GLPI["ajax_wildcard"] . "'></td>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_2'>";
-         echo "<td>".
-               __('Maximum number of items to display in the dropdown when wildcard is not used').
-              "</td><td>";
-         Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
-         echo "</td>";
-         echo "<td colspan='2'>&nbsp;</td></tr>";
-      }
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
+      Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
+      echo "</td><td>". __('Character to force the full display of dropdowns (wildcard)')."</td>";
+      echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
+                  $CFG_GLPI["ajax_wildcard"] . "'></td>";
+      echo "</tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Items seen') . "</td><td>";
@@ -1759,9 +1748,9 @@ class Config extends CommonDBTM {
    static function deleteConfigurationValues($context, array $values= array()) {
 
       $config = new self();
-      foreach ($values as $name => $value) {
+      foreach ($values as $value) {
          if ($config->getFromDBByQuery("WHERE `context` = '$context'
-                                              AND `name` = '$name'")) {
+                                              AND `name` = '$value'")) {
             $config->delete(array('id' => $config->getID()));
          }
       }

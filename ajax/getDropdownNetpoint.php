@@ -48,7 +48,14 @@ Session::checkLoginUser();
 // Make a select box with preselected values
 $datas = array();
 $location_restrict = false;
-$where = " WHERE 1 ";
+
+if (strlen($_GET['searchText']) > 0) {
+   $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_GET['searchText'])."
+                     OR `glpi_locations`.`completename` ".Search::makeTextSearch($_GET['searchText']).")";
+} else {
+   $where = " WHERE 1 ";
+}
+
 
 if (!(isset($_GET["devtype"])
       && ($_GET["devtype"] != 'NetworkEquipment')

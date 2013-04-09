@@ -457,8 +457,6 @@ class Computer_Item extends CommonDBRelation{
          echo "<tr class='tab_bg_2'><th colspan='2'>".__('Connect an item')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>";
-//          Dropdown::showAllItems("items_id", 0, 0, $comp->fields['entities_id'],
-//                                 $CFG_GLPI["directconnect_types"], false, true);
          if (!empty($withtemplate)) {
             echo "<input type='hidden' name='_no_history' value='1'>";
          }
@@ -579,9 +577,8 @@ class Computer_Item extends CommonDBRelation{
          $used['Computer'][]   = $data['computers_id'];
       }
       $number = count($compids);
-
       if ($canedit
-          && ($global || $number)) {
+          && ($global || !$number)) {
          echo "<div class='firstbloc'>";
          echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
                 action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -727,18 +724,7 @@ class Computer_Item extends CommonDBRelation{
       global $CFG_GLPI;
 
       $rand = mt_rand();
-//       $use_ajax = false;
-//       if ($CFG_GLPI["use_ajax"]) {
-//          $nb = 0;
-//          if ($entity_restrict >= 0) {
-//             $nb = countElementsInTableForEntity(getTableForItemType($itemtype), $entity_restrict);
-//          } else {
-//             $nb = countElementsInTableForMyEntities(getTableForItemType($itemtype));
-//          }
-//          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-//             $use_ajax = true;
-//          }
-//       }
+
       $options               = array();
       $options['checkright'] = true;
       $options['name']       = 'itemtype';
@@ -759,7 +745,7 @@ class Computer_Item extends CommonDBRelation{
          Ajax::updateItemOnSelectEvent("dropdown_itemtype$rand", "show_$myname$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownConnect.php", $params);
 
-         echo "<br><div id='show_$myname$rand'>---&nbsp;</div>\n";
+         echo "<br><div id='show_$myname$rand'>&nbsp;</div>\n";
       }
       return $rand;
 
@@ -784,29 +770,16 @@ class Computer_Item extends CommonDBRelation{
 
       $rand = mt_rand();
 
-      $use_ajax = false;
-      if ($CFG_GLPI["use_ajax"]) {
-         $nb = 0;
-         if ($entity_restrict >= 0) {
-            $nb = countElementsInTableForEntity(getTableForItemType($itemtype), $entity_restrict);
-         } else {
-            $nb = countElementsInTableForMyEntities(getTableForItemType($itemtype));
-         }
-         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
-            $use_ajax = true;
-         }
-      }
+      $field_id = Html::cleanId("dropdown_".$myname.$rand);
+      $param = array('entity_restrict' => $entity_restrict,
+                     'fromtype'        => $fromtype,
+                     'itemtype'        => $itemtype,
+                     'onlyglobal'      => $onlyglobal,
+                     'used'            => $used);
 
-      $params = array('searchText'      => '__VALUE__',
-                      'fromtype'        => $fromtype,
-                      'itemtype'        => $itemtype,
-                      'myname'          => $myname,
-                      'onlyglobal'      => $onlyglobal,
-                      'entity_restrict' => $entity_restrict,
-                      'used'            => $used);
-      $default = "<select name='$myname'><option value='0'>".Dropdown::EMPTY_VALUE."</option>
-                  </select>\n";
-      Ajax::dropdown($use_ajax, "/ajax/dropdownConnect.php", $params, $default, $rand);
+      echo Html::jsAjaxDropdown($myname, $field_id,
+                                $CFG_GLPI['root_doc']."/ajax/getDropdownConnect.php",
+                                $param);
 
       return $rand;
    }
