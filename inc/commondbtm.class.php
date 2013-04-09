@@ -2873,9 +2873,7 @@ class CommonDBTM extends CommonGLPI {
             } else {
                $input['options'] = array();
             }
-            $first_group    = true;
             $group          = "";
-            $items_in_group = 0;
             $show_all       = true;
             $show_infocoms  = true;
 
@@ -2887,8 +2885,6 @@ class CommonDBTM extends CommonGLPI {
             }
             $searchopt = Search::getCleanedOptions($input["itemtype"], 'w');
 
-//             echo "<select name='id_field' id='massiveaction_field'>";
-//             echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>";
             $values = array(0 => Dropdown::EMPTY_VALUE);
             
             foreach ($searchopt as $key => $val) {
@@ -2919,7 +2915,7 @@ class CommonDBTM extends CommonGLPI {
                   }
                }
             }
-//             echo "</select>";
+
             $rand = Dropdown::showFromArray('id_field', $values);
 
             $paramsmassaction = array('id_field' => '__VALUE__',

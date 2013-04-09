@@ -405,6 +405,7 @@ class Dropdown {
       $params['used']         = array();
       $params['emptylabel']   = self::EMPTY_VALUE;
       $params['display']      = true;
+      $params['width']        = '80%';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -424,6 +425,7 @@ class Dropdown {
       asort($options);
       return self::showFromArray($name, $options, array('value'   => $params['value'],
                                                         'used'    => $params['used'],
+                                                        'width'   => $params['width'],
                                                         'display' => $params['display']));
    }
 
@@ -1513,6 +1515,7 @@ class Dropdown {
       } else {
 
          $field_id = Html::cleanId("dropdown_".$name.$param['rand']);
+
          $output  .= "<select name='$field_name' id='$field_id'";
 
          if (!empty($param["on_change"])) {

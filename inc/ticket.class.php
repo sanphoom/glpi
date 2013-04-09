@@ -3000,9 +3000,6 @@ class Ticket extends CommonITILObject {
          }
          echo "<div id='tracking_my_devices'>";
          $rand = Dropdown::showFromArray('my_items', $my_devices);
-//          echo "<select id='my_items' name='_my_items'>";
-//          echo "<option value=''>--- ";
-//          echo __('General')." ---</option>$my_devices</select>";
          echo "</div>";
 
 

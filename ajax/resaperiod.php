@@ -43,7 +43,7 @@ Session::checkLoginUser();
 
 if (isset($_POST['type']) && isset($_POST['end'])) {
 
-   echo "<table>";
+   echo "<table width='90%'>";
    switch ($_POST['type']) {
       case 'day' :
          echo "<tr><td>".__('End date').'</td><td>';
@@ -71,10 +71,9 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
 
       case 'month' :
          echo "<tr><td colspan='2'>";
-         echo "<select name='periodicity[subtype]'>";
-         echo "<option value='date'>".__('Each month, same date')."</option>\n";
-         echo "<option value='day'>".__('Each month, same day of week')."</option>\n";
-         echo "</select>";
+         $values = array('date' => __('Each month, same date'),
+                         'day'  => __('Each month, same day of week'));
+         Dropdown::showFromArray('periodicity[subtype]', $values);
          echo "</td></tr>";
          echo "<tr><td>".__('End date').'</td><td>';
          Html::showDateFormItem('periodicity[end]', $_POST['end']);

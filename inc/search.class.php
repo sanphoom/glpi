@@ -1519,6 +1519,12 @@ class Search {
       echo "<td>";
 
       echo "<table id='searchcriteriastable' width='100%'>";
+
+      $logicaloperators = array('AND' => 'AND',
+                                'OR' => 'OR',
+                                'AND NOT' => 'AND NOT',
+                                'OR NOT' => 'OR NOT',);
+      
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
          echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='45%'>";
@@ -1576,35 +1582,13 @@ class Search {
 
          // Display link item
          if ($i > 0) {
-            echo "<select name='link[$i]'>";
-            echo "<option value = 'AND' ";
-            if (is_array($p["link"])
-                && isset($p["link"][$i]) && ($p["link"][$i] == "AND")) {
-               echo "selected";
+            $value = '';
+            if (is_array($p["link"]) && isset($p["link"][$i])) {
+               $value = $p["link"][$i];
             }
-            echo ">AND</option>\n";
-
-            echo "<option value='OR' ";
-            if (is_array($p["link"])
-                && isset($p["link"][$i]) && ($p["link"][$i] == "OR")) {
-               echo "selected";
-            }
-            echo ">OR</option>\n";
-
-            echo "<option value='AND NOT' ";
-            if (is_array($p["link"])
-                && isset($p["link"][$i]) && ($p["link"][$i] == "AND NOT")) {
-               echo "selected";
-            }
-            echo ">AND NOT</option>\n";
-
-            echo "<option value='OR NOT' ";
-            if (is_array($p["link"])
-                && isset($p["link"][$i]) && ($p["link"][$i] == "OR NOT")) {
-               echo "selected";
-            }
-            echo ">OR NOT</option>";
-            echo "</select>&nbsp;";
+            Dropdown::showFromArray("link[$i]",$logicaloperators,
+                                    array('value' => $value,
+                                          'width' => '30%'));
          }
 
 
@@ -1731,49 +1715,29 @@ class Search {
 
             echo "<table width='100%'><tr class='left'><td width='30%'>";
             // Display link item (not for the first item)
-            echo "<select name='link2[$i]'>";
-            echo "<option value='AND' ";
-            if (is_array($p['link2'])
-                && isset($p['link2'][$i]) && ($p['link2'][$i] == "AND")) {
-               echo "selected";
+            $value = '';
+            if (is_array($p["link2"]) && isset($p["link2"][$i])) {
+               $value = $p["link2"][$i];
             }
-            echo ">AND</option>\n";
-
-            echo "<option value='OR' ";
-            if (is_array($p['link2'])
-                && isset($p['link2'][$i]) && ($p['link2'][$i] == "OR")) {
-               echo "selected";
-            }
-            echo ">OR</option>\n";
-
-            echo "<option value='AND NOT' ";
-            if (is_array($p['link2'])
-                && isset($p['link2'][$i]) && ($p['link2'][$i] == "AND NOT")) {
-               echo "selected";
-            }
-            echo ">AND NOT</option>\n";
-
-            echo "<option value='OR NOT' ";
-            if (is_array($p['link2'] )
-                && isset($p['link2'][$i]) && ($p['link2'][$i] == "OR NOT")) {
-               echo "selected";
-            }
-            echo ">OR NOT</option>\n";
-            echo "</select>&nbsp;";
+            Dropdown::showFromArray("link2[$i]",$logicaloperators,
+                                    array('value' => $value,
+                                          'width' => '45%'));
 
             // Display select of the linked item type available
-            echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
-            echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
+//             echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
+//             echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
             foreach ($linked as $key) {
                if (!isset($metanames[$key])) {
                   if ($linkitem = getItemForItemtype($key)) {
                      $metanames[$key] = $linkitem->getTypeName();
                   }
                }
-               echo "<option value='$key'>".Toolbox::substr($metanames[$key], 0, 20)."</option>\n";
+//                echo "<option value='$key'>".Toolbox::substr($metanames[$key], 0, 20)."</option>\n";
             }
-            echo "</select>&nbsp;";
-
+//             echo "</select>&nbsp;";
+            $rand = Dropdown::showItemTypes("itemtype2[$i]",$linked, array('width' => '50%',
+                                                                           'value' => $p['itemtype2'][$i]));
+            $field_id = Html::cleanId("dropdown_itemtype2[$i]$rand");
             echo "</td><td>";
             // Ajax script for display search met& item
             echo "<span id='show_".$itemtype."_".$i."_$rand'>&nbsp;</span>\n";
@@ -1787,7 +1751,7 @@ class Search {
                             'searchtype2' => (is_array($p['searchtype2'])
                                               && isset($p['searchtype2'][$i])?$p['searchtype2'][$i]:""));
 
-            Ajax::updateItemOnSelectEvent("itemtype2_".$itemtype."_".$i."_$rand",
+            Ajax::updateItemOnSelectEvent($field_id,
                                           "show_".$itemtype."_".$i."_$rand",
                                           $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",
                                           $params);
@@ -1795,14 +1759,15 @@ class Search {
             if (is_array($p['itemtype2'])
                 && isset($p['itemtype2'][$i])
                 && !empty($p['itemtype2'][$i])) {
-
+//                echo "<script type='text/javascript' >";
+//                echo "alert('".$p['itemtype2'][$i]."');";
+//                echo Html::jsSetDropdownValue($field_id, $p['itemtype2'][$i]);
+//                echo "</script>\n";
+               
                $params['itemtype'] = $p['itemtype2'][$i];
                Ajax::updateItem("show_".$itemtype."_".$i."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php", $params);
-               echo "<script type='text/javascript' >";
-               echo "window.document.getElementById('itemtype2_".$itemtype."_".$i."_$rand').value='".
-                                                    $p['itemtype2'][$i]."';";
-               echo "</script>\n";
+
             }
             echo "</td></tr></table>";
 

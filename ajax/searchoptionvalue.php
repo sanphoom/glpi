@@ -57,6 +57,7 @@ if (isset($_POST['searchtype'])) {
    $display          = false;
    $item             = getItemForItemtype($_POST['itemtype']);
    $options['value'] = $_POST['value'];
+   $options['width'] = '100%';
 
    switch ($_POST['searchtype']) {
       case "equals" :

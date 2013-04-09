@@ -71,7 +71,6 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
       $params[$key] = $val;
    }
 
-   $rand                      = mt_rand();
    $params['specific_action'] = 0;
    $actions                   = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
    if (isset($_POST['specific_actions'])
@@ -95,14 +94,13 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
       }
       _e('Action');
       echo "&nbsp;";
-      echo "<select name='massiveaction' id='massiveaction$rand'>";
-      echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
-      foreach ($actions as $key => $val) {
-         echo "<option value = '$key'>$val</option>";
-      }
-      echo "</select><br><br>";
+      
+      $actions = array_merge(array(-1 => Dropdown::EMPTY_VALUE), $actions);
+      $rand = Dropdown::showFromArray('massiveaction', $actions);
+      
+      echo "<br><br>";
 
-      Ajax::updateItemOnSelectEvent("massiveaction$rand", "show_massiveaction$rand",
+      Ajax::updateItemOnSelectEvent("dropdown_massiveaction$rand", "show_massiveaction$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
                                     $params);
 
