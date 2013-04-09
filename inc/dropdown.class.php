@@ -976,6 +976,10 @@ class Dropdown {
     * @param $types           Types used (default "state_types") (default '')
     * @param $options   Array of optional options
     *        name, value, rand, emptylabel, display_emptychoice, on_change, plural, checkright
+    *       - toupdate            : array / Update a specific item on select change on dropdown
+    *                                    (need value_fieldname, to_update,
+    *                                     url (see Ajax::updateItemOnSelectEvent for information)
+    *                                     and may have moreparams)
     *
     * @return integer rand for select id
    **/
@@ -993,6 +997,7 @@ class Dropdown {
       //Display emptychoice ?
       $params['display_emptychoice'] = true;
       $params['checkright']          = false;
+      $params['toupdate']            = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1021,22 +1026,8 @@ class Dropdown {
       if (count($options)) {
          return Dropdown::showFromArray($params['name'], $options,
                                           array('value'     => $params['value'],
-                                                'on_change' => $params['on_change']));
-
-//          echo "<select name='".$params['name']."' id='itemtype".$params['rand']."'";
-//          if ($params['on_change']) {
-//             echo " onChange='".$params['on_change']."'>";
-//          } else {
-//             echo ">";
-//          }
-//
-//          foreach ($options as $key => $val) {
-//             $sel = (($key === $params['value']) ? 'selected' : '');
-//             echo "<option value='".$key."' $sel>".$val."</option>";
-//          }
-//          echo "</select>";
-//
-//          return $params['rand'];
+                                                'on_change' => $params['on_change'],
+                                                'toupdate'  => $params['toupdate'],));
       }
       return 0;
    }
@@ -1595,7 +1586,8 @@ class Dropdown {
 
       // Width set on select
       $output .= Html::jsAdaptDropdown($field_id, array('width' => $param["width"]));
-
+      $output .= Ajax::commonDropdownUpdateItem($param, false);
+      
       if ($param['display']) {
          echo $output;
          return $param['rand'];

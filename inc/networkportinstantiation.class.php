@@ -852,19 +852,8 @@ class NetworkPortInstantiation extends CommonDBChild {
          }
       }
 
-      $rand = mt_rand();
       echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='$ID'>";
-      echo "<select name='NetworkPortConnect_itemtype' id='itemtype$rand'>";
-      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
-
-      foreach ($CFG_GLPI["networkport_types"] as $key => $itemtype) {
-         if ($item = getItemForItemtype($itemtype)) {
-            echo "<option value='".$itemtype."'>".$item->getTypeName(1)."</option>";
-         } else {
-            unset($CFG_GLPI["networkport_types"][$key]);
-         }
-      }
-      echo "</select>";
+      $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype',$CFG_GLPI["networkport_types"] );
 
       $params = array('itemtype'           => '__VALUE__',
                       'entity_restrict'    => $p['entity'],
@@ -873,7 +862,8 @@ class NetworkPortInstantiation extends CommonDBChild {
                       'myname'             => $p['name'],
                       'instantiation_type' => get_called_class());
 
-      Ajax::updateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
+      Ajax::updateItemOnSelectEvent("dropdown_NetworkPortConnect_itemtype$rand",
+                                    "show_".$p['name']."$rand",
                                     $CFG_GLPI["root_doc"].
                                        "/ajax/dropdownConnectNetworkPortDeviceType.php",
                                     $params);
