@@ -62,6 +62,8 @@ if ($_POST['softwares_id'] > 0) {
 //    echo "<select name='".$_POST['myname']."' size='1'>";
 //    echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
+//    $today = date("Y-m-d");
+
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
          $ID     = $data['id'];
@@ -70,11 +72,12 @@ if ($_POST['softwares_id'] > 0) {
          if (empty($output) || $_SESSION['glpiis_ids_visible']) {
             $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
          }
-         
-         echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
-                Html::cleanInputText($output)."\">".$output."</option>";
+//          echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
+//                 Html::cleanInputText($output)."\">".$output."</option>";
+         $values[$ID] = $output;
       }
    }
-   echo "</select>&nbsp;";
+//    echo "</select>&nbsp;";
+   Dropdown::showFromArray($_POST['myname'], $values);
 }
 ?>
