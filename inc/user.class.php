@@ -2811,7 +2811,7 @@ class User extends CommonDBTM {
    /**
     * Execute the query to select box with all glpi users where select key = name
     *
-    * Internaly used by showGroup_Users, dropdownUsers and ajax/dropdownUsers.php
+    * Internaly used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
     *
     * @param $count                    true if execute an count(*) (true by default)
     * @param $right                    limit user who have specific right (default 'all')

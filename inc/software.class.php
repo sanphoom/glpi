@@ -657,7 +657,7 @@ class Software extends CommonDBTM {
       $rand = Dropdown::show('Software', array('condition' => $where));
 
       $paramsselsoft = array('softwares_id' => '__VALUE__',
-                           'myname'       => $myname);
+                             'myname'       => $myname);
 
       Ajax::updateItemOnSelectEvent("dropdown_softwares_id$rand", "show_".$myname.$rand,
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownInstallVersion.php",

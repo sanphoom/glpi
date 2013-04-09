@@ -2874,7 +2874,7 @@ class CommonDBTM extends CommonGLPI {
                $input['options'] = array();
             }
             $first_group    = true;
-            $newgroup       = "";
+            $group          = "";
             $items_in_group = 0;
             $show_all       = true;
             $show_infocoms  = true;
@@ -2887,23 +2887,13 @@ class CommonDBTM extends CommonGLPI {
             }
             $searchopt = Search::getCleanedOptions($input["itemtype"], 'w');
 
-            echo "<select name='id_field' id='massiveaction_field'>";
-            echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>";
-
+//             echo "<select name='id_field' id='massiveaction_field'>";
+//             echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>";
+            $values = array(0 => Dropdown::EMPTY_VALUE);
+            
             foreach ($searchopt as $key => $val) {
                if (!is_array($val)) {
-                  if (!empty($newgroup)
-                      && ($items_in_group > 0)) {
-                     echo $newgroup;
-                     $first_group = false;
-                  }
-                  $items_in_group = 0;
-                  $newgroup       = "";
-                  if (!$first_group) {
-                     $newgroup .= "</optgroup>";
-                  }
-                  $newgroup .= "<optgroup label=\"$val\">";
-
+                  $group = $val;
                } else {
                   // No id and no entities_id massive action and no first item
                   if (($val["field"] != 'id')
@@ -2915,33 +2905,22 @@ class CommonDBTM extends CommonGLPI {
                      if (!isset($val['massiveaction']) || $val['massiveaction']) {
 
                         if ($show_all) {
-                           $newgroup .= "<option value='$key'>".$val["name"]."</option>";
-                           $items_in_group++;
-
+                           $values[$group][$key] = $val["name"];
                         } else {
                            // Do not show infocom items
                            if (($show_infocoms
                                 && Search::isInfocomOption($input["itemtype"], $key))
                                || (!$show_infocoms
                                    && !Search::isInfocomOption($input["itemtype"], $key))) {
-
-                              $newgroup .= "<option value='$key'>".$val["name"]."</option>";
-                              $items_in_group++;
+                              $values[$group][$key] = $val["name"];
                            }
                         }
                      }
                   }
                }
             }
-
-            if (!empty($newgroup)
-                && ($items_in_group > 0)) {
-               echo $newgroup;
-            }
-            if (!$first_group) {
-               echo "</optgroup>";
-            }
-            echo "</select>";
+//             echo "</select>";
+            $rand = Dropdown::showFromArray('id_field', $values);
 
             $paramsmassaction = array('id_field' => '__VALUE__',
                                       'itemtype' => $input["itemtype"],
@@ -2952,7 +2931,7 @@ class CommonDBTM extends CommonGLPI {
                   $paramsmassaction[$key] = $val;
                }
             }
-            Ajax::updateItemOnSelectEvent("massiveaction_field", "show_massiveaction_field",
+            Ajax::updateItemOnSelectEvent("dropdown_id_field$rand", "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
                                           $paramsmassaction);
 

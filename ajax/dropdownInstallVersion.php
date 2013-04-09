@@ -65,9 +65,6 @@ if ($_POST['softwares_id'] > 0) {
    $result = $DB->query($query);
    $number = $DB->numrows($result);
 
-//    echo "<select name='".$_POST['myname']."' size='1'>";
-//    echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
-
    $values = array(0 => Dropdown::EMPTY_VALUE);
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
@@ -82,11 +79,9 @@ if ($_POST['softwares_id'] > 0) {
          }
          $values = array($ID => $output);
 
-//          echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
-//                Html::cleanInputText($output)."\">".$output."</option>";
       }
    }
-//    echo "</select>&nbsp;";
+
    Dropdown::showFromArray($_POST['myname'], $values);
 }
 ?>
