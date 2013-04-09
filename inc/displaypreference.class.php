@@ -309,28 +309,19 @@ class DisplayPreference extends CommonDBTM {
          echo "<form method='post' action=\"$target\">";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
-         echo "<select name='num'>";
-         $first_group = true;
-
+         $group = '';
+         $values = array();
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
-               if (!$first_group) {
-                  echo "</optgroup>\n";
-               } else {
-                  $first_group = false;
-               }
-               echo "<optgroup label=\"$val\">";
+               $group = $val;
 
             } else if (($key != 1)
                        && !in_array($key,$already_added)) {
-               echo "<option value='$key'>".$val["name"]."</option>\n";
+               $values[$group][$key] =$val["name"];
             }
          }
-
-         if (!$first_group) {
-            echo "</optgroup>\n";
-         }
-         echo "</select><span class='small_space'>";
+         Dropdown::showFromArray('num', $values);
+         echo "<span class='small_space'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</span>";
          Html::closeForm();
@@ -463,30 +454,20 @@ class DisplayPreference extends CommonDBTM {
          echo "<form method='post' action='$target'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
-         echo "<select name='num'>";
-         $first_group = true;
+         $group  = '';
+         $values = array();
          $searchopt   = Search::getCleanedOptions($itemtype);
 
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
-               if (!$first_group) {
-                  echo "</optgroup>\n";
-               } else {
-                  $first_group = false;
-               }
-               echo "<optgroup label=\"$val\">";
-
+               $group = $val;
             } else if (($key != 1)
                        && !in_array($key,$already_added)) {
-               echo "<option value='$key'>".$val["name"]."</option>";
+               $values[$group][$key] = $val["name"];
             }
          }
-
-         if (!$first_group) {
-            echo "</optgroup>\n";
-         }
-
-         echo "</select><span class='small_space'>";
+         Dropdown::showFromArray('num', $values);
+         echo "<span class='small_space'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</span>";
          Html::closeForm();

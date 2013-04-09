@@ -584,19 +584,12 @@ class Infocom extends CommonDBChild {
    **/
    static function dropdownAmortType($name, $value=0, $display=true) {
 
-      $output  = "<select name='$name'>";
-      $output .= "<option value='0' ".(($value == 0)?" selected ":"").">".
-                   Dropdown::EMPTY_VALUE."</option>";
-      $output .= "<option value='2' ".(($value == 2)?" selected ":"").">".__('Linear')."</option>";
-      $output .= "<option value='1' ".(($value == 1)?" selected ":"").">".
-                   __('Decreasing')."</option>";
-      $output .= "</select>";
-
-      if ($display) {
-         echo $output;
-      } else {
-         return $output;
-      }
+      $values = array(0 => Dropdown::EMPTY_VALUE,
+                      2 => __('Linear'),
+                      1 => __('Decreasing'));
+      return Dropdown::showFromArray($name,$values,
+                                      array('value'   => $value,
+                                            'display' => $display));
    }
 
 

@@ -1155,29 +1155,22 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       if (is_dir(GLPI_DOC_DIR."/_uploads")) {
-         $uploaded_files = array();
+         $uploaded_files = array('' => Dropdown::EMPTY_VALUE);
 
          if ($handle = opendir(GLPI_DOC_DIR."/_uploads")) {
             while (false !== ($file = readdir($handle))) {
                if (($file != ".") && ($file != "..")) {
                   $dir = self::isValidDoc($file);
                   if (!empty($dir)) {
-                     $uploaded_files[] = $file;
+                     $uploaded_files[$file] = $file;
                   }
                }
             }
             closedir($handle);
          }
 
-         if (count($uploaded_files)) {
-            echo "<select name='$myname'>";
-            echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
-
-            foreach ($uploaded_files as $key => $val) {
-               echo "<option value='$val'>$val</option>";
-            }
-            echo "</select>";
-
+         if (count($uploaded_files) >1) {
+            Dropdown::showFromArray($myname, $uploaded_files);
          } else {
            _e('No file available');
          }
@@ -1252,8 +1245,6 @@ class Document extends CommonDBTM {
          }
       }
 
-      $rand = mt_rand();
-
       $where = " WHERE `glpi_documents`.`is_deleted` = '0' ".
                        getEntitiesRestrictRequest("AND", "glpi_documents", '', $p['entity'], true);
 
@@ -1269,21 +1260,21 @@ class Document extends CommonDBTM {
                 ORDER BY `name`";
       $result = $DB->query($query);
 
-      echo "<select name='_rubdoc' id='rubdoc$rand'>";
-      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
-
+      $values = array(0 => Dropdown::EMPTY_VALUE);
+      
       while ($data = $DB->fetch_assoc($result)) {
-         echo "<option value='".$data['id']."'>".$data['name']."</option>";
+         $values[$data['id']] = $data['name'];
       }
-      echo "</select>";
-      echo Html::jsAdaptDropdown("rubdoc$rand", array('width'=>'30%'));
+      $rand = Dropdown::showFromArray('_rubdoc', $values, array('width' => '30%'));
+      $field_id = Html::cleanId("dropdown__rubdoc$rand");
+      
       $params = array('rubdoc' => '__VALUE__',
                       'entity' => $p['entity'],
                       'rand'   => $rand,
                       'myname' => $p['name'],
                       'used'   => $p['used']);
 
-      Ajax::updateItemOnSelectEvent("rubdoc$rand","show_".$p['name']."$rand",
+      Ajax::updateItemOnSelectEvent($field_id,"show_".$p['name']."$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php", $params);
       echo "<span id='show_".$p['name']."$rand'>";
       $_POST["entity"] = $p['entity'];

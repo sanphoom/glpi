@@ -387,30 +387,49 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('on week')."</td>";
-      echo "<td colspan='3'>". __('Start')."&nbsp;";
+      echo "<td colspan='3'>";
+      echo "<table width='100%'><tr><td width='20%'>";
+      echo "&nbsp;";
+      echo "</td><td width='20%'>";
+      echo "<span class='small_space'>".__('Start')."</span>";
+      echo "</td><td width='20%'>";
       Dropdown::showHours("week_begin_hour", $this->fields["week_begin_hour"]);
-      echo "<span class='small_space'>".__('End')."</span>&nbsp;";
+      echo "</td><td width='20%'>";
+      echo "<span class='small_space'>".__('End')."</span></td><td width='20%'>";
       Dropdown::showHours("week_end_hour", $this->fields["week_end_hour"]);
+      echo "</td></tr></table>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('on Saturday')."</td>";
       echo "<td colspan='3'>";
+      echo "<table width='100%'><tr><td width='20%'>";
       Dropdown::showYesNo("use_saturday", $this->fields["use_saturday"]);
-      echo "<span class='small_space'>".__('Start')."</span>&nbsp;";
+      echo "</td><td width='20%'>";
+      echo "<span class='small_space'>".__('Start')."</span>";
+      echo "</td><td width='20%'>";
       Dropdown::showHours("saturday_begin_hour", $this->fields["saturday_begin_hour"]);
-      echo "<span class='small_space'>".__('End')."</span>&nbsp;";
+      echo "</td><td width='20%'>";
+      echo "<span class='small_space'>".__('End')."</span>";
+      echo "</td><td width='20%'>";
       Dropdown::showHours("saturday_end_hour", $this->fields["saturday_end_hour"]);
+      echo "</td></tr></table>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Sundays and holidays')."</td>";
       echo "<td colspan='3'>";
+      echo "<table width='100%'><tr><td width='20%'>";      
       Dropdown::showYesNo("use_monday", $this->fields["use_monday"]);
-      echo "<span class='small_space'>".__('Start')."</span>&nbsp;";
+      echo "</td><td width='20%'>";
+      echo "<span class='small_space'>".__('Start')."</span>";
+      echo "</td><td width='20%'>";
       Dropdown::showHours("monday_begin_hour", $this->fields["monday_begin_hour"]);
-      echo "<span class='small_space'>".__('End')."</span>&nbsp;";
+      echo "</td><td width='20%'>";      
+      echo "<span class='small_space'>".__('End')."</span>";
+      echo "</td><td width='20%'>";      
       Dropdown::showHours("monday_end_hour", $this->fields["monday_end_hour"]);
+      echo "</td></tr></table>";      
       echo "</td></tr>";
 
       $this->showFormButtons($options);

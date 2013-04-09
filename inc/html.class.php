@@ -2798,30 +2798,31 @@ class Html {
          $specific_value = $value;
          $value          = 0;
       }
-      $output .= "<table><tr><td>";
-      $output .= "<select id='genericdate$element$rand' name='_select_$element'>";
+      $output .= "<table width='100%'><tr><td width='50%'>";
 
-      $dates = Html::getGenericDateTimeSearchItems($options);
+      $dates = Html::getGenericDateTimeSearchItems($p);
 
-      foreach ($dates as $key => $val) {
-         $output .= "<option value='$key' ".(($value === $key) ?'selected':'').">$val</option>";
-      }
+      $output.= Dropdown::showFromArray("_select_$element", $dates,
+                                       array('value'   => $value,
+                                             'display' => false,
+                                             'rand'    => $rand));
+      $field_id = Html::cleanId("dropdown__select_$element$rand");
 
-      $output .= "</select>";
-      $output .= "</td><td>";
-      $output .= "<div id='displaygenericdate$element$rand'></div>";
+      $output .= "</td><td width='50%'>";
+      $contentid = Html::cleanId("displaygenericdate$element$rand");
+      $output .= "<div id='$contentid'></div>";
 
       $params = array('value'         => '__VALUE__',
                       'name'          => $element,
                       'withtime'      => $p['with_time'],
                       'specificvalue' => $specific_value);
 
-      $output .= Ajax::updateItemOnSelectEvent("genericdate$element$rand",
-                                               "displaygenericdate$element$rand",
+      $output .= Ajax::updateItemOnSelectEvent($field_id,
+                                               $contentid,
                                                $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
                                                $params, false);
       $params['value'] = $value;
-      $output .= Ajax::updateItem("displaygenericdate$element$rand",
+      $output .= Ajax::updateItem($contentid,
                                   $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, '', false);
       $output .= "</td></tr></table>";
 
@@ -3063,14 +3064,13 @@ class Html {
 
       if (count($_SESSION["glpiprofiles"])>1) {
          echo '<li><form name="form" method="post" action="'.$target.'">';
-         echo '<select name="newprofile" onChange="submit()">';
-
+         $values = array();
          foreach ($_SESSION["glpiprofiles"] as $key => $val) {
-            echo '<option value="'.$key.'" '.
-                   (($_SESSION["glpiactiveprofile"]["id"] == $key) ?'selected':'').'>'.$val['name'].
-                 '</option>';
+            $values[$key] = $val['name'];
          }
-         echo '</select>';
+         Dropdown::showFromArray('newprofile',$values,
+                                 array('value' => $_SESSION["glpiactiveprofile"]["id"],
+                                       'width' => '150px'));
          Html::closeForm();
          echo '</li>';
       }

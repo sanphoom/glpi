@@ -167,18 +167,12 @@ class Planning extends CommonGLPI {
    **/
    static function dropdownState($name, $value='', $display=true) {
 
-      $output  = "<select name='$name' id='$name'>";
-      $output .= "<option value='0'".(($value == 0)?" selected ":"").">".
-                   _n('Information', 'Information', 1)."</option>";
-      $output .= "<option value='1'".(($value == 1)?" selected ":"").">".__('To do')."</option>";
-      $output .= "<option value='2'".(($value == 2)?" selected ":"").">".__('Done')."</option>";
-      $output .= "</select>";
-
-      if ($display) {
-         echo  $output;
-      } else {
-         return $output;
-      }
+      $values = array(0 => _n('Information', 'Information', 1),
+                      1 => __('To do'),
+                      2 => __('Done'));
+      return Dropdown::showFromArray($name,$values,
+                                      array('value'   => $value,
+                                            'display' => $display));
    }
 
 
@@ -355,11 +349,11 @@ class Planning extends CommonGLPI {
       Html::showDateFormItem("date", $date, false);
       echo '</td><td>';
 
-      echo "<select name='type'>";
-      echo "<option value='day' ".(($type == "day")?" selected ":"").">".__('Day')."</option>";
-      echo "<option value='week' ".(($type == "week")?" selected ":"").">".__('Week')."</option>";
-      echo "<option value='month' ".(($type == "month")?" selected ":"").">".__('Month')."</option>";
-      echo "</select></td>\n";
+      $values = array('day'   => __('Day'),
+                      'week'  => __('Week'),
+                      'month' => __('Month'));
+      Dropdown::showFromArray('type', $values, array('value' => $type));
+      echo "</td>\n";
 
       echo "<td rowspan='2' class='center'>";
       echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Show')."\">";

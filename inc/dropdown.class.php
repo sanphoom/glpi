@@ -488,23 +488,15 @@ class Dropdown {
 
             closedir($dh);
             sort($files);
-            $output .= "<select name='$myname'>";
-            $output .= "<option value=''>".self::EMPTY_VALUE."</option>";
 
+            $values = array('' => self::EMPTY_VALUE);
             foreach ($files as $file) {
                if (preg_match("/\.png$/i",$file)) {
-
-                  if ($file == $value) {
-                     $output .= "<option value='$file' selected>".$file;
-                  } else {
-                     $output .= "<option value='$file'>".$file;
-                  }
-
-                  $output .= "</option>";
+                  $values[$file] = $file;
                }
             }
-
-            $output .= "</select>";
+            Dropdown::showFromArray($myname, $values,
+                                    array('value' => $file));
 
          } else {
             //TRANS: %s is the store path
@@ -535,21 +527,17 @@ class Dropdown {
                         '+1', '+2', '+3', '+3.5', '+4', '+4.5', '+5', '+5.5', '+6', '+6.5', '+7',
                         '+8', '+9', '+9.5', '+10', '+11', '+12', '+13');
 
-      echo "<select name='$name' id='dropdown_".$name."'>";
-
+      $values = array();
       foreach ($elements as $element) {
          if ($element != 0) {
-            $display_value = sprintf(__('%1$s %2$s'), __('GMT'),
+            $values[$element*HOUR_TIMESTAMP] = sprintf(__('%1$s %2$s'), __('GMT'),
                                      sprintf(_n('%s hour', '%s hours', $element), $element));
          } else {
             $display_value = __('GMT');
+            $values[$element*HOUR_TIMESTAMP] = __('GMT');
          }
-
-         $eltvalue = $element*HOUR_TIMESTAMP;
-         echo "<option value='$eltvalue'".($eltvalue==$value?" selected":"").">".$display_value.
-              "</option>";
       }
-      echo "</select>";
+      Dropdown::showFromArray($name, $values, array('value' => $value));
    }
 
 
@@ -792,29 +780,26 @@ class Dropdown {
    **/
    static function showItemTypeMenu($title, $optgroup, $value='') {
 
-      echo "<table class='tab_cadre'>";
+      echo "<table class='tab_cadre' width='50%'>";
       echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp; ";
-      echo "<select id='menu_nav'>";
-
+      $values   = array('' => self::EMPTY_VALUE);
+      $selected = '';
+      
       foreach ($optgroup as $label => $dp) {
-         echo "<optgroup label=\"$label\">";
 
          foreach ($dp as $key => $val) {
             $search = Toolbox::getItemTypeSearchURL($key);
 
             if (basename($search) == basename($value)) {
-               $sel = 'selected';
-            } else {
-               $sel = '';
+               $selected = $search;
             }
-            echo "<option value='$search' $sel>$val</option>";
+            $values[$label][$search] = $val;
          }
-         echo "</optgroup>";
       }
-      echo "</select>&nbsp;";
-      echo "<input type='submit' name='add' value=\""._sx('button', 'Search')."\" class='submit' ";
-      echo "onClick='document.location=document.getElementById(\"menu_nav\").value;'";
-      echo "></td></tr>";
+      Dropdown::showFromArray('dpmenu', $values,
+                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
+                                     'value'     => $selected));
+      echo "</td></tr>";
       echo "</table><br>";
    }
 
@@ -942,8 +927,10 @@ class Dropdown {
          $begin      = (int) $plan_begin[0];
          $end        = (int) $plan_end[0];
       }
-      echo "<select name=\"$name\">";
-
+      
+      $values = array();
+      $selected = '';
+      
       for ($i=$begin ; $i<$end ; $i++) {
          if ($i < 10) {
             $tmp = "0".$i;
@@ -957,16 +944,19 @@ class Dropdown {
             } else {
                $val = $tmp.":$j";
             }
-
-            echo "<option value='$val' ".(($value == $val.":00") || ($value == $val) ?" selected ":"").
-                 ">$val</option>";
+            $values[$val] = $val;
+            if (($value == $val.":00") || ($value == $val)) {
+               $selected = $val;
+            }
          }
       }
       // Last item
       $val = $end.":00";
-      echo "<option value='$val' ".(($value == $val.":00") || ($value == $val) ?" selected ":"").
-           ">$val</option>";
-      echo "</select>";
+      $values[$val] = $val;
+      if (($value == $val.":00") || ($value == $val)) {
+         $selected = $val;
+      }
+      return Dropdown::showFromArray($name, $values, array('value' => $selected));
    }
 
 
@@ -1245,6 +1235,7 @@ class Dropdown {
     *    - toadd           : array of values to add
     *    - inhours         : only show timestamp in hours not in days
     *    - display         : boolean / display or return string
+    *    - width           : string / display width of the item
    **/
    static function showTimeStamp($myname, $options=array()) {
       global $CFG_GLPI;
@@ -1259,6 +1250,7 @@ class Dropdown {
       $params['inhours']             = false;
       $params['display']             = true;
       $params['display_emptychoice'] = true;
+      $params['width']               = '80%';
 
 
       if (is_array($options) && count($options)) {
@@ -1349,7 +1341,8 @@ class Dropdown {
          }
       }
       return Dropdown::showFromArray($myname, $values, array('value'   => $params['value'],
-                                                             'display' => $params['display']));
+                                                             'display' => $params['display'],
+                                                             'width'   => $params['width'],));
    }
 
 
@@ -1473,7 +1466,7 @@ class Dropdown {
 
 
       if (is_array($options) && count($options)) {
-         if (!empty($options['value'])) {
+         if (isset($options['value']) && strlen($options['value'])) {
             $options['values'] = array($options['value']);
             unset($options['value']);
          }
@@ -1539,9 +1532,13 @@ class Dropdown {
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
                      $output .= "<option value='".$key2."'";
-                     if (in_array($key2, $param['values'])) {
-                        $output .= " selected";
-                     }
+                     // Do not use in_array : trouble with 0 and empty value
+                     foreach ($param['values'] as $value) {
+                       if ($key2 === $value) {
+                           $output .= " selected";
+                           break;
+                       } 
+                     } 
                      $output .= ">" .  $val2 . "</option>";
                   }
                               }
@@ -1549,8 +1546,12 @@ class Dropdown {
             } else {
                if (!isset($param['used'][$key])) {
                   $output .= "<option value='".$key."'";
-                  if (in_array($key, $param['values'])) {
-                     $output .= " selected";
+                  // Do not use in_array : trouble with 0 and empty value
+                  foreach ($param['values'] as $value) {
+                     if ($key === $value) {
+                        $output .= " selected";
+                        break;
+                     }
                   }
                   $output .= ">" . $val . "</option>";
                }
@@ -1598,7 +1599,6 @@ class Dropdown {
       return $output;
    }
 
-
    /**
     * Dropdown for global item management
     *
@@ -1645,13 +1645,9 @@ class Dropdown {
       } else {
          if ($params['management_restrict'] == 2) {
             $rand = mt_rand();
-            echo "<select name='".$params['name']."' id='".$params['name']."$rand'>";
-            echo "<option value='".MANAGEMENT_UNITARY."' ".
-                  (!$params['value']?" selected":"").">".__('Unit management')."</option>";
-            echo "<option value='".MANAGEMENT_GLOBAL."' ".
-                  ($params['value']?" selected":"").">".__('Global management')."</option>";
-            echo "</select>";
-            echo Html::jsAdaptDropdown($params['name']."$rand");
+            $values = array(MANAGEMENT_UNITARY => __('Unit management'),
+                            MANAGEMENT_GLOBAL  => __('Global management'));
+            Dropdown::showFromArray($params['name'], $values, array('value' => $params['value']));
          } else {
             // Templates edition
             if (!empty($params['withtemplate'])) {

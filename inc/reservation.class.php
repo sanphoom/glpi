@@ -724,25 +724,25 @@ class Reservation extends CommonDBChild {
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."</td>";
          echo "<td>";
-         echo "<select name='periodicity[type]' id='resaperiod$rand'>";
-         echo "<option value=''>"._x('periodicity', 'None')."</option>\n";
-         echo "<option value='day'>"._x('periodicity', 'Daily')."</option>\n";
-         echo "<option value='week'>"._x('periodicity', 'Weekly')."</option>\n";
-         echo "<option value='month'>"._x('periodicity', 'Monthly')."</option>\n";
-         echo "</select>";
+         $values = array(''      => _x('periodicity', 'None'),
+                         'day'   => _x('periodicity', 'Daily'),
+                         'week'  => _x('periodicity', 'Weekly'),
+                         'month' => _x('periodicity', 'Monthly'));
+         $rand = Dropdown::showFromArray('periodicity[type]', $values);
+         $field_id = Html::cleanId("dropdown_periodicity[type]$rand");
+
          $params = array('type'     => '__VALUE__',
                          'end'      => $resa->fields["end"]);
 
-         Ajax::updateItemOnSelectEvent("resaperiod$rand", "resaperiodcontent$rand",
+         Ajax::updateItemOnSelectEvent($field_id, "resaperiodcontent$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/resaperiod.php", $params);
          echo "<br><div id='resaperiodcontent$rand'></div>";
 
-//         Dropdown::showInteger('periodicity_times', 1, 1, 60);
          echo "</td></tr>\n";
       }
 
       echo "<tr class='tab_bg_2'><td>".__('Comments')."</td>";
-      echo "<td><textarea name='comment'rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
+      echo "<td><textarea name='comment'rows='8' cols='60'>".$resa->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       if (empty($ID)) {
