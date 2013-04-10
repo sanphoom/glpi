@@ -116,9 +116,11 @@ class Dropdown {
          $params['value'] = 0;
       }
 
-      if (($params['value'] > 0)
-         || (($itemtype == "Entity")
-             && ($params['value'] >= 0))) {
+      if (isset($params['toadd'][$params['value']])) {
+         $name = $params['toadd'][$params['value']];
+      } else if (($params['value'] > 0)
+                 || (($itemtype == "Entity")
+                     && ($params['value'] >= 0))) {
          $tmpname = self::getDropdownName($table, $params['value'], 1);
 
          if ($tmpname["name"] != "&nbsp;") {
@@ -784,7 +786,7 @@ class Dropdown {
       echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp; ";
       $values   = array('' => self::EMPTY_VALUE);
       $selected = '';
-      
+
       foreach ($optgroup as $label => $dp) {
 
          foreach ($dp as $key => $val) {
@@ -927,10 +929,10 @@ class Dropdown {
          $begin      = (int) $plan_begin[0];
          $end        = (int) $plan_end[0];
       }
-      
+
       $values = array();
       $selected = '';
-      
+
       for ($i=$begin ; $i<$end ; $i++) {
          if ($i < 10) {
             $tmp = "0".$i;
@@ -1474,7 +1476,7 @@ class Dropdown {
             $param[$key] = $val;
          }
       }
-      
+
       if ($param['other'] !== false) {
          $other_select_option = $name . '_other_value';
          $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
@@ -1538,8 +1540,8 @@ class Dropdown {
                        if (strcmp($key2,$value)===0) {
                            $output .= " selected";
                            break;
-                       } 
-                     } 
+                       }
+                     }
                      $output .= ">" .  $val2 . "</option>";
                   }
                               }
@@ -1592,7 +1594,7 @@ class Dropdown {
       // Width set on select
       $output .= Html::jsAdaptDropdown($field_id, array('width' => $param["width"]));
       $output .= Ajax::commonDropdownUpdateItem($param, false);
-      
+
       if ($param['display']) {
          echo $output;
          return $param['rand'];
