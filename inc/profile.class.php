@@ -1475,7 +1475,7 @@ class Profile extends CommonDBTM {
       $tab[20]['name']           = _n('Computer', 'Computers', 2);
       $tab[20]['datatype']       = 'right';
       $tab[20]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'show_all_planning'");
+                                         'condition' => "AND `NEWTABLE`.`name`= 'computer'");
 
       $tab[21]['table']          = 'glpi_profilerights';
       $tab[21]['field']          = 'right';
