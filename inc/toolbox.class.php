@@ -36,7 +36,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-// class Toolbox
 /**
  * Toolbox Class
 **/
@@ -327,11 +326,11 @@ class Toolbox {
       $in  = array('<', '>');
       $out = array('&lt;', '&gt;');
 
-      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'),
-                                            $value)
-                                : (is_null($value)
-                                   ? NULL : (is_resource($value)
-                                             ? $value : str_replace($in,$out,$value)));
+      $value = ((array) $value === $value)
+                  ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'), $value)
+                  : (is_null($value)
+                        ? NULL : (is_resource($value)
+                                     ? $value : str_replace($in,$out,$value)));
 
       return $value;
    }
@@ -351,11 +350,11 @@ class Toolbox {
       $in  = array('<', '>');
       $out = array('&lt;', '&gt;');
 
-      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'),
-                                            $value)
-                                : (is_null($value)
-                                   ? NULL : (is_resource($value)
-                                             ? $value : str_replace($out,$in,$value)));
+      $value = ((array) $value === $value)
+                  ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'), $value)
+                  : (is_null($value)
+                        ? NULL : (is_resource($value)
+                                     ? $value : str_replace($out,$in,$value)));
 
       return $value;
    }
@@ -377,11 +376,11 @@ class Toolbox {
       $in  = array('<', '>');
       $out = array('&lt;', '&gt;');
 
-      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'),
-                                            $value)
-                                : (is_null($value)
-                                   ? NULL : (is_resource($value)
-                                             ? $value : str_replace($out,$in,$value)));
+      $value = ((array) $value === $value)
+                  ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'), $value)
+                  : (is_null($value)
+                      ? NULL : (is_resource($value)
+                                  ? $value : str_replace($out,$in,$value)));
 
       include_once(GLPI_HTMLAWED);
 
@@ -661,10 +660,11 @@ class Toolbox {
    static function addslashes_deep($value) {
       global $DB;
 
-      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
-                                : (is_null($value)
-                                   ? NULL : (is_resource($value)
-                                             ? $value : $DB->escape($value)));
+      $value = ((array) $value === $value)
+                  ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
+                  : (is_null($value)
+                       ? NULL : (is_resource($value)
+                                  ? $value : $DB->escape($value)));
 
       return $value;
    }
@@ -679,10 +679,11 @@ class Toolbox {
    **/
    static function stripslashes_deep($value) {
 
-      $value = ((array) $value === $value) ? array_map(array(__CLASS__, 'stripslashes_deep'), $value)
-                                : (is_null($value)
-                                   ? NULL : (is_resource($value)
-                                             ? $value :stripslashes($value)));
+      $value = ((array) $value === $value)
+                  ? array_map(array(__CLASS__, 'stripslashes_deep'), $value)
+                  : (is_null($value)
+                        ? NULL : (is_resource($value)
+                                    ? $value :stripslashes($value)));
 
       return $value;
    }
@@ -1970,14 +1971,14 @@ class Toolbox {
                      '/pop' => __('POP'),);
 
       $svalue = (!empty($tab['type'])?'/'.$tab['type']:'');
-      
+
       Dropdown::showFromArray('server_type', $values,
                               array('value' => $svalue,
                                     'width' => '10%'));
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/ssl' => __('SSL'));
-                     
+
       $svalue = ($tab['ssl']?'/ssl':'');
 
       Dropdown::showFromArray('server_ssl', $values,
@@ -1989,7 +1990,7 @@ class Toolbox {
                      '/tls' => __('TLS'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/notls' => __('NO-TLS'),);
-                     
+
       $svalue = '';
       if (($tab['tls'] === true)) {
          $svalue = '/tls';
@@ -1997,7 +1998,7 @@ class Toolbox {
       if (($tab['tls'] === false)) {
          $svalue = '/notls';
       }
-      
+
       Dropdown::showFromArray('server_tls', $values,
                               array('value' => $svalue,
                                     'width' => '14%'));
@@ -2039,7 +2040,7 @@ class Toolbox {
       Dropdown::showFromArray('server_secure', $values,
                               array('value' => $svalue,
                                     'width' => '12%'));
-                                    
+
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/debug' => __('DEBUG'));

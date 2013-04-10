@@ -35,8 +35,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class NetworkAlias
-/// since version 0.84
+/**
+ *  NetworkAlias Class
+ *
+ * @since version 0.84
+**
+ */
 class NetworkAlias extends FQDNLabel {
 
    var $refresh_page                 = true;
@@ -61,6 +65,8 @@ class NetworkAlias extends FQDNLabel {
 
       return $ong;
    }
+
+
    /**
     * Get the full name (internet name) of a NetworkName
     *

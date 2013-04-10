@@ -778,19 +778,19 @@ class MailCollector  extends CommonDBTM {
                }
             }
 
-            if ($begin_strip>=0) {
+            if ($begin_strip >= 0) {
                // Clean first and last lines
                $content[$begin_strip] = preg_replace($begin_match,'',$content[$begin_strip]);
             }
-            if ($end_strip>=0) {
+            if ($end_strip >= 0) {
                // Clean first and last lines
                $content[$end_strip] = preg_replace($end_match,'',$content[$end_strip]);
             }
 
-            if ($begin_strip>=0) {
+            if ($begin_strip >= 0) {
                $length = count($content);
                // Use end strip if set
-               if ($end_strip >=0 && $end_strip < $length) {
+               if (($end_strip >= 0) && ($end_strip < $length)) {
                   $length = $end_strip;
                }
 
@@ -799,10 +799,10 @@ class MailCollector  extends CommonDBTM {
                }
             }
 
-            $to_keep        = array();
+            $to_keep = array();
             // Aditional clean for thunderbird
             foreach ($content as $ID => $val) {
-               if (!isset($val[0]) || ($val[0] !=  '>')) {
+               if (!isset($val[0]) || ($val[0] != '>')) {
                   $to_keep[$ID] = $ID;
                }
             }

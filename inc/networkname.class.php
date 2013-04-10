@@ -537,7 +537,7 @@ class NetworkName extends FQDNLabel {
 
          if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
             $father = $base->addHeader($column_name.'_dynamic',
-                                               __('Automatic inventory'), $super, $father);
+                                        __('Automatic inventory'), $super, $father);
          }
       }
 

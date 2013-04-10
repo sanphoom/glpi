@@ -800,7 +800,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $installed[] = $licid;
             }
          }
-         echo "<tr>";
+/*         echo "<tr>";
          if ($canedit) {
             echo "<th width='10'>";
             Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
@@ -813,7 +813,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
          echo "</tr>\n";
-         
+*/
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
@@ -876,8 +876,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
                               'container'        => 'mass'.__CLASS__.$rand,
-                              'extraparams'      => array ('hidden' =>
-                                                            array('computers_id' => $computers_id)),
+ //                             'extraparams'      => array ('hidden' =>
+ //                                                           array('computers_id' => $computers_id)),
                               'specific_actions' => array('install_licenses' => _x('button',
                                                                                    'Install')));
 
@@ -894,7 +894,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          echo "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
          echo "</tr>\n";
-         
+
          $cat = true;
          foreach ($req as $data) {
             self::displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit);
@@ -1010,7 +1010,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if (isset($data['is_dynamic'])) {
             echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
          }
-         
+
          echo "<td class='center'>". Dropdown::getDropdownName("glpi_softwarecategories",
                                                                   $data['softwarecategories_id']);
          echo "</td>";

@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 Session::checkRight("internet","r");
 
 Html::header(NetworkName::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'commondropdown',
-             'NetworkName');
+            'NetworkName');
 
 Search::show('NetworkName');
 

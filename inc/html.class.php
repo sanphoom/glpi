@@ -970,14 +970,14 @@ class Html {
 
       // PLugins jquery
       echo "<script type='text/javascript' src='".
-               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js'></script>\n";
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js'></script>\n";
       echo "<script type='text/javascript' src='".
-               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js'></script>\n";
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js'></script>\n";
       echo "<script type='text/javascript' src='".
-               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js'></script>\n";
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js'></script>\n";
       echo "<script type='text/javascript' src='".
-               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
-            "</script>\n";
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
+           "</script>\n";
 
       if (isset($_SESSION['glpilanguage'])) {
          echo "<script type='text/javascript' src='".

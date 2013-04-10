@@ -1014,7 +1014,7 @@ class IPAddress extends CommonDBChild {
 
          if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
             $father = $base->addHeader($column_name.'_dynamic', __('Automatic inventory'),
-                                               $super, $father);
+                                        $super, $father);
          }
 
          IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
@@ -1233,7 +1233,7 @@ class IPAddress extends CommonDBChild {
                   $row = $row->createRow();
                }
 
-               $content = $address->fields['name'];
+               $content   = $address->fields['name'];
                $this_cell = $row->addCell($header, $content, $father);
 
                if (isset($options['display_isDynamic']) && ($options['display_isDynamic'])) {
