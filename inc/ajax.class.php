@@ -470,21 +470,22 @@ class Ajax {
     *                and may have moreparams)
     * @param $display      boolean  display or get string (default true)
    **/
-   static function commonDropdownUpdateItem($options, $display = true) {
+   static function commonDropdownUpdateItem($options, $display=true) {
+
       $field     = '';
       $fieldname = '';
 
-      $output = '';
+      $output    = '';
       // Old scheme
       if (isset($options["update_item"])
           && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))) {
-         $field = "update_item";
+         $field     = "update_item";
          $fieldname = 'myname';
       }
       // New scheme
       if (isset($options["toupdate"])
           && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))) {
-         $field = "toupdate";
+         $field     = "toupdate";
          $fieldname = 'name';
       }
 
@@ -519,7 +520,7 @@ class Ajax {
          echo $output;
       } else {
          return $output;
-      }      
+      }
    }
 
 

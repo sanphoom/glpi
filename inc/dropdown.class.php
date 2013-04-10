@@ -180,7 +180,7 @@ class Dropdown {
                                      $p);
       // Display comment
       if ($params['comments']) {
-         $comment_id = Html::cleanId("comment_".$params['name'].$params['rand']);
+         $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $options_tooltip = array('contentid' => $comment_id,
                                   'display'   => false);
 
@@ -221,9 +221,9 @@ class Dropdown {
          $paramscomment = array('value' => '__VALUE__',
                                 'table' => $table);
 
-         $output .= Ajax::updateItemOnSelectEvent($field_id,
-                                       $comment_id,
-                                       $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);
+         $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
+                                                  $CFG_GLPI["root_doc"]."/ajax/comments.php",
+                                                  $paramscomment, false);
       }
       $output .= Ajax::commonDropdownUpdateItem($params, false);
       if ($params['display']) {

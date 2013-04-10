@@ -52,12 +52,17 @@ class State extends CommonTreeDropdown {
    }
 
 
-
+   /**
+    * @since version 0.85
+   **/
    static function canCreate() {
       return Session::haveRight('entity_dropdown', 'w');
    }
 
 
+   /**
+    * @since version 0.85
+   **/
    static function canView() {
       return Session::haveRight('entity_dropdown', 'r');
    }

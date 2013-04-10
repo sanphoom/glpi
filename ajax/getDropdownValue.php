@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 // Direct access to file
@@ -53,8 +54,7 @@ $datas = array();
 
 $displaywith = false;
 if (isset($_GET['displaywith'])) {
-   if (is_array($_GET['displaywith'])
-       && count($_GET['displaywith'])) {
+   if (is_array($_GET['displaywith']) && count($_GET['displaywith'])) {
       $displaywith = true;
    }
 }
@@ -102,7 +102,7 @@ if (isset($_GET['toadd'])) {
 
 $where .= ") ";
 
-if (isset($_GET['condition']) && $_GET['condition'] != '') {
+if (isset($_GET['condition']) && ($_GET['condition'] != '')) {
    $where .= " AND ".$_GET['condition']." ";
 }
 
@@ -123,11 +123,11 @@ if ($item instanceof CommonTreeDropdown) {
          $recur = false;
       }
 
-      if (isset($_GET["entity_restrict"]) && !($_GET["entity_restrict"]<0)) {
+      if (isset($_GET["entity_restrict"]) && !($_GET["entity_restrict"] < 0)) {
          $where .= getEntitiesRestrictRequest(" AND ", $table, '', $_GET["entity_restrict"],
                                               $recur);
 
-         if (is_array($_GET["entity_restrict"]) && count($_GET["entity_restrict"])>1) {
+         if (is_array($_GET["entity_restrict"]) && (count($_GET["entity_restrict"]) > 1)) {
             $multi = true;
          }
 
@@ -204,7 +204,8 @@ if ($item instanceof CommonTreeDropdown) {
                 && ($data["entities_id"] != $prev)) {
                if ($prev >= 0) {
                   if (count($datastoadd)) {
-                     array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities", $prev),
+                     array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities",
+                                                                                     $prev),
                                              'children' => $datastoadd));
                   }
                }
@@ -319,7 +320,7 @@ if ($item instanceof CommonTreeDropdown) {
    $search = Search::makeTextSearch($_GET['searchText']);
    $where .=" AND  (`$table`.`$field` ".$search;
 
-   if ($_GET['itemtype']=="SoftwareLicense") {
+   if ($_GET['itemtype'] == "SoftwareLicense") {
       $where .= " OR `glpi_softwares`.`name` ".$search;
    }
    $where .= ')';
@@ -383,14 +384,15 @@ if ($item instanceof CommonTreeDropdown) {
                 && ($data["entities_id"] != $prev)) {
                if ($prev >= 0) {
                   if (count($datastoadd)) {
-                     array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities", $prev),
+                     array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities",
+                                                                                     $prev),
                                              'children' => $datastoadd));
                   }
                }
                $prev = $data["entities_id"];
                $datastoadd = array();
             }
-            
+
             $outputval = $data[$field];
 
             if ($displaywith) {
@@ -423,7 +425,8 @@ if ($item instanceof CommonTreeDropdown) {
          }
          if ($multi) {
             if (count($datastoadd)) {
-               array_push($datas, array('text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+               array_push($datas, array('text'     => Dropdown::getDropdownName("glpi_entities",
+                                                                                $prev),
                                         'children' => $datastoadd));
             }
          } else {

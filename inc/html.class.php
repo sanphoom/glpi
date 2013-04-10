@@ -3804,6 +3804,7 @@ class Html {
       return "$('#$id')";
    }
 
+
    /**
     * Set dropdown value
     *
@@ -3818,29 +3819,32 @@ class Html {
       return self::jsGetElementbyID($id).".select2('val','$value');";
    }
 
+
    /**
     * Adapt dropdown to clean JS
     *
-    * @param $id string id of the dom element
-    * @param $params array of parameters
+    * @param $id       string   id of the dom element
+    * @param $params   array    of parameters
     *
     * @since version 0.85.
     *
     * @return String
    **/
    static function jsAdaptDropdown($id, $params= array()) {
+
       $width = '80%';
       if (isset($params["width"]) && !empty($params["width"])) {
          $width = $params["width"];
          unset($params["width"]);
       }
-      $out = "<script type='text/javascript'>\n";
+      $out  = "<script type='text/javascript'>\n";
       $out .= "$(document).ready(function() { $('#$id').select2({
                   width: '$width',
                   minimumResultsForSearch: 0,}); });";
       $out .= "</script>\n";
       return $out;
    }
+
 
    /**
     * Create Ajax dropdown to clean JS
