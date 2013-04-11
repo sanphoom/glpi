@@ -3068,9 +3068,11 @@ class Html {
          foreach ($_SESSION["glpiprofiles"] as $key => $val) {
             $values[$key] = $val['name'];
          }
+
          Dropdown::showFromArray('newprofile',$values,
-                                 array('value' => $_SESSION["glpiactiveprofile"]["id"],
-                                       'width' => '150px'));
+                                 array('value'     => $_SESSION["glpiactiveprofile"]["id"],
+                                       'width'     => '150px',
+                                       'on_change' => 'submit()'));
          Html::closeForm();
          echo '</li>';
       }

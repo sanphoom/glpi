@@ -1544,7 +1544,7 @@ class Dropdown {
                      }
                      $output .= ">" .  $val2 . "</option>";
                   }
-                              }
+               }
                $output .= "</optgroup>";
             } else {
                if (!isset($param['used'][$key])) {
