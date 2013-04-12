@@ -39,8 +39,10 @@ if (!defined('GLPI_ROOT')) {
  * Group class
 **/
 class Group extends CommonTreeDropdown {
-   
+
    public $dohistory = true;
+
+   static $rightname = 'group';
 
    static function getTypeName($nb=0) {
       return _n('Group', 'Groups', $nb);
@@ -72,15 +74,6 @@ class Group extends CommonTreeDropdown {
       return 'g';
    }
 
-
-   static function canCreate() {
-      return Session::haveRight('group', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('group', 'r');
-   }
 
    function post_getEmpty () {
 

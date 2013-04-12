@@ -394,7 +394,7 @@ class Profile extends CommonDBTM {
       }
 
       // Profile right : may modify profile so can attach all profile
-      if (Session::haveRight("profile","w")) {
+      if (Session::haveRight("profile", CommonDBTM::CREATE)) {
          return $query." 1 ";
       }
 
@@ -414,28 +414,28 @@ class Profile extends CommonDBTM {
              && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
                  || in_array($key,self::$helpdesk_rights))) {
 
-            switch ($val) {
-               case '0' :
-                  $possible_rights = "('0', '')";
-                  break;
+//            switch ($val) {
+//               case '0' :
+//                  $possible_rights = "('0', '')";
+//                  break;
 
-               case '1' :
-                  $possible_rights = "('0', '1', '')";
-                  break;
+//               case '1' :
+//                  $possible_rights = "('0', '1', '')";
+//                  break;
 
-               case 'r' :
-                  $possible_rights = "('r', '')";
-                  break;
+//               case 'r' :
+//                  $possible_rights = "('r', '')";
+//                  break;
 
-               case 'w' :
-                  $possible_rights = "('w', 'r', '')";
-                  break;
+//               case 'w' :
+//                  $possible_rights = "('w', 'r', '')";
+//                  break;
 
-               default :
-                  $possible_rights = "('0', '')";
-            }
+//               default :
+//                  $possible_rights = "('0', '')";
+//            }
             $right_subqueries[] = "(`glpi_profilerights`.`name` = '$key'
-                                   AND `glpi_profilerights`.`right` IN $possible_rights)";
+                                   AND (`glpi_profilerights`.`rights` | $val) = $val)";
          }
       }
       $query .= " AND ".count($right_subqueries)." = (
@@ -1227,7 +1227,7 @@ class Profile extends CommonDBTM {
 
       echo "</td>";
       echo "<td width='18%'>"._n('Group', 'Groups', 2)."</td><td width='15%'>";
-      self::dropdownRight("group", array('value' => $this->fields["group"]));
+      self::dropdownStandardRights("_group", $this->fields["user"], false);
       echo "</td>";
       echo "<td width='18%'>".__('Method for user authentication and synchronization')."</td><td width='15%'>";
       self::dropdownRight("user_authtype", array('value' => $this->fields["user_authtype"]));
