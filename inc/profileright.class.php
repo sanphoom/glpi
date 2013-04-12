@@ -85,7 +85,7 @@ class ProfileRight extends CommonDBChild {
       }
       $rights = array();
       foreach ($DB->request($query) as $right) {
-         $rights[$right['name']] = $right['right'];
+         $rights[$right['name']] = $right['rights'];
       }
       return $rights;
    }
@@ -202,13 +202,13 @@ class ProfileRight extends CommonDBChild {
                                             AND `name` = '$name'")) {
 
             $input = array('id'          => $this->getID(),
-                           'right'       => $right);
+                           'rights'      => $right);
             $this->update($input);
 
          } else {
             $input = array('profiles_id' => $profiles_id,
                            'name'        => $name,
-                           'right'       => $right);
+                           'rights'      => $right);
             $this->add($input);
          }
       }

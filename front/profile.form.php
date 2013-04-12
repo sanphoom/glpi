@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("profile", "r");
+Session::checkRight("profile", CommonDBTM::READ);
 
 if (!isset($_GET['id'])) {
    $_GET['id'] = "";
@@ -42,14 +42,14 @@ if (!isset($_GET['id'])) {
 $prof = new Profile();
 
 if (isset($_POST["add"])) {
-   $prof->check(-1,'w',$_POST);
+   $prof->check(-1, CommonDBTM::CREATE,$_POST);
    $ID = $prof->add($_POST);
 
    // We need to redirect to form to enter rights
    Html::redirect($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
 
 } else if (isset($_POST["delete"])) {
-   $prof->check($_POST['id'],'d');
+   $prof->check($_POST['id'], CommonDBTM::PURGE);
    if ($prof->delete($_POST)) {
       $prof->redirectToList();
    } else {
@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update"])
            || isset($_POST["interface"])) {
-   $prof->check($_POST['id'],'w');
+   $prof->check($_POST['id'], CommonDBTM::UPDATE);
 
    $prof->update($_POST);
    Html::back();

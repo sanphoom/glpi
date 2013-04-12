@@ -64,10 +64,9 @@ class Profile extends CommonDBTM {
                                          'problem_status', 'show_group_hardware',
                                          'show_group_ticket', 'ticket_status');
 
-
-
    var $dohistory = true;
 
+   static $rightname = 'profile';
 
    function getForbiddenStandardMassiveAction() {
 
@@ -79,16 +78,6 @@ class Profile extends CommonDBTM {
 
    static function getTypeName($nb=0) {
       return _n('Profile', 'Profiles', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('profile', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('profile', 'r');
    }
 
 
@@ -235,6 +224,11 @@ class Profile extends CommonDBTM {
             $input["helpdesk_item_type"] = exportArrayToDB(array());
          }
       }
+
+      if (isset($input["_profile"])) {
+         $input['profile'] = array_sum($input['_profile']);
+      }
+
 
       if (isset($input["_cycles_ticket"])) {
          $tab   = Ticket::getAllStatusArray();
@@ -510,6 +504,8 @@ class Profile extends CommonDBTM {
       unset($_SESSION['glpi_all_possible_rights']);
       $this->fields = array_merge($this->fields, ProfileRight::getAllPossibleRights());
    }
+
+
    function post_getFromDB() {
       $this->fields = array_merge($this->fields, ProfileRight::getProfileRights($this->getID()));
    }
@@ -1208,6 +1204,7 @@ class Profile extends CommonDBTM {
     * @param $closeform    boolean  close the form (true by default)
    **/
    function showFormAdmin($openform=true, $closeform=true) {
+      global $DB;
 
       if (!Session::haveRight("profile","r")) {
          return false;
@@ -1244,7 +1241,7 @@ class Profile extends CommonDBTM {
       self::dropdownRight("transfer", array('value' => $this->fields["transfer"]));
       echo "</td>";
       echo "<td>".self::getTypeName(2)."</td><td>";
-      self::dropdownRight("profile", array('value' => $this->fields["profile"]));
+      self::dropdownStandardRights("_profile", $this->fields["profile"], false);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
@@ -2259,6 +2256,39 @@ class Profile extends CommonDBTM {
 
 
    /**
+    * Make a select box for 6 standard rights : none, read, create, update, delete, purge
+    *
+    * @since version 0.85
+    *
+    * @param $name      string   name of the dropdown
+    * @param $current   integer  value in database (sum of rights)
+    * @param $delete    boolean  show delete or not
+   **/
+   static function dropdownStandardRights($name, $current, $delete=true) {
+
+      $values = array(CommonDBTM::READ    => __('Read'),
+                      CommonDBTM::UPDATE  => __('Update'),
+                      CommonDBTM::CREATE  => __('Create'),
+                      CommonDBTM::DELETE  => __('Delete'),
+                      CommonDBTM::PURGE   => __('Delete permenently'));
+
+      if (!$delete) {
+         unset($values[CommonDBTM::DELETE]);
+      }
+      $tabselect = array();
+      foreach ($values as $k => $v) {
+         if ($current & $k) {
+            $tabselect[] = $k;
+         }
+      }
+      Dropdown::showFromArray($name, $values,
+                                array('multiple' => true,
+                                      'size'     => 5,
+                                      'values'   => $tabselect));
+   }
+
+
+   /**
     * Make a select box for a None Read Write choice
     *
     * @since version 0.84
@@ -2464,6 +2494,7 @@ class Profile extends CommonDBTM {
 
       $p['multiple'] = true;
       $p['size']     = 3;
+      Toolbox::logDebug("COUCOU", $p, $values);
       return Dropdown::showFromArray($p['name'], $values, $p);
    }
 

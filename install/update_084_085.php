@@ -174,6 +174,22 @@ function update084to085() {
 
    }
 
+   // New system of profiles
+   $migration->addField('glpi_profilerights', 'rights', 'integer');
+   $migration->migrationOneTable('glpi_profilerights');
+   // update standard rights r and w
+   $right = array('r' => 1,
+                  'w' => 31,
+                  '1' => 1);
+
+   foreach ($right as $old => $new) {
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = $new
+                 WHERE `right` = '$old'";
+      $DB->queryOrDie($query, "0.85 right in profile $old to $new");
+   }
+   // don't drop column right  - be done later
+
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
 
    // changes management
@@ -453,7 +469,7 @@ function update084to085() {
    $migration->addKey('glpi_users', 'is_deleted_ldap');
 
    Config::deleteConfigurationValues('core', array('use_ajax'));
-   
+
    Config::setConfigurationValues('core', array('use_unicodefont' => 0));
    $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
    $migration->addField("glpi_users", 'picture', "string", array('value' => 'NULL'));

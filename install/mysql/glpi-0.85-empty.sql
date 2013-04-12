@@ -4249,7 +4249,7 @@ CREATE TABLE `glpi_profilerights` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `profiles_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `right` char(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `rights` int(11) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`profiles_id`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

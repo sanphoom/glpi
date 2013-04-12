@@ -72,11 +72,22 @@ class CommonDBTM extends CommonGLPI {
    ///Forward entity to plugins itemtypes
    static protected $plugins_forward_entity = array();
 
+   // profile name
+   static $rightname = '';
+
    const SUCCESS                    = 0; //Process is OK
    const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
    const ERROR_FIELDSIZE_EXCEEDED   = 2; //Value is bigger than the field's size
    const HAS_DUPLICATE              = 3; //Can insert or update because it's duplicating another item
    const NOTHING_TO_DO              = 4; //Nothing to insert or update
+
+   const READ               =  1;
+   const UPDATE             =  2;
+   const CREATE             =  4;
+   const DELETE             =  8;
+   const PURGE              = 16;
+   const ALLSTANDARDRIGHT   = 31;
+   // reserve still 1024 for futur global rights
 
 
    /**
@@ -1496,6 +1507,10 @@ class CommonDBTM extends CommonGLPI {
     * @return booleen
    **/
    static function canCreate() {
+
+      If (static::$rightname) {
+         return Session::haveRight(static::$rightname, self::CREATE);
+      }
       return false;
    }
 
@@ -1503,14 +1518,34 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Have I the global right to "delete" the Object
     *
-    * Default is calling canCreate
     * May be overloaded if needed
     *
     * @return booleen
-    * @see canCreate
    **/
    static function canDelete() {
-      return static::canCreate();
+
+      If (static::$rightname) {
+         return Session::haveRight(static::$rightname, self::DELETE);
+      }
+      return false;
+   }
+
+
+   /**
+    * Have I the global right to "PURGE" the Object
+    *
+    * @since version 0.85
+    *
+    * May be overloaded if needed
+    *
+    * @return booleen
+    **/
+   static function canPurge() {
+
+      If (static::$rightname) {
+         return Session::haveRight(static::$rightname, self::PURGE);
+      }
+      return false;
    }
 
 
@@ -1524,7 +1559,11 @@ class CommonDBTM extends CommonGLPI {
     * @see canCreate
    **/
    static function canUpdate() {
-      return static::canCreate();
+
+      If (static::$rightname) {
+         return Session::haveRight(static::$rightname, self::UPDATE);
+      }
+      return false;
    }
 
 
@@ -1603,6 +1642,10 @@ class CommonDBTM extends CommonGLPI {
     * @return booleen
    **/
    static function canView() {
+
+      If (static::$rightname) {
+         return Session::haveRight(static::$rightname, self::READ);
+      }
       return false;
    }
 
@@ -2886,7 +2929,7 @@ class CommonDBTM extends CommonGLPI {
             $searchopt = Search::getCleanedOptions($input["itemtype"], 'w');
 
             $values = array(0 => Dropdown::EMPTY_VALUE);
-            
+
             foreach ($searchopt as $key => $val) {
                if (!is_array($val)) {
                   $group = $val;

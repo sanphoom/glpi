@@ -887,16 +887,26 @@ class Session {
          return false;
       }
 
-      $matches = array(""  => array("", "r", "w"), // ne doit pas arriver normalement
-                       "r" => array("r", "w"),
-                       "w" => array("w"),
-                       "1" => array("1"),
-                       "0" => array("0", "1")); // ne doit pas arriver non plus
-
-      if (isset($_SESSION["glpiactiveprofile"][$module])
-          && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right])) {
-         return true;
+      if (($right == 'r')) {
+         $right = CommonDBTM::READ;
+      } else if ($right == 'w') {
+         $right = CommonDBTM::ALLSTANDARDRIGHT;
       }
+      if (isset($_SESSION["glpiactiveprofile"][$module])) {
+         return $_SESSION["glpiactiveprofile"][$module] &$right;
+      }
+
+//      $matches = array(""  => array("", "r", "w"), // ne doit pas arriver normalement
+//                       "r" => array("r", "w"),
+//                       "w" => array("w"),
+//                       "1" => array("1"),
+//                       "0" => array("0", "1")); // ne doit pas arriver non plus
+
+//      if (isset($_SESSION["glpiactiveprofile"][$module])
+//          && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right])) {
+//         return true;
+//      }
+
       return false;
    }
 
