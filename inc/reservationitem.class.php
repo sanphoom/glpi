@@ -371,31 +371,44 @@ class ReservationItem extends CommonDBChild {
       $showentity = Session::isMultiEntitiesMode();
 
 
-      Toolbox::manageBeginAndEndPlanDates($_POST['reserve']);
+      if (isset($_POST['reserve'])) {
+         echo "<div id='viewresasearch'  class='center'>";
+         Toolbox::manageBeginAndEndPlanDates($_POST['reserve']);
+         echo "<div id='nosearch' class='center firstbloc'>".
+              "<a href=\"".$CFG_GLPI['root_doc']."/front/reservationitem.php\">";
+         echo __('See all reservable items')."</a></div>\n";
 
-      echo "<div class='center'><form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
+      } else {
+         echo "<div id='makesearch' class='center firstbloc'>".
+              "<a class='pointer' onClick=\"javascript:showHideDiv('viewresasearch','','','');".
+                "showHideDiv('makesearch','','','')\">";
+         echo __('Find a free item in a specific period')."</a></div>\n";
+
+         echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
+         $_POST['reserve']["begin"] = date("Y-m-d H:i:s",mktime(8,0,0,date("m"),date("d"),date("Y")));
+         $_POST['reserve']["end"]   = date("Y-m-d H:i:s",mktime(9,0,0,date("m"),date("d"),date("Y")));
+      }
+      echo "<form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
       echo "<th colspan='3'>".__('Find a free item in a specific period')."</th></tr>";
 
-      $_POST["begin"] = date("Y-m-d H:i:s",mktime(8,0,0,date("m"),date("d"),date("Y")));
-      $_POST["end"]   = date("Y-m-d H:i:s",mktime(9,0,0,date("m"),date("d"),date("Y")));
 
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
-      Html::showDateTimeField("reserve[begin]", array('value'      =>  $_POST["begin"],
+      Html::showDateTimeField("reserve[begin]", array('value'      =>  $_POST['reserve']["begin"],
                                             'maybeempty' => false));
       echo "</td><td rowspan='3'>";
       echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Search')."\">";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
-      $default_delay = floor((strtotime($_POST["end"]) - strtotime($_POST["begin"]))
+      $default_delay = floor((strtotime($_POST['reserve']["end"]) - strtotime($_POST['reserve']["begin"]))
                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
                        *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
 
       Dropdown::showTimeStamp("reserve[_duration]", array('min'        => 0,
-                                                'max'        => 48*HOUR_TIMESTAMP,
-                                                'value'      => $default_delay,
-                                                'emptylabel' => __('Specify an end date')));
+                                                          'max'        => 48*HOUR_TIMESTAMP,
+                                                          'value'      => $default_delay,
+                                                          'emptylabel' => __('Specify an end date')));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
@@ -412,8 +425,10 @@ class ReservationItem extends CommonDBChild {
       Html::closeForm();
       echo "</div>";
 
+
       // GET method passed to form creation
-      echo "<div class='center'><form name='form' method='GET' action='reservation.form.php'>";
+      echo "<div id='nosearch' class='center'>";
+      echo "<form name='form' method='GET' action='reservation.form.php'>";
       echo "<table class='tab_cadre'>";
       echo "<tr><th colspan='".($showentity?"5":"4")."'>".self::getTypeName(1)."</th></tr>\n";
 
