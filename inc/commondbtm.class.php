@@ -2227,6 +2227,7 @@ class CommonDBTM extends CommonGLPI {
       }
       switch ($right) {
          case 'r' :
+         case CommonDBTM::READ :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2235,6 +2236,7 @@ class CommonDBTM extends CommonGLPI {
             return (static::canView() && $this->canViewItem());
 
          case 'w' :
+         case CommonDBTM::ALLSTANDARDRIGHT :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2243,6 +2245,7 @@ class CommonDBTM extends CommonGLPI {
             return (static::canUpdate() && $this->canUpdateItem());
 
          case 'd' :
+         case CommonDBTM::DELETE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {

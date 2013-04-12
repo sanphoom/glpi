@@ -1223,7 +1223,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='18%'>"._n('User', 'Users', 2)."</td><td width='15%'>";
-      self::dropdownRight("user", array('value' => $this->fields["user"]));
+      self::dropdownStandardRights("_user", $this->fields["user"]);
 
       echo "</td>";
       echo "<td width='18%'>"._n('Group', 'Groups', 2)."</td><td width='15%'>";

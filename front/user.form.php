@@ -54,11 +54,11 @@ if (isset($_GET['getvcard'])) {
    if (empty($_GET["id"])) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/user.php");
    }
-   $user->check($_GET['id'], 'r');
+   $user->check($_GET['id'], CommonDBTM::READ);
    $user->generateVcard();
 
 } else if (isset($_POST["add"])) {
-   $user->check(-1, 'w', $_POST);
+   $user->check(-1, CommonDBTM::CREATE, $_POST);
 
    // Pas de nom pas d'ajout
    if (!empty($_POST["name"]) && $newID=$user->add($_POST)) {
@@ -68,7 +68,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $user->check($_POST['id'], 'd');
+   $user->check($_POST['id'], CommonDBTM::DELETE);
    $user->delete($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login
@@ -76,7 +76,7 @@ if (isset($_GET['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $user->check($_POST['id'], 'd');
+   $user->check($_POST['id'], CommonDBTM::DELETE);
    $user->restore($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login
@@ -84,7 +84,7 @@ if (isset($_GET['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $user->check($_POST['id'], 'd');
+   $user->check($_POST['id'], CommonDBTM::PURGE);
    $user->delete($_POST, 1);
    Event::log($_POST["id"], "users", 4, "setup",
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
@@ -100,7 +100,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $user->check($_POST['id'], 'w');
+   $user->check($_POST['id'], CommonDBTM::UPDATE);
    $user->update($_POST);
    Event::log($_POST['id'], "users", 5, "setup",
               //TRANS: %s is the user login
@@ -167,7 +167,7 @@ if (isset($_GET['getvcard'])) {
 
          Html::back();
    } else {
-      Session::checkRight("user", "r");
+      Session::checkRight("user", CommonDBTM::READ);
       Html::header(User::getTypeName(2), '', "admin", "user");
       $user->display(array('id' => $_GET["id"]));
       Html::footer();

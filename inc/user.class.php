@@ -46,6 +46,9 @@ class User extends CommonDBTM {
    const REALNAME_BEFORE   = 0;
    const FIRSTNAME_BEFORE  = 1;
 
+   static $rightname = 'user';
+
+
 
    static function getTypeName($nb=0) {
       return _n('User','Users',$nb);
@@ -74,26 +77,6 @@ class User extends CommonDBTM {
          return $options;
       }
       return false;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('user', 'w');
-   }
-
-
-   static function canUpdate() {
-      return Session::haveRight('user', 'w');
-   }
-
-
-   static function canDelete() {
-      return Session::haveRight('user', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('user', 'r');
    }
 
 

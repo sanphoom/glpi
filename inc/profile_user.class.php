@@ -69,7 +69,7 @@ class Profile_User extends CommonDBRelation {
    function canCreateItem() {
 
       $user = new User();
-      return $user->can($this->fields['users_id'],'r')
+      return $user->can($this->fields['users_id'], CommonDBTM::READ)
              && Profile::currentUserHaveMoreRightThan(array($this->fields['profiles_id']
                                                                => $this->fields['profiles_id']))
              && Session::haveAccessToEntity($this->fields['entities_id']);
