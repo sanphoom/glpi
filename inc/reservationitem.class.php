@@ -387,6 +387,7 @@ class ReservationItem extends CommonDBChild {
          echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
          $_POST['reserve']["begin"] = date("Y-m-d H:i:s",mktime(8,0,0,date("m"),date("d"),date("Y")));
          $_POST['reserve']["end"]   = date("Y-m-d H:i:s",mktime(9,0,0,date("m"),date("d"),date("Y")));
+         $_POST['reservation_types'] = '';
       }
       echo "<form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
@@ -414,10 +415,7 @@ class ReservationItem extends CommonDBChild {
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
 
       $values[0] = Dropdown::EMPTY_VALUE;
-      $ignored = array('Peripheral');
-      $types = array_diff($CFG_GLPI['reservation_types'], $ignored);
-
-      foreach ($types as $key => $val) {
+      foreach ($CFG_GLPI["reservation_types"] as $key => $val) {
          $values[$val] = $val;
       }
       foreach ($DB->request('glpi_peripheraltypes', array('ORDER' => 'name')) as $ptype) {
@@ -425,7 +423,8 @@ class ReservationItem extends CommonDBChild {
          $values["Peripheral#$id"] = $ptype['name'];
       }
 
-      Dropdown::showFromArray("reservation_types", $values);
+      Dropdown::showFromArray("reservation_types", $values,
+                              array('value' => $_POST['reservation_types']));
 
 
       echo "</td></tr>";
