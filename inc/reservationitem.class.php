@@ -414,9 +414,17 @@ class ReservationItem extends CommonDBChild {
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
 
       $values[0] = Dropdown::EMPTY_VALUE;
-      foreach ( $CFG_GLPI["reservation_types"] as $key => $val) {
+      $ignored = array('Peripheral');
+      $types = array_diff($CFG_GLPI['reservation_types'], $ignored);
+
+      foreach ($types as $key => $val) {
          $values[$val] = $val;
       }
+      foreach ($DB->request('glpi_peripheraltypes', array('ORDER' => 'name')) as $ptype) {
+         $id = $ptype['id'];
+         $values["Peripheral#$id"] = $ptype['name'];
+      }
+
       Dropdown::showFromArray("reservation_types", $values);
 
 
@@ -455,7 +463,11 @@ class ReservationItem extends CommonDBChild {
          }
 //          toolbox::logdebug("type", $_POST["reservation_types"]);
          if (isset($_POST["reservation_types"]) && ($_POST["reservation_types"])) {
-            $where .= " AND `glpi_reservationitems`.`itemtype` = '".$_POST["reservation_types"]."'";
+            $tmp = explode('#', $_POST["reservation_types"]);
+            $where .= " AND `glpi_reservationitems`.`itemtype` = '".$tmp[0]."'";
+            if (isset($tmp[1]) && ($tmp[0] == 'Peripheral')) {
+               $where .= " AND `$itemtable`.`peripheraltypes_id` = '".$tmp[1]."'";
+            }
          }
 
          $query = "SELECT `glpi_reservationitems`.`id`,
