@@ -1223,7 +1223,8 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='18%'>"._n('User', 'Users', 2)."</td><td width='15%'>";
-      self::dropdownStandardRights("_user", $this->fields["user"]);
+      self::dropdownStandardRights("_user", $this->fields["user"], '',
+                                   array(User::IMPORTEXTAUTHUSERS => __('Add users from an external source')));
 
       echo "</td>";
       echo "<td width='18%'>"._n('Group', 'Groups', 2)."</td><td width='15%'>";
@@ -1253,13 +1254,14 @@ class Profile extends CommonDBTM {
       self::dropdownRight("logs", array('value'   => $this->fields["logs"],
                                         'nowrite' => true));
       echo "</td>";
-
+/*
       echo "<td class='tab_bg_2'>".__('Add users from an external source')."</td>";
       echo "<td class='tab_bg_2'>";
       self::dropdownRight("import_externalauth_users",
                           array('value'   => $this->fields["import_externalauth_users"],
                                 'noread'  => true));
-      echo "</td></tr>\n";
+      echo "</td>*/
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Rule', 'Rules', 2)."</th>";
 
@@ -1782,7 +1784,7 @@ class Profile extends CommonDBTM {
       $tab[57]['datatype']       = 'right';
       $tab[57]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'user_authtype'");
-
+/*
       $tab[104]['table']         = 'glpi_profilerights';
       $tab[104]['field']         = 'right';
       $tab[104]['name']          = __('Add users from an external source');
@@ -1790,7 +1792,7 @@ class Profile extends CommonDBTM {
       $tab[104]['noread']        = true;
       $tab[104]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'import_externalauth_users'");
-
+*/
       $tab[58]['table']          = 'glpi_profilerights';
       $tab[58]['field']          = 'right';
       $tab[58]['name']           = _n('Group', 'Groups', 2);
@@ -2264,13 +2266,16 @@ class Profile extends CommonDBTM {
     * @param $current   integer  value in database (sum of rights)
     * @param $delete    boolean  show delete or not
    **/
-   static function dropdownStandardRights($name, $current, $delete=true) {
+   static function dropdownStandardRights($name, $current, $delete=true, $toadd=array()) {
 
       $values = array(CommonDBTM::READ    => __('Read'),
                       CommonDBTM::UPDATE  => __('Update'),
                       CommonDBTM::CREATE  => __('Create'),
                       CommonDBTM::DELETE  => __('Delete'),
                       CommonDBTM::PURGE   => __('Delete permenently'));
+      if (isset($toadd) && $toadd) {
+         $values += $toadd;
+      }
 
       if (!$delete) {
          unset($values[CommonDBTM::DELETE]);

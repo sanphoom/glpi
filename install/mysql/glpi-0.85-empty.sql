@@ -4327,7 +4327,6 @@ INSERT INTO `glpi_profilerights` VALUES ('70','1','show_group_hardware','0','0')
 INSERT INTO `glpi_profilerights` VALUES ('71','1','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('72','1','rule_dictionnary_dropdown','','0');
 INSERT INTO `glpi_profilerights` VALUES ('73','1','budget','','0');
-INSERT INTO `glpi_profilerights` VALUES ('74','1','import_externalauth_users','','0');
 INSERT INTO `glpi_profilerights` VALUES ('75','1','notification','','0');
 INSERT INTO `glpi_profilerights` VALUES ('76','1','rule_mailcollector','','0');
 INSERT INTO `glpi_profilerights` VALUES ('77','1','validate_request','','0');
@@ -4420,7 +4419,6 @@ INSERT INTO `glpi_profilerights` VALUES ('163','2','show_group_hardware','0','0'
 INSERT INTO `glpi_profilerights` VALUES ('164','2','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('165','2','rule_dictionnary_dropdown','','0');
 INSERT INTO `glpi_profilerights` VALUES ('166','2','budget','r','1');
-INSERT INTO `glpi_profilerights` VALUES ('167','2','import_externalauth_users','','0');
 INSERT INTO `glpi_profilerights` VALUES ('168','2','notification','','0');
 INSERT INTO `glpi_profilerights` VALUES ('169','2','rule_mailcollector','','0');
 INSERT INTO `glpi_profilerights` VALUES ('170','2','validate_request','1','1');
@@ -4513,7 +4511,6 @@ INSERT INTO `glpi_profilerights` VALUES ('256','3','show_group_hardware','0','0'
 INSERT INTO `glpi_profilerights` VALUES ('257','3','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('258','3','rule_dictionnary_dropdown','','0');
 INSERT INTO `glpi_profilerights` VALUES ('259','3','budget','w','31');
-INSERT INTO `glpi_profilerights` VALUES ('260','3','import_externalauth_users','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('261','3','notification','','0');
 INSERT INTO `glpi_profilerights` VALUES ('262','3','rule_mailcollector','','0');
 INSERT INTO `glpi_profilerights` VALUES ('263','3','validate_request','1','1');
@@ -4606,7 +4603,6 @@ INSERT INTO `glpi_profilerights` VALUES ('349','4','show_group_hardware','0','0'
 INSERT INTO `glpi_profilerights` VALUES ('350','4','rule_dictionnary_software','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('351','4','rule_dictionnary_dropdown','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('352','4','budget','w','31');
-INSERT INTO `glpi_profilerights` VALUES ('353','4','import_externalauth_users','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('354','4','notification','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('355','4','rule_mailcollector','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('356','4','validate_request','1','1');
@@ -4699,7 +4695,6 @@ INSERT INTO `glpi_profilerights` VALUES ('442','5','show_group_hardware','','0')
 INSERT INTO `glpi_profilerights` VALUES ('443','5','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('444','5','rule_dictionnary_dropdown','','0');
 INSERT INTO `glpi_profilerights` VALUES ('445','5','budget','','0');
-INSERT INTO `glpi_profilerights` VALUES ('446','5','import_externalauth_users','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('447','5','notification','','0');
 INSERT INTO `glpi_profilerights` VALUES ('448','5','rule_mailcollector','','0');
 INSERT INTO `glpi_profilerights` VALUES ('449','5','validate_request','','0');
@@ -4792,7 +4787,6 @@ INSERT INTO `glpi_profilerights` VALUES ('535','6','show_group_hardware','','0')
 INSERT INTO `glpi_profilerights` VALUES ('536','6','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('537','6','rule_dictionnary_dropdown','','0');
 INSERT INTO `glpi_profilerights` VALUES ('538','6','budget','','0');
-INSERT INTO `glpi_profilerights` VALUES ('539','6','import_externalauth_users','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('540','6','notification','','0');
 INSERT INTO `glpi_profilerights` VALUES ('541','6','rule_mailcollector','','0');
 INSERT INTO `glpi_profilerights` VALUES ('542','6','validate_request','','0');
@@ -4885,7 +4879,6 @@ INSERT INTO `glpi_profilerights` VALUES ('628','7','show_group_hardware','','0')
 INSERT INTO `glpi_profilerights` VALUES ('629','7','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('630','7','rule_dictionnary_dropdown','','0');
 INSERT INTO `glpi_profilerights` VALUES ('631','7','budget','','0');
-INSERT INTO `glpi_profilerights` VALUES ('632','7','import_externalauth_users','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('633','7','notification','','0');
 INSERT INTO `glpi_profilerights` VALUES ('634','7','rule_mailcollector','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('635','7','validate_request','1','1');

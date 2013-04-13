@@ -46,6 +46,9 @@ class User extends CommonDBTM {
    const REALNAME_BEFORE   = 0;
    const FIRSTNAME_BEFORE  = 1;
 
+
+   const IMPORTEXTAUTHUSERS   = 1024;
+
    static $rightname = 'user';
 
 
@@ -71,7 +74,7 @@ class User extends CommonDBTM {
    **/
    static function getAdditionalMenuOptions() {
 
-      if (Session::haveRight('import_externalauth_users', 'w')) {
+      if (Session::haveRight('import_externalauth_users', User::IMPORTEXTAUTHUSERS)) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(2);
          $options['ldap']['page']  = "/front/ldap.php";
          return $options;
@@ -1708,7 +1711,7 @@ class User extends CommonDBTM {
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
       }
-      if (Session::haveRight("import_externalauth_users", "w")) {
+      if (Session::haveRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS)) {
          if (AuthLdap::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
@@ -3097,7 +3100,7 @@ class User extends CommonDBTM {
       }
       $output .= Ajax::commonDropdownUpdateItem($p, false);
 
-      if (Session::haveRight('import_externalauth_users','w')
+      if (Session::haveRight('import_externalauth_users', User::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
@@ -3122,7 +3125,7 @@ class User extends CommonDBTM {
    **/
    static function showAddExtAuthForm() {
 
-      if (!Session::haveRight("import_externalauth_users","w")) {
+      if (!Session::haveRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS)) {
          return false;
       }
 
