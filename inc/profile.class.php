@@ -1227,7 +1227,7 @@ class Profile extends CommonDBTM {
 
       echo "</td>";
       echo "<td width='18%'>"._n('Group', 'Groups', 2)."</td><td width='15%'>";
-      self::dropdownStandardRights("_group", $this->fields["user"], false);
+      self::dropdownStandardRights("_group", $this->fields["group"], false);
       echo "</td>";
       echo "<td width='18%'>".__('Method for user authentication and synchronization')."</td><td width='15%'>";
       self::dropdownRight("user_authtype", array('value' => $this->fields["user_authtype"]));
@@ -1235,7 +1235,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>"._n('Entity', 'Entities', 2)."</td><td>";
-      self::dropdownRight("entity", array('value' => $this->fields["entity"]));
+      self::dropdownStandardRights("_group", $this->fields["entity"], false);
       echo "</td>";
       echo "<td>".__('Transfer')."</td><td>";
       self::dropdownRight("transfer", array('value' => $this->fields["transfer"]));
@@ -1371,7 +1371,7 @@ class Profile extends CommonDBTM {
                                           'noread'  => true));
       echo "</td>";
       echo "<td>"._n('Dropdown', 'Dropdowns', 2)."</td><td>";
-      self::dropdownRight("dropdown", array('value' => $this->fields["dropdown"]));
+      self::dropdownStandardRights("_dropdown", $this->fields["dropdown"], false);
       echo "</td>";
       echo "<td class='tab_bg_2'>".__('Entity dropdowns')."</td>";
       echo "<td class='tab_bg_2'>";

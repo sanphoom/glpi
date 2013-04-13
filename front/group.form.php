@@ -50,6 +50,7 @@ if (isset($_POST["add"])) {
    Ajax::refreshDropdownPopupInMainWindow();
    Html::back();
 
+   // TODO Review after showFormButton => purge not delete
 } else if (isset($_POST["delete"])) {
    $group->check($_POST["id"], CommonDBTM::PURGE);
    $group->delete($_POST);
