@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("transfer", "r");
+Session::checkRight("transfer", CommonDBTM::READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,15 +42,15 @@ if (empty($_GET["id"])) {
 $transfer = new Transfer();
 
 if (isset($_POST["add"])) {
-   $transfer->check(-1,'w',$_POST);
+   $transfer->check(-1, CommonDBTM::CREATE, $_POST);
 
    $newID = $transfer->add($_POST);
    Event::log($newID, "transfers", 4, "setup",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
-
+   // TODO Review after showFormButton => purge not delete
 } else if (isset($_POST["delete"])) {
-   $transfer->check($_POST["id"],'d');
+   $transfer->check($_POST["id"], CommonDBTM::PURGE);
 
    $transfer->delete($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup",
@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/transfer.php");
 
 } else if (isset($_POST["update"])) {
-   $transfer->check($_POST["id"],'w');
+   $transfer->check($_POST["id"], CommonDBTM::UPDATE);
 
    $transfer->update($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup",

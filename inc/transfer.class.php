@@ -61,15 +61,8 @@ class Transfer extends CommonDBTM {
                               'DeviceNetworkCard', 'DevicePci', 'DevicePowerSupply',
                               'DeviceProcessor', 'DeviceSoundCard');
 
+   static $rightname = 'transfer';
 
-   static function canCreate() {
-      return Session::haveRight('transfer', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('transfer', 'r');
-   }
 
    /**
     * @see CommonGLPI::defineTabs()

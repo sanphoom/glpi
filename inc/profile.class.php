@@ -1238,7 +1238,7 @@ class Profile extends CommonDBTM {
       self::dropdownStandardRights("_group", $this->fields["entity"], false);
       echo "</td>";
       echo "<td>".__('Transfer')."</td><td>";
-      self::dropdownRight("transfer", array('value' => $this->fields["transfer"]));
+      self::dropdownStandardRights("_group", $this->fields["transfer"], false);
       echo "</td>";
       echo "<td>".self::getTypeName(2)."</td><td>";
       self::dropdownStandardRights("_profile", $this->fields["profile"], false);

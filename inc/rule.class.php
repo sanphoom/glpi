@@ -159,8 +159,12 @@ class Rule extends CommonDBTM {
          }
       }
 
-      if (Session::haveRight("transfer","r" )
+      if (Session::haveRight("transfer", CommonDBTM::READ)
           && Session::isMultiEntitiesMode()) {
+
+         $menu['rule']['title'] = static::getTypeName(2);
+         $menu['rule']['page']  = static::getSearchURL(false);
+
             $menu['rule']['options']['transfer']['title']           = __('Transfer');
             $menu['rule']['options']['transfer']['page']            = "/front/transfer.php";
             $menu['rule']['options']['transfer']['links']['search'] = "/front/transfer.php";
@@ -418,6 +422,7 @@ class Rule extends CommonDBTM {
          $menu['is_multi_entries'] = true;
          return $menu;
       }
+
       return false;
    }
 
@@ -2361,7 +2366,7 @@ class Rule extends CommonDBTM {
       $p['sub_type']        = '';
       $p['name']            = 'rules_id';
       $p['entity_restrict'] = '';
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
@@ -2371,7 +2376,7 @@ class Rule extends CommonDBTM {
       if ($p['sub_type'] == '') {
          return false;
       }
-      
+
       $p['condition'] = "`sub_type` = '".$p['sub_type']."'";
       return Dropdown::show('Rule',$p);
    }
