@@ -3036,7 +3036,12 @@ class User extends CommonDBTM {
             $p[$key] = $val;
          }
       }
-
+      
+      // Check default value for dropdown : need to be a numeric
+      if ((strlen($p['value']) == 0) || !is_numeric($p['value'])) {
+         $p['value'] = 0;
+      }
+      
       $output = '';
       if (!($p['entity'] < 0) && $p['entity_sons']) {
          if (is_array($p['entity'])) {
