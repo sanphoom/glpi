@@ -38,16 +38,17 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    // From RuleCollection
 
    public $stop_on_first_match = true;
-   static public $right        = 'rule_dictionnary_printer';
    public $menu_type           = 'dictionnary';
    public $menu_option         = 'printer';
+
+   static $rightname           = 'rule_dictionnary_printer';
 
 
 //    /**
 //     * Constructor
 //    **/
 //    function __construct() {
-// 
+//
 //       //Init cache system values
 //       $this->initCache("glpi_rulecacheprinters",
 //                        array("name"               => "old_value",

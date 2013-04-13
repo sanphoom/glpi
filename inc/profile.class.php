@@ -1273,20 +1273,20 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Authorizations assignment rules')."</td><td>";
-      self::dropdownRight("rule_ldap", array('value' => $this->fields["rule_ldap"]));
+      self::dropdownStandardRights("_rule_ldap", $this->fields["rule_ldap"], false);
       echo "</td>";
       echo "<td>".__('Rules for assigning a computer to an entity')."</td><td>";
-      self::dropdownRight("rule_import", array('value' => $this->fields["rule_import"]));
+      self::dropdownStandardRights("_rule_import", $this->fields["rule_import"], false);
       echo "</td>";
       echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td><td>";
-      self::dropdownRight("rule_mailcollector",
-                          array('value' => $this->fields["rule_mailcollector"]));
+      self::dropdownStandardRights("_rule_mailcollector", $this->fields["rule_mailcollector"],
+                                   false);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Rules for assigning a category to a software')."</td><td>";
-      self::dropdownRight("rule_softwarecategories",
-                          array('value' => $this->fields["rule_softwarecategories"]));
+      self::dropdownStandardRights("_rule_softwarecategories",
+                                   $this->fields["rule_softwarecategories"], false);
       echo "</td>";
       echo "<td>".__('Business rules for tickets')."</td><td>";
       self::dropdownRight("rule_ticket", array('value'   => $this->fields["rule_ticket"],
@@ -1294,25 +1294,25 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
       echo "<td class='tab_bg_1'>";
-      self::dropdownRight("entity_rule_ticket",
-                          array('value' => $this->fields["entity_rule_ticket"]));
+      self::dropdownStandardRights("_entity_rule_ticket", $this->fields["entity_rule_ticket"],
+                                   false);
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Dictionary', 'Dictionaries', 2)."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Dropdowns dictionary')."</td><td>";
-      self::dropdownRight("rule_dictionnary_dropdown",
-                          array('value' => $this->fields["rule_dictionnary_dropdown"]));
+      self::dropdownStandardRights("_rule_dictionnary_dropdown",
+                                   $this->fields["rule_dictionnary_dropdown"], false);
       echo"</td>";
       //TRANS: software in plural
       echo "<td>".__('Software dictionary')."</td><td>";
-      self::dropdownRight("rule_dictionnary_software",
-                          array('value' => $this->fields["rule_dictionnary_software"]));
+      self::dropdownStandardRights("_rule_dictionnary_software",
+                                   $this->fields["rule_dictionnary_software"], false);
       echo "</td>";
       echo "<td>".__('Printers dictionnary')."</td><td>";
-      self::dropdownRight("rule_dictionnary_printer",
-                          array('value' => $this->fields["rule_dictionnary_printer"]));
+      self::dropdownStandardRights("_rule_dictionnary_printer",
+                                   $this->fields["rule_dictionnary_printer"], false);
       echo "</td></tr>";
 
 
@@ -2297,6 +2297,7 @@ class Profile extends CommonDBTM {
                                       'size'     => 5,
                                       'values'   => $tabselect));
    }
+
 
 
    /**

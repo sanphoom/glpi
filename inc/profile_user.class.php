@@ -626,7 +626,7 @@ class Profile_User extends CommonDBRelation {
     * @since version 0.84
     *
     * @param $user_ID         integer   user ID
-    * @param $right                     right to check (1 or read or write)
+    * @param $right                     right to check
     * @param $is_recursive              check also using recursive rights (true by default)
     *
     * @return array of entities ID

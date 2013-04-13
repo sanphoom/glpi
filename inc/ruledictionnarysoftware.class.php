@@ -45,8 +45,9 @@ class RuleDictionnarySoftware extends Rule {
    var $additional_fields_for_dictionnary = array('manufacturer');
 
    // From Rule
-   static public $right    = 'rule_dictionnary_software';
-   public $can_sort        = true;
+   static $rightname = 'rule_dictionnary_software';
+
+   public $can_sort  = true;
 
 
    /**
@@ -70,11 +71,11 @@ class RuleDictionnarySoftware extends Rule {
 //     * @see RuleCached::showCacheRuleHeader()
 //    **/
 //    function showCacheRuleHeader() {
-// 
+//
 //       echo "<tr><th colspan='4'>" . __('Cache information') . "</th>";
 //       echo "<th colspan='4'>" . $this->fields["name"];
 //       echo "</th></tr>";
-// 
+//
 //       echo "<tr><td class='tab_bg_1 b'>" . __('Original value') . "</td>";
 //       echo "<td class='tab_bg_1 b'>" . __('Original entity value')."</td>";
 //       echo "<td class='tab_bg_1 b'>" . __('Original publisher')."</td>";
@@ -85,13 +86,13 @@ class RuleDictionnarySoftware extends Rule {
 //       echo "<td class='tab_bg_1 b'>" . __('Associable to a ticket') . "</td>\n";
 //       echo "<td class='tab_bg_1 b'>" . __('Destination entity') . "</td></tr>\n";
 //    }
-// 
-// 
+//
+//
 //    /**
 //     * @see RuleCached::showCacheRuleDetail()
 //    **/
 //    function showCacheRuleDetail($fields) {
-// 
+//
 //       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
 //       echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities",
 //                                                                $fields["entities_id"]) ."</td>";

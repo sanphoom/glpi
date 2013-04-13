@@ -28,16 +28,16 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryDropdown extends Rule {
 
    // From Rule
-   static public $right  = 'rule_dictionnary_dropdown';
    public $can_sort      = true;
    public $show_cache    = false;
 
+   static $rightname     = 'rule_dictionnary_dropdown';
 
    /**
     * @see Rule::maxActionsCount()
@@ -51,7 +51,7 @@ class RuleDictionnaryDropdown extends Rule {
 //     * @see RuleCached::showCacheRuleHeader()
 //    **/
 //    function showCacheRuleHeader() {
-// 
+//
 //       if ($this->show_cache) {
 //          echo "<tr><th colspan='2'>".__('Cache information')."</th><th>".$this->fields["name"].
 //               "</th></tr>";
@@ -62,13 +62,13 @@ class RuleDictionnaryDropdown extends Rule {
 //          parent::showCacheRuleHeader();
 //       }
 //    }
-// 
-// 
+//
+//
 //    /**
 //     * @see RuleCached::showCacheRuleDetail()
 //    **/
 //    function showCacheRuleDetail($fields) {
-// 
+//
 //       if ($this->show_cache) {
 //          echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
 //          echo "<td class='tab_bg_2'>".(($fields["manufacturer"] != '')?$fields["manufacturer"]:'').

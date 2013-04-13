@@ -56,7 +56,7 @@ if (isset($_POST["rules_id"])) {
 if (!$rule = getItemForItemtype($sub_type)) {
    exit;
 }
-$rule->checkGlobal('r');
+$rule->checkGlobal(CommonDBTM::READ);
 
 $test_rule_output = null;
 

@@ -44,18 +44,9 @@ class RuleImportComputer extends Rule {
 
 
    // From Rule
-   static public $right    = 'rule_import';
-   public $can_sort        = true;
+   static $rightname = 'rule_import';
+   public $can_sort  = true;
 
-
-   static function canCreate() {
-      return Session::haveRight('rule_import', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('rule_import', 'r');
-   }
 
 
    function getTitle() {

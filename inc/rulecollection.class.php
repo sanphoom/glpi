@@ -39,8 +39,6 @@ class RuleCollection extends CommonDBTM {
    public $sub_type;
    /// process collection stop on first matched rule
    var $stop_on_first_match                   = false;
-   /// Right needed to use this rule collection
-   static public $right                       = "config";
    /// field used to order rules
    var $orderby                               = "ranking";
    /// Processing several rules : use result of the previous one to computer the current one
@@ -56,22 +54,15 @@ class RuleCollection extends CommonDBTM {
 
    var $entity                                = 0;
 
+   static $rightname                          = 'config';
+
+
    /// Tab orientation : horizontal or vertical
    public $taborientation = 'horizontal';
 
    // Temproray hack for this class
    static function getTable() {
       return 'glpi_rules';
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight(static::$right, 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight(static::$right, 'r');
    }
 
 
@@ -378,7 +369,7 @@ class RuleCollection extends CommonDBTM {
                            && ($p['inherited'] || $p['childrens']));
 
       // Do not know what it is ?
-      $canedit    = (Session::haveRight(static::$right, "w") && !$display_entities);
+      $canedit    = (Session::haveRight(static::$rightname, CommonDBTM::UPDATE) && !$display_entities);
 
       $nb         = $this->getCollectionSize($p['inherited']);
       $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
@@ -1758,7 +1749,7 @@ class RuleCollection extends CommonDBTM {
          if ($item->showChildrensTab()) {
             $ong[3] = __('Rules applicable in the sub-entities');
          }
-         return $ong;
+               return $ong;
       }
       return '';
    }

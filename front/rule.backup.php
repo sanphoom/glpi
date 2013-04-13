@@ -44,7 +44,7 @@ if (isset($_GET['action'])) {
 }
 
 $rulecollection = new RuleCollection();
-$rulecollection->checkGlobal('r');
+$rulecollection->checkGlobal(CommonDBTM::READ);
 
 if ($action != "export") {
    Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "rule", -1);
@@ -52,13 +52,13 @@ if ($action != "export") {
 
 switch ($action) {
    case "preview_import":
-      $rulecollection->checkGlobal('w');
+      $rulecollection->checkGlobal(CommonDBTM::CREATE);
       if (RuleCollection::previewImportRules()) {
          break;
       }
 
    case "import":
-      $rulecollection->checkGlobal('w');
+      $rulecollection->checkGlobal(CommonDBTM::CREATE);
       RuleCollection::displayImportRulesForm();
       break;
 
@@ -81,7 +81,7 @@ switch ($action) {
       break;
 
    case "process_import":
-      $rulecollection->checkGlobal('w');
+      $rulecollection->checkGlobal(CommonDBTM::CREATE);
       RuleCollection::processImportRules();
       Html::back();
       break;

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleRight extends Rule {
 
    // From Rule
-   static public $right        = 'rule_ldap';
+   static $rightname           = 'rule_ldap';
    public $orderby             = "name";
    public $specific_parameters = true;
 
@@ -48,15 +48,6 @@ class RuleRight extends Rule {
       return 'glpi_rules';
    }
 
-
-   static function canCreate() {
-      return Session::haveRight('rule_ldap', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('rule_ldap', 'r');
-   }
 
 
    /**

@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicketCollection extends RuleCollection {
 
    // From RuleCollection
-   static public $right                          = 'entity_rule_ticket';
+   static $rightname                             = 'entity_rule_ticket';
    public $use_output_rule_process_as_next_input = true;
    public $menu_option                           = 'ticket';
 
@@ -51,7 +51,7 @@ class RuleTicketCollection extends RuleCollection {
 
 
    function canList() {
-      return Session::haveRight("rule_ticket","r") || static::canView();
+      return Session::haveRight("rule_ticket", CommonDBTM::READ) || static::canView();
    }
 
 

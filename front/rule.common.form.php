@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 $rule = $rulecollection->getRuleClass();
-$rulecollection->checkGlobal('r');
+$rulecollection->checkGlobal(CommonDBTM::READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -45,19 +45,19 @@ $rulecriteria = new RuleCriteria(get_class($rule));
 $ruleaction   = new RuleAction(get_class($rule));
 
 if (isset($_POST["add_criteria"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(CommonDBTM::CREATE);
    $rulecriteria->add($_POST);
 
    Html::back();
 
 } else if (isset($_POST["add_action"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(CommonDBTM::CREATE);
    $ruleaction->add($_POST);
 
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(CommonDBTM::UPDATE);
    $rule->update($_POST);
 
    Event::log($_POST['id'], "rules", 4, "setup",
@@ -66,15 +66,15 @@ if (isset($_POST["add_criteria"])) {
    Html::back();
 
 } else if (isset($_POST["add"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(CommonDBTM::CREATE);
 
    $newID = $rule->add($_POST);
    Event::log($newID, "rules", 4, "setup",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
    Html::redirect($_SERVER['HTTP_REFERER']."?id=$newID");
-
+//TODO review delete => purge
 } else if (isset($_POST["delete"])) {
-   $rulecollection->checkGlobal('w');
+   $rulecollection->checkGlobal(CommonDBTM::PURGE);
    $rulecollection->deleteRuleOrder($_POST["ranking"]);
    $rule->delete($_POST);
 

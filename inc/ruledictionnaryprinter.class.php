@@ -43,8 +43,9 @@ if (!defined('GLPI_ROOT')) {
 class RuleDictionnaryPrinter extends Rule {
 
    // From Rule
-   static public $right    = 'rule_dictionnary_printer';
-   public $can_sort        = true;
+   public $can_sort  = true;
+
+   static $rightname = 'rule_dictionnary_printer';
 
 
    function getTitle() {
@@ -64,11 +65,11 @@ class RuleDictionnaryPrinter extends Rule {
 //     * @see RuleCached::showCacheRuleHeader()
 //    **/
 //    function showCacheRuleHeader() {
-// 
+//
 //       echo "<tr><th colspan='3'>" . __('Cache information') . "</th>";
 //       echo "<th colspan='3'>" . $this->fields["name"];
 //       echo "</th></tr>";
-// 
+//
 //       echo "<tr><td class='tab_bg_1 b'>" . __('Original value') . "</td>";
 //       echo "<td class='tab_bg_1 b'>" . __('Original manufacturer')."</td>";
 //       echo "<td class='tab_bg_1 b'>" . __('Modified value') . "</td>";
@@ -76,13 +77,13 @@ class RuleDictionnaryPrinter extends Rule {
 //       echo "<td class='tab_bg_1 b'>" . __('New manufacturer')."</td>";
 //       echo "<td class='tab_bg_1 b'>" . __('To be unaware of import') . "</td></tr>";
 //    }
-// 
-// 
+//
+//
 //    /**
 //     * @see RuleCached::showCacheRuleDetail()
 //    **/
 //    function showCacheRuleDetail($fields) {
-// 
+//
 //       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
 //       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
 //       echo "<td class='tab_bg_2'>". (($fields["new_value"] != '') ? $fields["new_value"]
@@ -95,7 +96,7 @@ class RuleDictionnaryPrinter extends Rule {
 //              ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
 //              : __('Unchanged')) . "</td>";
 //       echo "<td class='tab_bg_2'>";
-// 
+//
 //       if ($fields["ignore_import"] == '') {
 //          echo "&nbsp;";
 //       } else {

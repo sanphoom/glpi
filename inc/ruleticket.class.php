@@ -38,22 +38,12 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicket extends Rule {
 
    // From Rule
-   static public $right    = 'entity_rule_ticket';
-   public $can_sort        = true;
+   static $rightname = 'entity_rule_ticket';
+   public $can_sort  = true;
 
 
    function getTitle() {
       return __('Business rules for tickets');
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('entity_rule_ticket', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity_rule_ticket', 'r');
    }
 
 

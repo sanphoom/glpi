@@ -1532,9 +1532,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Have I the global right to "PURGE" the Object
-    *
-    * @since version 0.85
+    * Have I the global right to "purge" the Object
     *
     * May be overloaded if needed
     *
@@ -2182,7 +2180,7 @@ class CommonDBTM extends CommonGLPI {
     * Check right on an item
     *
     * @param $ID            ID of the item (-1 if new item)
-    * @param $right         Right to check : r / w / recursive
+    * @param $right         Right to check : r / w / recursive / READ / UPDATE / DELETE
     * @param &$input  array of input data (used for adding item) (default NULL)
     *
     * @return boolean
@@ -2319,7 +2317,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get global right on an object
     *
-    * @param $right Right to check : c / r / w / d
+    * @param $right Right to check : c / r / w / d / READ / UPDATE / CREATE / DELETE
     *
     * @return nothing
    **/
@@ -2327,16 +2325,24 @@ class CommonDBTM extends CommonGLPI {
 
       switch ($right) {
          case 'r' :
+         case CommonDBTM::READ :
             return static::canView();
 
          case 'w' :
+         case CommonDBTM::UPDATE :
             return static::canUpdate();
 
          case 'c' :
+         case CommonDBTM::CREATE :
             return static::canCreate();
 
          case 'd' :
+         case CommonDBTM::DELETE :
             return static::canDelete();
+
+         case CommonDBTM::PURGE :
+            return static::canPurge();
+
       }
 
       return false;
