@@ -2236,7 +2236,7 @@ class CommonDBTM extends CommonGLPI {
             return (static::canView() && $this->canViewItem());
 
          case 'w' :
-         case CommonDBTM::ALLSTANDARDRIGHT :
+         case CommonDBTM::UPDATE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {

@@ -42,7 +42,7 @@ if (!isset($_GET['id'])) {
 $prof = new Profile();
 
 if (isset($_POST["add"])) {
-   $prof->check(-1, CommonDBTM::CREATE,$_POST);
+   $prof->check(-1, CommonDBTM::CREATE, $_POST);
    $ID = $prof->add($_POST);
 
    // We need to redirect to form to enter rights

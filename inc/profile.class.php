@@ -225,11 +225,6 @@ class Profile extends CommonDBTM {
          }
       }
 
-      if (isset($input["_profile"])) {
-         $input['profile'] = array_sum($input['_profile']);
-      }
-
-
       if (isset($input["_cycles_ticket"])) {
          $tab   = Ticket::getAllStatusArray();
          $cycle = array();
@@ -274,8 +269,19 @@ class Profile extends CommonDBTM {
 
       $this->profileRight = array();
       foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
-         if (isset($input[$right])) {
-            $this->profileRight[$right] = $input[$right];
+         if (isset($input['_'.$right])) {
+            $this->profileRight[$right] = array_sum($input['_'.$right]);
+            unset($input['_'.$right]);
+         }
+         // TODO For not converted dropdown (still r or w)
+         else if (isset($input[$right])) {
+            if ($input[$right] == 'r') {
+               $this->profileRight[$right] = CommonDBTM::READ;
+            } else if ($input[$right] == 'w') {
+               $this->profileRight[$right] = CommonDBTM::ALLSTANDARDRIGHT;
+            } else {
+               $this->profileRight[$right] = $input[$right];
+            }
             unset($input[$right]);
          }
       }
@@ -1236,10 +1242,10 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>"._n('Entity', 'Entities', 2)."</td><td>";
-      self::dropdownStandardRights("_group", $this->fields["entity"], false);
+      self::dropdownStandardRights("_entity", $this->fields["entity"], false);
       echo "</td>";
       echo "<td>".__('Transfer')."</td><td>";
-      self::dropdownStandardRights("_group", $this->fields["transfer"], false);
+      self::dropdownStandardRights("_transfer", $this->fields["transfer"], false);
       echo "</td>";
       echo "<td>".self::getTypeName(2)."</td><td>";
       self::dropdownStandardRights("_profile", $this->fields["profile"], false);
@@ -2323,6 +2329,14 @@ class Profile extends CommonDBTM {
             $param[$key] = $val;
          }
       }
+
+      // TODO temp compatibility with new profil
+      if ($param['value'] == CommonDBTM::READ) {
+         $param['value'] = 'r';
+      } else if ($param['value'] == CommonDBTM::ALLSTANDARDRIGHT) {
+         $param['value'] = 'w';
+      }
+
       $values = array();
       if (!$param['nonone']) {
          $values['NULL'] = __('No access');
