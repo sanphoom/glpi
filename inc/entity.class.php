@@ -46,6 +46,8 @@ class Entity extends CommonTreeDropdown {
    public $first_level_menu  = "admin";
    public $second_level_menu = "entity";
 
+   static $rightname = 'entity';
+
    const CONFIG_PARENT   = -2;
    const CONFIG_NEVER    = -10;
 
@@ -119,16 +121,6 @@ class Entity extends CommonTreeDropdown {
 
    static function getTypeName($nb=0) {
       return _n('Entity', 'Entities', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('entity', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity', 'r');
    }
 
 

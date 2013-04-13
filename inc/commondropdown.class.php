@@ -52,6 +52,8 @@ abstract class CommonDropdown extends CommonDBTM {
 
    public $display_dropdowntitle  = true;
 
+   static $rightname = 'dropdown';
+
 
    /**
     * @since version 0.85
@@ -133,30 +135,6 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       return $ong;
-   }
-
-
-   /**
-    * Have I the right to "create" the Object
-    *
-    * MUST be overloaded for entity_dropdown
-    *
-    * @return booleen
-   **/
-   static function canCreate() {
-      return Session::haveRight('dropdown', 'w');
-   }
-
-
-   /**
-    * Have I the right to "view" the Object
-    *
-    * MUST be overloaded for entity_dropdown
-    *
-    * @return booleen
-   **/
-   static function canView() {
-      return Session::haveRight('dropdown', 'r');
    }
 
 
