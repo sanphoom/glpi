@@ -70,7 +70,7 @@ class Session {
    **/
    static function init(Auth $auth) {
       global $CFG_GLPI;
-      toolbox::logdebug("auth", $auth);
+
       if ($auth->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
          $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens');

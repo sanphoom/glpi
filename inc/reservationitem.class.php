@@ -460,7 +460,6 @@ class ReservationItem extends CommonDBChild {
 
             $where = " AND `glpi_reservations`.`id` IS NULL ";
          }
-//          toolbox::logdebug("type", $_POST["reservation_types"]);
          if (isset($_POST["reservation_types"]) && ($_POST["reservation_types"])) {
             $tmp = explode('#', $_POST["reservation_types"]);
             $where .= " AND `glpi_reservationitems`.`itemtype` = '".$tmp[0]."'";

@@ -2499,7 +2499,6 @@ class Profile extends CommonDBTM {
 
       $p['multiple'] = true;
       $p['size']     = 3;
-      Toolbox::logDebug("COUCOU", $p, $values);
       return Dropdown::showFromArray($p['name'], $values, $p);
    }
 
