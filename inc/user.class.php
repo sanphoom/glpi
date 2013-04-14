@@ -1865,7 +1865,7 @@ class User extends CommonDBTM {
       //Authentications information : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
-         if (Session::haveRight("user_authtype", "r")) {
+         if (Session::haveRight("user_authtype", CommonDBTM::READ)) {
             echo "<td>" . __('Authentication') . "</td><td>";
             echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
             if (!empty($this->fields["date_sync"])) {
@@ -2339,7 +2339,7 @@ class User extends CommonDBTM {
          $actions['add_userprofile'] = __('Associate to a profile');
       }
 
-      if (Session::haveRight("user_authtype","w")) {
+      if (Session::haveRight("user_authtype", CommonDBTM::UPDATE)) {
          $actions['change_authtype']        = _x('button', 'Change the authentication method');
          $actions['force_user_ldap_update'] = __('Force synchronization');
       }
@@ -2438,7 +2438,7 @@ class User extends CommonDBTM {
                 || !isset($input["auths_id"])) {
                return false;
             }
-            if (Session::haveRight("user_authtype","w")) {
+            if (Session::haveRight("user_authtype", CommonDBTM::UPDATE)) {
                $ids = array();
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
@@ -3169,7 +3169,7 @@ class User extends CommonDBTM {
    static function changeAuthMethod($IDs=array(), $authtype=1 ,$server=-1) {
       global $DB;
 
-      if (!Session::haveRight("user_authtype","w")) {
+      if (!Session::haveRight("user_authtype", CommonDBTM::UPDATE)) {
          return false;
       }
 

@@ -43,14 +43,11 @@ if (!defined('GLPI_ROOT')) {
 /// TODO move function to class
 class Backup extends CommonGLPI {
 
+   static $rightname = 'backup';
 
    static function getTypeName($nb=0) {
       return __('Maintenance');
    }
 
-
-   static function canView() {
-      return Session::haveRight('backup', 'w');
-   }
 }
 ?>
