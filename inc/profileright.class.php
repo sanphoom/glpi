@@ -216,5 +216,23 @@ class ProfileRight extends CommonDBChild {
       // Don't forget to complete the profile rights ...
       self::fillProfileRights($profiles_id);
    }
+
+
+   /**
+    * To avoid log out and login when rights change (very useful in debug mode)
+    *
+    * @see CommonDBChild::post_updateItem()
+   **/
+   function post_updateItem($history=1) {
+
+      // update current profile
+      if (isset($_SESSION['glpiactiveprofile']['id'])
+          && $_SESSION['glpiactiveprofile']['id'] == $this->fields['profiles_id']
+          && $_SESSION['glpiactiveprofile'][$this->fields['name']] != $this->fields['rights']) {
+
+         $_SESSION['glpiactiveprofile'][$this->fields['name']] = $this->fields['rights'];
+         unset($_SESSION['glpimenu']);
+      }
+   }
 }
 ?>
