@@ -68,6 +68,7 @@ class Log extends CommonDBTM {
    // Plugin must use value starting from
    const HISTORY_PLUGIN             = 1000;
 
+   static $rightname = 'logs';
 
    static function getTypeName($nb=0) {
       return __('Historical');

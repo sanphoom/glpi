@@ -56,7 +56,7 @@ class Group extends CommonTreeDropdown {
    **/
    static function getAdditionalMenuOptions() {
 
-      if (Session::haveRight('user_authtype', 'w')) {
+      if (Session::haveRight('user_authtype', CommonDBTM::UPDATE)) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(2);
          $options['ldap']['page']  = "/front/ldap.group.php";
          return $options;
@@ -140,8 +140,8 @@ class Group extends CommonTreeDropdown {
                   $ong[2] = __('Managed items');
                }
                if ($item->getField('is_usergroup')
-                   && Session::haveRight("group", "w")
-                   && Session::haveRight("user_authtype", "w")
+                   && Session::haveRight("group", CommonDBTM::UPDATE)
+                   && Session::haveRight("user_authtype", CommonDBTM::UPDATE)
                    && AuthLdap::useAuthLdap()) {
                   $ong[3] = __('LDAP directory link');
                }
@@ -292,8 +292,8 @@ class Group extends CommonTreeDropdown {
       global $CFG_GLPI;
 
       $buttons = array();
-      if (Session::haveRight("group", "w")
-          && Session::haveRight("user_authtype", "w")
+      if (Session::haveRight("group", CommonDBTM::UPDATE)
+          && Session::haveRight("user_authtype", CommonDBTM::UPDATE)
           && AuthLdap::useAuthLdap()) {
 
          $buttons["ldap.group.php"] = __('LDAP directory link');
@@ -505,8 +505,8 @@ class Group extends CommonTreeDropdown {
              $this->getFormURL()."'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if (Session::haveRight("group", "w")
-          && Session::haveRight("user_authtype", "w")
+      if (Session::haveRight("group", CommonDBTM::UPDATE)
+          && Session::haveRight("user_authtype", CommonDBTM::UPDATE)
           && AuthLdap::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2' class='center'>".__('In users')."</th></tr>";

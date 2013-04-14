@@ -91,7 +91,7 @@ if (isset($_GET['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["force_ldap_resynch"])) {
-   Session::checkRight('user_authtype', 'w');
+   Session::checkRight('user_authtype', CommonDBTM::UPDATE);
 
    $user->getFromDB($_POST["id"]);
    AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
@@ -130,7 +130,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["change_auth_method"])) {
-   Session::checkRight('user_authtype', 'w');
+   Session::checkRight('user_authtype', CommonDBTM::UPDATE);
 
    if (isset($_POST["auths_id"])) {
       User::changeAuthMethod(array($_POST["id"]), $_POST["authtype"], $_POST["auths_id"]);
