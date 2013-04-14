@@ -1228,26 +1228,24 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Administration')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('User', 'Users', 2)."</td><td width='15%'>";
-      self::dropdownStandardRights("_user", $this->fields["user"], '',
+      echo "<td width='13%'>"._n('User', 'Users', 2)."</td><td  colspan='2'>";
+      self::dropdownStandardRights("_user", $this->fields["user"], true, true,
                                    array(ProfileRight::IMPORTEXTAUTHUSERS => __('Add users from an external source')));
 
       echo "</td>";
-      echo "<td width='18%'>"._n('Group', 'Groups', 2)."</td><td width='15%'>";
-      self::dropdownStandardRights("_group", $this->fields["group"], false);
-      echo "</td>";
-      echo "<td width='18%'>".__('Method for user authentication and synchronization')."</td><td width='15%'>";
-      self::dropdownRight("user_authtype", array('value' => $this->fields["user_authtype"]));
+      echo "<td width='13%'>".__('Method for user authentication and synchronization')."</td>";
+      echo "<td colspan='2'>";
+      self::dropdownStandardRights("_user_authtype", $this->fields["user_authtype"], false, false);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Entity', 'Entities', 2)."</td><td>";
+      echo "<td>"._n('Entity', 'Entities', 2)."</td><td width='18%'>";
       self::dropdownStandardRights("_entity", $this->fields["entity"], false);
       echo "</td>";
-      echo "<td>".__('Transfer')."</td><td>";
-      self::dropdownStandardRights("_transfer", $this->fields["transfer"], false);
+      echo "<td>"._n('Group', 'Groups', 2)."</td><td width='18%'>";
+      self::dropdownStandardRights("_group", $this->fields["group"], false);
       echo "</td>";
-      echo "<td>".self::getTypeName(2)."</td><td>";
+      echo "<td>".self::getTypeName(2)."</td><td width='18%'>";
       self::dropdownStandardRights("_profile", $this->fields["profile"], false);
       echo "</td></tr>\n";
 
@@ -1260,13 +1258,9 @@ class Profile extends CommonDBTM {
       self::dropdownRight("logs", array('value'   => $this->fields["logs"],
                                         'nowrite' => true));
       echo "</td>";
-/*
-      echo "<td class='tab_bg_2'>".__('Add users from an external source')."</td>";
-      echo "<td class='tab_bg_2'>";
-      self::dropdownRight("import_externalauth_users",
-                          array('value'   => $this->fields["import_externalauth_users"],
-                                'noread'  => true));
-      echo "</td>*/
+      echo "<td>".__('Transfer')."</td><td>";
+      self::dropdownStandardRights("_transfer", $this->fields["transfer"], false);
+      echo "</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Rule', 'Rules', 2)."</th>";
@@ -1288,14 +1282,11 @@ class Profile extends CommonDBTM {
       self::dropdownStandardRights("_rule_softwarecategories",
                                    $this->fields["rule_softwarecategories"], false);
       echo "</td>";
-//      echo "<td>".__('Business rules for tickets')."</td><td>";
-//      self::dropdownRight("rule_ticket", array('value'   => $this->fields["rule_ticket"],
-//                                               'nowrite' => true));
       echo "</td>";
       echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
       echo "<td class='tab_bg_1' colspan='2'>";
       self::dropdownStandardRights("_entity_rule_ticket", $this->fields["entity_rule_ticket"],
-                                   false,
+                                   false, true,
                                    array(ProfileRight::RULETICKET => __('Business rules for ticket (entity parent)')));
       echo"</td></tr>\n";
 
@@ -2272,21 +2263,32 @@ class Profile extends CommonDBTM {
     * @param $name      string   name of the dropdown
     * @param $current   integer  value in database (sum of rights)
     * @param $delete    boolean  show delete or not
+    * @param $purge     boolean  show purge or not
    **/
-   static function dropdownStandardRights($name, $current, $delete=true, $toadd=array()) {
+   static function dropdownStandardRights($name, $current, $delete=true, $purge=true,
+                                          $toadd=array()) {
 
       $values = array(CommonDBTM::READ    => __('Read'),
                       CommonDBTM::UPDATE  => __('Update'),
                       CommonDBTM::CREATE  => __('Create'),
                       CommonDBTM::DELETE  => __('Delete'),
                       CommonDBTM::PURGE   => __('Delete permenently'));
+
+      $size = 5;
+
       if (isset($toadd) && $toadd) {
          $values += $toadd;
       }
 
       if (!$delete) {
          unset($values[CommonDBTM::DELETE]);
+         $size = 4;
       }
+      if (!$purge) {
+         unset($values[CommonDBTM::PURGE]);
+         $size = 3;
+      }
+
       $tabselect = array();
       foreach ($values as $k => $v) {
          if ($current & $k) {
@@ -2295,7 +2297,7 @@ class Profile extends CommonDBTM {
       }
       Dropdown::showFromArray($name, $values,
                                 array('multiple' => true,
-                                      'size'     => 5,
+                                      'size'     => $size,
                                       'values'   => $tabselect));
    }
 
