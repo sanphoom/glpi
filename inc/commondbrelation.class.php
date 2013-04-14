@@ -471,6 +471,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
    }
 
+
    /**
     * @since version 0.84
    **/
@@ -492,6 +493,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canDelete() {
+      return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
+   }
+
+
+   /**
+    * @since version 0.85
+    **/
+   static function canPurge() {
       return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
    }
 

@@ -2251,6 +2251,14 @@ class CommonDBTM extends CommonGLPI {
             }
             return (static::canDelete() && $this->canDeleteItem());
 
+         case CommonDBTM::PURGE :
+            // Personnal item
+            if ($this->isPrivate()
+                && ($this->fields['users_id'] === Session::getLoginUserID())) {
+               return true;
+            }
+            return (static::canPurge() && $this->canPurgeItem());
+
          case 'recursive' :
             if ($this->isEntityAssign()
                 && $this->maybeRecursive()) {
@@ -3339,22 +3347,29 @@ class CommonDBTM extends CommonGLPI {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       if (!is_null($checkitem)) {
-         $isadmin = $checkitem->canUpdate();
+         $canupdate = $checkitem->canUpdate();
+         $candelete = $checkitem->canDelete();
+         $canpurge  = $checkitem->canPurge();
       } else {
-         $isadmin = static::canUpdate();
+         $canupdate = static::canUpdate();
+         $candelete = static::canDelete();
+         $canpurge  = static::canPurge();
       }
 
       $itemtype = $this->getType();
       $actions  = array();
 
       if ($is_deleted) {
-         if ($isadmin) {
+         if ($canpurge) {
             $actions['purge']   = _x('button', 'Delete permanently');
+         }
+
+         if ($candelete || $canpurge) {
             $actions['restore'] = _x('button', 'Restore');
          }
 
       } else {
-         if ($isadmin
+         if ($canupdate
              || (in_array($itemtype, $CFG_GLPI["infocom_types"])
                  && Infocom::canUpdate())) {
 
@@ -3366,15 +3381,14 @@ class CommonDBTM extends CommonGLPI {
              && Infocom::canCreate()) {
             $actions['activate_infocoms'] = __('Enable the financial and administrative information');
          }
-         // No delete for entities and tracking of not have right
-         if ($isadmin) {
-            // do not take into account is_deleted if items may be dynamic
-            if ($this->maybeDeleted()
-                && !$this->useDeletedToLockIfDynamic()) {
+         // do not take into account is_deleted if items may be dynamic
+         if ($this->maybeDeleted()
+             && !$this->useDeletedToLockIfDynamic()) {
+            if ($candelete) {
                $actions['delete'] = _x('button', 'Put in dustbin');
-            } else {
-               $actions['purge'] = _x('button', 'Delete permanently');
             }
+         } else if ($canpurge){
+            $actions['purge'] = _x('button', 'Delete permanently');
          }
 
          if (in_array($itemtype,$CFG_GLPI["document_types"])) {

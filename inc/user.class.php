@@ -3036,12 +3036,12 @@ class User extends CommonDBTM {
             $p[$key] = $val;
          }
       }
-      
+
       // Check default value for dropdown : need to be a numeric
       if ((strlen($p['value']) == 0) || !is_numeric($p['value'])) {
          $p['value'] = 0;
       }
-      
+
       $output = '';
       if (!($p['entity'] < 0) && $p['entity_sons']) {
          if (is_array($p['entity'])) {
@@ -3318,7 +3318,7 @@ class User extends CommonDBTM {
 
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $cansee = $item->can($data["id"],"r");
+                  $cansee = $item->can($data["id"], self::READ);
                   $link   = $data["name"];
                   if ($cansee) {
                      $link_item = Toolbox::getItemTypeFormURL($itemtype);
@@ -3394,7 +3394,7 @@ class User extends CommonDBTM {
 
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_assoc($result)) {
-                     $cansee = $item->can($data["id"],"r");
+                     $cansee = $item->can($data["id"], self::READ);
                      $link   = $data["name"];
                      if ($cansee) {
                         $link_item = Toolbox::getItemTypeFormURL($itemtype);

@@ -125,12 +125,12 @@ class Group_User extends CommonDBRelation{
          return false;
       }
 
-      $canedit     = $user->can($ID,'w');
+      $canedit = $user->can($ID, self::UPDATE);
 
-      $rand        = mt_rand();
+      $rand    = mt_rand();
 
-      $groups = self::getUserGroups($ID);
-      $used   = array();
+      $groups  = self::getUserGroups($ID);
+      $used    = array();
       if (!empty($groups)) {
          foreach ($groups as $data) {
             $used[$data["id"]] = $data["id"];

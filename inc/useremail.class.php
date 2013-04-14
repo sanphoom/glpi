@@ -63,7 +63,7 @@ class UserEmail  extends CommonDBChild {
    **/
    static function getDefaultForUser($users_id) {
       global $DB;
-   
+
       // Get default one
       foreach ($DB->request("glpi_useremails",
                             "`users_id` = '$users_id' AND `is_default` = '1'") as $data) {
@@ -179,11 +179,11 @@ class UserEmail  extends CommonDBChild {
 
       $users_id = $user->getID();
 
-      if (!$user->can($users_id,'r')
+      if (!$user->can($users_id, self::READ)
           && ($users_id != Session::getLoginUserID())) {
          return false;
       }
-      $canedit = ($user->can($users_id,"w") || ($users_id == Session::getLoginUserID()));
+      $canedit = ($user->can($users_id, self::UPDATE) || ($users_id == Session::getLoginUserID()));
 
       parent::showChildsForItemForm($user, '_useremails', $canedit);
 
@@ -196,10 +196,10 @@ class UserEmail  extends CommonDBChild {
    static function showAddEmailButton(User $user) {
 
       $users_id = $user->getID();
-      if (!$user->can($users_id,'r') && ($users_id != Session::getLoginUserID())) {
+      if (!$user->can($users_id, self::READ) && ($users_id != Session::getLoginUserID())) {
          return false;
       }
-      $canedit = ($user->can($users_id,"w") || ($users_id == Session::getLoginUserID()));
+      $canedit = ($user->can($users_id, self::UPDATE) || ($users_id == Session::getLoginUserID()));
 
       parent::showAddChildButtonForItemForm($user, '_useremails');
 

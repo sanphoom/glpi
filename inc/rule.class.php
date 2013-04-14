@@ -919,7 +919,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, "w");
+      $canedit = $this->can($rules_id, S*self::UPDATE);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -1085,7 +1085,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, "w");
+      $canedit = $this->can($rules_id, self::UPDATE);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
