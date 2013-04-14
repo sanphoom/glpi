@@ -231,7 +231,7 @@ class AuthLDAP extends CommonDBTM {
       switch ($input['action']) {
          case "import" :
          case "sync" :
-            if (!Session::haveRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS)) {
+            if (!Session::haveRight("import_externalauth_users",ProfileRight::IMPORTEXTAUTHUSERS)) {
                $res['nbnoright']++;
             } else if (isset($_GET['multiple_actions'])
                        && isset($_SESSION["glpi_massiveaction"])) {

@@ -193,11 +193,22 @@ function update084to085() {
                          "`name` = 'import_externalauth_users' AND `right` = 'w'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . User::IMPORTEXTAUTHUSERS ."
+                 SET `rights` = `rights` | " . ProfileRight::IMPORTEXTAUTHUSERS ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'User'";
       $DB->queryOrDie($query, "0.85 update user with import_externalauth_users right");
    }
+
+   foreach ($DB->request("glpi_profilerights",
+         "`name` = 'rule_ticket' AND `right` = 'r'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . ProfileRight::RULETICKET ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'entity_rule_ticket'";
+         $DB->queryOrDie($query, "0.85 update entity_rule_ticket with rule_ticket right");
+   }
+
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'import_externalauth_users right'";

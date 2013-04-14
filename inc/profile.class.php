@@ -1230,7 +1230,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td width='18%'>"._n('User', 'Users', 2)."</td><td width='15%'>";
       self::dropdownStandardRights("_user", $this->fields["user"], '',
-                                   array(User::IMPORTEXTAUTHUSERS => __('Add users from an external source')));
+                                   array(ProfileRight::IMPORTEXTAUTHUSERS => __('Add users from an external source')));
 
       echo "</td>";
       echo "<td width='18%'>"._n('Group', 'Groups', 2)."</td><td width='15%'>";
@@ -1288,14 +1288,15 @@ class Profile extends CommonDBTM {
       self::dropdownStandardRights("_rule_softwarecategories",
                                    $this->fields["rule_softwarecategories"], false);
       echo "</td>";
-      echo "<td>".__('Business rules for tickets')."</td><td>";
-      self::dropdownRight("rule_ticket", array('value'   => $this->fields["rule_ticket"],
-                                               'nowrite' => true));
+//      echo "<td>".__('Business rules for tickets')."</td><td>";
+//      self::dropdownRight("rule_ticket", array('value'   => $this->fields["rule_ticket"],
+//                                               'nowrite' => true));
       echo "</td>";
       echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
-      echo "<td class='tab_bg_1'>";
+      echo "<td class='tab_bg_1' colspan='2'>";
       self::dropdownStandardRights("_entity_rule_ticket", $this->fields["entity_rule_ticket"],
-                                   false);
+                                   false,
+                                   array(ProfileRight::RULETICKET => __('Business rules for ticket (entity parent)')));
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Dictionary', 'Dictionaries', 2)."</th></tr>\n";

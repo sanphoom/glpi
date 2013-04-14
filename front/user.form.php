@@ -146,7 +146,7 @@ if (isset($_GET['getvcard'])) {
       User::showAddExtAuthForm();
       Html::footer();
    } else if (isset($_POST['add_ext_auth_ldap'])) {
-      Session::checkRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS);
+      Session::checkRight("import_externalauth_users", ProfileRight::IMPORTEXTAUTHUSERS);
 
       if (isset($_POST['login']) && !empty($_POST['login'])) {
          AuthLdap::importUserFromServers(array('name' => $_POST['login']));
@@ -154,7 +154,7 @@ if (isset($_GET['getvcard'])) {
       Html::back();
    } else if (isset($_POST['add_ext_auth_simple'])) {
          if (isset($_POST['login']) && !empty($_POST['login'])) {
-            Session::checkRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS);
+            Session::checkRight("import_externalauth_users", ProfileRight::IMPORTEXTAUTHUSERS);
             $input = array('name'     => $_POST['login'],
                            '_extauth' => 1,
                            'add'      => 1);

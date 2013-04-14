@@ -47,8 +47,6 @@ class User extends CommonDBTM {
    const FIRSTNAME_BEFORE  = 1;
 
 
-   const IMPORTEXTAUTHUSERS   = 1024;
-
    static $rightname = 'user';
 
 
@@ -74,7 +72,7 @@ class User extends CommonDBTM {
    **/
    static function getAdditionalMenuOptions() {
 
-      if (Session::haveRight('import_externalauth_users', User::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight('import_externalauth_users', ProfileRight::IMPORTEXTAUTHUSERS)) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(2);
          $options['ldap']['page']  = "/front/ldap.php";
          return $options;
@@ -1711,7 +1709,7 @@ class User extends CommonDBTM {
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
       }
-      if (Session::haveRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight("import_externalauth_users", ProfileRight::IMPORTEXTAUTHUSERS)) {
          if (AuthLdap::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
@@ -3099,13 +3097,13 @@ class User extends CommonDBTM {
          if (isset($p['update_link'])) {
             $paramscomment['withlink'] = $comment_id;
          }
-         $output .= Ajax::updateItemOnSelectEvent($field_id,
-                                       $comment_id,
-                                       $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);
+         $output .= Ajax::updateItemOnSelectEvent($field_id, $comment_id,
+                                                  $CFG_GLPI["root_doc"]."/ajax/comments.php",
+                                                  $paramscomment, false);
       }
       $output .= Ajax::commonDropdownUpdateItem($p, false);
 
-      if (Session::haveRight('import_externalauth_users', User::IMPORTEXTAUTHUSERS)
+      if (Session::haveRight('import_externalauth_users', ProfileRight::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
@@ -3130,7 +3128,7 @@ class User extends CommonDBTM {
    **/
    static function showAddExtAuthForm() {
 
-      if (!Session::haveRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS)) {
+      if (!Session::haveRight("import_externalauth_users", ProfileRight::IMPORTEXTAUTHUSERS)) {
          return false;
       }
 
