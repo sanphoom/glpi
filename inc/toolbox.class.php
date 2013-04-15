@@ -2218,6 +2218,10 @@ class Toolbox {
       if ($fp) {
          $fw = fwrite($fp, $content);
          fclose($fp);
+         if (function_exists('opcache_invalidate')) {
+            /* Invalidate Zend OPcache to ensure saved version used */
+            opcache_invalidate($name, true);
+         }
          return ($fw>0);
       }
       return false;
