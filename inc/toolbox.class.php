@@ -2199,5 +2199,28 @@ class Toolbox {
    static function cleanDecimal($decimal) {
       return preg_replace("/[^0-9\.-]/", "", $decimal);
    }
+
+
+   /**
+    * Save a configuration file
+    *
+    * @since version 0.85
+    *
+    * @param $name      string   config file name
+    * @param $content   string   config file content
+    *
+    * @return boolean
+   **/
+   function writeConfig($name, $content) {
+
+      $name = GLPI_CONFIG_DIR . '/'.$name;
+      $fp   = fopen($name, 'wt');
+      if ($fp) {
+         $fw = fwrite($fp, $content);
+         fclose($fp);
+         return ($fw>0);
+      }
+      return false;
+   }
 }
 ?>
