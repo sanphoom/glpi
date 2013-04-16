@@ -3818,7 +3818,7 @@ class Html {
     * @return String
    **/
    static function jsSetDropdownValue($id, $value) {
-      return self::jsGetElementbyID($id).".select2('val','$value');";
+      return self::jsGetElementbyID($id).".val('$value').trigger('change');";
    }
 
 
@@ -3916,9 +3916,27 @@ class Html {
                            }
                         },
                         initSelection: function (element, callback) {
-                           var data = {id: ".json_encode($value).",
-                                      text: ".json_encode($valuename)."};
-                           callback(data);
+                           var id=$(element).val();
+                           var defaultid = '$value';
+                           if (id !== '') {
+                              // No ajax call for first item
+                              if (id === defaultid) {
+                                var data = {id: ".json_encode($value).",
+                                          text: ".json_encode($valuename)."};
+                                 callback(data);
+                              } else {
+                                 $.ajax('$url', {
+                                 data: {";
+         foreach ($params as $key => $val) {
+            $output .= "$key: ".json_encode($val).",\n";
+         }
+
+         $output .= "            _one_id: id},
+                                 dataType: 'json',
+                                 }).done(function(data) { callback(data); });
+                              }
+                           }
+                           
                         },
                         formatResult: function(result, container, query, escapeMarkup) {
                            var markup=[];

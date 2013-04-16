@@ -64,9 +64,20 @@ if (!isset($_GET['value'])) {
    $_GET['value'] = 0;
 }
 
-$result = User::getSqlSearchResult(false, $_GET['right'], $_GET["entity_restrict"],
-                                   $_GET['value'], $used, $_GET['searchText']);
+$one_item = -1;
+if (isset($_GET['_one_id'])) {
+   $one_item = $_GET['_one_id'];
+}
 
+if ($one_item < 0) {
+   $result = User::getSqlSearchResult(false, $_GET['right'], $_GET["entity_restrict"],
+                                    $_GET['value'], $used, $_GET['searchText']);
+} else {
+   $query = "SELECT DISTINCT `glpi_users`.*
+               FROM `glpi_users`
+               WHERE `glpi_users`.`id` = '$one_item';";
+   $result = $DB->query($query);
+}
 $users = array();
 
 if ($DB->numrows($result)) {
@@ -107,7 +118,10 @@ if (count($users)) {
    }
 }
 
-$ret['results'] = $datas;
-
-echo json_encode($ret);
+if ($one_item >=0 && isset($datas[0])) {
+   echo json_encode($datas[0]);
+} else {
+   $ret['results'] = $datas;
+   echo json_encode($ret);
+}
 ?>

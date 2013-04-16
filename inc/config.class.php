@@ -1023,7 +1023,7 @@ class Config extends CommonDBTM {
 
       echo "<script type='text/javascript' >\n";
       echo "function passwordCheck() {\n";
-      echo "var pwd = document.getElementById('$field');";
+      echo "var pwd = ".Html::jsGetElementbyID($field).";";
       echo "if(pwd.value.length < ".$CFG_GLPI['password_min_length'].") {
             ".Html::jsGetElementByID('password_min_length').".addClass('red');
             ".Html::jsGetElementByID('password_min_length').".removeClass('green');

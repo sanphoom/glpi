@@ -56,6 +56,7 @@ if (strlen($_GET['searchText']) > 0) {
    $where = " WHERE 1 ";
 }
 
+/// TODO manage _one_id
 
 if (!(isset($_GET["devtype"])
       && ($_GET["devtype"] != 'NetworkEquipment')

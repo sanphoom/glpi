@@ -106,16 +106,28 @@ if (isset($_GET['condition']) && ($_GET['condition'] != '')) {
    $where .= " AND ".$_GET['condition']." ";
 }
 
+$one_item = -1;
+if (isset($_GET['_one_id'])) {
+   $one_item = $_GET['_one_id'];
+}
+
 if ($item instanceof CommonTreeDropdown) {
 
-   $where .= " AND `completename` ".Search::makeTextSearch($_GET['searchText']);
+   if ($one_item >= 0) {
+      $where .= " AND `$table`.`id` = '$one_item'";
+   } else {
+      if (isset($_GET['searchText'])) {
+         $where .= " AND `$table`.`completename` ".Search::makeTextSearch($_GET['searchText']);
+      }
+   }
 
    $multi = false;
 
    // Manage multiple Entities dropdowns
    $add_order = "";
 
-   if ($item->isEntityAssign()) {
+   // No multi if get one item
+   if ($item->isEntityAssign() && $one_item < 0) {
       $recur = $item->maybeRecursive();
 
        // Entities are not really recursive : do not display parents
@@ -155,6 +167,8 @@ if ($item instanceof CommonTreeDropdown) {
 
    }
 
+
+   
    $query = "SELECT *
              FROM `$table`
              $where
@@ -165,14 +179,18 @@ if ($item instanceof CommonTreeDropdown) {
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
-            array_push($datas, array('id'   => $key,
-                                     'text' => $val));
+            if ($one_item < 0 || $one_item == $key) {
+               array_push($datas, array('id'   => $key,
+                                       'text' => $val));
+            }
          }
       }
 
       if ($_GET['display_emptychoice']) {
+         if ($one_item < 0 || $one_item  == 0) {
             array_push($datas, array ('id'   => 0,
-                                      'text' => $_GET['emptylabel']));
+                                    'text' => $_GET['emptylabel']));
+         }
       }
 
       $last_level_displayed = array();
@@ -221,8 +239,8 @@ if ($item instanceof CommonTreeDropdown) {
                   $level = 0;
                }
 
-            } else { // Need to check if parent is the good one
-               if ($level > 1) {
+            } else { // Need to check if parent is the good one / Not if only get one item
+               if ($level > 1 && $one_item < 0) {
                   // Last parent is not the good one need to display arbo
                   if (!isset($last_level_displayed[$level-1])
                       || ($last_level_displayed[$level-1] != $data[$item->getForeignKeyField()])) {
@@ -292,7 +310,8 @@ if ($item instanceof CommonTreeDropdown) {
 } else { // Not a dropdowntree
    $multi = false;
 
-   if ($item->isEntityAssign()) {
+   // No multi if get one item
+   if ($item->isEntityAssign() && $one_item < 0) {
       $multi = $item->maybeRecursive();
 
       if (isset($_GET["entity_restrict"]) && !($_GET["entity_restrict"] < 0)) {
@@ -317,14 +336,20 @@ if ($item instanceof CommonTreeDropdown) {
       $field = "designation";
    }
 
-   $search = Search::makeTextSearch($_GET['searchText']);
-   $where .=" AND  (`$table`.`$field` ".$search;
+   if ($one_item >= 0) {
+      $where .=" AND `$table`.`id` = '$one_item'";
+   } else {
+      if (isset($_GET['searchText'])) {
+         $search = Search::makeTextSearch($_GET['searchText']);
+         $where .=" AND  (`$table`.`$field` ".$search;
 
-   if ($_GET['itemtype'] == "SoftwareLicense") {
-      $where .= " OR `glpi_softwares`.`name` ".$search;
+         if ($_GET['itemtype'] == "SoftwareLicense") {
+            $where .= " OR `glpi_softwares`.`name` ".$search;
+         }
+         $where .= ')';
+      }
    }
-   $where .= ')';
-
+   
    switch ($_GET['itemtype']) {
       case "Contact" :
          $query = "SELECT `$table`.`entities_id`,
@@ -361,14 +386,18 @@ if ($item instanceof CommonTreeDropdown) {
    if ($result = $DB->query($query)) {
 
       if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
-         array_push($datas, array ('id'    => 0,
-                                   'text'  => $_GET["emptylabel"]));
+         if ($one_item < 0 || $one_item == 0) {
+            array_push($datas, array ('id'    => 0,
+                                      'text'  => $_GET["emptylabel"]));
+         }
       }
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
-            array_push($datas, array ('id'    => $key,
-                                      'text'  => $val));
+            if ($one_item < 0 || $one_item == $key) {
+               array_push($datas, array ('id'    => $key,
+                                         'text'  => $val));
+            }
          }
       }
 
@@ -438,7 +467,10 @@ if ($item instanceof CommonTreeDropdown) {
    }
 }
 
-$ret['results'] = $datas;
-
-echo json_encode($ret);
+if ($one_item >=0 && isset($datas[0])) {
+   echo json_encode($datas[0]);
+} else {
+   $ret['results'] = $datas;
+   echo json_encode($ret);
+}
 ?>

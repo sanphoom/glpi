@@ -45,6 +45,8 @@ if (!isset($_GET['fromtype']) || !($fromitem = getItemForItemtype($_GET['fromtyp
    exit();
 }
 
+/// TODO manage _one_id
+
 $fromitem->checkGlobal('w');
 Toolbox::logDebug($_GET);
 $used = array();
