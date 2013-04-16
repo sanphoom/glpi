@@ -1527,11 +1527,16 @@ class Dropdown {
          }
 
          $output .= '>';
-
+         $max_option_size = 0;
          foreach ($elements as $key => $val) {
             // optgroup management
             if (is_array($val)) {
-               $output .= "<optgroup label=\"".Html::entities_deep($key)."\">";
+               $opt_goup = Html::entities_deep($key);
+               if ($max_option_size < strlen($opt_goup)) {
+                  $max_option_size = strlen($opt_goup);
+               }
+               $output .= "<optgroup label=\"$opt_goup\">";
+               
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
                      $output .= "<option value='".$key2."'";
@@ -1543,6 +1548,9 @@ class Dropdown {
                        }
                      }
                      $output .= ">" .  $val2 . "</option>";
+                     if ($max_option_size < strlen($val2)) {
+                        $max_option_size = strlen($val2);
+                     }
                   }
                }
                $output .= "</optgroup>";
@@ -1557,6 +1565,9 @@ class Dropdown {
                      }
                   }
                   $output .= ">" .$val . "</option>";
+                  if ($max_option_size < strlen($val)) {
+                     $max_option_size = strlen($val);
+                  }
                }
             }
          }
@@ -1581,14 +1592,26 @@ class Dropdown {
          }
 
          if ($param['mark_unmark_all'] && $param['multiple']) {
-            $output .= "<br>\n";
-            /// TODO : review display !!
-            $output .= "<input type='button' onclick=\"selectAllOptions('$field_id')\" value='";
-            $output .= __('Select all')."'>";
-            $output .= "<input type='button' onclick=\"unselectAllOptions('$field_id')\" value='";
-            $output .=  __('Deselect all')."'>";
+            $select   = __('Select all');
+            $deselect = __('Deselect all');
+            $size     = strlen($select) +  strlen($deselect);
+            $select   = "<input type='button' onclick=\"selectAllOptions('$field_id')\" value='$select'>";
+            $deselect = "<input type='button' onclick=\"unselectAllOptions('$field_id')\" value='$deselect'>";
+            if ($size > $max_option_size) {
+               $output = "<table><tr><td rowspan='2'>".$output."</td>";
+               $output .= "<td>";
+               $output .= $select;
+               $output .= "</td></tr><tr><td class='center'>";
+               $output .= $deselect;
+            } else {
+               $output = "<table><tr><td colspan='2'>".$output."</td>";
+               $output .= "</tr><tr><td class='center'>";
+               $output .= $select;
+               $output .= "</td><td class='center'>";
+               $output .= $deselect;
+            }
+            $output .= "</td></tr></table>";
          }
-
       }
 
       // Width set on select

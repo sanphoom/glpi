@@ -2272,7 +2272,7 @@ class Profile extends CommonDBTM {
                       CommonDBTM::UPDATE  => __('Update'),
                       CommonDBTM::CREATE  => __('Create'),
                       CommonDBTM::DELETE  => __('Delete'),
-                      CommonDBTM::PURGE   => __('Delete permenently'));
+                      CommonDBTM::PURGE   => __('Delete permanently'));
 
       $size = 5;
 
