@@ -49,6 +49,17 @@ Session::checkLoginUser();
 $datas = array();
 $location_restrict = false;
 
+
+if (!isset($_GET['page'])) {
+   $_GET['page']       = 1;
+   $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
+}
+
+$start = ($_GET['page']-1)*$_GET['page_limit'];
+$limit = $_GET['page_limit'];
+
+$LIMIT = "LIMIT $start,$limit";
+
 $one_item = -1;
 if (isset($_GET['_one_id'])) {
    $one_item = $_GET['_one_id'];
@@ -84,6 +95,7 @@ $query = "SELECT `glpi_netpoints`.`comment` AS comment,
           FROM `glpi_netpoints`
           LEFT JOIN `glpi_locations` ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`) ";
 
+          Toolbox::logDebug($_GET);
 if (isset($_GET["devtype"]) && !empty($_GET["devtype"])) {
    $query .= "LEFT JOIN `glpi_networkportethernets`
                   ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)
@@ -94,7 +106,6 @@ if (isset($_GET["devtype"]) && !empty($_GET["devtype"])) {
 
    if ($_GET["devtype"] == 'NetworkEquipment') {
       $query .= " = 'NetworkEquipment' )";
-
    } else {
       $query .= " != 'NetworkEquipment' )";
       if (isset($_GET["locations_id"]) && ($_GET["locations_id"] >= 0)) {
@@ -109,17 +120,23 @@ if (isset($_GET["devtype"]) && !empty($_GET["devtype"])) {
    $where .= " AND `glpi_netpoints`.`locations_id` = '".$_GET["locations_id"]."' ";
 }
 
-$query .= $where ."
+$query .= $where ." 
           ORDER BY `glpi_locations`.`completename`,
-                   `glpi_netpoints`.`name`";
+                   `glpi_netpoints`.`name`
+          $LIMIT";
 
 $result = $DB->query($query);
 
-if ($one_item < 0 && $one_item == 0) {
-   array_push($datas, array('id'   => 0,
-                           'text' => Dropdown::EMPTY_VALUE));
+Toolbox::logDebug($query);
+
+if ($one_item < 0 || $one_item == 0) {
+   if ($_GET['page'] == 1) {
+      array_push($datas, array('id'   => 0,
+                              'text' => Dropdown::EMPTY_VALUE));
+   }
 }
 
+$count = 0;
 if ($DB->numrows($result)) {
    while ($data =$DB->fetch_assoc($result)) {
       $output     = $data['netpname'];
@@ -138,13 +155,14 @@ if ($DB->numrows($result)) {
       array_push($datas, array('id'   => $ID,
                               'text'  => $output,
                               'title' => $title));
-
+      $count++;
    }
 }
 
 if ($one_item >=0 && isset($datas[0])) {
    echo json_encode($datas[0]);
 } else {
+   $ret['count'] = $count;
    $ret['results'] = $datas;
    echo json_encode($ret);
 }

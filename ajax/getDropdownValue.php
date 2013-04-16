@@ -190,7 +190,6 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
-   Toolbox::logDebug($query);
 
    if ($result = $DB->query($query)) {
 
@@ -223,7 +222,6 @@ if ($item instanceof CommonTreeDropdown) {
             $ID        = $data['id'];
             $level     = $data['level'];
             $outputval = $data['name'];
-            Toolbox::logDebug($firstitem);
             
             if ($multi
                 && ($data["entities_id"] != $prev)) {
@@ -407,7 +405,6 @@ if ($item instanceof CommonTreeDropdown) {
       $query .= " ORDER BY $field
                  $LIMIT";
    }
-   Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
 
       if ($_GET['page'] == 1) {
@@ -501,7 +498,6 @@ if ($one_item >=0 && isset($datas[0])) {
    
    $ret['results'] = $datas;
    $ret['count']   = $count;
-   Toolbox::logDebug($ret);
    echo json_encode($ret);
 }
 ?>

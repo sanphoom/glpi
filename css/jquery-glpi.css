@@ -123,3 +123,5 @@ html .ui-autocomplete {
 .select2-container .select2-choice div b {
     margin-top: -2px;
 }
+
+/* TODO : trouble of display for optgroup select with paging */

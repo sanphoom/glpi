@@ -91,9 +91,14 @@ if (in_array($_GET['itemtype'],$CFG_GLPI["helpdesk_visible_types"])) {
    $where .= " AND `is_helpdesk_visible` = '1' ";
 }
 
-/// TODO manage it
-$NBMAX = $CFG_GLPI["dropdown_max"];
-$LIMIT = "LIMIT 0,$NBMAX";
+if (!isset($_GET['page'])) {
+   $_GET['page']       = 1;
+   $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
+}
+
+$start = ($_GET['page']-1)*$_GET['page_limit'];
+$limit = $_GET['page_limit'];
+$LIMIT = "LIMIT $start,$limit";
 
 $query = "SELECT *
           FROM `".$_GET['table']."`
@@ -104,9 +109,11 @@ $result = $DB->query($query);
 
 $datas = array();
 
-array_push($datas, array('id'   => 0,
-                         'text' => Dropdown::EMPTY_VALUE));
-
+if ($_GET['page'] == 1) {
+   array_push($datas, array('id'   => 0,
+                            'text' => Dropdown::EMPTY_VALUE));
+}
+$count=0;
 if ($DB->numrows($result)) {
    while ($data = $DB->fetch_assoc($result)) {
       $output = $data['name'];
@@ -131,10 +138,11 @@ if ($DB->numrows($result)) {
 
       array_push($datas, array('id'  => $data['id'],
                               'text' => $output));
+      $count++;
    }
 }
 
+$ret['count'] = $count;
 $ret['results'] = $datas;
-
 echo json_encode($ret);
 ?>
