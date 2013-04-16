@@ -2803,11 +2803,13 @@ class User extends CommonDBTM {
     * @param $value                    default value (default 0)
     * @param $used             array   Already used items ID: not to display in dropdown
     * @param $search                   pattern (default '')
+    * @param $start                    start LIMIT value
+    * @param $limit                    limit LIMIT value (default -1 no limit)
     *
     * @return mysql result set.
    **/
    static function getSqlSearchResult ($count=true, $right="all", $entity_restrict=-1, $value=0,
-                                       $used=array(), $search='') {
+                                       $used=array(), $search='', $start=0, $limit=-1) {
       global $DB, $CFG_GLPI;
 
       // No entity define : use active ones
@@ -2946,8 +2948,7 @@ class User extends CommonDBTM {
       if ($count) {
          $query .= " WHERE $where ";
       } else {
-         if ((strlen($search) > 0)
-             && ($search != $CFG_GLPI["ajax_wildcard"])) {
+         if ((strlen($search) > 0)) {
             $where .= " AND (`glpi_users`.`name` ".Search::makeTextSearch($search)."
                              OR `glpi_users`.`realname` ".Search::makeTextSearch($search)."
                              OR `glpi_users`.`firstname` ".Search::makeTextSearch($search)."
@@ -2968,8 +2969,8 @@ class User extends CommonDBTM {
                                `glpi_users`.`name` ";
          }
 
-         if ($search != $CFG_GLPI["ajax_wildcard"]) {
-            $query .= " LIMIT 0,".$CFG_GLPI["dropdown_max"];
+         if ($limit > 0) {
+            $query .= " LIMIT $start,$limit";
          }
       }
 

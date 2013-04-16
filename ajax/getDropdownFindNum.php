@@ -72,8 +72,7 @@ if ($item->maybeTemplate()) {
    $where .= " AND `is_template` = '0' ";
 }
 
-if ((strlen($_GET['searchText']) > 0)
-    && ($_GET['searchText'] != $CFG_GLPI["ajax_wildcard"])) {
+if ((strlen($_GET['searchText']) > 0)) {
    $search = Search::makeTextSearch($_GET['searchText']);
 
    $where .= " AND (`name` ".$search."
@@ -92,12 +91,9 @@ if (in_array($_GET['itemtype'],$CFG_GLPI["helpdesk_visible_types"])) {
    $where .= " AND `is_helpdesk_visible` = '1' ";
 }
 
+/// TODO manage it
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
-
-if ($_GET['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
-   $LIMIT = "";
-}
 
 $query = "SELECT *
           FROM `".$_GET['table']."`

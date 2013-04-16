@@ -495,6 +495,8 @@ function update084to085() {
    $migration->addKey('glpi_users', 'is_deleted_ldap');
 
    Config::deleteConfigurationValues('core', array('use_ajax'));
+   Config::deleteConfigurationValues('core', array('ajax_min_textsearch_load'));
+   Config::deleteConfigurationValues('core', array('ajax_buffertime_load'));
 
    Config::setConfigurationValues('core', array('use_unicodefont' => 0));
    $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");

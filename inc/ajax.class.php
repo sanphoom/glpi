@@ -189,6 +189,7 @@ class Ajax {
     *
     * @param $id   ID of the ajax item
     * @param $size size of the input text field (default 4)
+    * @deprecated since version 0.85
    **/
    static function displaySearchTextForDropdown($id, $size=4) {
       echo self::getSearchTextForDropdown($id, $size);
@@ -201,14 +202,17 @@ class Ajax {
     *
     * @param $id   ID of the ajax item
     * @param $size size of the input text field (default 4)
+    * @deprecated since version 0.85
    **/
    static function getSearchTextForDropdown($id, $size=4) {
       global $CFG_GLPI;
 
       //TRANS: %s is the character used as wildcard in ajax search
-      return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
-             "\" type='text' ondblclick=\"this.value='".
-             $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+//       return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
+//              "\" type='text' ondblclick=\"this.value='".
+//              $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+      return "<input title=\"".sprintf(__s('Search (%s for all)'), '*').
+             "\" type='text' ondblclick=\"this.value='*';\" id='search_$id' name='____data_$id' size='$size'>\n";
    }
 
 
@@ -373,14 +377,17 @@ class Ajax {
       global $CFG_GLPI;
 
       if (count($forceloadfor) == 0) {
-         $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
+//          $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
+         $forceloadfor = array('*');
       }
       // Need to define min size for text search
       if ($minsize < 0) {
-         $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
+//          $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
+         $minsize = 0;
       }
       if ($buffertime < 0) {
-         $buffertime = $CFG_GLPI['ajax_buffertime_load'];
+         $buffertime = 0;
+//         $buffertime = $CFG_GLPI['ajax_buffertime_load'];
       }
 
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
@@ -597,8 +604,8 @@ class Ajax {
          $locoutput .= self::updateItemOnInputTextEvent("search_$rand", "results_$rand",
                                                         $CFG_GLPI["root_doc"].$relativeurl,
                                                         $params,
-                                                        $CFG_GLPI['ajax_min_textsearch_load'],
-                                                        $CFG_GLPI['ajax_buffertime_load'],
+                                                        0/*$CFG_GLPI['ajax_min_textsearch_load']*/,
+                                                        0/*$CFG_GLPI['ajax_buffertime_load']*/,
                                                         array(), false);
       }
       $locoutput .=  "<span id='results_$rand'>\n";
@@ -609,7 +616,7 @@ class Ajax {
             $oldpost = $_POST;
          }
          $_POST = $params;
-         $_POST["searchText"] = $CFG_GLPI["ajax_wildcard"];
+//         $_POST["searchText"] = $CFG_GLPI["ajax_wildcard"];
          ob_start();
          include (GLPI_ROOT.$relativeurl);
          $locoutput .= ob_get_contents();
@@ -630,7 +637,7 @@ class Ajax {
          $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl,
                                               $initparams, "search_$rand", false);
       } else {
-         $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
+//          $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
          $locoutput               .= self::updateItemJsCode("results_$rand",
                                                             $CFG_GLPI['root_doc'].$relativeurl,
                                                             $initparams, '', false);

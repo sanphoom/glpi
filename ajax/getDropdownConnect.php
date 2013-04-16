@@ -75,8 +75,7 @@ if ($item->maybeTemplate()) {
    $where .= " AND `$table`.`is_template` = '0' ";
 }
 
-if (isset($_GET['searchText']) && (strlen($_GET['searchText']) > 0)
-    && ($_GET['searchText'] != $CFG_GLPI["ajax_wildcard"])) {
+if (isset($_GET['searchText']) && (strlen($_GET['searchText']) > 0)) {
    $where .= " AND (`$table`.`name` ".Search::makeTextSearch($_GET['searchText'])."
                     OR `$table`.`otherserial` ".Search::makeTextSearch($_GET['searchText'])."
                     OR `$table`.`serial` ".Search::makeTextSearch($_GET['searchText'])." )";
@@ -98,12 +97,9 @@ if (isset($_GET["entity_restrict"]) && !($_GET["entity_restrict"] < 0)) {
    }
 }
 
+/// TODO manage it
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
-
-if (isset($_GET['searchText']) && ($_GET['searchText'] == $CFG_GLPI["ajax_wildcard"])) {
-   $LIMIT = "";
-}
 
 $where_used = '';
 if (!empty($used)) {

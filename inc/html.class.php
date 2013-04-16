@@ -3868,6 +3868,7 @@ class Html {
       $out .= "$(document).ready(function() { $('#$id').select2({
                   width: '$width',
                   closeOnSelect: false,
+                  quietMillis: 100,
                   minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count']."}); });";
       $out .= "</script>\n";
       return $out;
@@ -3920,9 +3921,9 @@ class Html {
       $output .= " $('#$field_id').select2({
                         width: '$width',
                         minimumInputLength: 0,
+                        quietMillis: 100,
                         minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
                         closeOnSelect: false,
-                        quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
                         ajax: {
                            url: '$url',
                            dataType: 'json',
@@ -3933,11 +3934,16 @@ class Html {
       }
 
       $output .= "               searchText: term,
-                                 page_limit: 10
+                                 page_limit: ".$CFG_GLPI['dropdown_max'].", // page size
+                                 page: page, // page number
                               };
                            },
                            results: function (data, page) {
-                              return {results: data.results};
+//                               var more = (page * ".$CFG_GLPI['dropdown_max'].") < data.total;
+//                               alert(data.count+' '+".$CFG_GLPI['dropdown_max'].");
+                              var more = (data.count >= ".$CFG_GLPI['dropdown_max'].");
+                              return {results: data.results, more: more};
+//                               return {results: data.results};
                            }
                         },
                         initSelection: function (element, callback) {

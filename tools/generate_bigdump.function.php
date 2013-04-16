@@ -1673,8 +1673,8 @@ function generate_entity($ID_entity) {
                   $newID5 = $loc->add(toolbox::addslashes_deep(
                                       array('entities_id'     => $ID_entity,
                                             'is_recursive'    => 1,
-                                            'name'            => "sss-location' $m",
-                                            'comment'         => "comment sss-location' $m",
+                                            'name'            => "ssss-location' $m",
+                                            'comment'         => "comment ssss-location' $m",
                                             'building'        => "building $i",
                                             'room'            => "room' $l-$m",
                                             'locations_id'    => $newID4)));

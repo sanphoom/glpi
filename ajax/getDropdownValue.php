@@ -81,8 +81,20 @@ if ($item->maybeTemplate()) {
    $where .= " AND `is_template` = '0' ";
 }
 
-$NBMAX = $CFG_GLPI["dropdown_max"];
-$LIMIT = "LIMIT 0,$NBMAX";
+if (!isset($_GET['page'])) {
+   $_GET['page']       = 1;
+   $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
+}
+
+$start = ($_GET['page']-1)*$_GET['page_limit'];
+$limit = $_GET['page_limit'];
+// Get last item retrieve to init values
+if ($_GET['page'] > 1) {
+   $start--;
+   $limit++;
+}
+$LIMIT = "LIMIT $start,$limit";
+
 
 $where .=" AND `$table`.`id` NOT IN ('".$_GET['value']."'";
 
@@ -110,6 +122,10 @@ $one_item = -1;
 if (isset($_GET['_one_id'])) {
    $one_item = $_GET['_one_id'];
 }
+
+// Count real items returned
+$count = 0;
+
 
 if ($item instanceof CommonTreeDropdown) {
 
@@ -174,60 +190,57 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
+   Toolbox::logDebug($query);
 
    if ($result = $DB->query($query)) {
 
-      if (count($toadd)) {
-         foreach ($toadd as $key => $val) {
-            if ($one_item < 0 || $one_item == $key) {
-               array_push($datas, array('id'   => $key,
-                                       'text' => $val));
+      if ($_GET['page'] == 1) {
+         if (count($toadd)) {
+            foreach ($toadd as $key => $val) {
+               if ($one_item < 0 || $one_item == $key) {
+                  array_push($datas, array('id'   => $key,
+                                          'text' => $val));
+               }
+            }
+         }
+
+         if ($_GET['display_emptychoice']) {
+            if ($one_item < 0 || $one_item  == 0) {
+               array_push($datas, array ('id'   => 0,
+                                       'text' => $_GET['emptylabel']));
             }
          }
       }
-
-      if ($_GET['display_emptychoice']) {
-         if ($one_item < 0 || $one_item  == 0) {
-            array_push($datas, array ('id'   => 0,
-                                    'text' => $_GET['emptylabel']));
-         }
-      }
-
       $last_level_displayed = array();
       $datastoadd = array();
+      // Ignore first item for all pages except first page or one_item
+      $firstitem = ($_GET['page']>1 && $one_item < 0);
       if ($DB->numrows($result)) {
          $prev = -1;
+         $firstitem_entity = -1;
 
          while ($data = $DB->fetch_assoc($result)) {
             $ID        = $data['id'];
             $level     = $data['level'];
             $outputval = $data['name'];
-
-            if ($displaywith) {
-               foreach ($_GET['displaywith'] as $key) {
-                  if (isset($data[$key])) {
-                     $withoutput = $data[$key];
-                     if (isForeignKeyField($key)) {
-                        $withoutput = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
-                                                                $data[$key]);
-                     }
-                     if ((strlen($withoutput) > 0) && ($withoutput != '&nbsp;')) {
-                        $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
-                     }
-                  }
-               }
-            }
-
+            Toolbox::logDebug($firstitem);
+            
             if ($multi
                 && ($data["entities_id"] != $prev)) {
-               if ($prev >= 0) {
-                  if (count($datastoadd)) {
-                     array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities",
-                                                                                     $prev),
-                                             'children' => $datastoadd));
+               // Do not do it for first item for next page load
+               if (!$firstitem) {
+                  if ($prev >= 0) {
+                     if (count($datastoadd)) {
+                        array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities",
+                                                                                       $prev),
+                                                'children' => $datastoadd));
+                     }
                   }
                }
                $prev = $data["entities_id"];
+               if ($firstitem) {
+                  $firstitem_entity = $prev;
+               }
                // Reset last level displayed :
                $datastoadd = array();
             }
@@ -239,7 +252,8 @@ if ($item instanceof CommonTreeDropdown) {
                   $level = 0;
                }
 
-            } else { // Need to check if parent is the good one / Not if only get one item
+            } else { // Need to check if parent is the good one
+                     // Do not do if only get one item
                if ($level > 1 && $one_item < 0) {
                   // Last parent is not the good one need to display arbo
                   if (!isset($last_level_displayed[$level-1])
@@ -252,18 +266,20 @@ if ($item instanceof CommonTreeDropdown) {
                      do {
                         // Get parent
                         if ($item->getFromDB($work_parentID)) {
-                           $title = $item->fields['completename'];
+                           // Do not do for first item for next page load
+                           if (!$firstitem) {
+                              $title = $item->fields['completename'];
 
-                           if (isset($item->fields["comment"])) {
-                              $title = sprintf(__('%1$s - %2$s'), $title, $item->fields["comment"]);
+                              if (isset($item->fields["comment"])) {
+                                 $title = sprintf(__('%1$s - %2$s'), $title, $item->fields["comment"]);
+                              }
+                              $output2 = $item->getName();
+
+                              array_push($datastoadd, array ('id'      => $ID,
+                                                            'text'     => $output2,
+                                                            'level'    => $work_level,
+                                                            'disabled' => true));
                            }
-                           $output2 = $item->getName();
-
-                           array_push($datastoadd, array ('id'      => $ID,
-                                                         'text'     => $output2,
-                                                         'level'    => $work_level,
-                                                         'disabled' => true));
-
                            $last_level_displayed[$work_level] = $item->fields['id'];
                            $work_level--;
                            $work_parentID = $item->fields[$item->getForeignKeyField()];
@@ -281,26 +297,35 @@ if ($item instanceof CommonTreeDropdown) {
                $last_level_displayed[$level] = $data['id'];
             }
 
-            if ($_SESSION["glpiis_ids_visible"]
-                || (Toolbox::strlen($outputval) == 0)) {
-               $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
-            }
+            // Do not do for first item for next page load
+            if (!$firstitem) {
+               if ($_SESSION["glpiis_ids_visible"]
+                  || (Toolbox::strlen($outputval) == 0)) {
+                  $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
+               }
 
-            $title = $data['completename'];
-            if (isset($data["comment"])) {
-               $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
+               $title = $data['completename'];
+               if (isset($data["comment"])) {
+                  $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
+               }
+               array_push($datastoadd, array ('id'    => $ID,
+                                             'text'  => $outputval,
+                                             'level' => $level));
+               $count++;
             }
-            array_push($datastoadd, array ('id'    => $ID,
-                                           'text'  => $outputval,
-                                           'level' => $level));
-
+            $firstitem = false;
          }
       }
    }
    if ($multi) {
       if (count($datastoadd)) {
-         array_push($datas, array('text'     => Dropdown::getDropdownName("glpi_entities", $prev),
-                                  'children' => $datastoadd));
+         // On paging mode do not add entity information each time
+         if ($prev == $firstitem_entity) {
+            $datas = array_merge($datas, $datastoadd);
+         } else {
+            array_push($datas, array('text'     => Dropdown::getDropdownName("glpi_entities", $prev),
+                                     'children' => $datastoadd));
+         }
       }
    } else {
       if (count($datastoadd)) {
@@ -382,25 +407,27 @@ if ($item instanceof CommonTreeDropdown) {
       $query .= " ORDER BY $field
                  $LIMIT";
    }
-//    Toolbox::logDebug($query);
+   Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
 
-      if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
-         if ($one_item < 0 || $one_item == 0) {
-            array_push($datas, array ('id'    => 0,
-                                      'text'  => $_GET["emptylabel"]));
+      if ($_GET['page'] == 1) {
+         if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
+            if ($one_item < 0 || $one_item == 0) {
+               array_push($datas, array ('id'    => 0,
+                                       'text'  => $_GET["emptylabel"]));
+            }
          }
-      }
 
-      if (count($toadd)) {
-         foreach ($toadd as $key => $val) {
-            if ($one_item < 0 || $one_item == $key) {
-               array_push($datas, array ('id'    => $key,
-                                         'text'  => $val));
+         if (count($toadd)) {
+            foreach ($toadd as $key => $val) {
+               if ($one_item < 0 || $one_item == $key) {
+                  array_push($datas, array ('id'    => $key,
+                                          'text'  => $val));
+               }
             }
          }
       }
-
+      
       $outputval = Dropdown::getDropdownName($table,$_GET['value']);
 
       $datastoadd = array();
@@ -451,6 +478,7 @@ if ($item instanceof CommonTreeDropdown) {
             }
             array_push($datastoadd, array ('id'    => $ID,
                                            'text'  => $outputval));
+            $count++;
          }
          if ($multi) {
             if (count($datastoadd)) {
@@ -470,7 +498,10 @@ if ($item instanceof CommonTreeDropdown) {
 if ($one_item >=0 && isset($datas[0])) {
    echo json_encode($datas[0]);
 } else {
+   
    $ret['results'] = $datas;
+   $ret['count']   = $count;
+   Toolbox::logDebug($ret);
    echo json_encode($ret);
 }
 ?>

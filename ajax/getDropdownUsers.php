@@ -69,9 +69,15 @@ if (isset($_GET['_one_id'])) {
    $one_item = $_GET['_one_id'];
 }
 
+if (!isset($_GET['page'])) {
+   $_GET['page']       = 1;
+   $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
+}
+
 if ($one_item < 0) {
+   $start = ($_GET['page']-1)*$_GET['page_limit'];
    $result = User::getSqlSearchResult(false, $_GET['right'], $_GET["entity_restrict"],
-                                    $_GET['value'], $used, $_GET['searchText']);
+                                    $_GET['value'], $used, $_GET['searchText'], $start, $_GET['page_limit']);
 } else {
    $query = "SELECT DISTINCT `glpi_users`.*
                FROM `glpi_users`
@@ -80,6 +86,8 @@ if ($one_item < 0) {
 }
 $users = array();
 
+// Count real items returned
+$count = 0;
 if ($DB->numrows($result)) {
    while ($data=$DB->fetch_assoc($result)) {
       $users[$data["id"]] = formatUserName($data["id"], $data["name"], $data["realname"],
@@ -99,13 +107,16 @@ uasort($users, 'dpuser_cmp');
 
 $datas = array();
 
-if ($_GET['all']==0) {
-   array_push($datas, array('id'   => 0,
-                            'text' => Dropdown::EMPTY_VALUE));
-//    echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
-} else if ($_GET['all']==1) {
-   array_push($datas, array('id'   => 0,
-                            'text' => __('All')));
+if ($_GET['page'] == 1) {   
+   if ($one_item < 0 || $one_item == 0) {
+      if ($_GET['all'] == 0) {
+         array_push($datas, array('id'   => 0,
+                                  'text' => Dropdown::EMPTY_VALUE));
+      } else if ($_GET['all'] == 1) {
+         array_push($datas, array('id'   => 0,
+                                  'text' => __('All')));
+      }
+   }
 }
 
 if (count($users)) {
@@ -115,6 +126,7 @@ if (count($users)) {
       array_push($datas, array('id'   => $ID,
                               'text'  => $output,
                               'title' => $title));
+      $count++;
    }
 }
 
@@ -122,6 +134,7 @@ if ($one_item >=0 && isset($datas[0])) {
    echo json_encode($datas[0]);
 } else {
    $ret['results'] = $datas;
+   $ret['count']   = $count;
    echo json_encode($ret);
 }
 ?>
