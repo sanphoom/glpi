@@ -64,7 +64,7 @@ class Consumable extends CommonDBTM {
     *
     * @see CommonDBTM::getNameField()
    **/
-   function getNameField() {
+   static function getNameField() {
       return 'id';
    }
 

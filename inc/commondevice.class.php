@@ -141,7 +141,7 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * @return string
    **/
-   function getNameField() {
+   static function getNameField() {
       return 'designation';
    }
 

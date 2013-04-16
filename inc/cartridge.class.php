@@ -91,7 +91,7 @@ class Cartridge extends CommonDBChild {
     *
     * @see CommonDBTM::getNameField()
    **/
-   function getNameField() {
+   static function getNameField() {
       return 'id';
    }
 
