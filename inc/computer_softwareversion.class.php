@@ -856,7 +856,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
                               
             $paramsma = array('num_displayed'    => $number,
-                              'container'        => 'mass'.__CLASS__.$rand,
+                              'container'        => 'massSoftwareLicense'.$rand,
                               'specific_actions' => $actions);
 
             Html::showMassiveActions('Computer_SoftwareLicense', $paramsma);
