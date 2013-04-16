@@ -1561,6 +1561,13 @@ class CommonDBTM extends CommonGLPI {
       If (static::$rightname) {
          return Session::haveRight(static::$rightname, self::UPDATE);
       }
+
+      /// hack for old right management to avoid put $rightname in each class
+      $class = get_called_class();
+      $tmp = new ReflectionMethod($class, 'canCreate');
+      if ($tmp->getDeclaringClass()->name == $class) {
+         return $class::canCreate();
+      }
       return false;
    }
 
@@ -2258,6 +2265,14 @@ class CommonDBTM extends CommonGLPI {
                return true;
             }
             return (static::canPurge() && $this->canPurgeItem());
+
+        case CommonDBTM::CREATE :
+            // Personnal item
+            if ($this->isPrivate()
+                && ($this->fields['users_id'] === Session::getLoginUserID())) {
+               return true;
+            }
+            return (static::canCreate() && $this->canCreateItem());
 
          case 'recursive' :
             if ($this->isEntityAssign()
