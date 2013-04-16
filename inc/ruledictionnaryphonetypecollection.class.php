@@ -35,17 +35,6 @@ class RuleDictionnaryPhoneTypeCollection extends RuleDictionnaryDropdownCollecti
    public $item_table  = "glpi_phonetypes";
    public $menu_option = "type.phone";
    
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table = "glpi_phonetypes";
-//       $this->initCache("glpi_rulecachephonetypes");
-//       $this->menu_option = "type.phone";
-//    }
-
-
    /**
     * @see RuleCollection::getTitle()
    **/

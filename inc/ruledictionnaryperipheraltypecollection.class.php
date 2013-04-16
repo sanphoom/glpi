@@ -35,17 +35,6 @@ class RuleDictionnaryPeripheralTypeCollection extends RuleDictionnaryDropdownCol
    public $item_table  = "glpi_peripheraltypes";
    public $menu_option = "type.peripheral";
    
-//    /**
-//     * Constructor
-//    **/
-//    function __construct() {
-// 
-//       $this->item_table = "glpi_peripheraltypes";
-//       $this->initCache("glpi_rulecacheperipheraltypes");
-//       $this->menu_option = "type.peripheral";
-//    }
-
-
    /**
     * @see RuleCollection::getTitle()
    **/
