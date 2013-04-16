@@ -71,7 +71,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
       // Default values of parameters
       $params["knowbaseitemcategories_id"] = "0";
-      $params["target"]                    = $_SERVER['PHP_SELF'];
+      $params["target"]                    = $CFG_GLPI['root_doc'].'/front/knowbaseitem.php';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
