@@ -49,14 +49,21 @@ Session::checkLoginUser();
 $datas = array();
 $location_restrict = false;
 
-if (strlen($_GET['searchText']) > 0) {
-   $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_GET['searchText'])."
-                     OR `glpi_locations`.`completename` ".Search::makeTextSearch($_GET['searchText']).")";
-} else {
-   $where = " WHERE 1 ";
+$one_item = -1;
+if (isset($_GET['_one_id'])) {
+   $one_item = $_GET['_one_id'];
 }
 
-/// TODO manage _one_id
+if ($one_item >= 0) {
+   $where .= " AND `glpi_netpoints`.`id` = '$one_item'";
+} else {
+   if (strlen($_GET['searchText']) > 0) {
+      $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_GET['searchText'])."
+                        OR `glpi_locations`.`completename` ".Search::makeTextSearch($_GET['searchText']).")";
+   } else {
+      $where = " WHERE 1 ";
+   }
+}
 
 if (!(isset($_GET["devtype"])
       && ($_GET["devtype"] != 'NetworkEquipment')
@@ -108,8 +115,10 @@ $query .= $where ."
 
 $result = $DB->query($query);
 
-array_push($datas, array('id'   => 0,
-                         'text' => Dropdown::EMPTY_VALUE));
+if ($one_item < 0 && $one_item == 0) {
+   array_push($datas, array('id'   => 0,
+                           'text' => Dropdown::EMPTY_VALUE));
+}
 
 if ($DB->numrows($result)) {
    while ($data =$DB->fetch_assoc($result)) {
@@ -132,7 +141,11 @@ if ($DB->numrows($result)) {
 
    }
 }
-$ret['results'] = $datas;
 
-echo json_encode($ret);
+if ($one_item >=0 && isset($datas[0])) {
+   echo json_encode($datas[0]);
+} else {
+   $ret['results'] = $datas;
+   echo json_encode($ret);
+}
 ?>

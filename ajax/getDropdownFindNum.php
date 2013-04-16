@@ -43,8 +43,6 @@ if (!TableExists($_GET['table'])) {
    exit();
 }
 
-/// TODO manage _one_id
-
 $itemtypeisplugin = isPluginItemType($_GET['itemtype']);
 
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
