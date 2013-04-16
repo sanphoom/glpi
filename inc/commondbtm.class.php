@@ -1527,6 +1527,12 @@ class CommonDBTM extends CommonGLPI {
       If (static::$rightname) {
          return Session::haveRight(static::$rightname, self::DELETE);
       }
+      /// hack for old right management to avoid put $rightname in each class
+      $class = get_called_class();
+      $tmp = new ReflectionMethod($class, 'canCreate');
+      if ($tmp->getDeclaringClass()->name == $class) {
+         return $class::canCreate();
+      }
       return false;
    }
 
