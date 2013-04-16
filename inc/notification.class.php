@@ -103,6 +103,7 @@ class Notification extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'Notification';
 
    static function getTypeName($nb=0) {
       return _n('Notification', 'Notifications', $nb);

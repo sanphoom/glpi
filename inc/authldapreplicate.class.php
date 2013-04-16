@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 /**
@@ -36,13 +36,7 @@
 **/
 class AuthLdapReplicate extends CommonDBTM {
 
-
-   /**
-    * @since version 0.84
-   **/
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
+   static $rightname = 'config';
 
 
    /**

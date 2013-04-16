@@ -43,9 +43,12 @@ class Bookmark extends CommonDBTM {
    var       $auto_message_on_action = false;
    protected $displaylist            = false;
 
+   static $rightname = 'bookmark_public';
+
    const WIDTH  = 750;
    const SEARCH = 1; //SEARCH SYSTEM bookmark
    const URI    = 2;
+
 
 
    /**
@@ -58,16 +61,6 @@ class Bookmark extends CommonDBTM {
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('bookmark_public', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('bookmark_public', 'r');
    }
 
 

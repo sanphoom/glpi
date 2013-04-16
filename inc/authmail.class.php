@@ -40,19 +40,11 @@ class AuthMail extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'config';
+
 
    static function getTypeName($nb=0) {
       return _n('Mail server', 'Mail servers', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 

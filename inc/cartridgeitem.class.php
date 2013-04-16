@@ -48,19 +48,10 @@ class CartridgeItem extends CommonDBTM {
    static protected $forward_entity_to = array('Cartridge', 'Infocom');
    public $dohistory                   = true;
 
+   static $rightname                   = 'cartridge';
 
    static function getTypeName($nb=0) {
       return _n('Cartridge model','Cartridge models',$nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('cartridge', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('cartridge', 'r');
    }
 
 

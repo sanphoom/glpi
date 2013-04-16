@@ -43,19 +43,11 @@ class Budget extends CommonDropdown{
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'budget';
+
 
    static function getTypeName($nb=0) {
       return _n('Budget', 'Budgets', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('budget', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('budget', 'r');
    }
 
 

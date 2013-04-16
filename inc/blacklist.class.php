@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -42,21 +42,13 @@ class Blacklist extends CommonDropdown {
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'config';
+
    const IP     = 1;
    const MAC    = 2;
    const SERIAL = 3;
    const UUID   = 4;
    const EMAIL  = 5;
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
-   }
 
 
    function getAdditionalFields() {

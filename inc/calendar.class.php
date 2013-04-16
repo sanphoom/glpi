@@ -45,6 +45,7 @@ class Calendar extends CommonDropdown {
 
    static protected $forward_entity_to = array('CalendarSegment');
 
+   static $rightname = 'calendar';
 
    /**
     * @since version 0.84
@@ -59,16 +60,6 @@ class Calendar extends CommonDropdown {
 
    static function getTypeName($nb=0) {
       return _n('Calendar','Calendars',$nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('calendar', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('calendar', 'r');
    }
 
 
