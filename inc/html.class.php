@@ -3842,6 +3842,7 @@ class Html {
       $out  = "<script type='text/javascript'>\n";
       $out .= "$(document).ready(function() { $('#$id').select2({
                   width: '$width',
+                  closeOnSelect: false,
                   minimumResultsForSearch: 0,}); });";
       $out .= "</script>\n";
       return $out;
@@ -3895,6 +3896,7 @@ class Html {
                         width: '$width',
                         minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
                         minimumResultsForSearch: 0,
+                        closeOnSelect: false,
                         quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
                         ajax: {
                            url: '$url',
