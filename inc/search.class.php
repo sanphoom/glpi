@@ -1532,14 +1532,14 @@ class Search {
          if ($i == 0) {
             echo "<input type='hidden' disabled id='add_search_count' name='add_search_count'
                    value='1'>";
-            echo "<a href='#' onClick = \"document.getElementById('add_search_count').disabled=false;
+            echo "<a href='#' onClick = \"".Html::jsEnable('add_search_count')."
                    document.forms['searchform$itemtype'].submit();\">";
             echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title=\"".
                    __s('Add a search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             if ($_SESSION["glpisearchcount"][$itemtype] > 1) {
                echo "<input type='hidden' disabled id='delete_search_count'
                       name='delete_search_count' value='1'>";
-               echo "<a href='#' onClick = \"document.getElementById('delete_search_count').disabled=false;
+               echo "<a href='#' onClick = \"".Html::jsEnable('delete_search_count')."
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
                       __s('Delete a search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -1547,7 +1547,7 @@ class Search {
             if (is_array($linked) && (count($linked) > 0)) {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
                       value='1'>";
-               echo "<a href='#' onClick=\"document.getElementById('add_search_count2').disabled=false;
+               echo "<a href='#' onClick=\"".Html::jsEnable('add_search_count2')."
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
                       __s('Add a global search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -1555,7 +1555,7 @@ class Search {
                if ($_SESSION["glpisearchcount2"][$itemtype] > 0) {
                   echo "<input type='hidden' disabled id='delete_search_count2'
                          name='delete_search_count2' value='1'>";
-                  echo "<a href='#' onClick=\"document.getElementById('delete_search_count2').disabled=false;
+                  echo "<a href='#' onClick=\"".Html::jsEnable('delete_search_count2')."
                          document.forms['searchform$itemtype'].submit();\">";
                   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
                          __s('Delete a global search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -1686,8 +1686,15 @@ class Search {
                   }
                }
             }
+            $value = '';
+            if (is_array($p['itemtype2'])
+                && isset($p['itemtype2'][$i])
+                && !empty($p['itemtype2'][$i])) {
+               $value = $p['itemtype2'][$i];
+            }
+            
             $rand = Dropdown::showItemTypes("itemtype2[$i]",$linked, array('width' => '50%',
-                                                                           'value' => $p['itemtype2'][$i]));
+                                                                           'value' => $value));
             $field_id = Html::cleanId("dropdown_itemtype2[$i]$rand");
             echo "</td><td>";
             // Ajax script for display search met& item

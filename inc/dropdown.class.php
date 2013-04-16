@@ -1067,7 +1067,7 @@ class Dropdown {
 
          if ($value > 0) {
             echo "<script type='text/javascript' >\n";
-            echo "window.document.getElementById('itemtype$rand').value='".$value_type."';";
+            echo Html::jsSetDropdownValue("itemtype$rand",$value_type);
             echo "</script>\n";
 
             $params["idtable"] = $value_type;

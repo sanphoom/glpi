@@ -3778,7 +3778,32 @@ class Html {
       return self::jsGetElementbyID($id).".show();\n";
    }
 
+   /**
+    * Get javascript code for enable an item
+    *
+    * @param $id string id of the dom element
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function jsEnable($id){
+      return self::jsGetElementbyID($id).".removeAttr('disabled');\n";
+   }
 
+   /**
+    * Get javascript code for disable an item
+    *
+    * @param $id string id of the dom element
+    *
+    * @since version 0.85.
+    *
+    * @return String
+   **/
+   static function jsDisable($id){
+      return self::jsGetElementbyID($id).".attr('disabled', 'disabled');\n";
+   }
+   
    /**
     * Clean ID used for HTML elements
     *
