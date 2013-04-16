@@ -438,24 +438,6 @@ function toggleCheckboxes( container_id ) {
    return true;
 }
 
-
-/**
- * select all options inside the given select
- * 
- * @since version 0.84
- *
- * @param    select_id    DOM select id
-**/
-function selectAllOptions(select_id) {
-
-   var options = document.getElementById(select_id).getElementsByTagName('option');
-   for (var j=0 ; j<options.length ; j++ ) {
-      options[j].selected = true;
-   }
-   return true;
-}
-
-
 /**
  * display "other" text input field in case of selecting "other" option
  * 
@@ -476,21 +458,7 @@ function displayOtherSelectOptions(select_object, other_option_name) {
 }
 
 
-/**
- * unselect all option inside the given select
- * 
- * @since version 0.84
- *
- * @param    select_id    DOM select id
-**/
-function unselectAllOptions(select_id) {
 
-   var options = document.getElementById(select_id).getElementsByTagName('option');
-   for (var j=0 ; j<options.length ; j++ ) {
-      options[j].selected = false;
-   }
-   return true;
-}
 
 
 /**
