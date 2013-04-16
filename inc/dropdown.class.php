@@ -1595,8 +1595,12 @@ class Dropdown {
             $select   = __('Select all');
             $deselect = __('Deselect all');
             $size     = strlen($select) +  strlen($deselect);
-            $select   = "<input type='button' onclick=\"selectAllOptions('$field_id')\" value='$select'>";
-            $deselect = "<input type='button' onclick=\"unselectAllOptions('$field_id')\" value='$deselect'>";
+            $select   = "<input type='button' onclick=\"var element =$('#$field_id');var selected = [];
+                  element.find('option').each(function(i,e){
+                     selected[selected.length]=$(e).attr('value');
+                     });
+                  element.select2('val', selected);\" value=\"$select\">";
+            $deselect = "<input type='button' onclick=\"$('#$field_id').val('').trigger('change');\" value=\"$deselect\">";
             if ($size > $max_option_size) {
                $output = "<table><tr><td rowspan='2'>".$output."</td>";
                $output .= "<td>";
