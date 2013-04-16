@@ -45,7 +45,6 @@ class KnowbaseItem extends CommonDBTM {
    protected $profiles  = array();
    protected $entities  = array();
 
-
    static function getTypeName($nb=0) {
       return __('Knowledge base');
    }
@@ -94,7 +93,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function canUpdateItem() {
-
       // Personal knowbase or visibility and write access
       return (Session::haveRight('knowbase_admin', '1')
               || ($this->fields['users_id'] == Session::getLoginUserID())
@@ -138,13 +136,14 @@ class KnowbaseItem extends CommonDBTM {
          switch ($item->getType()) {
             case __CLASS__ :
                $ong[1] = $this->getTypeName(1);
-               if ($item->canUpdate()) {
+               if ($item->canUpdateItem()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $ong[2] = self::createTabEntry(__('Targets'),
                                                     $item->countVisibilities());
                   } else {
                      $ong[2] = __('Targets');
                   }
+                  $ong[3] = __('Edit');
                }
                return $ong;
          }
@@ -158,11 +157,15 @@ class KnowbaseItem extends CommonDBTM {
       if ($item->getType() == __CLASS__) {
          switch($tabnum) {
             case 1 :
-               $item->showMenu();
+               $item->showFull();
                break;
 
             case 2 :
                $item->showVisibility();
+               break;
+
+            case 3 :
+               $item->showForm($item->getID());
                break;
          }
       }
@@ -552,126 +555,82 @@ class KnowbaseItem extends CommonDBTM {
 
       $this->initForm($ID, $options);
       $canedit = $this->can($ID,'w');
-      $canrecu = $this->can($ID,'recursive');
 
-      if ($canedit) {
-         // Load ticket solution
-         if (empty($ID)
-             && isset($options['item_itemtype']) && !empty($options['item_itemtype'])
-             && isset($options['item_items_id']) && !empty($options['item_items_id'])) {
+      // Load ticket solution
+      if (empty($ID)
+            && isset($options['item_itemtype']) && !empty($options['item_itemtype'])
+            && isset($options['item_items_id']) && !empty($options['item_items_id'])) {
 
-            if ($item = getItemForItemtype($options['item_itemtype'])) {
-               if ($item->getFromDB($options['item_items_id'])) {
-                  $this->fields['name']   = $item->getField('name');
-                  $this->fields['answer'] = $item->getField('solution');
-                  if ($item->isField('itilcategories_id')) {
-                     $ic = new ItilCategory();
-                     if ($ic->getFromDB($item->getField('itilcategories_id'))) {
-                        $this->fields['knowbaseitemcategories_id']
-                              = $ic->getField('knowbaseitemcategories_id');
-                     }
+         if ($item = getItemForItemtype($options['item_itemtype'])) {
+            if ($item->getFromDB($options['item_items_id'])) {
+               $this->fields['name']   = $item->getField('name');
+               $this->fields['answer'] = $item->getField('solution');
+               if ($item->isField('itilcategories_id')) {
+                  $ic = new ItilCategory();
+                  if ($ic->getFromDB($item->getField('itilcategories_id'))) {
+                     $this->fields['knowbaseitemcategories_id']
+                           = $ic->getField('knowbaseitemcategories_id');
                   }
                }
             }
          }
-         echo "<div id='contenukb'>";
-         Html::initEditorSystem('answer');
-
-         echo "<form method='post' id='form_kb' name='form_kb' action=\"".$this->getFormUrl()."\">";
-
-         if (!empty($ID)) {
-            echo "<input type='hidden' name='id' value='$ID'>\n";
-         }
-
-         echo "<fieldset>";
-         echo "<legend>".__('Category name')."</legend>";
-         echo "<div class='center'>".__('Select a category for this item')."&nbsp;";
-         KnowbaseItemCategory::dropdown(array('value' => $this->fields["knowbaseitemcategories_id"]));
-         echo "</div></fieldset>";
-
-         echo "<fieldset>";
-         echo "<legend>".__('Subject')."</legend>";
-         echo "<div class='center'>";
-         echo "<textarea cols='80' rows='2' name='name'>".$this->fields["name"]."</textarea>";
-         echo "</div></fieldset>";
-
-         echo "<fieldset>";
-         echo "<legend>".__('Content')."</legend>";
-         echo "<div class='center spaced'>";
-         echo "<textarea cols='80' rows='30' id='answer' name='answer'>".$this->fields["answer"];
-         echo "</textarea></div></fieldset>";
-
-
-         if (!empty($ID)) {
-            echo "<fieldset>";
-            echo "<legend></legend>";
-            echo "<div class='baskb'>";
-            if ($this->fields["users_id"]) {
-               //TRANS: %s is the writer name
-               printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],"1"));
-            }
-
-            echo "<span class='baskb_right'>";
-            if ($this->fields["date_mod"]) {
-               //TRANS: %s is the datetime of update
-               printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-            }
-
-            echo "</span><br>";
-
-            if ($this->fields["date"]) {
-               //TRANS: %s is the datetime of insertion
-               printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
-            }
-
-            echo "<span class='baskb_right'>";
-            //TRANS: %d is the number of view
-            printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);
-            echo "</span></div>";
-
-            echo "</fieldset>";
-         }
-
-         echo "<p class='center'>";
-
-//          if (Session::isMultiEntitiesMode()) {
-//             _e('Entity');
-//             Entity::dropdown(array('value'    => $this->fields["entities_id"],
-//                                    'comments' => 0 ));
-//             _e('Child entities: ');
-//             if ($canrecu) {
-//                Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
-//             } else {
-//                echo Dropdown::getYesNo($this->fields["is_recursive"]);
-//             }
-//          }
-//          echo "<br><br>" .
-         echo __('Put this item in the FAQ')."&nbsp;";
-
-         if (Session::haveRight("faq","w")
-             && Session::haveRight("knowbase","w")) {
-            Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
-         } else {
-            echo Dropdown::getYesNo($this->fields["is_faq"]);
-         }
-
-         echo "<br><br>";
-         if ($ID > 0) {
-            echo "<input type='submit' class='submit' name='update' value=\""._sx('button','Save')."\">";
-         } else {
-            echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
-            echo "<input type='submit' class='submit' name='add' value=\""._sx('button','Add')."\">";
-         }
-
-         echo "<span class='big_space'>";
-         echo "<input type='reset' class='submit' value=\""._sx('button','Blank')."\"></span>";
-         echo "</p>";
-         Html::closeForm();
-         echo "</div>";
-         return true;
       }
-      //  ELSE Cannot edit
-      return false;
+
+      Html::initEditorSystem('answer');
+      $this->initForm($ID, $options);
+      $this->showFormHeader($options);
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Category name')."</td>";
+      echo "<td>";
+      echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
+      KnowbaseItemCategory::dropdown(array('value' => $this->fields["knowbaseitemcategories_id"]));
+      echo "</td>";
+      echo "<td>";
+      if ($this->fields["date"]) {
+         //TRANS: %s is the datetime of insertion
+         printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
+      }
+      echo "</td><td>";
+      if ($this->fields["date_mod"]) {
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+      }
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Put this item in the FAQ')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
+      echo "</td>";
+      echo "<td>";
+      if ($this->fields["users_id"]) {
+         //TRANS: %s is the writer name
+         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],"1"));
+      }
+      echo "</td><td>";
+      //TRANS: %d is the number of view
+      printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);      
+      echo "</td>";
+      echo "</tr>\n";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Subject')."</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='100' rows='1' name='name'>".$this->fields["name"]."</textarea>";
+      echo "</td>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Content')."</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='100' rows='30' id='answer' name='answer'>".$this->fields["answer"];
+      echo "</textarea>";
+      echo "</td>";
+      echo "</tr>\n";
+
+      $this->showFormButtons($options);
+      return true;
    } // function showForm
 
 
@@ -691,67 +650,6 @@ class KnowbaseItem extends CommonDBTM {
          unset($_SESSION['glpi_faqcategories']);
       }
    }
-
-
-   /**
-    * Print out an HTML Menu for knowbase item
-    *
-    * @return nothing (display the form)
-   **/
-   function showMenu() {
-      global $CFG_GLPI;
-
-      $ID = $this->fields['id'];
-      if (!$this->can($ID,'r')
-          || (Session::getLoginUserID() === false)) {
-         return false;
-      }
-
-      $edit    = $this->can($ID, 'w');
-      $isFAQ   = $this->fields["is_faq"];
-      $editFAQ = Session::haveRight("faq", "w");
-
-      echo "<table class='tab_cadre_fixe'><tr><th colspan='3'>";
-      if ($isFAQ) {
-         _e('This item is part of the FAQ');
-      } else {
-         _e('This item is not part of the FAQ');
-      }
-      echo "</th></tr>\n";
-
-      if ($edit) {
-         echo "<tr class='tab_bg_1'>";
-         if ($editFAQ) {
-            echo "<td class='center' width='33%'>";
-            if ($isFAQ) {
-               Html::showSimpleForm(static::getFormURL(), 'update',
-                                    __('Delete this item from the FAQ'),
-                                    array('id'     => $ID,
-                                          'is_faq' => 0),
-                                    $CFG_GLPI["root_doc"]."/pics/faqremove.png");
-            } else  {
-               Html::showSimpleForm(static::getFormURL(), 'update', __('Put this item in the FAQ'),
-                                    array('id'     => $ID,
-                                          'is_faq' => 1),
-                                    $CFG_GLPI["root_doc"]."/pics/faqadd.png");
-            }
-            echo "</td>\n";
-         }
-         echo "<td class='center' width='34%'><a href=\"".
-               $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;modify=yes\">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt=\"".__s('Edit').
-               "\" title=\"".__s('Edit')."\"></a></td>\n";
-         echo "<td class='center' width='33%'>";
-         Html::showSimpleForm(static::getFormURL(), 'delete', _x('button', 'Delete permanently'),
-                              array('id' => $ID), $CFG_GLPI["root_doc"]."/pics/faqdelete.png", '',
-                              __("Are you sure you want to delete this item?"));
-
-         echo "</td>";
-         echo "</tr>";
-      }
-      echo "</table><br>";
-   }
-
 
    /**
     * Increase the view counter of the current knowbaseitem
@@ -773,20 +671,21 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out (html) show item : question and answer
     *
-    * @param $linkusers_id       display users_id link (true by default)
     * @param $options      array of options
     *
     * @return nothing (display item : question and answer)
    **/
-   function showFull($linkusers_id=true, $options=array()) {
+   function showFull($options=array()) {
       global $DB, $CFG_GLPI;
 
       if (!$this->can($this->fields['id'],'r')) {
          return false;
       }
 
+      $linkusers_id = true;
       // show item : question and answer
-      if (!Session::haveRight("user", "r")) {
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+            || !Session::haveRight("user", "r")) {
          $linkusers_id = false;
       }
 
@@ -798,15 +697,9 @@ class KnowbaseItem extends CommonDBTM {
       $fullcategoryname          = getTreeValueCompleteName("glpi_knowbaseitemcategories",
                                                             $knowbaseitemcategories_id);
 
-      if (!$inpopup) {
-         $this->showTabs($options);
-      }
-      $options['colspan'] = 2;
-      $options['canedit'] = 0; // Hide the buttons
-      $this->showFormHeader($options);
-
       $tmp = "<a href='".$this->getSearchURL().
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_3'><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
       echo "</th></tr>";
 
@@ -838,26 +731,28 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields["date"]) {
          //TRANS: %s is the datetime of update
          printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
+         echo "<br>";
       }
-
-      if ($this->countVisibilities() == 0) {
-         echo "<br><span class='red'>".__('Unpublished')."</span>";
-      }
-      echo "</th>";
-      echo "<th class='tdkb' colspan='2'>";
-
       if ($this->fields["date_mod"]) {
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-         echo "<br>";
       }
-      echo sprintf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]).
-           "</th></tr>";
 
-      $this->showFormButtons($options);
-      if (!$inpopup) {
-         $this->addDivForTabs();
+      echo "</th>";
+      echo "<th class='tdkb' colspan='2'>";
+      if ($this->countVisibilities() == 0) {
+         echo "<span class='red'>".__('Unpublished')."</span><br>";
       }
+
+      echo sprintf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
+      echo "<br>";
+      if ($this->fields["is_faq"]) {
+         _e('This item is part of the FAQ');
+      } else {
+         _e('This item is not part of the FAQ');
+      }
+      echo "</th></tr>";
+      echo "</table>";
 
       return true;
    }

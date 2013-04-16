@@ -103,7 +103,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
          $kb = new KnowbaseItem();
          $kb->check($_GET["id"],'r');
-         $kb->showFull(true);
+         $kb->showFull();
          break;
 
       case "display_options" :

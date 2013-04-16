@@ -57,7 +57,7 @@ if (Session::getLoginUserID()) {
 if (isset($_GET["id"])) {
    $kb = new KnowbaseItem();
    if ($kb->getFromDB($_GET["id"])) {
-      $kb->showFull(false);
+      $kb->showFull();
    }
 
 } else {

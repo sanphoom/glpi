@@ -112,42 +112,20 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if ($_GET["id"] == "new") {
-   // on affiche le formulaire de saisie de l'item
-   $kb->check(-1,'w');
+} else if (isset($_GET["id"])) {
+   // modifier un item dans la base de connaissance
+   $kb->check($_GET["id"],'r');
 
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseiem");
-   $available_options = array('item_itemtype', 'item_items_id');
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
+   $available_options = array('item_itemtype', 'item_items_id', 'id');
    $options           = array();
    foreach ($available_options as $key) {
       if (isset($_GET[$key])) {
          $options[$key] = $_GET[$key];
       }
    }
-   $kb->showForm("",$options);
+   $kb->display($options);
    Html::footer();
 
-} else if (empty($_GET["id"])) {
-   // No id or no tickets id to create from solution
-   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
-
-} else if (isset($_GET["id"])
-           && ($_GET["modify"] == "yes")) {
-   // modifier un item dans la base de connaissance
-   $kb->check($_GET["id"],'r');
-
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseiem");
-   $kb->showForm($_GET["id"]);
-   Html::footer();
-
-} else {
-   // Affiche un item de la base de connaissances
-   $kb->check($_GET["id"],'r');
-
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseiem");
-
-   $kb->showFull(true);
-
-   Html::footer();
 }
 ?>
