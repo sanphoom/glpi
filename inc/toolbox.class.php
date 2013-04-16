@@ -2204,7 +2204,7 @@ class Toolbox {
    /**
     * Save a configuration file
     *
-    * @since version 0.85
+    * @since version 0.84
     *
     * @param $name      string   config file name
     * @param $content   string   config file content
