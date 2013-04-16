@@ -3750,7 +3750,6 @@ class Html {
       return $out;
    }
 
-
    /**
     * Get javascript code for hide an item
     *
@@ -3858,7 +3857,8 @@ class Html {
     * @return String
    **/
    static function jsAdaptDropdown($id, $params= array()) {
-
+      global $CFG_GLPI;
+   
       $width = '80%';
       if (isset($params["width"]) && !empty($params["width"])) {
          $width = $params["width"];
@@ -3868,7 +3868,7 @@ class Html {
       $out .= "$(document).ready(function() { $('#$id').select2({
                   width: '$width',
                   closeOnSelect: false,
-                  minimumResultsForSearch: 0,}); });";
+                  minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count']."}); });";
       $out .= "</script>\n";
       return $out;
    }
@@ -3919,8 +3919,8 @@ class Html {
       $output .= "<script type='text/javascript'>\n";
       $output .= " $('#$field_id').select2({
                         width: '$width',
-                        minimumInputLength: '".$CFG_GLPI['ajax_min_textsearch_load']."',
-                        minimumResultsForSearch: 0,
+                        minimumInputLength: 0,
+                        minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
                         closeOnSelect: false,
                         quietMillis: '".$CFG_GLPI['ajax_buffertime_load']."',
                         ajax: {
