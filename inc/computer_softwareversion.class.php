@@ -758,6 +758,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<th>".SoftwareCategory::getTypeName(1)."</th>";
          echo "</tr>\n";
 
+         // TODO review it : do it in one request
          for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
 
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
