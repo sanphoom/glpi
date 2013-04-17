@@ -1741,7 +1741,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $values[4]  = _x('impact', 'High');
          }
 
-         $values[2]  = _x('impact', 'Medium');
+         $values[3]  = _x('impact', 'Medium');
 
          if (($p['showtype'] == 'search')
              || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<2))) {
