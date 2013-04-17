@@ -134,11 +134,11 @@ class Netpoint extends CommonDropdown {
       }
 
       $field_id = Html::cleanId("dropdown_".$myname.$rand);
-      $param = array('value'               => $value,
-                     'valuename'           => $name,
-                     'entity_restrict'     => $entity_restrict,
-                     'devtype'             => $devtype,
-                     'locations_id'        => $locations_id);
+      $param    = array('value'               => $value,
+                        'valuename'           => $name,
+                        'entity_restrict'     => $entity_restrict,
+                        'devtype'             => $devtype,
+                        'locations_id'        => $locations_id);
       echo Html::jsAjaxDropdown($myname, $field_id,
                                 $CFG_GLPI['root_doc']."/ajax/getDropdownNetpoint.php",
                                 $param);
@@ -146,7 +146,7 @@ class Netpoint extends CommonDropdown {
       // Display comment
       if ($display_comment) {
          $comment_id = Html::cleanId("comment_".$myname.$rand);
-         Html::showToolTip($comment,array('contentid' => $comment_id));
+         Html::showToolTip($comment, array('contentid' => $comment_id));
 
          $item = new self();
          if ($item->canCreate()) {
@@ -157,10 +157,10 @@ class Netpoint extends CommonDropdown {
                   "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
          }
          $paramscomment = array('value' => '__VALUE__',
-                              'table' => "glpi_netpoints");
-         echo Ajax::updateItemOnSelectEvent($field_id,
-                                       $comment_id,
-                                       $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);         
+                                'table' => "glpi_netpoints");
+         echo Ajax::updateItemOnSelectEvent($field_id, $comment_id,
+                                            $CFG_GLPI["root_doc"]."/ajax/comments.php",
+                                            $paramscomment, false);
       }
       return $rand;
    }

@@ -229,9 +229,8 @@ class Dropdown {
       if ($params['display']) {
          echo $output;
          return $params['rand'];
-      } else {
-         return $output;
       }
+      return $output;
    }
 
 
@@ -1019,9 +1018,9 @@ class Dropdown {
 
       if (count($options)) {
          return Dropdown::showFromArray($params['name'], $options,
-                                          array('value'     => $params['value'],
-                                                'on_change' => $params['on_change'],
-                                                'toupdate'  => $params['toupdate'],));
+                                        array('value'     => $params['value'],
+                                              'on_change' => $params['on_change'],
+                                              'toupdate'  => $params['toupdate'],));
       }
       return 0;
    }
@@ -1430,20 +1429,20 @@ class Dropdown {
     * @param $name            select name
     * @param $elements  array of elements to display
     * @param $options   array of possible options:
-    *    - value           : integer / preselected value (default 0)
-    *    - used            : array / Already used items ID: not to display in dropdown (default empty)
-    *    - readonly        : boolean / used as a readonly item (default false)
-    *    - on_change       : string / value to transmit to "onChange"
-    *    - multiple        : boolean / can select several values (default false)
-    *    - size            : integer / number of rows for the select (default = 1)
-    *    - mark_unmark_all : add buttons to select or deselect all options (only for multiple)
-    *    - display         : boolean / display or return string
-    *    - other           : boolean or string if not false, then we can use an "other" value
-    *                        if it is a string, then the default value will be this string
-    *    - rand            : specific rand if needed (default is generated one)
-    *    - width           : specific width needed (default not set)
-    *    - emptylabel      : empty label if empty displayed (default self::EMPTY_VALUE)
-    *    - display_emptychoice : display empty choice (default is false)
+    *    - value               : integer / preselected value (default 0)
+    *    - used                : array / Already used items ID: not to display in dropdown (default empty)
+    *    - readonly            : boolean / used as a readonly item (default false)
+    *    - on_change           : string / value to transmit to "onChange"
+    *    - multiple            : boolean / can select several values (default false)
+    *    - size                : integer / number of rows for the select (default = 1)
+    *    - mark_unmark_all     : add buttons to select or deselect all options (only for multiple)
+    *    - display             : boolean / display or return string
+    *    - other               : boolean or string if not false, then we can use an "other" value
+    *                            if it is a string, then the default value will be this string
+    *    - rand                : specific rand if needed (default is generated one)
+    *    - width               : specific width needed (default not set)
+    *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
+    *    - display_emptychoice : display empty choice (default false)
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1536,7 +1535,7 @@ class Dropdown {
                   $max_option_size = strlen($opt_goup);
                }
                $output .= "<optgroup label=\"$opt_goup\">";
-               
+
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
                      $output .= "<option value='".$key2."'";

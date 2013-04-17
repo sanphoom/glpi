@@ -53,12 +53,11 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
 
    $field_id = Html::cleanId("dropdown_".$_POST["myname"].$rand);
 
-   $p = array('value'               => 0,
-               'valuename'           => Dropdown::EMPTY_VALUE,
-               'itemtype'            => $_POST["idtable"],
-               'display_emptychoice' => true,
-               'displaywith'         => array('otherserial', 'serial'),
-               );
+   $p        = array('value'               => 0,
+                     'valuename'           => Dropdown::EMPTY_VALUE,
+                     'itemtype'            => $_POST["idtable"],
+                     'display_emptychoice' => true,
+                     'displaywith'         => array('otherserial', 'serial'));
    if (isset($_POST['value'])) {
       $p['value'] = $_POST['value'];
    }

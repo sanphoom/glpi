@@ -191,7 +191,7 @@ class Software extends CommonDBTM {
       $version->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
       $ip = new Item_Problem();
-      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);      
+      $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
    }
 
 
@@ -649,7 +649,7 @@ class Software extends CommonDBTM {
    **/
    static function dropdownSoftwareToInstall($myname, $entity_restrict) {
       global $CFG_GLPI;
-      
+
       // Make a select box
       $rand  = mt_rand();
       $where = getEntitiesRestrictRequest('', 'glpi_softwares','entities_id',
@@ -686,28 +686,28 @@ class Software extends CommonDBTM {
 
       $query = "SELECT DISTINCT `glpi_softwares`.`id`,
                               `glpi_softwares`.`name`
-               FROM `glpi_softwares`
-               INNER JOIN `glpi_softwarelicenses`
+                FROM `glpi_softwares`
+                INNER JOIN `glpi_softwarelicenses`
                      ON (`glpi_softwares`.`id` = `glpi_softwarelicenses`.`softwares_id`)
-               WHERE `glpi_softwares`.`is_deleted` = '0'
-                     AND `glpi_softwares`.`is_template` = '0'
-                     $where
-               ORDER BY `glpi_softwares`.`name`";
+                WHERE `glpi_softwares`.`is_deleted` = '0'
+                      AND `glpi_softwares`.`is_template` = '0'
+                      $where
+                ORDER BY `glpi_softwares`.`name`";
       $result = $DB->query($query);
 
       $values = array(0 => Dropdown::EMPTY_VALUE);
 
       if ($DB->numrows($result)) {
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $softwares_id          = $data["id"];
             $values[$softwares_id] = $data["name"];
          }
       }
       $rand = Dropdown::showFromArray('softwares_id', $values);
 
-      $paramsselsoft = array('softwares_id'  => '__VALUE__',
-                           'entity_restrict' => $entity_restrict,
-                           'myname'          => $myname);
+      $paramsselsoft = array('softwares_id'    => '__VALUE__',
+                             'entity_restrict' => $entity_restrict,
+                             'myname'          => $myname);
 
       Ajax::updateItemOnSelectEvent("dropdown_softwares_id$rand", "show_".$myname.$rand,
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownSoftwareLicense.php",

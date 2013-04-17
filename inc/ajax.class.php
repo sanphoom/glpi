@@ -470,12 +470,12 @@ class Ajax {
    /**
     * Javascript code for update an item (Javascript code only)
     *
-    * @param $options array of options
+    * @param $options    array    of options
     *  - toupdate : array / Update a specific item on select change on dropdown
     *               (need value_fieldname, to_update,
     *                url (@see Ajax::updateItemOnSelectEvent for information)
     *                and may have moreparams)
-    * @param $display      boolean  display or get string (default true)
+    * @param $display    boolean  display or get string (default true)
    **/
    static function commonDropdownUpdateItem($options, $display=true) {
 
@@ -519,7 +519,8 @@ class Ajax {
                }
 
              $output .= self::updateItemOnSelectEvent("dropdown_".$options["name"].$options["rand"],
-                                           $data['to_update'], $data['url'], $paramsupdate, $display);
+                                                      $data['to_update'], $data['url'],
+                                                      $paramsupdate, $display);
             }
          }
       }

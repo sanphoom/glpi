@@ -2065,12 +2065,12 @@ class User extends CommonDBTM {
          return false;
       }
       if ($this->getFromDB($ID)) {
-         $rand = mt_rand();
+         $rand     = mt_rand();
          $authtype = $this->getAuthMethodsByID();
 
-         $extauth = !(($this->fields["authtype"] == Auth::DB_GLPI)
-                      || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
-                          && !empty($this->fields["password"])));
+         $extauth  = !(($this->fields["authtype"] == Auth::DB_GLPI)
+                       || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
+                           && !empty($this->fields["password"])));
 
          // No autocopletion :
          $save_autocompletion                 = $CFG_GLPI["use_ajax_autocompletion"];
@@ -2101,9 +2101,9 @@ class User extends CommonDBTM {
             echo "<td rowspan='3'>";
             echo "<div class='user_picture_border_small' id='picture$rand'>";
             echo "<img class='user_picture_small' src='".
-                  User::getThumbnailURLForPicture($this->fields['picture'])."' />";
+                   User::getThumbnailURLForPicture($this->fields['picture'])."' />";
             echo "</div>";
-            $full_picture = "<div class='user_picture_border'>";
+            $full_picture  = "<div class='user_picture_border'>";
             $full_picture .= "<img class='user_picture' src='".
                               User::getURLForPicture($this->fields['picture'])."' />";
             $full_picture .= "</div>";

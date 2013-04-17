@@ -3802,7 +3802,7 @@ class Html {
    static function jsDisable($id){
       return self::jsGetElementbyID($id).".attr('disabled', 'disabled');\n";
    }
-   
+
    /**
     * Clean ID used for HTML elements
     *
@@ -3834,12 +3834,12 @@ class Html {
    /**
     * Set dropdown value
     *
-    * @param $id string id of the dom element
-    * @param $value string value to set
+    * @param $id      string   id of the dom element
+    * @param $value   string   value to set
     *
     * @since version 0.85.
     *
-    * @return String
+    * @return string
    **/
    static function jsSetDropdownValue($id, $value) {
       return self::jsGetElementbyID($id).".val('$value').trigger('change');";
@@ -3856,9 +3856,9 @@ class Html {
     *
     * @return String
    **/
-   static function jsAdaptDropdown($id, $params= array()) {
+   static function jsAdaptDropdown($id, $params=array()) {
       global $CFG_GLPI;
-   
+
       $width = '80%';
       if (isset($params["width"]) && !empty($params["width"])) {
          $width = $params["width"];
@@ -3878,18 +3878,19 @@ class Html {
    /**
     * Create Ajax dropdown to clean JS
     *
-    * @param $field_id string id of the dom element
-    * @param $url string URL to get datas
-    * @param $params array of parameters
+    * @param $name
+    * @param $field_id   string   id of the dom element
+    * @param $url        string   URL to get datas
+    * @param $params     array    of parameters
     *            must contains :
-    *                   - 'value' : default value selected
+    *                   - 'value'     : default value selected
     *                   - 'valuename' : default name of selected value
     *
     * @since version 0.85.
     *
     * @return String
    **/
-   static function jsAjaxDropdown($name, $field_id, $url, $params = array()) {
+   static function jsAjaxDropdown($name, $field_id, $url, $params=array()) {
       global $CFG_GLPI;
 
       if (!isset($params['value'])) {
@@ -3967,7 +3968,7 @@ class Html {
                                  }).done(function(data) { callback(data); });
                               }
                            }
-                           
+
                         },
                         formatResult: function(result, container, query, escapeMarkup) {
                            var markup=[];

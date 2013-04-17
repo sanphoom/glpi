@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 // Direct access to file
@@ -75,13 +76,14 @@ if (!isset($_GET['page'])) {
 }
 
 if ($one_item < 0) {
-   $start = ($_GET['page']-1)*$_GET['page_limit'];
+   $start  = ($_GET['page']-1)*$_GET['page_limit'];
    $result = User::getSqlSearchResult(false, $_GET['right'], $_GET["entity_restrict"],
-                                    $_GET['value'], $used, $_GET['searchText'], $start, $_GET['page_limit']);
+                                      $_GET['value'], $used, $_GET['searchText'], $start,
+                                      $_GET['page_limit']);
 } else {
    $query = "SELECT DISTINCT `glpi_users`.*
-               FROM `glpi_users`
-               WHERE `glpi_users`.`id` = '$one_item';";
+             FROM `glpi_users`
+             WHERE `glpi_users`.`id` = '$one_item';";
    $result = $DB->query($query);
 }
 $users = array();
@@ -89,7 +91,7 @@ $users = array();
 // Count real items returned
 $count = 0;
 if ($DB->numrows($result)) {
-   while ($data=$DB->fetch_assoc($result)) {
+   while ($data = $DB->fetch_assoc($result)) {
       $users[$data["id"]] = formatUserName($data["id"], $data["name"], $data["realname"],
                                            $data["firstname"]);
       $logins[$data["id"]] = $data["name"];
@@ -107,8 +109,8 @@ uasort($users, 'dpuser_cmp');
 
 $datas = array();
 
-if ($_GET['page'] == 1) {   
-   if ($one_item < 0 || $one_item == 0) {
+if ($_GET['page'] == 1) {
+   if (($one_item < 0) || ($one_item == 0)) {
       if ($_GET['all'] == 0) {
          array_push($datas, array('id'   => 0,
                                   'text' => Dropdown::EMPTY_VALUE));
@@ -123,14 +125,15 @@ if (count($users)) {
    foreach ($users as $ID => $output) {
       $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
 
-      array_push($datas, array('id'   => $ID,
-                              'text'  => $output,
-                              'title' => $title));
+      array_push($datas, array('id'    => $ID,
+                               'text'  => $output,
+                               'title' => $title));
       $count++;
    }
 }
 
-if ($one_item >=0 && isset($datas[0])) {
+if (($one_item >= 0)
+    && isset($datas[0])) {
    echo json_encode($datas[0]);
 } else {
    $ret['results'] = $datas;

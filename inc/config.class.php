@@ -300,10 +300,10 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>". __("Don't show search engine in dropdowns if the number of items is less than")."</td>
-            <td>";
+      echo "<td>". __("Don't show search engine in dropdowns if the number of items is less than").
+           "</td><td>";
       Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
-                              array(0 => __('Never')));
+                            array(0 => __('Never')));
 //       echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
 //       Dropdown::showNumber('ajax_buffertime_load',
 //                            array('value' => $CFG_GLPI["ajax_buffertime_load"],
@@ -313,14 +313,14 @@ class Config extends CommonDBTM {
 //                                  'unit'  => 'millisecond'));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
+//      echo "<tr class='tab_bg_2'>";
 //       echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
 //       Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
 //       echo "</td><td>". __('Character to force the full display of dropdowns (wildcard)')."</td>";
 //       echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
 //                   $CFG_GLPI["ajax_wildcard"] . "'>";
-      echo "</td>";
-      echo "</tr>";
+//      echo "</td>";
+//      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";

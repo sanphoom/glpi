@@ -162,7 +162,7 @@ if ($item instanceof CommonTreeDropdown) {
       } else {
          $where .= getEntitiesRestrictRequest(" AND ", $table, '', '', $recur);
 
-         if (count($_SESSION['glpiactiveentities'])>1) {
+         if (count($_SESSION['glpiactiveentities']) > 1) {
             $multi = true;
          }
       }
@@ -184,7 +184,7 @@ if ($item instanceof CommonTreeDropdown) {
    }
 
 
-   
+
    $query = "SELECT *
              FROM `$table`
              $where
@@ -196,42 +196,43 @@ if ($item instanceof CommonTreeDropdown) {
       if ($_GET['page'] == 1) {
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
-               if ($one_item < 0 || $one_item == $key) {
+               if (($one_item < 0) || ($one_item == $key)) {
                   array_push($datas, array('id'   => $key,
-                                          'text' => $val));
+                                           'text' => $val));
                }
             }
          }
 
          if ($_GET['display_emptychoice']) {
-            if ($one_item < 0 || $one_item  == 0) {
+            if (($one_item < 0) || ($one_item  == 0)) {
                array_push($datas, array ('id'   => 0,
-                                       'text' => $_GET['emptylabel']));
+                                         'text' => $_GET['emptylabel']));
             }
          }
       }
       $last_level_displayed = array();
-      $datastoadd = array();
+      $datastoadd           = array();
       // Ignore first item for all pages except first page or one_item
-      $firstitem = ($_GET['page']>1 && $one_item < 0);
+      $firstitem = (($_GET['page'] > 1) && ($one_item < 0));
       if ($DB->numrows($result)) {
-         $prev = -1;
+         $prev             = -1;
          $firstitem_entity = -1;
 
          while ($data = $DB->fetch_assoc($result)) {
             $ID        = $data['id'];
             $level     = $data['level'];
             $outputval = $data['name'];
-            
+
             if ($multi
                 && ($data["entities_id"] != $prev)) {
                // Do not do it for first item for next page load
                if (!$firstitem) {
                   if ($prev >= 0) {
                      if (count($datastoadd)) {
-                        array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities",
-                                                                                       $prev),
-                                                'children' => $datastoadd));
+                        array_push($datas,
+                                   array('text'     => Dropdown::getDropdownName("glpi_entities",
+                                                                                 $prev),
+                                         'children' => $datastoadd));
                      }
                   }
                }
@@ -269,7 +270,8 @@ if ($item instanceof CommonTreeDropdown) {
                               $title = $item->fields['completename'];
 
                               if (isset($item->fields["comment"])) {
-                                 $title = sprintf(__('%1$s - %2$s'), $title, $item->fields["comment"]);
+                                 $title = sprintf(__('%1$s - %2$s'), $title,
+                                                  $item->fields["comment"]);
                               }
                               $output2 = $item->getName();
 
@@ -372,7 +374,7 @@ if ($item instanceof CommonTreeDropdown) {
          $where .= ')';
       }
    }
-   
+
    switch ($_GET['itemtype']) {
       case "Contact" :
          $query = "SELECT `$table`.`entities_id`,
@@ -409,23 +411,23 @@ if ($item instanceof CommonTreeDropdown) {
 
       if ($_GET['page'] == 1) {
          if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
-            if ($one_item < 0 || $one_item == 0) {
+            if (($one_item < 0) || ($one_item == 0)) {
                array_push($datas, array ('id'    => 0,
-                                       'text'  => $_GET["emptylabel"]));
+                                         'text'  => $_GET["emptylabel"]));
             }
          }
 
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
-               if ($one_item < 0 || $one_item == $key) {
+               if (($one_item < 0) || ($one_item == $key)) {
                   array_push($datas, array ('id'    => $key,
-                                          'text'  => $val));
+                                            'text'  => $val));
                }
             }
          }
       }
-      
-      $outputval = Dropdown::getDropdownName($table,$_GET['value']);
+
+      $outputval = Dropdown::getDropdownName($table, $_GET['value']);
 
       $datastoadd = array();
 
@@ -437,12 +439,13 @@ if ($item instanceof CommonTreeDropdown) {
                 && ($data["entities_id"] != $prev)) {
                if ($prev >= 0) {
                   if (count($datastoadd)) {
-                     array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities",
-                                                                                     $prev),
-                                             'children' => $datastoadd));
+                     array_push($datas,
+                                array('text'     => Dropdown::getDropdownName("glpi_entities",
+                                                                              $prev),
+                                      'children' => $datastoadd));
                   }
                }
-               $prev = $data["entities_id"];
+               $prev       = $data["entities_id"];
                $datastoadd = array();
             }
 
@@ -492,10 +495,10 @@ if ($item instanceof CommonTreeDropdown) {
    }
 }
 
-if ($one_item >=0 && isset($datas[0])) {
+if (($one_item >= 0) && isset($datas[0])) {
    echo json_encode($datas[0]);
 } else {
-   
+
    $ret['results'] = $datas;
    $ret['count']   = $count;
    echo json_encode($ret);

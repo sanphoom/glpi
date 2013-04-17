@@ -195,7 +195,7 @@ class SoftwareVersion extends CommonDBChild {
    **/
    static function dropdown($options=array()) {
       global $CFG_GLPI, $DB;
-      
+
       //$softwares_id,$value=0
       $p['softwares_id'] = 0;
       $p['value']        = 0;
@@ -215,18 +215,18 @@ class SoftwareVersion extends CommonDBChild {
       // Make a select box
       $query = "SELECT DISTINCT `glpi_softwareversions`.*,
                               `glpi_states`.`name` AS sname
-               FROM `glpi_softwareversions`
-               LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
-               WHERE `glpi_softwareversions`.`softwares_id` = '".$p['softwares_id']."'
-                     $where
-               ORDER BY `name`";
+                FROM `glpi_softwareversions`
+                LEFT JOIN `glpi_states` ON (`glpi_softwareversions`.`states_id` = `glpi_states`.`id`)
+                WHERE `glpi_softwareversions`.`softwares_id` = '".$p['softwares_id']."'
+                      $where
+                ORDER BY `name`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
       $values = array(0 => Dropdown::EMPTY_VALUE);
       if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
-            $ID = $data['id'];
+            $ID     = $data['id'];
             $output = $data['name'];
 
             if (empty($output) || $_SESSION['glpiis_ids_visible']) {

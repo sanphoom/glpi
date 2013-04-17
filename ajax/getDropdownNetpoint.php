@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 // Direct access to file
@@ -46,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 // Make a select box with preselected values
-$datas = array();
+$datas             = array();
 $location_restrict = false;
 
 
@@ -120,16 +121,14 @@ if (isset($_GET["devtype"]) && !empty($_GET["devtype"])) {
    $where .= " AND `glpi_netpoints`.`locations_id` = '".$_GET["locations_id"]."' ";
 }
 
-$query .= $where ." 
+$query .= $where ."
           ORDER BY `glpi_locations`.`completename`,
                    `glpi_netpoints`.`name`
           $LIMIT";
 
 $result = $DB->query($query);
 
-Toolbox::logDebug($query);
-
-if ($one_item < 0 || $one_item == 0) {
+if (($one_item < 0) || ($one_item == 0)) {
    if ($_GET['page'] == 1) {
       array_push($datas, array('id'   => 0,
                               'text' => Dropdown::EMPTY_VALUE));
@@ -138,7 +137,7 @@ if ($one_item < 0 || $one_item == 0) {
 
 $count = 0;
 if ($DB->numrows($result)) {
-   while ($data =$DB->fetch_assoc($result)) {
+   while ($data = $DB->fetch_assoc($result)) {
       $output     = $data['netpname'];
       $loc        = $data['loc'];
       $ID         = $data['id'];
@@ -152,17 +151,17 @@ if ($DB->numrows($result)) {
          $output = sprintf(__('%1$s (%2$s)'), $output, $loc);
       }
 
-      array_push($datas, array('id'   => $ID,
-                              'text'  => $output,
-                              'title' => $title));
+      array_push($datas, array('id'    => $ID,
+                               'text'  => $output,
+                               'title' => $title));
       $count++;
    }
 }
 
-if ($one_item >=0 && isset($datas[0])) {
+if (($one_item >= 0) && isset($datas[0])) {
    echo json_encode($datas[0]);
 } else {
-   $ret['count'] = $count;
+   $ret['count']   = $count;
    $ret['results'] = $datas;
    echo json_encode($ret);
 }

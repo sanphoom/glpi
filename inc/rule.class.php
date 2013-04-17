@@ -523,7 +523,7 @@ class Rule extends CommonDBTM {
             Rule::dropdown(array('sub_type'        => $input['itemtype'],
                                  'name'            => "ranking",
                                  'entity_restrict' => $condition,
-                                 'width' => '50%'));
+                                 'width'           => '50%'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
