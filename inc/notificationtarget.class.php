@@ -35,8 +35,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
-// @since version 0.84
+
+/**
+ * NotificationTarget Class
+ *
+ * @since version 0.84
+**/
 class NotificationTarget extends CommonDBChild {
 
    var $prefix                      = '';
@@ -115,12 +119,15 @@ class NotificationTarget extends CommonDBChild {
       asort($this->notification_targets);
    }
 
+
    /**
     * Retrieve an item from the database for a specific target
     *
-    * @param $notifications_id      notification ID
-    * @param $type      type of the target to retrive
-    * @param $ID        ID of the target to retrieve
+    * @param $notifications_id   integer      notification ID
+    * @param $type                            type of the target to retrive
+    * @param $ID                 integer      ID of the target to retrieve
+    *
+    * @since version 0.85
     *
     * @return true if succeed else false
    **/
@@ -134,7 +141,7 @@ class NotificationTarget extends CommonDBChild {
       return false;
    }
 
-   
+
    // Temporary hack for this class since 0.84
    static function getTable() {
       return 'glpi_notificationtargets';
@@ -284,7 +291,7 @@ class NotificationTarget extends CommonDBChild {
    **/
    function showForNotification(Notification $notification) {
       global $DB;
-      
+
       if (!Session::haveRight("notification", "r")) {
          return false;
       }
@@ -307,10 +314,10 @@ class NotificationTarget extends CommonDBChild {
          $values = array();
          foreach ($this->notification_targets as $key => $val) {
             list($type,$id) = explode('_', $key);
-            $values[$key] = $this->notification_targets_labels[$type][$id];
+            $values[$key]   = $this->notification_targets_labels[$type][$id];
          }
          $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                          'notifications_id = '.$notifications_id);
+                                         'notifications_id = '.$notifications_id);
          $actives = array();
          if (count($targets)) {
             foreach ($targets as $data) {
@@ -319,10 +326,9 @@ class NotificationTarget extends CommonDBChild {
          }
 
          echo "<td>";
-         Dropdown::showFromArray('_targets', $values,
-                                 array('values'   => $actives,
-                                       'multiple' => true,
-                                       'readonly' => !$canedit));
+         Dropdown::showFromArray('_targets', $values, array('values'   => $actives,
+                                                            'multiple' => true,
+                                                            'readonly' => !$canedit));
          echo "</td>";
          if ($canedit) {
             echo "<td width='20%'>";
@@ -330,11 +336,10 @@ class NotificationTarget extends CommonDBChild {
             echo "</td>";
 
          }
+         echo "</tr>";
+         echo "</table>";
       }
 
-
-      echo "</tr>";
-      echo "</table>";
       if ($canedit) {
          Html::closeForm();
       }
@@ -350,12 +355,12 @@ class NotificationTarget extends CommonDBChild {
       $type   = "";
       $action = "";
       $target = self::getInstanceByType($input['itemtype']);
-      
+
       if (!isset($input['notifications_id'])) {
          return;
       }
       $targets = getAllDatasFromTable('glpi_notificationtargets',
-                                       'notifications_id = '.$input['notifications_id']);
+                                      'notifications_id = '.$input['notifications_id']);
       $actives = array();
       if (count($targets)) {
          foreach ($targets as $data) {
@@ -384,7 +389,7 @@ class NotificationTarget extends CommonDBChild {
       // Drop others
       if (count($actives)) {
          foreach ($actives as $val) {
-            list($type, $items_id)   = explode("_", $val);
+            list($type, $items_id) = explode("_", $val);
             if ($target->getFromDBForTarget($input['notifications_id'], $type, $items_id)) {
                $target->delete(array('id' => $target->getID()));
             }
@@ -699,6 +704,7 @@ class NotificationTarget extends CommonDBChild {
       $this->addProfilesToTargets();
       $this->addGroupsToTargets($entity);
    }
+
 
    /**
     * Allows to add more notification targets
