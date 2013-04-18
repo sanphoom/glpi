@@ -454,7 +454,7 @@ class Toolbox {
       global $CFG_GLPI;
 
       $user = '';
-      if (function_exists('Session::getLoginUserID')) {
+      if (method_exists('Session', 'getLoginUserID')) { 
          $user = " [".Session::getLoginUserID().'@'.php_uname('n')."]";
       }
 
