@@ -408,6 +408,24 @@ class Toolbox {
       static $tps = 0;
 
       $msg = "";
+      if (function_exists('debug_backtrace')) {
+         $bt=debug_backtrace();
+         $msg = '  From ';
+         if (count($bt)>1) {
+            if (isset($bt[1]['class'])) {
+               $msg .= $bt[1]['class'].'::';
+            }
+            $msg .= $bt[1]['function'].'() in ';
+         }
+         $msg .= $bt[0]['file'] . ' line ' . $bt[0]['line'];
+      }
+
+      if ($tps && function_exists('memory_get_usage')) {
+         $msg .= ' ('.number_format(microtime(true)-$tps,3).'", '.
+                 number_format(memory_get_usage()/1024/1024,2).'Mio)';
+      }
+      $msg .= "\n ";
+      
       foreach (func_get_args() as $arg) {
          if (is_array($arg) || is_object($arg)) {
             $msg .= ' ' . print_r($arg, true);
@@ -418,11 +436,6 @@ class Toolbox {
          } else {
             $msg .= ' ' . $arg;
          }
-      }
-
-      if ($tps && function_exists('memory_get_usage')) {
-         $msg .= ' ('.number_format(microtime(true)-$tps,3).'", '.
-                 number_format(memory_get_usage()/1024/1024,2).'Mio)';
       }
 
       $tps = microtime(true);
