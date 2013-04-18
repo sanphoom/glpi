@@ -2787,8 +2787,8 @@ class Ticket extends CommonITILObject {
                                                     $item->maybeRecursive())."
                          ORDER BY `name` ";
 
-               $result = $DB->query($query);
-               $nb     = $DB->numrows($result);
+               $result  = $DB->query($query);
+               $nb      = $DB->numrows($result);
                $devices = array();
                if ($DB->numrows($result) > 0) {
                   $type_name = $item->getTypeName($nb);
@@ -2828,9 +2828,9 @@ class Ticket extends CommonITILObject {
                             WHERE `glpi_groups_users`.`users_id` = '$userID' ".
                                   getEntitiesRestrictRequest("AND", "glpi_groups", "",
                                                              $entity_restrict, true);
-            $result = $DB->query($query);
+            $result  = $DB->query($query);
 
-            $first = true;
+            $first   = true;
             $devices = array();
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -3050,14 +3050,15 @@ class Ticket extends CommonITILObject {
             $types = parent::getAllTypesForHelpdesk();
 
 //             $atypes = array_merge(array(-1 => Dropdown::EMPTY_VALUE), $types);
-            $rand = Dropdown::showItemTypes($myname, $types, array('emptylabel' => __('General'),
-                                                                   'value'      => $itemtype));
+            $rand       = Dropdown::showItemTypes($myname, $types,
+                                                  array('emptylabel' => __('General'),
+                                                        'value'      => $itemtype));
             $found_type = isset($types[$itemtype]);
 
-            $params = array('itemtype'        => '__VALUE__',
-                            'entity_restrict' => $entity_restrict,
-                            'admin'           => $admin,
-                            'myname'          => "items_id",);
+            $params     = array('itemtype'        => '__VALUE__',
+                                'entity_restrict' => $entity_restrict,
+                                'admin'           => $admin,
+                                'myname'          => "items_id",);
 
             Ajax::updateItemOnSelectEvent("dropdown_$myname$rand","results_$myname$rand",
                                           $CFG_GLPI["root_doc"].
@@ -3275,7 +3276,7 @@ class Ticket extends CommonITILObject {
       } else {
          // User as requester
          $values['_users_id_requester'] = Session::getLoginUserID();
-      
+
          if ($CFG_GLPI['use_check_pref']) {
             echo "<div class='center'><table class='tab_cadre_fixe'>";
             echo "<tr><th>".__('Check your personnal information')."</th></tr>";

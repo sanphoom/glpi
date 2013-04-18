@@ -2774,7 +2774,7 @@ class Html {
             $p[$key] = $val;
          }
       }
-      $rand = mt_rand();
+      $rand   = mt_rand();
       $output = '';
       // Validate value
       if (($value != 'NOW')
@@ -2798,33 +2798,32 @@ class Html {
          $specific_value = $value;
          $value          = 0;
       }
-      $output .= "<table width='100%'><tr><td width='50%'>";
+      $output   .= "<table width='100%'><tr><td width='50%'>";
 
-      $dates = Html::getGenericDateTimeSearchItems($p);
+      $dates            = Html::getGenericDateTimeSearchItems($p);
 
-      $output.= Dropdown::showFromArray("_select_$element", $dates,
-                                       array('value'   => $value,
-                                             'display' => false,
-                                             'rand'    => $rand));
-      $field_id = Html::cleanId("dropdown__select_$element$rand");
+      $output   .= Dropdown::showFromArray("_select_$element", $dates,
+                                                  array('value'   => $value,
+                                                        'display' => false,
+                                                        'rand'    => $rand));
+      $field_id         = Html::cleanId("dropdown__select_$element$rand");
 
-      $output .= "</td><td width='50%'>";
-      $contentid = Html::cleanId("displaygenericdate$element$rand");
-      $output .= "<span id='$contentid'></span>";
+      $output   .= "</td><td width='50%'>";
+      $contentid        = Html::cleanId("displaygenericdate$element$rand");
+      $output   .= "<span id='$contentid'></span>";
 
-      $params = array('value'         => '__VALUE__',
-                      'name'          => $element,
-                      'withtime'      => $p['with_time'],
-                      'specificvalue' => $specific_value);
+      $params           = array('value'         => '__VALUE__',
+                                'name'          => $element,
+                                'withtime'      => $p['with_time'],
+                                'specificvalue' => $specific_value);
 
-      $output .= Ajax::updateItemOnSelectEvent($field_id,
-                                               $contentid,
-                                               $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
-                                               $params, false);
-      $params['value'] = $value;
-      $output .= Ajax::updateItem($contentid,
-                                  $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, '', false);
-      $output .= "</td></tr></table>";
+      $output   .= Ajax::updateItemOnSelectEvent($field_id, $contentid,
+                                                        $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
+                                                        $params, false);
+      $params['value']  = $value;
+      $output   .= Ajax::updateItem($contentid, $CFG_GLPI["root_doc"]."/ajax/genericdate.php",
+                                           $params, '', false);
+      $output   .= "</td></tr></table>";
 
       if ($p['display']) {
          echo $output;
@@ -3777,6 +3776,7 @@ class Html {
       return self::jsGetElementbyID($id).".show();\n";
    }
 
+
    /**
     * Get javascript code for enable an item
     *
@@ -3790,6 +3790,7 @@ class Html {
       return self::jsGetElementbyID($id).".removeAttr('disabled');\n";
    }
 
+
    /**
     * Get javascript code for disable an item
     *
@@ -3802,6 +3803,7 @@ class Html {
    static function jsDisable($id){
       return self::jsGetElementbyID($id).".attr('disabled', 'disabled');\n";
    }
+
 
    /**
     * Clean ID used for HTML elements

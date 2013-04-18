@@ -84,12 +84,12 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
             $emailtab[''] = $new_email;
          }
       }
-      $email_string = Dropdown::showFromArray($_POST['field']."[alternative_email]",$emailtab,
-                              array('value'   => '',
-                                    'display' => false));
+      $email_string = Dropdown::showFromArray($_POST['field']."[alternative_email]", $emailtab,
+                                              array('value'   => '',
+                                                    'display' => false));
    } else {
       $email_string = "<input type='text' size='25' name='".$_POST['field']."[alternative_email]'
-            value='$default_email'>";
+                        value='$default_email'>";
    }
 
    echo '<br>';

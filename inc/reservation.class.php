@@ -607,6 +607,7 @@ class Reservation extends CommonDBChild {
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
+
       if (!Session::haveRight("reservation_helpdesk","1")) {
          return false;
       }
@@ -724,15 +725,15 @@ class Reservation extends CommonDBChild {
       if (empty($ID)) {
          echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."</td>";
          echo "<td>";
-         $values = array(''      => _x('periodicity', 'None'),
-                         'day'   => _x('periodicity', 'Daily'),
-                         'week'  => _x('periodicity', 'Weekly'),
-                         'month' => _x('periodicity', 'Monthly'));
-         $rand = Dropdown::showFromArray('periodicity[type]', $values);
+         $values   = array(''      => _x('periodicity', 'None'),
+                           'day'   => _x('periodicity', 'Daily'),
+                           'week'  => _x('periodicity', 'Weekly'),
+                           'month' => _x('periodicity', 'Monthly'));
+         $rand     = Dropdown::showFromArray('periodicity[type]', $values);
          $field_id = Html::cleanId("dropdown_periodicity[type]$rand");
 
-         $params = array('type'     => '__VALUE__',
-                         'end'      => $resa->fields["end"]);
+         $params   = array('type'     => '__VALUE__',
+                           'end'      => $resa->fields["end"]);
 
          Ajax::updateItemOnSelectEvent($field_id, "resaperiodcontent$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/resaperiod.php", $params);

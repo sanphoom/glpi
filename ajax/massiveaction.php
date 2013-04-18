@@ -94,10 +94,10 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
       }
       _e('Action');
       echo "&nbsp;";
-      
+
       $actions = array_merge(array(-1 => Dropdown::EMPTY_VALUE), $actions);
-      $rand = Dropdown::showFromArray('massiveaction', $actions);
-      
+      $rand    = Dropdown::showFromArray('massiveaction', $actions);
+
       echo "<br><br>";
 
       Ajax::updateItemOnSelectEvent("dropdown_massiveaction$rand", "show_massiveaction$rand",

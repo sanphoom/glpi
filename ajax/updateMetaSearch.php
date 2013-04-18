@@ -60,8 +60,8 @@ foreach ($searchopt as $key => $val) {
    }
 }
 $rand = Dropdown::showFromArray("field2[".$_POST["num"]."]", $values,
-                                 array('value' => $_POST["field"],
-                                       'width' => '100%'));
+                                array('value' => $_POST["field"],
+                                      'width' => '100%'));
 $field_id = Html::cleanId("dropdown_field2[".$_POST["num"]."]".$rand);
 
 echo "</td><td class='left'>";

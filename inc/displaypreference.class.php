@@ -309,7 +309,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<form method='post' action=\"$target\">";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
-         $group = '';
+         $group  = '';
          $values = array();
          foreach ($searchopt as $key => $val) {
             if (!is_array($val)) {
@@ -317,7 +317,7 @@ class DisplayPreference extends CommonDBTM {
 
             } else if (($key != 1)
                        && !in_array($key,$already_added)) {
-               $values[$group][$key] =$val["name"];
+               $values[$group][$key] = $val["name"];
             }
          }
          Dropdown::showFromArray('num', $values);

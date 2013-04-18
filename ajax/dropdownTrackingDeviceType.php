@@ -54,11 +54,10 @@ if (isset($_POST["itemtype"])
    $p = array('itemtype'            => $_POST["itemtype"],
               'entity_restrict'     => $_POST['entity_restrict'],
               'table'               => $table,
-              'myname'              => $_POST["myname"],
-              );
+              'myname'              => $_POST["myname"]);
    echo Html::jsAjaxDropdown($_POST['myname'], $field_id,
-                                    $CFG_GLPI['root_doc']."/ajax/getDropdownFindNum.php",
-                                    $p);
+                              $CFG_GLPI['root_doc']."/ajax/getDropdownFindNum.php",
+                              $p);
    // Auto update summary of active or just solved tickets
    $params = array('items_id' => '__VALUE__',
                    'itemtype' => $_POST['itemtype']);

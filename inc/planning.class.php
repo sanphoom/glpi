@@ -170,9 +170,9 @@ class Planning extends CommonGLPI {
       $values = array(0 => _n('Information', 'Information', 1),
                       1 => __('To do'),
                       2 => __('Done'));
-      return Dropdown::showFromArray($name,$values,
-                                      array('value'   => $value,
-                                            'display' => $display));
+
+      return Dropdown::showFromArray($name, $values, array('value'   => $value,
+                                                           'display' => $display));
    }
 
 

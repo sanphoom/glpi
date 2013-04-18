@@ -419,17 +419,17 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Sundays and holidays')."</td>";
       echo "<td colspan='3'>";
-      echo "<table width='100%'><tr><td width='20%'>";      
+      echo "<table width='100%'><tr><td width='20%'>";
       Dropdown::showYesNo("use_monday", $this->fields["use_monday"]);
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
       Dropdown::showHours("monday_begin_hour", $this->fields["monday_begin_hour"]);
-      echo "</td><td width='20%'>";      
+      echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('End')."</span>";
-      echo "</td><td width='20%'>";      
+      echo "</td><td width='20%'>";
       Dropdown::showHours("monday_end_hour", $this->fields["monday_end_hour"]);
-      echo "</td></tr></table>";      
+      echo "</td></tr></table>";
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -1303,7 +1303,7 @@ class Contract extends CommonDBTM {
                          `glpi_contracts`.`name` ASC,
                          `glpi_contracts`.`begin_date` DESC";
       $result = $DB->query($query);
-      
+
 
       $values = array(0 => Dropdown::EMPTY_VALUE);
       $group  = '';
@@ -1331,8 +1331,8 @@ class Contract extends CommonDBTM {
          }
       }
       return Dropdown::showFromArray($p['name'], $values,
-                                 array('value'     => $p['value'],
-                                       'on_change' => $p['on_change']));
+                                     array('value'     => $p['value'],
+                                           'on_change' => $p['on_change']));
    }
 
 

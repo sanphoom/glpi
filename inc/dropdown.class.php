@@ -532,9 +532,10 @@ class Dropdown {
       foreach ($elements as $element) {
          if ($element != 0) {
             $values[$element*HOUR_TIMESTAMP] = sprintf(__('%1$s %2$s'), __('GMT'),
-                                     sprintf(_n('%s hour', '%s hours', $element), $element));
+                                                       sprintf(_n('%s hour', '%s hours', $element),
+                                                               $element));
          } else {
-            $display_value = __('GMT');
+            $display_value                   = __('GMT');
             $values[$element*HOUR_TIMESTAMP] = __('GMT');
          }
       }
@@ -798,8 +799,8 @@ class Dropdown {
          }
       }
       Dropdown::showFromArray('dpmenu', $values,
-                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                                     'value'     => $selected));
+                              array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
+                                    'value'     => $selected));
       echo "</td></tr>";
       echo "</table><br>";
    }
@@ -929,7 +930,7 @@ class Dropdown {
          $end        = (int) $plan_end[0];
       }
 
-      $values = array();
+      $values   = array();
       $selected = '';
 
       for ($i=$begin ; $i<$end ; $i++) {
@@ -1541,7 +1542,7 @@ class Dropdown {
                      $output .= "<option value='".$key2."'";
                      // Do not use in_array : trouble with 0 and empty value
                      foreach ($param['values'] as $value) {
-                       if (strcmp($key2,$value)===0) {
+                       if (strcmp($key2,$value) === 0) {
                            $output .= " selected";
                            break;
                        }

@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 if (strpos($_SERVER['PHP_SELF'],"getDropdownConnect.php")) {
@@ -148,18 +149,18 @@ array_push($datas, array('id'   => 0,
                          'text' => Dropdown::EMPTY_VALUE));
 
 if ($DB->numrows($result)) {
-   $prev = -1;
+   $prev       = -1;
    $datastoadd = array();
-   
+
    while ($data = $DB->fetch_assoc($result)) {
-      if ($multi && $data["entities_id"]!=$prev) {
+      if ($multi && ($data["entities_id"] != $prev)) {
          if (count($datastoadd)) {
             array_push($datas, array('text'    => Dropdown::getDropdownName("glpi_entities", $prev),
-                                    'children' => $datastoadd));
+                                     'children' => $datastoadd));
          }
          $prev = $data["entities_id"];
          // Reset last level displayed :
-         $datastoadd = array();         
+         $datastoadd = array();
       }
       $output = $data['name'];
       $ID     = $data['id'];

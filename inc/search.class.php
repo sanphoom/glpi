@@ -1520,11 +1520,11 @@ class Search {
 
       echo "<table id='searchcriteriastable' width='100%'>";
 
-      $logicaloperators = array('AND' => 'AND',
-                                'OR' => 'OR',
+      $logicaloperators = array('AND'     => 'AND',
+                                'OR'      => 'OR',
                                 'AND NOT' => 'AND NOT',
-                                'OR NOT' => 'OR NOT',);
-      
+                                'OR NOT'  => 'OR NOT',);
+
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
          echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='45%'>";
@@ -1593,7 +1593,7 @@ class Search {
 
 
          $selected = $first = '';
-         $values = array();
+         $values   = array();
          // display select box to define search item
          if ($CFG_GLPI['allow_search_view'] == 2) {
             $values['view'] = __('Items seen');
@@ -1622,10 +1622,9 @@ class Search {
          if (is_array($p['field']) && isset($p['field'][$i])) {
             $value = $p['field'][$i];
          }
-         
-         $rand = Dropdown::showFromArray("field[$i]", $values,
-                                          array('value' => $value,
-                                                'width' => '60%'));
+
+         $rand     = Dropdown::showFromArray("field[$i]", $values, array('value' => $value,
+                                                                         'width' => '60%'));
          $field_id = Html::cleanId("dropdown_field[$i]$rand");
          echo "</td><td class='left'>";
          echo "<div id='SearchSpan$itemtype$i'>\n";
@@ -1692,9 +1691,9 @@ class Search {
                 && !empty($p['itemtype2'][$i])) {
                $value = $p['itemtype2'][$i];
             }
-            
-            $rand = Dropdown::showItemTypes("itemtype2[$i]",$linked, array('width' => '50%',
-                                                                           'value' => $value));
+
+            $rand = Dropdown::showItemTypes("itemtype2[$i]", $linked, array('width' => '50%',
+                                                                            'value' => $value));
             $field_id = Html::cleanId("dropdown_itemtype2[$i]$rand");
             echo "</td><td>";
             // Ajax script for display search met& item
@@ -1721,7 +1720,7 @@ class Search {
 //                echo "alert('".$p['itemtype2'][$i]."');";
 //                echo Html::jsSetDropdownValue($field_id, $p['itemtype2'][$i]);
 //                echo "</script>\n";
-               
+
                $params['itemtype'] = $p['itemtype2'][$i];
                Ajax::updateItem("show_".$itemtype."_".$i."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php", $params);

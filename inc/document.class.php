@@ -1261,18 +1261,18 @@ class Document extends CommonDBTM {
       $result = $DB->query($query);
 
       $values = array(0 => Dropdown::EMPTY_VALUE);
-      
+
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['id']] = $data['name'];
       }
-      $rand = Dropdown::showFromArray('_rubdoc', $values, array('width' => '30%'));
+      $rand     = Dropdown::showFromArray('_rubdoc', $values, array('width' => '30%'));
       $field_id = Html::cleanId("dropdown__rubdoc$rand");
-      
-      $params = array('rubdoc' => '__VALUE__',
-                      'entity' => $p['entity'],
-                      'rand'   => $rand,
-                      'myname' => $p['name'],
-                      'used'   => $p['used']);
+
+      $params   = array('rubdoc' => '__VALUE__',
+                        'entity' => $p['entity'],
+                        'rand'   => $rand,
+                        'myname' => $p['name'],
+                        'used'   => $p['used']);
 
       Ajax::updateItemOnSelectEvent($field_id,"show_".$p['name']."$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php", $params);

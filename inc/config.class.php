@@ -252,7 +252,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td width='30%'> " . __('Allow FAQ anonymous access') . "</td><td  width='20%'>";
       Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
-      echo "</td><td width='30%'>" . __('Simplified interface help link') . "</td width='20%'>";
+      echo "</td><td width='30%'>" . __('Simplified interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='helpdesk_doc_url' value='" .
                  $CFG_GLPI["helpdesk_doc_url"] . "'></td>";
       echo "</tr>";
@@ -502,9 +502,11 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='30%'>". __('Automatically add users from an external authentication source')."</td><td width='20%'>";
+      echo "<td width='30%'>". __('Automatically add users from an external authentication source').
+           "</td><td width='20%'>";
       Dropdown::showYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
-      echo "</td><td width='30%'>". __('Add a user without accreditation from a LDAP directory')."</td><td width='20%'>";
+      echo "</td><td width='30%'>". __('Add a user without accreditation from a LDAP directory').
+           "</td><td width='20%'>";
       Dropdown::showYesNo("use_noright_users_add", $CFG_GLPI["use_noright_users_add"]);
       echo "</td></tr>";
 

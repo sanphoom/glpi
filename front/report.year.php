@@ -49,10 +49,8 @@ echo "<tr><th colspan='4'>".__("Equipment's report by year")."</th></tr>";
 # 3. Selection d'affichage pour generer la liste
 
 echo "<tr class='tab_bg_2'>";
-echo "<td width='20%' class='b center'>";
-echo __('Item type');
-echo "</td><td width='30%'>";
-
+echo "<td width='20%' class='b center'>".__('Item type')."</td>";
+echo "<td width='30%'>";
 $values = array(0 => __('All'));
 foreach ($CFG_GLPI["contract_types"] as $itemtype) {
    if ($item = getItemForItemtype($itemtype)) {
@@ -61,14 +59,13 @@ foreach ($CFG_GLPI["contract_types"] as $itemtype) {
 }
 Dropdown::showFromArray('item_type',$values, array('value'    => 0,
                                                    'multiple' => true));
-
 echo "</td>";
 
-echo "<td width='20%' class='center'><p class='b'>".__('Date');
-echo "</td><td width='30%'>";
+echo "<td width='20%' class='center'><p class='b'>".__('Date')."</p></td>";
+echo "<td width='30%'>";
 $y = date("Y");
 $values = array( 0 => __('All'));
-for ($i=$y-10 ; $i<$y+10 ; $i++) {
+for ($i=($y-10) ; $i<($y+10) ; $i++) {
    $values[$i] = $i;
 }
 Dropdown::showFromArray('year',$values, array('value'    => $y,

@@ -29,6 +29,7 @@
 
 /** @file
 * @brief List of device for tracking.
+* @since version 0.85
 */
 
 include ('../inc/includes.php');
@@ -78,7 +79,8 @@ if ((strlen($_GET['searchText']) > 0)) {
    $where .= " AND (`name` ".$search."
                     OR `id` = '".$_GET['searchText']."'";
 
-   if ($_GET['table']!="glpi_softwares" && !$itemtypeisplugin) {
+   if (($_GET['table'] != "glpi_softwares")
+       && !$itemtypeisplugin) {
       $where .= " OR `contact` ".$search."
                   OR `serial` ".$search."
                   OR `otherserial` ".$search;
@@ -113,7 +115,7 @@ if ($_GET['page'] == 1) {
    array_push($datas, array('id'   => 0,
                             'text' => Dropdown::EMPTY_VALUE));
 }
-$count=0;
+$count = 0;
 if ($DB->numrows($result)) {
    while ($data = $DB->fetch_assoc($result)) {
       $output = $data['name'];
@@ -136,13 +138,13 @@ if ($DB->numrows($result)) {
          $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
       }
 
-      array_push($datas, array('id'  => $data['id'],
-                              'text' => $output));
+      array_push($datas, array('id'   => $data['id'],
+                               'text' => $output));
       $count++;
    }
 }
 
-$ret['count'] = $count;
+$ret['count']   = $count;
 $ret['results'] = $datas;
 echo json_encode($ret);
 ?>

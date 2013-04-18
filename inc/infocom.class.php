@@ -587,9 +587,9 @@ class Infocom extends CommonDBChild {
       $values = array(0 => Dropdown::EMPTY_VALUE,
                       2 => __('Linear'),
                       1 => __('Decreasing'));
-      return Dropdown::showFromArray($name,$values,
-                                      array('value'   => $value,
-                                            'display' => $display));
+
+      return Dropdown::showFromArray($name, $values, array('value'   => $value,
+                                                           'display' => $display));
    }
 
 

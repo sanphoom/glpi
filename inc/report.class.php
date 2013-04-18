@@ -117,13 +117,13 @@ class Report extends CommonGLPI{
       $count    = count($report_list);
       $selected = -1;
       $values   = array(-1 => Dropdown::EMPTY_VALUE);
-      
+
       while ($data = each($report_list)) {
-         $val  = $data[0];
-         $name = $report_list["$val"]["name"];
-         $file = $report_list["$val"]["file"];
-         $key = $CFG_GLPI["root_doc"]."/front/".$file;
-         $values[$key] = $name;
+         $val           = $data[0];
+         $name          = $report_list["$val"]["name"];
+         $file          = $report_list["$val"]["file"];
+         $key           = $CFG_GLPI["root_doc"]."/front/".$file;
+         $values[$key]  = $name;
          if (stripos($_SERVER['REQUEST_URI'],$key) !== false) {
             $selected = $key;
          }
@@ -148,7 +148,7 @@ class Report extends CommonGLPI{
          $group = $title;
          foreach ($names as $key => $val) {
              if ($opt == $val["plug"]) {
-               $file = $CFG_GLPI["root_doc"]."/plugins/".$key;
+               $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
                $values[$group][$file] = $val["name"];
                if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
                   $selected = $file;
@@ -158,8 +158,8 @@ class Report extends CommonGLPI{
       }
 
       Dropdown::showFromArray('statmenu', $values,
-                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                                     'value'     => $selected));
+                              array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
+                                    'value'     => $selected));
       echo "</td>";
       echo "</tr>";
       echo "</table>";

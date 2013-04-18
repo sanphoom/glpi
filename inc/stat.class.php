@@ -1536,7 +1536,7 @@ class Stat extends CommonGLPI {
       echo "<tr><th colspan='2'>".__('Select statistics to be displayed')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
 
-      $values = array(-1 => Dropdown::EMPTY_VALUE);         
+      $values   = array(-1 => Dropdown::EMPTY_VALUE);
 
       $i        = 0;
       $selected = -1;
@@ -1549,7 +1549,7 @@ class Stat extends CommonGLPI {
             if (isset($data[1]["comment"])) {
                $comment = $data[1]["comment"];
             }
-            $key = $CFG_GLPI["root_doc"]."/front/".$file;
+            $key                  = $CFG_GLPI["root_doc"]."/front/".$file;
             $values[$group][$key] = $name;
             if (stripos($_SERVER['REQUEST_URI'],$key) !== false) {
                $selected = $key;
@@ -1577,7 +1577,7 @@ class Stat extends CommonGLPI {
          $group = $title;
          foreach ($names as $key => $val) {
              if ($opt == $val["plug"]) {
-               $file = $CFG_GLPI["root_doc"]."/plugins/".$key;
+               $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
                $values[$group][$file] = $val["name"];
                if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
                   $selected = $file;
@@ -1587,8 +1587,8 @@ class Stat extends CommonGLPI {
       }
 
       Dropdown::showFromArray('statmenu', $values,
-                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                                     'value'     => $selected));
+                              array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
+                                    'value'     => $selected));
       echo "</td>";
       echo "</tr>";
       echo "</table>";
