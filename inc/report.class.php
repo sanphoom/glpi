@@ -100,7 +100,7 @@ class Report extends CommonGLPI{
          $report_list["reservation"]["name"] = __('Loan');
          $report_list["reservation"]["file"] = "report.reservation.php";
       }
-      if (Session::haveRight("computer","r")
+      if (Session::haveRight("computer", ProfileRight::READ)
           || Session::haveRight("monitor","r")
           || Session::haveRight("networking","r")
           || Session::haveRight("peripheral","r")

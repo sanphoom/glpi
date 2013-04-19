@@ -121,6 +121,14 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
 
    /**
+    * @since version 0.85
+    **/
+   static function canPurge() {
+      return static::canChild('canUpdate');
+   }
+
+
+   /**
     * @since version 0.84
    **/
    function canCreateItem() {
@@ -672,11 +680,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
             }
             $canedit = $item->canUpdate();
          } else {
-            if (!$item->can($items_id, self::READ)) {
+            if (!$item->can($items_id, ProfileRight::READ)) {
                return false;
             }
 
-            $canedit = $item->can($items_id, self::UPDATE);
+            $canedit = $item->can($items_id, ProfileRight::UPDATE);
          }
       }
 
@@ -725,11 +733,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
             }
             $canedit = $item->canUpdate();
          } else {
-            if (!$item->can($items_id, self::READ)) {
+            if (!$item->can($items_id, ProfileRight::READ)) {
                return false;
             }
 
-            $canedit = $item->can($items_id, self::UPDATE);
+            $canedit = $item->can($items_id, ProfileRight::UPDATE);
          }
       }
 

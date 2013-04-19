@@ -3317,7 +3317,7 @@ class User extends CommonDBTM {
 
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $cansee = $item->can($data["id"], self::READ);
+                  $cansee = $item->can($data["id"], ProfileRight::READ);
                   $link   = $data["name"];
                   if ($cansee) {
                      $link_item = Toolbox::getItemTypeFormURL($itemtype);
@@ -3393,7 +3393,7 @@ class User extends CommonDBTM {
 
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_assoc($result)) {
-                     $cansee = $item->can($data["id"], self::READ);
+                     $cansee = $item->can($data["id"], ProfileRight::READ);
                      $link   = $data["name"];
                      if ($cansee) {
                         $link_item = Toolbox::getItemTypeFormURL($itemtype);
@@ -3970,5 +3970,18 @@ class User extends CommonDBTM {
       }
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      $values[ProfileRight::IMPORTEXTAUTHUSERS] = __('Add users from an external source');
+
+      return $values;
+   }
 }
 ?>

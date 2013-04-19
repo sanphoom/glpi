@@ -1518,7 +1518,7 @@ class CommonDBTM extends CommonGLPI {
    static function canDelete() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, self::DELETE);
+         return Session::haveRight(static::$rightname, ProfileRight::DELETE);
       }
       /// hack for old right management to avoid put $rightname in each class
       $class = get_called_class();
@@ -1540,7 +1540,7 @@ class CommonDBTM extends CommonGLPI {
    static function canPurge() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, self::PURGE);
+         return Session::haveRight(static::$rightname, ProfileRight::PURGE);
       }
       return false;
    }
@@ -1558,7 +1558,7 @@ class CommonDBTM extends CommonGLPI {
    static function canUpdate() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, self::UPDATE);
+         return Session::haveRight(static::$rightname, ProfileRight::UPDATE);
       }
 
       /// hack for old right management to avoid put $rightname in each class
@@ -1648,7 +1648,7 @@ class CommonDBTM extends CommonGLPI {
    static function canView() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, self::READ);
+         return Session::haveRight(static::$rightname, ProfileRight::READ);
       }
       return false;
    }
@@ -4588,6 +4588,25 @@ class CommonDBTM extends CommonGLPI {
          return true;
       }
       return false;
+   }
+
+
+   /**
+    * Get rights for an item _ may be overload by object
+    *
+    * @since version 0.85
+    *
+    * @return array of rights to display
+   **/
+   static function getRights() {
+
+      $values = array(ProfileRight::READ    => __('Read'),
+                      ProfileRight::UPDATE  => __('Update'),
+                      ProfileRight::CREATE  => __('Create'),
+                      ProfileRight::DELETE  => __('Delete'),
+                      ProfileRight::PURGE   => __('Delete permanently'));
+
+      return $values;
    }
 
 }

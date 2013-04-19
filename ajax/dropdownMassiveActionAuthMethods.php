@@ -37,7 +37,7 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight('user_authtype', self::UPDATE);
+Session::checkRight('user_authtype', ProfileRight::UPDATE);
 
 if ($_POST["authtype"] > 0) {
    $name = 'massiveaction';

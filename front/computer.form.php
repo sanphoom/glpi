@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("computer", "r");
+Session::checkRight("computer", ProfileRight::READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -46,7 +46,7 @@ if (!isset($_GET["withtemplate"])) {
 $computer = new Computer();
 //Add a new computer
 if (isset($_POST["add"])) {
-   $computer->check(-1, 'w', $_POST);
+   $computer->check(-1, ProfileRight::CREATE, $_POST);
    if ($newID = $computer->add($_POST)) {
       Event::log($newID, "computers", 4, "inventory",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
 
 // delete a computer
 } else if (isset($_POST["delete"])) {
-   $computer->check($_POST['id'], 'd');
+   $computer->check($_POST['id'], ProfileRight::DELETE);
    $ok = $computer->delete($_POST);
    if ($ok) {
       Event::log($_POST["id"], "computers", 4, "inventory",
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $computer->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $computer->check($_POST['id'], 'd');
+   $computer->check($_POST['id'], ProfileRight::PURGE);
    if ($computer->restore($_POST)) {
       Event::log($_POST["id"],"computers", 4, "inventory",
                  //TRANS: %s is the user login
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
    $computer->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $computer->check($_POST['id'], 'd');
+   $computer->check($_POST['id'], ProfileRight::PURGE);
    if ($computer->delete($_POST,1)) {
       Event::log($_POST["id"], "computers", 4, "inventory",
                  //TRANS: %s is the user login
@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
 
 //update a computer
 } else if (isset($_POST["update"])) {
-   $computer->check($_POST['id'], 'w');
+   $computer->check($_POST['id'], ProfileRight::UPDATE);
    $computer->update($_POST);
    Event::log($_POST["id"], "computers", 4, "inventory",
               //TRANS: %s is the user login

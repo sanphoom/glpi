@@ -919,7 +919,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, S*self::UPDATE);
+      $canedit = $this->can($rules_id, ProfileRight::UPDATE);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -1085,7 +1085,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, self::UPDATE);
+      $canedit = $this->can($rules_id, ProfileRight::UPDATE);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -2861,5 +2861,18 @@ class Rule extends CommonDBTM {
       echo "</div>";
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      unset($values[ProfileRight::DELETE]);
+
+      return $values;
+   }
 }
 ?>

@@ -281,9 +281,9 @@ class Profile extends CommonDBTM {
          // TODO For not converted dropdown (still r or w)
          else if (isset($input[$right])) {
             if ($input[$right] == 'r') {
-               $this->profileRight[$right] = CommonDBTM::READ;
+               $this->profileRight[$right] = ProfileRight::READ;
             } else if ($input[$right] == 'w') {
-               $this->profileRight[$right] = CommonDBTM::ALLSTANDARDRIGHT;
+               $this->profileRight[$right] = ProfileRight::ALLSTANDARDRIGHT;
             } else {
                $this->profileRight[$right] = $input[$right];
             }
@@ -405,7 +405,7 @@ class Profile extends CommonDBTM {
       }
 
       // Profile right : may modify profile so can attach all profile
-      if (Session::haveRight("profile", CommonDBTM::CREATE)) {
+      if (Session::haveRight("profile", ProfileRight::CREATE)) {
          return $query." 1 ";
       }
 
@@ -718,10 +718,10 @@ class Profile extends CommonDBTM {
     **/
    function showFormAsset($openform=true, $closeform=true) {
 
-      if (!Session::haveRight("profile", CommonDBTM::READ)) {
+      if (!Session::haveRight("profile", ProfileRight::READ)) {
          return false;
       }
-      if (($canedit=Session::haveRight("profile", CommonDBTM::UPDATE)) && $openform) {
+      if (($canedit=Session::haveRight("profile", ProfileRight::UPDATE)) && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -733,7 +733,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='18%'>"._n('Computer', 'Computers', 2)."</td><td width='15%'>";
-      self::dropdownRight("computer", array('value' => $this->fields["computer"]));
+      self::dropdownRights(Computer::getRights(), "_computer", $this->fields["computer"]);
       echo "</td>";
       echo "<td width='18%'>"._n('Monitor', 'Monitors', 2)."</td><td width='15%'>";
       self::dropdownRight("monitor", array('value' => $this->fields["monitor"]));
@@ -1252,12 +1252,12 @@ class Profile extends CommonDBTM {
    function showFormAdmin($openform=true, $closeform=true) {
       global $DB;
 
-      if (!Session::haveRight("profile", CommonDBTM::READ)) {
+      if (!Session::haveRight("profile", ProfileRight::READ)) {
          return false;
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRight("profile", CommonDBTM::UPDATE))
+      if (($canedit = Session::haveRight("profile", ProfileRight::UPDATE))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
@@ -1269,24 +1269,25 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='13%'>"._n('User', 'Users', 2)."</td><td  colspan='2'>";
-      self::dropdownStandardRights("_user", $this->fields["user"], true, true,
-                                   array(ProfileRight::IMPORTEXTAUTHUSERS => __('Add users from an external source')));
+      self::dropdownRights(User::getRights(), "_user", $this->fields["user"]);
 
       echo "</td>";
       echo "<td width='13%'>".__('Method for user authentication and synchronization')."</td>";
       echo "<td colspan='2'>";
-      self::dropdownStandardRights("_user_authtype", $this->fields["user_authtype"], false, false);
+      $tab = CommonDBTM::getRights();
+      unset($tab[ProfileRight::DELETE], $tab[ProfileRight::PURGE]);
+      self::dropdownRights($tab, "_user_authtype", $this->fields["user_authtype"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>"._n('Entity', 'Entities', 2)."</td><td width='18%'>";
-      self::dropdownStandardRights("_entity", $this->fields["entity"], false);
+      self::dropdownRights(CommonDropdown::getRights(), "_entity", $this->fields["entity"]);
       echo "</td>";
       echo "<td>"._n('Group', 'Groups', 2)."</td><td width='18%'>";
-      self::dropdownStandardRights("_group", $this->fields["group"], false);
+      self::dropdownRights(CommonDropdown::getRights(), "_group", $this->fields["group"]);
       echo "</td>";
       echo "<td>".self::getTypeName(2)."</td><td width='18%'>";
-      self::dropdownStandardRights("_profile", $this->fields["profile"], false);
+      self::dropdownRights(Profile::getRights(), "_profile", $this->fields["profile"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
@@ -1299,7 +1300,7 @@ class Profile extends CommonDBTM {
                                         'nowrite' => true));
       echo "</td>";
       echo "<td>".__('Transfer')."</td><td>";
-      self::dropdownStandardRights("_transfer", $this->fields["transfer"], false);
+      self::dropdownRights(Transfer::getRights(), "_transfer", $this->fields["transfer"]);
       echo "</td>";
       echo "</tr>\n";
 
@@ -1307,44 +1308,43 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Authorizations assignment rules')."</td><td>";
-      self::dropdownStandardRights("_rule_ldap", $this->fields["rule_ldap"], false);
+      self::dropdownRights(Rule::getRights(), "_rule_ldap", $this->fields["rule_ldap"]);
       echo "</td>";
       echo "<td>".__('Rules for assigning a computer to an entity')."</td><td>";
-      self::dropdownStandardRights("_rule_import", $this->fields["rule_import"], false);
+      self::dropdownRights(Rule::getRights(), "_rule_import", $this->fields["rule_import"]);
       echo "</td>";
       echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td><td>";
-      self::dropdownStandardRights("_rule_mailcollector", $this->fields["rule_mailcollector"],
-                                   false);
+      self::dropdownRights(Rule::getRights(), "_rule_mailcollector",
+                           $this->fields["rule_mailcollector"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Rules for assigning a category to a software')."</td><td>";
-      self::dropdownStandardRights("_rule_softwarecategories",
-                                   $this->fields["rule_softwarecategories"], false);
+      self::dropdownRights(Rule::getRights(), "_rule_softwarecategories",
+                                   $this->fields["rule_softwarecategories"]);
       echo "</td>";
       echo "</td>";
       echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
       echo "<td class='tab_bg_1' colspan='2'>";
-      self::dropdownStandardRights("_entity_rule_ticket", $this->fields["entity_rule_ticket"],
-                                   false, true,
-                                   array(ProfileRight::RULETICKET => __('Business rules for ticket (entity parent)')));
+      self::dropdownRights(RuleTicket::getRights(), "_entity_rule_ticket",
+                           $this->fields["entity_rule_ticket"]);
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Dictionary', 'Dictionaries', 2)."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Dropdowns dictionary')."</td><td>";
-      self::dropdownStandardRights("_rule_dictionnary_dropdown",
-                                   $this->fields["rule_dictionnary_dropdown"], false);
+      self::dropdownRights(RuleDictionnaryDropdown::getRights(), "_rule_dictionnary_dropdown",
+                                   $this->fields["rule_dictionnary_dropdown"]);
       echo"</td>";
       //TRANS: software in plural
       echo "<td>".__('Software dictionary')."</td><td>";
-      self::dropdownStandardRights("_rule_dictionnary_software",
-                                   $this->fields["rule_dictionnary_software"], false);
+      self::dropdownRights(Rule::getRights(), "_rule_dictionnary_software",
+                                   $this->fields["rule_dictionnary_software"]);
       echo "</td>";
       echo "<td>".__('Printers dictionnary')."</td><td>";
-      self::dropdownStandardRights("_rule_dictionnary_printer",
-                                   $this->fields["rule_dictionnary_printer"], false);
+      self::dropdownRights(Rule::getRights(), "_rule_dictionnary_printer",
+                                   $this->fields["rule_dictionnary_printer"]);
       echo "</td></tr>";
 
 
@@ -2296,39 +2296,17 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * Make a select box for 6 standard rights : none, read, create, update, delete, purge
+    * Make a select box for rights
     *
     * @since version 0.85
     *
-    * @param $name      string   name of the dropdown
+    * @param $values    array    of values to display
+    * @param $name      integer  name of the dropdown
     * @param $current   integer  value in database (sum of rights)
-    * @param $delete    boolean  show delete or not
-    * @param $purge     boolean  show purge or not
    **/
-   static function dropdownStandardRights($name, $current, $delete=true, $purge=true,
-                                          $toadd=array()) {
+   static function dropdownRights(array $values, $name, $current) {
 
-      $values = array(CommonDBTM::READ    => __('Read'),
-                      CommonDBTM::UPDATE  => __('Update'),
-                      CommonDBTM::CREATE  => __('Create'),
-                      CommonDBTM::DELETE  => __('Delete'),
-                      CommonDBTM::PURGE   => __('Delete permanently'));
-
-      $size = 5;
-
-      if (isset($toadd) && $toadd) {
-         $values += $toadd;
-      }
-
-      if (!$delete) {
-         unset($values[CommonDBTM::DELETE]);
-         $size = 4;
-      }
-      if (!$purge) {
-         unset($values[CommonDBTM::PURGE]);
-         $size = 3;
-      }
-
+      $size      = count($values);
       $tabselect = array();
       foreach ($values as $k => $v) {
          if ($current & $k) {
@@ -2375,9 +2353,9 @@ class Profile extends CommonDBTM {
       }
 
       // TODO temp compatibility with new profil
-      if ($param['value'] == CommonDBTM::READ) {
+      if ($param['value'] == ProfileRight::READ) {
          $param['value'] = 'r';
-      } else if ($param['value'] == CommonDBTM::ALLSTANDARDRIGHT) {
+      } else if ($param['value'] == ProfileRight::ALLSTANDARDRIGHT) {
          $param['value'] = 'w';
       }
 
@@ -2386,10 +2364,10 @@ class Profile extends CommonDBTM {
          $values[0] = __('No access');
       }
       if (!$param['noread']) {
-         $values[CommonDBTM::READ] = __('Read');
+         $values[ProfileRight::READ] = __('Read');
       }
       if (!$param['nowrite']) {
-         $values[CommonDBTM::CREATE] = __('Write');
+         $values[ProfileRight::CREATE] = __('Write');
       }
       return Dropdown::showFromArray($name, $values,
                                      array('value'   => $param['value'],
@@ -2592,5 +2570,18 @@ class Profile extends CommonDBTM {
       return false;
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      unset($values[ProfileRight::DELETE]);
+
+      return $values;
+   }
 }
 ?>

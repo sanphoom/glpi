@@ -48,8 +48,9 @@ class Computer extends CommonDBTM {
                                                'NetworkPort', 'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
-   var $devices = array();
+   var $devices                        = array();
 
+   static $rightname                   = 'computer';
 
    /**
     * Name of the type
@@ -58,16 +59,6 @@ class Computer extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Computer', 'Computers', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('computer', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('computer', 'r');
    }
 
 

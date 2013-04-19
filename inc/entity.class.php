@@ -935,12 +935,12 @@ class Entity extends CommonTreeDropdown {
 
       $con_spotted = false;
       $ID          = $entity->getField('id');
-      if (!$entity->can($ID, self::READ)) {
+      if (!$entity->can($ID, ProfileRight::READ)) {
          return false;
       }
 
       // Entity right applied
-      $canedit = $entity->can($ID, self::UPDATE);
+      $canedit = $entity->can($ID, ProfileRight::UPDATE);
 
       echo "<div class='spaced'>";
       if ($canedit) {

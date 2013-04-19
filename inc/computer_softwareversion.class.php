@@ -293,7 +293,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       $canedit         = Session::haveRight("software", "w");
-      $canshowcomputer = Session::haveRight("computer", "r");
+      $canshowcomputer = Session::haveRight("computer", ProfileRight::READ);
 
       if (isset($_GET["start"])) {
          $start = $_GET["start"];
@@ -854,7 +854,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if (SoftwareLicense::canUpdate()) {
                $actions['purge'] = _x('button', 'Delete permanently');
             }
-                              
+
             $paramsma = array('num_displayed'    => $number,
                               'container'        => 'massSoftwareLicense'.$rand,
                               'specific_actions' => $actions);
@@ -1020,7 +1020,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       $ID = $data['linkID'];
-      
+
       $multiple  = false;
       $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
       $link      = $link_item."?id=".$data['id'];

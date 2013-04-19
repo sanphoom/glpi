@@ -125,7 +125,7 @@ class Group_User extends CommonDBRelation{
          return false;
       }
 
-      $canedit = $user->can($ID, self::UPDATE);
+      $canedit = $user->can($ID, ProfileRight::UPDATE);
 
       $rand    = mt_rand();
 

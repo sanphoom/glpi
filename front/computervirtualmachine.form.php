@@ -45,7 +45,7 @@ if (!isset($_GET["computers_id"])) {
 
 $disk = new ComputerVirtualMachine();
 if (isset($_POST["add"])) {
-   $disk->check(-1, 'w', $_POST);
+   $disk->check(-1, ProfileRight::CREATE, $_POST);
 
    if ($newID = $disk->add($_POST)) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
@@ -55,8 +55,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $disk->check($_POST["id"], 'd');
-
+   $disk->check($_POST["id"], ProfileRight::PURGE);
+   // TODO field is_deleted delete => purge
    if ($disk->delete($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
                  //TRANS: %s is the user login
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
                   ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $disk->check($_POST["id"], 'w');
+   $disk->check($_POST["id"], ProfileRight::UPDATE);
 
    if ($disk->update($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",

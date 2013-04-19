@@ -60,7 +60,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       if (!$withtemplate
           && ($item->getType() == 'Computer')
-          && Session::haveRight("computer","r")) {
+          && Session::haveRight("computer", ProfileRight::READ)) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
@@ -121,18 +121,18 @@ class ComputerVirtualMachine extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("computer","w")) {
+      if (!Session::haveRight("computer", ProfileRight::UPDATE)) {
         return false;
       }
 
       $comp = new Computer();
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, ProfileRight::READ);
          $comp->getFromDB($this->fields['computers_id']);
       } else {
          // Create item
-         $this->check(-1, 'w', $options);
+         $this->check(-1, ProfileRight::UPDATE, $options);
          $comp->getFromDB($options['computers_id']);
       }
 

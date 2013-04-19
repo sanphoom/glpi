@@ -200,7 +200,7 @@ function update084to085() {
    }
 
    foreach ($DB->request("glpi_profilerights",
-         "`name` = 'rule_ticket' AND `right` = 'r'") as $profrights) {
+                         "`name` = 'rule_ticket' AND `right` = 'r'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . ProfileRight::RULETICKET ."

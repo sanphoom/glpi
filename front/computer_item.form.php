@@ -39,7 +39,7 @@ Session::checkCentralAccess();
 $conn = new Computer_Item();
 
 if (isset($_POST["disconnect"])) {
-   $conn->check($_POST["id"], 'd');
+   $conn->check($_POST["id"], ProfileRight::DELETE);
    $conn->delete($_POST);
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
               //TRANS: %s is the user login
@@ -49,7 +49,7 @@ if (isset($_POST["disconnect"])) {
 // Connect a computer to a printer/monitor/phone/peripheral
 } else if (isset($_POST["add"])) {
    if (isset($_POST["items_id"]) && ($_POST["items_id"] > 0)) {
-      $conn->check(-1, 'w', $_POST);
+      $conn->check(-1, ProfileRight::CREATE, $_POST);
       $conn->add($_POST);
       Event::log($_POST["computers_id"], "computers", 5, "inventory",
                  //TRANS: %s is the user login
