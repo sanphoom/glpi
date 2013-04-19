@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("networking", "r");
+Session::checkRight("networking", ProfileRight::READ);
 
 Html::header(NetworkEquipment::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "networkequipment");
 

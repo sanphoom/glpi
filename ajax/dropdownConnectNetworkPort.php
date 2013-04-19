@@ -39,7 +39,7 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("networking", "w");
+Session::checkRight("networking", ProfileRight::UPDATE);
 
 // Make a select box
 if (class_exists($_POST["itemtype"])

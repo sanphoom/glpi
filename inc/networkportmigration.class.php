@@ -44,6 +44,9 @@ class NetworkPortMigration extends CommonDBChild {
    static public $items_id        = 'items_id';
    static public $mustBeAttached  = true;
 
+   static $rightname              = 'networking';
+
+
 
    static function getTypeName($nb=0) {
       return __('Network port migration');
@@ -57,22 +60,25 @@ class NetworkPortMigration extends CommonDBChild {
 
    static function canUpdate() {
 
-      return (Session::haveRight('networking','w')
+      return (Session::haveRight('networking', ProfileRight::UPDATE)
               && parent::canUpdate());
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('networking','r')
+      return (Session::haveRight('networking', ProfileRight::READ)
               && parent::canView());
    }
 
 
-   static function canDelete() {
+   /**
+    * @since version 0.85
+   **/
+   static function canPurge() {
 
-      return (Session::haveRight('networking','w')
-              && parent::canDelete());
+      return (Session::haveRight('networking', ProfileRight::PURGE)
+              && parent::canPurge());
    }
 
 
@@ -140,7 +146,7 @@ class NetworkPortMigration extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $DB;
 
-      if (!Session::haveRight("networking", "r")) {
+      if (!Session::haveRight("networking", ProfileRight::READ)) {
          return false;
       }
 

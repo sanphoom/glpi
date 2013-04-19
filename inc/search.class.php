@@ -4876,13 +4876,13 @@ class Search {
     * Clean search options depending of user active profile
     *
     * @param $itemtype              item type to manage
-    * @param $action                action which is used to manupulate searchoption (r/w)
-    *                               (default 'r')
+    * @param $action                action which is used to manupulate searchoption
+    *                               (default profileRight::READ)
     * @param $withplugins  boolean  get plugins options (true by default)
     *
     * @return clean $SEARCH_OPTION array
    **/
-   static function getCleanedOptions($itemtype, $action='r', $withplugins=true) {
+   static function getCleanedOptions($itemtype, $action=ProfileRight::READ, $withplugins=true) {
       global $CFG_GLPI;
 
       $options = &self::getOptions($itemtype, $withplugins);

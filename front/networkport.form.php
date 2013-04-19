@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
    }
 
    if (!isset($_POST["several"])) {
-      $np->check(-1, 'w', $_POST);
+      $np->check(-1, ProfileRight::UPDATE, $_POST);
       $np->splitInputForElements($_POST);
       $newID = $np->add($_POST);
       $np->updateDependencies(1);
@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
       Html::back();
 
    } else {
-      Session::checkRight("networking", "w");
+      Session::checkRight("networking", ProfileRight::UPDATE);
 
       $input = $_POST;
       unset($input['several']);
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
          $input["name"]           = $_POST["name"].$add.$i;
          unset($np->fields["id"]);
 
-         if ($np->can(-1, 'w', $input)) {
+         if ($np->can(-1, ProfileRight::CREATE, $input)) {
             $np->splitInputForElements($input);
             $np->add($input);
             $np->updateDependencies(1);
@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["delete"])) {
-   $np->check($_POST['id'], 'd');
+   $np->check($_POST['id'], ProfileRight::DELETE);
    $np->delete($_POST);
    Event::log($_POST['id'], "networkport", 5, "inventory",
               //TRANS: %s is the user login
@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 
 } else if (isset($_POST["update"])) {
-   $np->check($_POST['id'], 'w');
+   $np->check($_POST['id'], ProfileRight::UPDATE);
 
    $np->splitInputForElements($_POST);
    $np->update($_POST);
@@ -116,7 +116,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["disconnect"])) {
-   $nn->check($_POST['id'], 'd');
+   $nn->check($_POST['id'], ProfileRight::DELETE);
 
    if (isset($_POST["id"])) {
       $nn->delete($_POST);
@@ -136,7 +136,7 @@ if (isset($_POST["add"])) {
    if (empty($_GET["instantiation_type"])) {
       $_GET["instantiation_type"] = "";
    }
-   Session::checkRight("networking", "w");
+   Session::checkRight("networking", ProfileRight::UPDATE);
    Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], 'assets');
 
    $np->display($_GET);

@@ -1600,7 +1600,7 @@ class Dropdown {
          $output .= "<a class='vsubmit floatleft' onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select</a> ";
          $output .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect</a></div>";
          $output .= "<script type='text/javascript'>\n";
-         
+
          /// TODO : try to find a cleaner solution : remove / add each time is not so good
          $output .= "$('#$field_id').on('open', function() {
             $('.select2-actionable-menu').remove();

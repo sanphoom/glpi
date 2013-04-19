@@ -744,7 +744,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Network', 'Networks', 2)."</td><td>";
-      self::dropdownRight("networking", array('value' => $this->fields["networking"]));
+      self::dropdownRights(Networking::getRights(), "_networking", $this->fields["networking"]);
       echo "</td>";
       echo "<td>"._n('Printer', 'Printers', 2)."</td><td>";
       self::dropdownRight("printer", array('value' => $this->fields["printer"]));
@@ -1411,7 +1411,9 @@ class Profile extends CommonDBTM {
                                           'noread'  => true));
       echo "</td>";
       echo "<td>"._n('Dropdown', 'Dropdowns', 2)."</td><td>";
-      self::dropdownStandardRights("_dropdown", $this->fields["dropdown"], false);
+      $tab = CommonDBTM::getRights();
+      unset($tab[ProfileRight::DELETE]);
+      self::dropdownRights($tab, "_dropdown", $this->fields["dropdown"]);
       echo "</td>";
       echo "<td class='tab_bg_2'>".__('Entity dropdowns')."</td>";
       echo "<td class='tab_bg_2'>";

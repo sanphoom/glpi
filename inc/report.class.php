@@ -92,7 +92,7 @@ class Report extends CommonGLPI{
          $report_list["Infocoms2"]["name"] = __('Other financial and administrative information (licenses, cartridges, consumables)');
          $report_list["Infocoms2"]["file"] = "report.infocom.conso.php";
       }
-      if (Session::haveRight("networking","r")) {
+      if (Session::haveRight("networking", ProfileRight::READ)) {
          $report_list["Rapport prises reseau"]["name"] = __('Network report');
          $report_list["Rapport prises reseau"]["file"] = "report.networking.php";
       }
@@ -102,7 +102,7 @@ class Report extends CommonGLPI{
       }
       if (Session::haveRight("computer", ProfileRight::READ)
           || Session::haveRight("monitor", ProfileRight::READ)
-          || Session::haveRight("networking","r")
+          || Session::haveRight("networking", ProfileRight::READ)
           || Session::haveRight("peripheral","r")
           || Session::haveRight("printer","r")
           || Session::haveRight("phone","r")) {

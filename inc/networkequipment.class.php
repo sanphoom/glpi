@@ -45,6 +45,8 @@ class NetworkEquipment extends CommonDBTM {
    public $dohistory                   = true;
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
+   static $rightname                   = 'networking';
+
 
    /**
     * Name of the type
@@ -80,16 +82,6 @@ class NetworkEquipment extends CommonDBTM {
    **/
    static function getMenuName() {
       return _n('Network', 'Networks', 2);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('networking', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('networking', 'r');
    }
 
 

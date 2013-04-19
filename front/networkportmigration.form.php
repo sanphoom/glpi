@@ -44,7 +44,8 @@ if (!isset($_GET["id"])) {
 }
 
 if (isset($_POST["delete"])) {
-   $np->check($_POST['id'],'d');
+   $np->check($_POST['id'], ProfileRight::PURGE);
+   //TODO no field is_deleted => purge
    $np->delete($_POST);
    Event::log($_POST['id'], "networkport", 5, "inventory",
               //TRANS: %s is the user login
@@ -53,11 +54,11 @@ if (isset($_POST["delete"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/networkportmigration.php");
 
 } else if (isset($_POST["delete_several"])) {
-   Session::checkRight("networking", "w");
+   Session::checkRight("networking", ProfileRight::UPDATE);
 
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
-         if ($np->can($port_id,'d')) {
+         if ($np->can($port_id, ProfileRight::PURGE)) {
             $np->delete(array("id" => $port_id));
          }
       }
@@ -69,10 +70,10 @@ if (isset($_POST["delete"])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $np->check($_POST['id'],'d');
+   $np->check($_POST['id'], ProfileRight::PURGE);
 
    $networkport = new NetworkPort();
-   if ($networkport->can($_POST['id'], 'w')) {
+   if ($networkport->can($_POST['id'], ProfileRight::UPDATE)) {
       if ($networkport->switchInstantiationType($_POST['transform_to']) !== false) {
          $instantiation             = $networkport->getInstantiation();
          $input                     = $np->fields;
@@ -92,7 +93,7 @@ if (isset($_POST["delete"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/networkportmigration.php");
 
 } else {
-   Session::checkRight("networking", "w");
+   Session::checkRight("networking", ProfileRight::UPDATE);
    Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], "tools",
                 "migration", "networkportmigration");
 

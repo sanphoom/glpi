@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array("networking" => "w",
+Session::checkSeveralRightsOr(array("networking" => ProfileRight::UPDATE,
                                     "internet"   => "w"));
 
 if (!TableExists('glpi_networkportmigrations')) {
@@ -56,7 +56,7 @@ if (Session::haveRight('internet', 'w')
                         __('Reinit the network topology'));
    echo "</td></tr>";
 }
-if (Session::haveRight('networking', 'w')) {
+if (Session::haveRight('networking', ProfileRight::UPDATE)) {
    echo "<tr class='tab_bg_1'><td class='center'>";
    echo "<a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
          __('Clean the network port migration errors') . "</a>";

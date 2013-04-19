@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class MigrationCleaner extends CommonGLPI {
 
+   static $rightname = 'networking';
+
+
    static function getTypeName($nb=0) {
       return __('Migration cleaner');
    }
@@ -75,7 +78,7 @@ class MigrationCleaner extends CommonGLPI {
       }
 
       if ($_SESSION['glpishowmigrationcleaner']
-          && (Session::haveRight("networking", "w")
+          && (Session::haveRight("networking", ProfileRight::UPDATE)
               || Session::haveRight("internet", "w"))) {
          return true;
       }

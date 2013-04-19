@@ -58,15 +58,19 @@ class NetworkPort extends CommonDBChild {
 
    static protected $forward_entity_to = array('NetworkName');
 
+   static $rightname                   = 'networking';
+
 
    static function canCreate() {
-      return (Session::haveRight('networking','w')
+
+      return (Session::haveRight('networking', ProfileRight::CREATE)
               && parent::canCreate());
    }
 
 
    static function canView() {
-      return (Session::haveRight('networking','r')
+
+      return (Session::haveRight('networking', ProfileRight::READ)
               && parent::canView());
    }
 
@@ -76,7 +80,7 @@ class NetworkPort extends CommonDBChild {
    **/
    static function canUpdate() {
 
-      return (Session::haveRight('networking','w')
+      return (Session::haveRight('networking', ProfileRight::UPDATE)
               && parent::canUpdate());
    }
 
@@ -86,8 +90,18 @@ class NetworkPort extends CommonDBChild {
    **/
    static function canDelete() {
 
-      return (Session::haveRight('networking','w')
+      return (Session::haveRight('networking', ProfileRight::DELETE)
               && parent::canDelete());
+   }
+
+
+   /**
+    * @since version 0.85
+    **/
+   static function canPurge() {
+
+      return (Session::haveRight('networking', ProfileRight::PURGE)
+            && parent::canPurge());
    }
 
 
@@ -468,8 +482,8 @@ class NetworkPort extends CommonDBChild {
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
 
-      if (!Session::haveRight('networking','r')
-          || !$item->can($items_id, 'r')) {
+      if (!Session::haveRight('networking', profileright::READ)
+          || !$item->can($items_id, ProfileRight::READ)) {
          return false;
       }
 
@@ -793,7 +807,7 @@ class NetworkPort extends CommonDBChild {
          $options['several'] = false;
       }
 
-      if (!Session::haveRight("networking", "r")) {
+      if (!Session::haveRight("networking", ProfileRight::READ)) {
          return false;
       }
 
@@ -1199,7 +1213,7 @@ class NetworkPort extends CommonDBChild {
       global $CFG_GLPI;
 
       // Can exists on template
-      if (Session::haveRight('networking','r')) {
+      if (Session::haveRight('networking', ProfileRight::READ)) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
