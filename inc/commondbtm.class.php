@@ -1873,8 +1873,12 @@ class CommonDBTM extends CommonGLPI {
             $params[$key] = $val;
          }
       }
+
       if (!$params['canedit']
-          || (!$this->can($ID,'w') && !$this->can($ID,'d'))) {
+          || (!$this->can($ID, ProfileRight::CREATE)
+              && !$this->can($ID, ProfileRight::UPDATE)
+              && !$this->can($ID, ProfileRight::DELETE)
+              && !$this->can($ID, ProfileRight::PURGE))) {
          echo "</table></div>";
          // Form Header always open form
          if (!$params['canedit']) {
@@ -1886,9 +1890,10 @@ class CommonDBTM extends CommonGLPI {
 
       if ($params['withtemplate']
           ||$this->isNewID($ID)) {
+
          echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
-         if ($ID<=0 || $params['withtemplate']==2) {
+         if (($ID <= 0) || ($params['withtemplate'] == 2)) {
             echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          } else {
             //TRANS : means update / actualize
@@ -1896,16 +1901,19 @@ class CommonDBTM extends CommonGLPI {
          }
 
       } else {
-         if ($params['candel'] && !$this->can($ID,'d')) {
+         if ($params['candel']
+             && !$this->can($ID, ProfileRight::DELETE) && !$this->can($ID, ProfileRight::PURGE)) {
             $params['candel'] = false;
          }
 
          if ($params['candel']) {
-            echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-            echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
-                   class='submit'>";
-            echo "</td></tr><tr class='tab_bg_2'>\n";
-
+            if ($params['canedit']
+                && $this->can($ID, ProfileRight::UPDATE)) {
+               echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
+               echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
+                      class='submit'>";
+               echo "</td></tr><tr class='tab_bg_2'>\n";
+            }
             if ($this->isDeleted()) {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                echo "<input type='submit' name='restore' value=\""._sx('button','Restore')."\"
@@ -1943,6 +1951,7 @@ class CommonDBTM extends CommonGLPI {
       }
       echo "</td>";
       echo "</tr>\n";
+
       if ($params['canedit']
           && count($params['addbuttons'])) {
          echo "<tr class='tab_bg_2'>";
@@ -1982,20 +1991,20 @@ class CommonDBTM extends CommonGLPI {
           && !$this->isNewID($ID)) {
          // Create item from template
          // Check read right on the template
-         $this->check($ID, 'r');
+         $this->check($ID, ProfileRight::READ);
          // Restore saved input or template data
          $input = $this->restoreInput($this->fields);
          // Check create right
-         $this->check(-1, 'w', $input);
+         $this->check(-1, ProfileRight::CREATE, $input);
 
       } else if ($this->isNewID($ID)) {
          // Restore saved input if available
          $input = $this->restoreInput($options);
          // Create item
-         $this->check(-1, 'w', $input);
+         $this->check(-1, ProfileRight::PURGE, $input);
       } else {
          // Modify item
-         $this->check($ID,'r');
+         $this->check($ID, ProfileRight::READ);
       }
 
       return (isset($options['withtemplate']) ? $options['withtemplate'] : '');

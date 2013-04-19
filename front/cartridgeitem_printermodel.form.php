@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 
 $cipm = new CartridgeItem_PrinterModel();
 if (isset($_POST["add"])) {
-   $cipm->check(-1, ProfileRight::CREATE, $_POST);
+   $cipm->check(-1, ProfileRight::UPDATE, $_POST);
    if ($cipm->add($_POST)) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
                  //TRANS: %s is the user login
