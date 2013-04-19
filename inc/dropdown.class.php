@@ -1461,7 +1461,7 @@ class Dropdown {
       $param['width']           = '';
       $param['multiple']        = false;
       $param['size']            = 1;
-      $param['mark_unmark_all'] = false;
+//       $param['mark_unmark_all'] = false;
       $param['display']         = true;
       $param['other']           = false;
       $param['rand']            = mt_rand();
@@ -1591,35 +1591,51 @@ class Dropdown {
             $output .= ">";
          }
 
-         if ($param['mark_unmark_all'] && $param['multiple']) {
-            $select   = __('Select all');
-            $deselect = __('Deselect all');
-            $size     = strlen($select) +  strlen($deselect);
-            $select   = "<input type='button' onclick=\"var element =$('#$field_id');var selected = [];
-                  element.find('option').each(function(i,e){
-                     selected[selected.length]=$(e).attr('value');
-                     });
-                  element.select2('val', selected);\" value=\"$select\">";
-            $deselect = "<input type='button' onclick=\"$('#$field_id').val('').trigger('change');\" value=\"$deselect\">";
-            if ($size > $max_option_size) {
-               $output = "<table><tr><td rowspan='2'>".$output."</td>";
-               $output .= "<td>";
-               $output .= $select;
-               $output .= "</td></tr><tr><td class='center'>";
-               $output .= $deselect;
-            } else {
-               $output = "<table><tr><td colspan='2'>".$output."</td>";
-               $output .= "</tr><tr><td class='center'>";
-               $output .= $select;
-               $output .= "</td><td class='center'>";
-               $output .= $deselect;
-            }
-            $output .= "</td></tr></table>";
-         }
+//          if ($param['mark_unmark_all'] && $param['multiple']) {
+//             $select   = __('Select all');
+//             $deselect = __('Deselect all');
+//             $size     = strlen($select) +  strlen($deselect);
+//             $select   = "<input type='button' onclick=\"var element =$('#$field_id');var selected = [];
+//                   element.find('option').each(function(i,e){
+//                      selected[selected.length]=$(e).attr('value');
+//                      });
+//                   element.select2('val', selected);\" value=\"$select\">";
+//             $deselect = "<input type='button' onclick=\"$('#$field_id').val('').trigger('change');\" value=\"$deselect\">";
+//             if ($size < $max_option_size) {
+//                $output = "<table width='100%'><tr><td rowspan='2' width='100%'>".$output."</td>";
+//                $output .= "<td class='center'>";
+//                $output .= $select;
+//                $output .= "</td></tr><tr><td class='center'>";
+//                $output .= $deselect;
+//             } else {
+//                $output = "<table width='100%'><tr><td colspan='2'>".$output."</td>";
+//                $output .= "</tr><tr><td class='center'>";
+//                $output .= $select;
+//                $output .= "</td><td class='center'>";
+//                $output .= $deselect;
+//             }
+//             $output .= "</td></tr></table>";
+//          }
       }
 
       // Width set on select
       $output .= Html::jsAdaptDropdown($field_id, array('width' => $param["width"]));
+
+      if ($param["multiple"]) {
+         $select   = __('All');
+         $deselect = __('None');
+         $output .= "<div class='invisible' id='selectall_$field_id'>";
+         $output .= "<a class='vsubmit floatleft' onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select</a> ";
+         $output .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect</a></div>";
+         $output .= "<script type='text/javascript'>\n";
+         
+         /// TODO : try to find a cleaner solution : remove / add each time is not so good
+         $output .= "$('#$field_id').on('open', function() {
+            $('.select2-actionable-menu').remove();
+            $('.select2-drop-multi').append('<div class=select2-actionable-menu>'+$('#selectall_$field_id').html()+'</div>');
+         });";
+         $output .= "</script>\n";
+      }
       $output .= Ajax::commonDropdownUpdateItem($param, false);
 
       if ($param['display']) {

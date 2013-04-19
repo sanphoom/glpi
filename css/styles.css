@@ -99,6 +99,16 @@ sup {
    text-align:right;
 }
 
+.floatright {
+   position: relative;
+   float: right;
+}
+
+.floatleft {
+   position: relative;
+   float: left;
+}
+
 .center-h {
    margin:auto;
 }

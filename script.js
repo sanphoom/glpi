@@ -671,3 +671,26 @@ function submitGetLink(target,fields) {
     myForm.submit() ;
     document.body.removeChild(myForm) ;
 }
+
+
+/**
+ * @since version 0.85
+ * 
+ * @param id
+**/
+function selectAll(id) {
+   var element =$('#'+id);var selected = [];
+   element.find('option').each(function(i,e){
+      selected[selected.length]=$(e).attr('value');
+   });
+   element.select2('val', selected);
+}
+
+/**
+ * @since version 0.85
+ * 
+ * @param id
+**/
+function deselectAll(id) {
+   $('#'+id).val('').trigger('change');
+}
