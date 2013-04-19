@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("peripheral", "r");
+Session::checkRight("peripheral", ProfileRight::READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -45,7 +45,7 @@ if (!isset($_GET["withtemplate"])) {
 $peripheral = new Peripheral();
 
 if (isset($_POST["add"])) {
-   $peripheral->check(-1,'w',$_POST);
+   $peripheral->check(-1, ProfileRight::CREATE, $_POST);
 
    $newID = $peripheral->add($_POST);
    Event::log($newID, "peripherals", 4, "inventory",
@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $peripheral->check($_POST["id"],'d');
+   $peripheral->check($_POST["id"], ProfileRight::DELETE);
    $peripheral->delete($_POST);
 
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $peripheral->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $peripheral->check($_POST["id"],'d');
+   $peripheral->check($_POST["id"], ProfileRight::PURGE);
 
    $peripheral->restore($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $peripheral->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $peripheral->check($_POST["id"],'d');
+   $peripheral->check($_POST["id"], ProfileRight::PURGE);
 
    $peripheral->delete($_POST,1);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
    $peripheral->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $peripheral->check($_POST["id"],'w');
+   $peripheral->check($_POST["id"], ProfileRight::UPDATE);
 
    $peripheral->update($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $peripheral->check($_POST["id"],'w');
+   $peripheral->check($_POST["id"], ProfileRight::UPDATE);
 
    Computer_Item::unglobalizeItem($peripheral);
    Event::log($_POST["id"], "peripherals", 4, "inventory",

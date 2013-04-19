@@ -748,22 +748,22 @@ class Profile extends CommonDBTM {
                            $this->fields["networking"]);
       echo "</td>";
       echo "<td>"._n('Printer', 'Printers', 2)."</td><td>";
-      self::dropdownRight("printer", array('value' => $this->fields["printer"]));
+      self::dropdownRights(Printer::getRights(), "_printer", $this->fields["printer"]);
       echo "</td>";
       echo "<td>"._n('Cartridge', 'Cartridges', 2)."</td><td>";
-      self::dropdownRight("cartridge", array('value' => $this->fields["cartridge"]));
+      self::dropdownRights(Cartridge::getRights(), "_cartridge", $this->fields["cartridge"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Consumable', 'Consumables', 2)."</td><td>";
-      self::dropdownRight("consumable",  array('value' => $this->fields["consumable"]));
+      self::dropdownRights(Consumable::getRights(), "_consumable", $this->fields["consumable"]);
 
       echo "</td>";
       echo "<td>"._n('Phone', 'Phones', 2)."</td><td>";
-      self::dropdownRight("phone", array('value' => $this->fields["phone"]));
+      self::dropdownRights(Phone::getRights(), "_phone", $this->fields["phone"]);
       echo "</td>";
       echo "<td>"._n('Device', 'Devices', 2)."</td><td>";
-      self::dropdownRight("peripheral", array('value' => $this->fields["peripheral"]));
+      self::dropdownRights(Peripheral::getRights(), "_peripheral", $this->fields["peripheral"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";

@@ -809,9 +809,9 @@ class Computer_Item extends CommonDBRelation{
                break;
 
             case 'Computer' :
-               if (Session::haveRight('phone', 'r')
-                   || Session::haveRight('printer', 'r')
-                   || Session::haveRight('peripheral', 'r')
+               if (Session::haveRight('phone', ProfileRight::READ)
+                   || Session::haveRight('printer', ProfileRight::READ)
+                   || Session::haveRight('peripheral',ProfileRight::READ)
                    || Session::haveRight('monitor', ProfileRight::READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(_n('Connection','Connections',2),

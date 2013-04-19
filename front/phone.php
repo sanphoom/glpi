@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("phone", "r");
+Session::checkRight("phone", ProfileRight::READ);
 
 Html::header(Phone::getTypeName(2), $_SERVER['PHP_SELF'], 'assets', 'phone');
 

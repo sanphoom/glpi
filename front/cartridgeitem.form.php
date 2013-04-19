@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("cartridge", "r");
+Session::checkRight("cartridge", ProfileRight::READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,7 +42,7 @@ if (!isset($_GET["id"])) {
 $cartype = new CartridgeItem();
 
 if (isset($_POST["add"])) {
-   $cartype->check(-1,'w',$_POST);
+   $cartype->check(-1, ProfileRight::CREATE, $_POST);
 
    if ($newID = $cartype->add($_POST)) {
       Event::log($newID, "cartridges", 4, "inventory",
@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $cartype->check($_POST["id"],'d');
+   $cartype->check($_POST["id"], ProfileRight::DELETE);
 
    if ($cartype->delete($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    $cartype->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $cartype->check($_POST["id"],'d');
+   $cartype->check($_POST["id"], ProfileRight::PURGE);
 
    if ($cartype->restore($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $cartype->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $cartype->check($_POST["id"],'d');
+   $cartype->check($_POST["id"], ProfileRight::PURGE);
 
    if ($cartype->delete($_POST,1)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
    $cartype->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $cartype->check($_POST["id"],'w');
+   $cartype->check($_POST["id"], ProfileRight::UPDATE);
 
    if ($cartype->update($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",

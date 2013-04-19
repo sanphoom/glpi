@@ -480,10 +480,10 @@ class Cartridge extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $tID = $cartitem->getField('id');
-      if (!$cartitem->can($tID,'r')) {
+      if (!$cartitem->can($tID, ProfileRight::READ)) {
          return false;
       }
-      $canedit = $cartitem->can($tID,'w');
+      $canedit = $cartitem->can($tID, ProfileRight::UPDATE);
 
       $query = "SELECT COUNT(*) AS count
                 FROM `glpi_cartridges`
@@ -678,7 +678,7 @@ class Cartridge extends CommonDBChild {
       global $CFG_GLPI;
 
       $ID = $cartitem->getField('id');
-      if (!$cartitem->can($ID, 'w')) {
+      if (!$cartitem->can($ID, ProfileRight::UPDATE)) {
          return false;
       }
       if ($ID > 0) {
@@ -713,10 +713,10 @@ class Cartridge extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $instID = $printer->getField('id');
-      if (!Session::haveRight("cartridge","r")) {
+      if (!Session::haveRight("cartridge", ProfileRight::READ)) {
          return false;
       }
-      $canedit = Session::haveRight("cartridge", "w");
+      $canedit = Session::haveRight("cartridge", ProfileRight::UPDATE);
       $rand    = mt_rand();
 
       $query = "SELECT `glpi_cartridgeitems`.`id` AS tID,
@@ -925,7 +925,7 @@ class Cartridge extends CommonDBChild {
          return false;
       }
       $printer = new Printer;
-      $printer->check($this->getField('printers_id'),'w');
+      $printer->check($this->getField('printers_id'), ProfileRight::UPDATE);
 
       $cartitem = new CartridgeItem;
       $cartitem->getFromDB($this->getField('cartridgeitems_id'),'w');
@@ -1010,7 +1010,7 @@ class Cartridge extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && Session::haveRight("cartridge","r"))
+          && Session::haveRight("cartridge", ProfileRight::READ))
          switch ($item->getType()) {
             case 'Printer' :
                if ($_SESSION['glpishow_count_on_tabs']) {

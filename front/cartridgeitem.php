@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("cartridge", "r");
+Session::checkRight("cartridge", ProfileRight::READ);
 
 Html::header(Cartridge::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
 

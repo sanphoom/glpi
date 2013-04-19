@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("phone", "r");
+Session::checkRight("phone", ProfileRight::READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -45,7 +45,7 @@ if (!isset($_GET["withtemplate"])) {
 $phone = new Phone();
 
 if (isset($_POST["add"])) {
-   $phone->check(-1,'w',$_POST);
+   $phone->check(-1, ProfileRight::CREATE, $_POST);
 
    $newID = $phone->add($_POST);
    Event::log($newID, "phones", 4, "inventory",
@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $phone->check($_POST["id"],'d');
+   $phone->check($_POST["id"], ProfileRight::DELETE);
    $phone->delete($_POST);
 
    Event::log($_POST["id"], "phones", 4, "inventory",
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $phone->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $phone->check($_POST["id"],'d');
+   $phone->check($_POST["id"], ProfileRight::PURGE);
 
    $phone->restore($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory",
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $phone->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $phone->check($_POST["id"],'d');
+   $phone->check($_POST["id"], ProfileRight::PURGE);
 
    $phone->delete($_POST,1);
    Event::log($_POST["id"], "phones", 4, "inventory",
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
    $phone->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $phone->check($_POST["id"],'w');
+   $phone->check($_POST["id"], ProfileRight::UPDATE);
 
    $phone->update($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory",
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $phone->check($_POST["id"],'w');
+   $phone->check($_POST["id"], ProfileRight::UPDATE);
 
    Computer_Item::unglobalizeItem($phone);
    Event::log($_POST["id"], "phones", 4, "inventory",

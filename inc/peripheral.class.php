@@ -35,14 +35,18 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASS peripheral
 
+/**
+ * Peripheral Class
+**/
 class Peripheral extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
 
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
+
+   static $rightname                   = 'peripheral';
 
 
    /**
@@ -52,16 +56,6 @@ class Peripheral extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Device', 'Devices', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('peripheral', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('peripheral', 'r');
    }
 
 

@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("consumable", "r");
+Session::checkRight("consumable", ProfileRight::READ);
 
 Html::header(Consumable::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "consumableitem");
 

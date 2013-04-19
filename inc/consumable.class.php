@@ -47,6 +47,8 @@ class Consumable extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom');
    var $no_form_page                   = true;
 
+   static $rightname                   = 'consumable';
+
 
    /**
     * @since version 0.84
@@ -70,16 +72,6 @@ class Consumable extends CommonDBTM {
 
    static function getTypeName($nb=0) {
       return _n('Consumable', 'Consumables', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('consumable', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('consumable', 'r');
    }
 
 
@@ -415,7 +407,7 @@ class Consumable extends CommonDBTM {
 
       $ID = $consitem->getField('id');
 
-      if (!$consitem->can($ID,'w')) {
+      if (!$consitem->can($ID, ProfileRight::UPDATE)) {
          return false;
       }
 
@@ -448,10 +440,10 @@ class Consumable extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $tID = $consitem->getField('id');
-      if (!$consitem->can($tID,'r')) {
+      if (!$consitem->can($tID, ProfileRight::READ)) {
          return false;
       }
-      $canedit = $consitem->can($tID,'w');
+      $canedit = $consitem->can($tID, ProfileRight::UPDATE);
       $rand = mt_rand();
       $where = "";
       if (!$show_old) { // NEW
@@ -563,7 +555,7 @@ class Consumable extends CommonDBTM {
    static function showSummary() {
       global $DB;
 
-      if (!Session::haveRight("consumable","r")) {
+      if (!Session::haveRight("consumable", ProfileRight::READ)) {
          return false;
       }
 
@@ -684,7 +676,7 @@ class Consumable extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && Session::haveRight("consumable","r")) {
+      if (!$withtemplate && Session::haveRight("consumable", ProfileRight::READ)) {
          switch ($item->getType()) {
             case 'ConsumableItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {

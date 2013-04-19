@@ -46,20 +46,13 @@ class Phone extends CommonDBTM {
 
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
+   static $rightname                   = 'phone';
+
+
 
    static function getTypeName($nb=0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
       return _n('Phone','Phones',$nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('phone', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('phone', 'r');
    }
 
 

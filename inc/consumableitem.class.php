@@ -40,10 +40,12 @@ if (!defined('GLPI_ROOT')) {
  * This class is used to manage the various types of consumables.
  * @see Consumable
  * @author Julien Dombre
- */
+*/
 class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Consumable', 'Infocom');
+
+   static $rightname                   = 'consumable';
 
 
    static function getTypeName($nb=0) {
@@ -72,16 +74,6 @@ class ConsumableItem extends CommonDBTM {
          return array('summary' => '/front/consumableitem.php?synthese=yes');
       }
       return false;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('consumable', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('consumable', 'r');
    }
 
 

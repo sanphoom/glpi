@@ -35,14 +35,19 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES Printers
 
+/**
+ * Printer Class
+**/
 class Printer  extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory                   = true;
 
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
+
+   static $rightname                   = 'printer';
+
 
 
    /**
@@ -52,16 +57,6 @@ class Printer  extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Printer', 'Printers', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('printer', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('printer', 'r');
    }
 
 

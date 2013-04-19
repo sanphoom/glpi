@@ -33,13 +33,13 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("cartridge", "r");
+Session::checkRight("cartridge", ProfileRight::READ);
 
 $cart    = new Cartridge();
 $cartype = new CartridgeItem();
 
 if (isset($_POST["add"])) {
-   $cartype->check($_POST["cartridgeitems_id"],'w');
+   $cartype->check($_POST["cartridgeitems_id"], ProfileRight::CREATE);
 
    for ($i=0 ; $i<$_POST["to_add"] ; $i++) {
       unset($cart->fields["id"]);
@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $cartype->check($_POST["cartridgeitems_id"],'w');
+   $cartype->check($_POST["cartridgeitems_id"], ProfileRight::DELETE);
 
    if ($cart->delete($_POST)) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["install"])) {
    if ($_POST["cartridgeitems_id"]) {
-      $cartype->check($_POST["cartridgeitems_id"],'w');
+      $cartype->check($_POST["cartridgeitems_id"],ProfileRight::UPDATE);
       for ($i=0 ; $i<$_POST["nbcart"] ; $i++) {
          if ($cart->install($_POST["printers_id"],$_POST["cartridgeitems_id"])) {
             Event::log($_POST["printers_id"], "printers", 5, "inventory",
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["printers_id"]);
 
 } else if (isset($_POST["update"])) {
-   $cart->check($_POST["id"],'w');
+   $cart->check($_POST["id"], ProfileRight::UPDATE);
 
    if ($cart->update($_POST)) {
       Event::log($_POST["printers_id"], "printers", 4, "inventory",

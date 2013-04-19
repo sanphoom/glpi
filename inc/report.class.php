@@ -103,9 +103,9 @@ class Report extends CommonGLPI{
       if (Session::haveRight("computer", ProfileRight::READ)
           || Session::haveRight("monitor", ProfileRight::READ)
           || Session::haveRight("networking", ProfileRight::READ)
-          || Session::haveRight("peripheral","r")
-          || Session::haveRight("printer","r")
-          || Session::haveRight("phone","r")) {
+          || Session::haveRight("peripheral", ProfileRight::READ)
+          || Session::haveRight("printer", ProfileRight::READ)
+          || Session::haveRight("phone", ProfileRight::READ)) {
          $report_list["state"]["name"] = _n('Status', 'Statuses', 2);
          $report_list["state"]["file"] = "report.state.php";
       }
