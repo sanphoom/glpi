@@ -102,11 +102,12 @@ class Profile extends CommonDBTM {
 
                } else {
                   /// TODO split it in 2 or 3 tabs
-                  $ong[2] = sprintf(__('%1$s/%2$s'), sprintf(__('%1$s/%2$s'),__('Assets'), __('Management')), __('Tools'));
-                  $ong[3] = __('Assistance');
-                  $ong[4] = __('Life cycles');
-                  $ong[5] = __('Administration');
-                  $ong[6] = __('Setup');
+                  $ong[2] = __('Assets');
+                  $ong[3] =  sprintf(__('%1$s/%2$s'), __('Management'), __('Tools'));
+                  $ong[4] = __('Assistance');
+                  $ong[5] = __('Life cycles');
+                  $ong[6] = __('Administration');
+                  $ong[7] = __('Setup');
                }
                return $ong;
          }
@@ -125,21 +126,25 @@ class Profile extends CommonDBTM {
                break;
 
             case 2 :
-               $item->showFormInventory();
+               $item->showFormAsset();
                break;
 
             case 3 :
-               $item->showFormTracking();
+               $item->showFormInventory();
                break;
 
             case 4 :
-               $item->showFormLifeCycle();
+               $item->showFormTracking();
                break;
 
             case 5 :
+               $item->showFormLifeCycle();
+               break;
+
+            case 6 :
                $item->showFormAdmin();
                break;
-            case 6 :
+            case 7 :
                $item->showFormSetup();
                break;
 
@@ -704,18 +709,19 @@ class Profile extends CommonDBTM {
    }
 
 
+
    /**
-    * Print the Inventory/Management/Toolsd right form for the current profile
+    * Print the Asset right form for the current profile
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
-   **/
-   function showFormInventory($openform=true, $closeform=true) {
+    **/
+   function showFormAsset($openform=true, $closeform=true) {
 
-      if (!Session::haveRight("profile","r")) {
+      if (!Session::haveRight("profile", CommonDBTM::READ)) {
          return false;
       }
-      if (($canedit=Session::haveRight("profile","w")) && $openform) {
+      if (($canedit=Session::haveRight("profile", CommonDBTM::UPDATE)) && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -765,7 +771,41 @@ class Profile extends CommonDBTM {
       echo "</td>\n";
       echo "<td colspan='4'>&nbsp;</td></tr>";
 
-      // Gestion / Management
+      if ($canedit
+          && $closeform) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='6' class='center'>";
+         echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table>\n";
+         Html::closeForm();
+      } else {
+         echo "</table>\n";
+      }
+      echo "</div>";
+   }
+
+
+   /**
+    * Print the Inventory/Management/Toolsd right form for the current profile
+    *
+    * @param $openform  boolean open the form (true by default)
+    * @param $closeform boolean close the form (true by default)
+   **/
+   function showFormInventory($openform=true, $closeform=true) {
+
+      if (!Session::haveRight("profile","r")) {
+         return false;
+      }
+      if (($canedit=Session::haveRight("profile","w")) && $openform) {
+         echo "<form method='post' action='".$this->getFormURL()."'>";
+      }
+
+      echo "<div class='spaced'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+       // Gestion / Management
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Management')."</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -1212,12 +1252,12 @@ class Profile extends CommonDBTM {
    function showFormAdmin($openform=true, $closeform=true) {
       global $DB;
 
-      if (!Session::haveRight("profile","r")) {
+      if (!Session::haveRight("profile", CommonDBTM::READ)) {
          return false;
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRight("profile","w"))
+      if (($canedit = Session::haveRight("profile", CommonDBTM::UPDATE))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
@@ -2343,13 +2383,13 @@ class Profile extends CommonDBTM {
 
       $values = array();
       if (!$param['nonone']) {
-         $values['NULL'] = __('No access');
+         $values[0] = __('No access');
       }
       if (!$param['noread']) {
-         $values['r'] = __('Read');
+         $values[CommonDBTM::READ] = __('Read');
       }
       if (!$param['nowrite']) {
-         $values['w'] = __('Write');
+         $values[CommonDBTM::CREATE] = __('Write');
       }
       return Dropdown::showFromArray($name, $values,
                                      array('value'   => $param['value'],
