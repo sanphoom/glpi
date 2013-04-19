@@ -1014,7 +1014,7 @@ class Auth extends CommonGLPI {
    static function showSynchronizationForm(User $user) {
       global $DB, $CFG_GLPI;
 
-      if (Session::haveRight("user_authtype", CommonDBTM::UPDATE)) {
+      if (Session::haveRight("user_authtype", ProfileRight::UPDATE)) {
          echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
          echo "<div class='firstbloc'>";
 
@@ -1081,7 +1081,7 @@ class Auth extends CommonGLPI {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'User' :
-               if (Session::haveRight("user_authtype", CommonDBTM::UPDATE)) {
+               if (Session::haveRight("user_authtype", ProfileRight::UPDATE)) {
                   return __('Synchronization');
                }
                break;

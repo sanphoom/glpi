@@ -888,9 +888,9 @@ class Session {
       }
 
       if (($right == 'r')) {
-         $right = CommonDBTM::READ;
+         $right = ProfileRight::READ;
       } else if ($right == 'w') {
-         $right = CommonDBTM::ALLSTANDARDRIGHT;
+         $right = ProfileRight::ALLSTANDARDRIGHT;
       }
       if (isset($_SESSION["glpiactiveprofile"][$module])) {
          return $_SESSION["glpiactiveprofile"][$module] & $right;

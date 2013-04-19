@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("profile", CommonDBTM::READ);
+Session::checkRight("profile", ProfileRight::READ);
 
 Html::header(Profile::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "profile");
 

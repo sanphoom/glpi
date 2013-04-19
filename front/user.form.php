@@ -54,11 +54,11 @@ if (isset($_GET['getvcard'])) {
    if (empty($_GET["id"])) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/user.php");
    }
-   $user->check($_GET['id'], CommonDBTM::READ);
+   $user->check($_GET['id'], ProfileRight::READ);
    $user->generateVcard();
 
 } else if (isset($_POST["add"])) {
-   $user->check(-1, CommonDBTM::CREATE, $_POST);
+   $user->check(-1, ProfileRight::CREATE, $_POST);
 
    // Pas de nom pas d'ajout
    if (!empty($_POST["name"]) && $newID=$user->add($_POST)) {
@@ -68,7 +68,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $user->check($_POST['id'], CommonDBTM::DELETE);
+   $user->check($_POST['id'], ProfileRight::DELETE);
    $user->delete($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login
@@ -76,7 +76,7 @@ if (isset($_GET['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $user->check($_POST['id'], CommonDBTM::DELETE);
+   $user->check($_POST['id'], ProfileRight::DELETE);
    $user->restore($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login
@@ -84,14 +84,14 @@ if (isset($_GET['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $user->check($_POST['id'], CommonDBTM::PURGE);
+   $user->check($_POST['id'], ProfileRight::PURGE);
    $user->delete($_POST, 1);
    Event::log($_POST["id"], "users", 4, "setup",
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $user->redirectToList();
 
 } else if (isset($_POST["force_ldap_resynch"])) {
-   Session::checkRight('user_authtype', CommonDBTM::UPDATE);
+   Session::checkRight('user_authtype', ProfileRight::UPDATE);
 
    $user->getFromDB($_POST["id"]);
    AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
@@ -100,7 +100,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $user->check($_POST['id'], CommonDBTM::UPDATE);
+   $user->check($_POST['id'], ProfileRight::UPDATE);
    $user->update($_POST);
    Event::log($_POST['id'], "users", 5, "setup",
               //TRANS: %s is the user login
@@ -130,7 +130,7 @@ if (isset($_GET['getvcard'])) {
    Html::back();
 
 } else if (isset($_POST["change_auth_method"])) {
-   Session::checkRight('user_authtype', CommonDBTM::UPDATE);
+   Session::checkRight('user_authtype', ProfileRight::UPDATE);
 
    if (isset($_POST["auths_id"])) {
       User::changeAuthMethod(array($_POST["id"]), $_POST["authtype"], $_POST["auths_id"]);
@@ -167,7 +167,7 @@ if (isset($_GET['getvcard'])) {
 
          Html::back();
    } else {
-      Session::checkRight("user", CommonDBTM::READ);
+      Session::checkRight("user",ProfileRight::READ);
       Html::header(User::getTypeName(2), '', "admin", "user");
       $user->display(array('id' => $_GET["id"]));
       Html::footer();

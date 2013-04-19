@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("group", CommonDBTM::READ);
+Session::checkRight("group", ProfileRight::READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,7 +42,7 @@ if (empty($_GET["id"])) {
 $group     = new Group();
 
 if (isset($_POST["add"])) {
-   $group->check(-1, CommonDBTM::CREATE, $_POST);
+   $group->check(-1, ProfileRight::CREATE, $_POST);
    if ($newID=$group->add($_POST)) {
       Event::log($newID, "groups", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
 
    // TODO Review after showFormButton => purge not delete
 } else if (isset($_POST["delete"])) {
-   $group->check($_POST["id"], CommonDBTM::PURGE);
+   $group->check($_POST["id"], ProfileRight::PURGE);
    $group->delete($_POST);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login
@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    $group->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $group->check($_POST["id"], CommonDBTM::UPDATE);
+   $group->check($_POST["id"], ProfileRight::UPDATE);
    $group->update($_POST);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login

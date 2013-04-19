@@ -51,7 +51,7 @@ class RuleTicketCollection extends RuleCollection {
 
 
    function canList() {
-      return Session::haveRight("rule_ticket", CommonDBTM::READ) || static::canView();
+      return Session::haveRight("rule_ticket", ProfileRight::READ) || static::canView();
    }
 
 

@@ -46,8 +46,21 @@ class ProfileRight extends CommonDBChild {
    static public $itemtype = 'Profile';
    static public $items_id = 'profiles_id'; // Field name
 
+   // global rights (for all items)
+   const READ               =  1;
+   const UPDATE             =  2;
+   const CREATE             =  4;
+   const DELETE             =  8;
+   const PURGE              = 16;
+   const ALLSTANDARDRIGHT   = 31;
+   // reserve still 1024 for futur global rights
+
+   // rights for user
    const IMPORTEXTAUTHUSERS   = 1024;
-   const RULETICKET           = 2048;
+
+   // rights for rule
+   const RULETICKET           = 1024;
+
 
    static function getAllPossibleRights() {
       global $DB;

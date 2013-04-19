@@ -1030,7 +1030,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       // Entity right applied (could be user_authtype)
-      $canedit = $entity->can($ID, CommonDBTM::UPDATE);
+      $canedit = $entity->can($ID, ProfileRight::UPDATE);
 
       if ($canedit) {
          echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -1113,7 +1113,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       // Notification right applied
-      $canedit = Session::haveRight('entity', CommonDBTM::UPDATE) && Session::haveAccessToEntity($ID);
+      $canedit = Session::haveRight('entity', ProfileRight::UPDATE) && Session::haveAccessToEntity($ID);
 
       echo "<div class='spaced'>";
       if ($canedit) {
@@ -1645,7 +1645,7 @@ class Entity extends CommonTreeDropdown {
           || !Session::haveRight('entity_helpdesk','r')) {
          return false;
       }
-      $canedit = Session::haveRight('entity_helpdesk', CommonDBTM::UPDATE)
+      $canedit = Session::haveRight('entity_helpdesk', ProfileRight::UPDATE)
                  && Session::haveAccessToEntity($ID);
 
       echo "<div class='spaced'>";

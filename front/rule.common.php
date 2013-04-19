@@ -41,15 +41,15 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-$rulecollection->checkGlobal(CommonDBTM::READ);
+$rulecollection->checkGlobal(ProfileRight::READ);
 
 if (isset($_POST["action"])) {
-   $rulecollection->checkGlobal(CommonDBTM::UPDATE);
+   $rulecollection->checkGlobal(ProfileRight::UPDATE);
    $rulecollection->changeRuleOrder($_POST["id"],$_POST["action"]);
    Html::back();
 // POST and GET needed to manage reload
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
-   $rulecollection->checkGlobal(CommonDBTM::UPDATE);
+   $rulecollection->checkGlobal(ProfileRight::UPDATE);
 
    // Current time
    $start = explode(" ",microtime());

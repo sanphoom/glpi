@@ -50,7 +50,7 @@ if (isset($_POST["id"])) {
 
 
 if (isset($_POST["add"])) {
-   $dropdown->check(-1, CommonDBTM::READ, $_POST);
+   $dropdown->check(-1, ProfileRight::READ, $_POST);
 
    if ($newID=$dropdown->add($_POST)) {
       $dropdown->refreshParentInfos();
@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
    Html::back();
    // TODO Review after showFormButton => purge not delete
 } else if (isset($_POST["delete"])) {
-   $dropdown->check($_POST["id"],CommonDBTM::PURGE);
+   $dropdown->check($_POST["id"], ProfileRight::PURGE);
    if ($dropdown->isUsed()
        && empty($_POST["forcedelete"])) {
       Html::header($dropdown->getTypeName(1), $_SERVER['PHP_SELF'], "config",
@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["replace"])) {
-   $dropdown->check($_POST["id"], CommonDBTM::DELETE);
+   $dropdown->check($_POST["id"], ProfileRight::DELETE);
    $dropdown->delete($_POST, 1);
    $dropdown->refreshParentInfos();
 
@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    $dropdown->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $dropdown->check($_POST["id"], CommonDBTM::UPDATE);
+   $dropdown->check($_POST["id"], ProfileRight::UPDATE);
    $dropdown->update($_POST);
    $dropdown->refreshParentInfos();
 

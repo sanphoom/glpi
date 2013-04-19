@@ -81,13 +81,6 @@ class CommonDBTM extends CommonGLPI {
    const HAS_DUPLICATE              = 3; //Can insert or update because it's duplicating another item
    const NOTHING_TO_DO              = 4; //Nothing to insert or update
 
-   const READ               =  1;
-   const UPDATE             =  2;
-   const CREATE             =  4;
-   const DELETE             =  8;
-   const PURGE              = 16;
-   const ALLSTANDARDRIGHT   = 31;
-   // reserve still 1024 for futur global rights
 
 
    /**
@@ -2238,7 +2231,7 @@ class CommonDBTM extends CommonGLPI {
       }
       switch ($right) {
          case 'r' :
-         case CommonDBTM::READ :
+         case ProfileRight::READ :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2247,7 +2240,7 @@ class CommonDBTM extends CommonGLPI {
             return (static::canView() && $this->canViewItem());
 
          case 'w' :
-         case CommonDBTM::UPDATE :
+         case ProfileRight::UPDATE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2256,7 +2249,7 @@ class CommonDBTM extends CommonGLPI {
             return (static::canUpdate() && $this->canUpdateItem());
 
          case 'd' :
-         case CommonDBTM::DELETE :
+         case ProfileRight::DELETE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2264,7 +2257,7 @@ class CommonDBTM extends CommonGLPI {
             }
             return (static::canDelete() && $this->canDeleteItem());
 
-         case CommonDBTM::PURGE :
+         case ProfileRight::PURGE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2272,7 +2265,7 @@ class CommonDBTM extends CommonGLPI {
             }
             return (static::canPurge() && $this->canPurgeItem());
 
-        case CommonDBTM::CREATE :
+        case ProfileRight::CREATE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2354,22 +2347,22 @@ class CommonDBTM extends CommonGLPI {
 
       switch ($right) {
          case 'r' :
-         case CommonDBTM::READ :
+         case ProfileRight::READ :
             return static::canView();
 
          case 'w' :
-         case CommonDBTM::UPDATE :
+         case ProfileRight::UPDATE :
             return static::canUpdate();
 
          case 'c' :
-         case CommonDBTM::CREATE :
+         case ProfileRight::CREATE :
             return static::canCreate();
 
          case 'd' :
-         case CommonDBTM::DELETE :
+         case ProfileRight::DELETE :
             return static::canDelete();
 
-         case CommonDBTM::PURGE :
+         case ProfileRight::PURGE :
             return static::canPurge();
 
       }

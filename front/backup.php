@@ -39,7 +39,7 @@ if (isset($_POST['check_version'])) {
    Html::back();
 }
 
-Session::checkRight("backup", CommonDBTM::CREATE);
+Session::checkRight("backup", ProfileRight::CREATE);
 
 // full path
 $path = GLPI_DUMP_DIR ;

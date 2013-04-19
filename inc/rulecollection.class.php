@@ -369,7 +369,8 @@ class RuleCollection extends CommonDBTM {
                            && ($p['inherited'] || $p['childrens']));
 
       // Do not know what it is ?
-      $canedit    = (Session::haveRight(static::$rightname, CommonDBTM::UPDATE) && !$display_entities);
+      $canedit    = (Session::haveRight(static::$rightname, ProfileRight::UPDATE)
+                     && !$display_entities);
 
       $nb         = $this->getCollectionSize($p['inherited']);
       $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
