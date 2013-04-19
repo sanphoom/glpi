@@ -55,8 +55,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $disk->check($_POST["id"], ProfileRight::PURGE);
-   // TODO field is_deleted delete => purge
+   $disk->check($_POST["id"], ProfileRight::DELETE);
+
    if ($disk->delete($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
                  //TRANS: %s is the user login

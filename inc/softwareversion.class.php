@@ -99,7 +99,7 @@ class SoftwareVersion extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("software","r")) {
+      if (!Session::haveRight("software", ProfileRight::READ)) {
          return false;
       }
 

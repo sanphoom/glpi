@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", "r");
+Session::checkRight("software", ProfileRight::READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -45,7 +45,7 @@ if (!isset($_GET["softwares_id"])) {
 $version = new SoftwareVersion();
 
 if (isset($_POST["add"])) {
-    $version->check(-1,'w',$_POST);
+    $version->check(-1, ProfileRight::CREATE,$_POST);
 
    if ($newID = $version->add($_POST)) {
       Event::log($_POST['softwares_id'], "software", 4, "inventory",
@@ -57,8 +57,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $version->check($_POST['id'],'d');
-
+   $version->check($_POST['id'], ProfileRight::PURGE);
+   // TODO no field is_deleted => PURGE
    $version->delete($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the version id
@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
    $version->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $version->check($_POST['id'],'w');
+   $version->check($_POST['id'], ProfileRight::UPDATE);
 
    $version->update($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",

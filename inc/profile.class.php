@@ -736,10 +736,10 @@ class Profile extends CommonDBTM {
       self::dropdownRights(Computer::getRights(), "_computer", $this->fields["computer"]);
       echo "</td>";
       echo "<td width='18%'>"._n('Monitor', 'Monitors', 2)."</td><td width='15%'>";
-      self::dropdownRight("monitor", array('value' => $this->fields["monitor"]));
+      self::dropdownRights(Monitor::getRights(), "_monitor", $this->fields["monitor"]);
       echo "</td>";
       echo "<td width='18%'>"._n('Software', 'Software', 2)."</td><td width='15%'>";
-      self::dropdownRight("software", array('value' => $this->fields["software"]));
+      self::dropdownRights(Software::getRights(), "_software", $this->fields["software"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";

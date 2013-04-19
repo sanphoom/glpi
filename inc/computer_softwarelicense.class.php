@@ -271,7 +271,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $softwarelicense_id = $license->getField('id');
 
-      if (!Session::haveRight("software", "r") || !$softwarelicense_id) {
+      if (!Session::haveRight("software", ProfileRight::READ) || !$softwarelicense_id) {
          return false;
       }
 
@@ -319,11 +319,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $searchID = $license->getField('id');
 
-      if (!Session::haveRight("software", "r") || !$searchID) {
+      if (!Session::haveRight("software", ProfileRight::READ) || !$searchID) {
          return false;
       }
 
-      $canedit         = Session::haveRight("software", "w");
+      $canedit         = Session::haveRight("software", ProfileRight::UPDATE);
       $canshowcomputer = Session::haveRight("computer", ProfileRight::READ);
 
 

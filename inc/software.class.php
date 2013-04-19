@@ -35,7 +35,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Software class
+/** Software Class
+**/
 class Software extends CommonDBTM {
 
 
@@ -44,6 +45,7 @@ class Software extends CommonDBTM {
 
    static protected $forward_entity_to = array('Infocom', 'ReservationItem', 'SoftwareVersion');
 
+   static $rightname                   = 'software';
 
    static function getTypeName($nb=0) {
       return _n('Software', 'Software', $nb);
@@ -60,23 +62,13 @@ class Software extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('software', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('software', 'r');
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
                if ($item->isRecursive()
-                   && $item->can($item->fields['id'],'w')) {
+                   && $item->can($item->fields['id'], ProfileRight::UPDATE)) {
                   return __('Merging');
                }
                break;

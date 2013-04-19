@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", "r");
+Session::checkRight("software", ProfileRight::READ);
 
 Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "software");
 

@@ -38,7 +38,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownInstallVersion.php")) {
    Html::header_nocache();
 }
 
-Session::checkRight("software", "w");
+Session::checkRight("software", ProfileRight::UPDATE);
 
 if ($_POST['softwares_id'] > 0) {
    if (!isset($_POST['value'])) {

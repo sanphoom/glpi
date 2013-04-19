@@ -43,19 +43,12 @@ class SoftwareLicense extends CommonDBTM {
 
    static protected $forward_entity_to = array('Infocom');
 
+   static $rightname                   = 'software';
+
+
 
    static function getTypeName($nb=0) {
       return _n('License', 'Licenses', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('software', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('software', 'r');
    }
 
 
@@ -155,7 +148,7 @@ class SoftwareLicense extends CommonDBTM {
          $softwares_id = $options['softwares_id'];
       }
 
-      if (!Session::haveRight("software","w")) {
+      if (!Session::haveRight("software", ProfileRight::UPDATE)) {
          return false;
       }
 
@@ -549,7 +542,7 @@ class SoftwareLicense extends CommonDBTM {
 
 
       // Righ type is enough. Can add a License on a software we have Read access
-      $canedit             = Session::haveRight("software", "w");
+      $canedit             = Session::haveRight("software", ProfileRight::UPDATE);
       $showmassiveactions  = $canedit;
 
       // Total Number of events
