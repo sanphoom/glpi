@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("transfer", CommonDBTM::READ);
+Session::checkRight("transfer", ProfileRight::READ);
 
 Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
 
