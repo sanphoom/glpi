@@ -48,15 +48,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    public $dohistory = true;
 
+   static $rightname = 'internet';
 
-   static function canCreate() {
-      return Session::haveRight('internet', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('internet', 'r');
-   }
 
 
    static function getTypeName($nb=0) {
@@ -1013,7 +1006,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function title() {
       parent::title();
 
-      if (Session::haveRight('internet', 'w')
+      if (Session::haveRight('internet', ProfileRight::UPDATE)
           && Session::isViewAllEntities()) {
 
          echo "<div class='spaced' id='tabsbody'>";

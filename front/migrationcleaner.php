@@ -48,7 +48,7 @@ echo "<table class='tab_cadre_fixe'>";
 
 echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
 
-if (Session::haveRight('internet', 'w')
+if (Session::haveRight('internet', ProfileRight::UPDATE)
     // Check access to all entities
     && Session::isViewAllEntities()) {
    echo "<tr class='tab_bg_1'><td class='center'>";

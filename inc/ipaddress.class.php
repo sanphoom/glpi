@@ -67,6 +67,7 @@ class IPAddress extends CommonDBChild {
    /// first three bytes are set to [0, 0, 0xffff]
    protected $binary  = array(0, 0, 0, 0);
 
+   static $rightname  = 'internet';
 
    //////////////////////////////////////////////////////////////////////////////
    // CommonDBTM related methods
@@ -104,29 +105,36 @@ class IPAddress extends CommonDBChild {
    // Keep can* because IP Address can be attach to whatever type of item
    static function canView() {
 
-      return (Session::haveRight('internet', 'r')
+      return (Session::haveRight('internet', ProfileRight::READ)
               && parent::canView());
    }
 
 
    static function canCreate() {
 
-      return (Session::haveRight('internet', 'w')
+      return (Session::haveRight('internet', ProfileRight::CREATE)
               && parent::canCreate());
    }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('internet', 'w')
+      return (Session::haveRight('internet', ProfileRight::UPDATE)
               && parent::canUpdate());
    }
 
 
    static function canDelete() {
 
-      return (Session::haveRight('internet', 'w')
+      return (Session::haveRight('internet', ProfileRight::DELETE)
               && parent::canDelete());
+   }
+
+
+   static function canDPurge() {
+
+      return (Session::haveRight('internet', ProfileRight::PURGE)
+            && parent::canPurge());
    }
 
 
