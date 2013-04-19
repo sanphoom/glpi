@@ -121,7 +121,7 @@ class Group extends CommonTreeDropdown {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && Session::haveRight("group","r")) {
+          && Session::haveRight("group", ProfileRight::UPDATE)) {
          switch ($item->getType()) {
             case 'Group' :
                $ong = array();

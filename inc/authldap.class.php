@@ -1317,7 +1317,7 @@ class AuthLDAP extends CommonDBTM {
 
             foreach ($ldap_users as $userinfos) {
                $link = $user = $userinfos["user"];
-               if (isset($userinfos['id']) && Session::haveRight('user','r')) {
+               if (isset($userinfos['id']) && Session::haveRight('user', ProfileRight::READ)) {
                   $link = "<a href='".Toolbox::getItemTypeFormURL('User').'?id='.$userinfos['id'].
                           "'>$user</a>";
                }

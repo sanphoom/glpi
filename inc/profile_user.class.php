@@ -198,7 +198,7 @@ class Profile_User extends CommonDBRelation {
             echo $link.($canshowentity ? "</a>" : '');
             echo "</td>";
 
-            if (Session::haveRight('profile', 'r')) {
+            if (Session::haveRight('profile', ProfileRight::READ)) {
                $entname = "<a href='".Toolbox::getItemTypeFormURL('Profile')."?id=".$data["id"]."'>".
                             $data["name"]."</a>";
             } else {
@@ -254,7 +254,7 @@ class Profile_User extends CommonDBRelation {
       }
 
       $canedit     = $entity->can($ID,"w");
-      $canshowuser = Session::haveRight("user", "r");
+      $canshowuser = Session::haveRight("user", ProfileRight::READ);
       $nb_per_line = 3;
       $rand        = mt_rand();
 
@@ -420,7 +420,7 @@ class Profile_User extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID      = $prof->fields['id'];
-      $canedit = Session::haveRight("user", "w");
+      $canedit = Session::haveRight("user", ProfileRight::UPDATE);
       $rand = mt_rand();
       if (!$prof->can($ID,'r')) {
          return false;
@@ -862,7 +862,7 @@ class Profile_User extends CommonDBRelation {
          $nb = 0;
          switch ($item->getType()) {
             case 'Entity' :
-               if (Session::haveRight('user', 'r')) {
+               if (Session::haveRight('user', ProfileRight::READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),
@@ -873,7 +873,7 @@ class Profile_User extends CommonDBRelation {
                break;
 
             case 'Profile' :
-               if (Session::haveRight('user', 'r')) {
+               if (Session::haveRight('user', ProfileRight::READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),

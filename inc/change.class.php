@@ -663,7 +663,7 @@ class Change extends CommonITILObject {
    static function getNewStatusArray() {
       return array(self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL);
    }
-   
+
    /**
     * Get the ITIL object test, qualification or accepted status list
     * To be overridden by class
@@ -745,7 +745,7 @@ class Change extends CommonITILObject {
       }
 
       $showuserlink = 0;
-      if (Session::haveRight('user','r')) {
+      if (Session::haveRight('user', ProfileRight::READ)) {
          $showuserlink = 1;
       }
 

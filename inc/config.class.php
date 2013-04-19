@@ -1470,7 +1470,7 @@ class Config extends CommonDBTM {
             return __('Personalization');
 
          case 'User' :
-            if (Session::haveRight('user','w')
+            if (Session::haveRight('user', ProfileRight::UPDATE)
                 && $item->currentUserHaveMoreRightThan($item->getID())) {
                return __('Settings');
             }

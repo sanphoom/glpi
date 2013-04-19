@@ -1747,7 +1747,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       // Affiche un formulaire User
-      if (($ID != Session::getLoginUserID()) && !Session::haveRight("user", "r")) {
+      if (($ID != Session::getLoginUserID()) && !Session::haveRight("user", ProfileRight::READ)) {
          return false;
       }
 
@@ -1812,7 +1812,7 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       //do some rights verification
-      if (Session::haveRight("user", "w")
+      if (Session::haveRight("user", ProfileRight::UPDATE)
           && (!$extauth || empty($ID))
           && $caneditpassword) {
          echo "<tr class='tab_bg_1'>";
@@ -2285,7 +2285,7 @@ class User extends CommonDBTM {
 
       /// Security system except for login update
       if (Session::getLoginUserID()
-          && !Session::haveRight("user", "w")
+          && !Session::haveRight("user", ProfileRight::UPDATE)
           && !strpos($_SERVER['PHP_SELF'], "login.php")) {
 
          if (Session::getLoginUserID() === $this->input['id']) {
@@ -2404,7 +2404,7 @@ class User extends CommonDBTM {
             return $gu->doSpecificMassiveActions($input);
 
          case "force_user_ldap_update" :
-            if (Session::haveRight("user", "w")) {
+            if (Session::haveRight("user", ProfileRight::UPDATE)) {
                $ids = array();
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
@@ -3053,7 +3053,7 @@ class User extends CommonDBTM {
       // Make a select box with all glpi users
       $user = getUserName($p['value'], 2);
 
-      $view_users = (Session::haveRight("user", "r"));
+      $view_users = (Session::haveRight("user", ProfileRight::READ));
 
       if (!empty($p['value']) && ($p['value'] > 0)) {
           $default = $user["name"];

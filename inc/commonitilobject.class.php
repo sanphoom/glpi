@@ -1987,7 +1987,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showgrouplink = 0;
-      if (Session::haveRight('group','r')) {
+      if (Session::haveRight('group', ProfileRight::READ)) {
          $showgrouplink = 1;
       }
 
@@ -2559,7 +2559,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showuserlink = 0;
-      if (Session::haveRight('user','r')) {
+      if (Session::haveRight('user', ProfileRight::READ)) {
          $showuserlink = 2;
       }
       $usericon = self::getActorIcon('user',$type);
@@ -2882,7 +2882,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showuserlink = 0;
-      if (Session::haveRight('user','r')) {
+      if (Session::haveRight('user', ProfileRight::READ)) {
          $showuserlink = 1;
       }
 

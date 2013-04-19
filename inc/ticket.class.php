@@ -3805,7 +3805,7 @@ class Ticket extends CommonITILObject {
       }
 
       $showuserlink              = 0;
-      if (Session::haveRight('user','r')) {
+      if (Session::haveRight('user', ProfileRight::READ)) {
          $showuserlink = 1;
       }
 
@@ -5596,7 +5596,7 @@ class Ticket extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $viewusers   = Session::haveRight("user", "r");
+      $viewusers   = Session::haveRight("user", ProfileRight::READ);
       $showprivate = Session::haveRight("show_full_ticket", 1);
 
       $job  = new self();

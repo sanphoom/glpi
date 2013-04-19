@@ -413,7 +413,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $softwares_id  = $data['sID'];
             $soft          = new Software();
             $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser      = Session::haveRight('user', 'r');
+            $linkUser      = Session::haveRight('user', ProfileRight::READ);
             $title         = $soft->fields["name"];
 
             if ($crit == "id") {

@@ -610,10 +610,10 @@ class KnowbaseItem extends CommonDBTM {
       }
       echo "</td><td>";
       //TRANS: %d is the number of view
-      printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);      
+      printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);
       echo "</td>";
       echo "</tr>\n";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";
       echo "<td colspan='3'>";
@@ -685,7 +685,7 @@ class KnowbaseItem extends CommonDBTM {
       $linkusers_id = true;
       // show item : question and answer
       if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
-            || !Session::haveRight("user", "r")) {
+            || !Session::haveRight("user", ProfileRight::READ)) {
          $linkusers_id = false;
       }
 

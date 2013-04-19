@@ -799,7 +799,7 @@ class Computer_Item extends CommonDBRelation{
             case 'Printer' :
             case 'Peripheral' :
             case 'Monitor' :
-               if (Session::haveRight('computer', 'r')) {
+               if (Session::haveRight('computer', ProfileRight::READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(_n('Connection','Connections',2),
                                                  self::countForItem($item));
@@ -812,7 +812,7 @@ class Computer_Item extends CommonDBRelation{
                if (Session::haveRight('phone', 'r')
                    || Session::haveRight('printer', 'r')
                    || Session::haveRight('peripheral', 'r')
-                   || Session::haveRight('monitor', 'r')) {
+                   || Session::haveRight('monitor', ProfileRight::READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(_n('Connection','Connections',2),
                                                  self::countForComputer($item));

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("monitor", "r");
+Session::checkRight("monitor", ProfileRight::READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -45,7 +45,7 @@ if (!isset($_GET["withtemplate"])) {
 $monitor = new Monitor();
 
 if (isset($_POST["add"])) {
-   $monitor->check(-1,'w',$_POST);
+   $monitor->check(-1, ProfileRight::CREATE,$_POST);
 
    $newID = $monitor->add($_POST);
    Event::log($newID, "monitors", 4, "inventory",
@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $monitor->check($_POST["id"],'d');
+   $monitor->check($_POST["id"], ProfileRight::DELETE);
    $monitor->delete($_POST);
 
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $monitor->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $monitor->check($_POST["id"],'d');
+   $monitor->check($_POST["id"], ProfileRight::PURGE);
 
    $monitor->restore($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $monitor->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $monitor->check($_POST["id"],'d');
+   $monitor->check($_POST["id"], ProfileRight::PURGE);
 
    $monitor->delete($_POST,1);
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
    $monitor->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $monitor->check($_POST["id"],'w');
+   $monitor->check($_POST["id"], ProfileRight::UPDATE);
 
    $monitor->update($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory",
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $monitor->check($_POST["id"],'w');
+   $monitor->check($_POST["id"], ProfileRight::UPDATE);
 
    Computer_Item::unglobalizeItem($monitor);
    Event::log($_POST["id"], "monitors", 4, "inventory",

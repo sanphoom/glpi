@@ -457,7 +457,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $soft = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
-            $linkUser   = Session::haveRight('user', 'r');
+            $linkUser   = Session::haveRight('user', ProfileRight::READ);
 
             $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["vername"]);

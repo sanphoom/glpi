@@ -269,7 +269,7 @@ class Problem extends CommonITILObject {
 
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete('Problem', $this->fields['id']);
-      
+
       parent::cleanDBonPurge();
    }
 
@@ -1056,7 +1056,7 @@ class Problem extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $viewusers = Session::haveRight("user", "r");
+      $viewusers = Session::haveRight("user", ProfileRight::READ);
 
       $problem   = new self();
       $rand      = mt_rand();
@@ -1180,7 +1180,7 @@ class Problem extends CommonITILObject {
       $this->initForm($ID, $options);
 
       $showuserlink = 0;
-      if (Session::haveRight('user','r')) {
+      if (Session::haveRight('user', ProfileRight::READ)) {
          $showuserlink = 1;
       }
 

@@ -292,10 +292,10 @@ class Profile extends CommonDBTM {
       }
 
       // check if right if the last write profile on Profile object
-      if (($this->fields['profile'] == 'w')
-          && isset($input['profile']) && ($input['profile'] != 'w')
+      if (($this->fields['profile'] & ProfileRight::UPDATE)
+          && isset($input['profile']) && !($input['profile'] & ProfileRight::UPDATE)
           && (countElementsInTable("glpi_profilerights",
-                                   "`name` = 'profile' AND `right` = 'w'") == 1)) {
+                                   "`name` = 'profile' AND `rights` & ".ProfileRight::UPDATE))) {
          Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
          false, ERROR);
          Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
@@ -316,9 +316,9 @@ class Profile extends CommonDBTM {
    function pre_deleteItem() {
       global $DB;
 
-      if (($this->fields['profile'] == 'w')
+      if (($this->fields['profile'] & ProfileRight::DELETE)
           && (countElementsInTable("glpi_profilerights",
-                                   "`name` = 'profile' AND `right` = 'w'") == 1)) {
+                                   "`name` = 'profile' AND `rights` & ".ProfileRight::DELETE))) {
           Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
                                            false, ERROR);
           Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
@@ -595,10 +595,10 @@ class Profile extends CommonDBTM {
    function showFormHelpdesk() {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("profile","r")) {
+      if (!Session::haveRight("profile", ProfileRight::READ)) {
          return false;
       }
-      if ($canedit = Session::haveRight("profile","w")) {
+      if ($canedit = Session::haveRight("profile", ProfileRight::UPDATE)) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -795,10 +795,10 @@ class Profile extends CommonDBTM {
    **/
    function showFormInventory($openform=true, $closeform=true) {
 
-      if (!Session::haveRight("profile","r")) {
+      if (!Session::haveRight("profile", ProfileRight::READ)) {
          return false;
       }
-      if (($canedit=Session::haveRight("profile","w")) && $openform) {
+      if (($canedit=Session::haveRight("profile", ProfileRight::UPDATE)) && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -896,10 +896,10 @@ class Profile extends CommonDBTM {
    function showFormTracking($openform=true, $closeform=true) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("profile","r")) {
+      if (!Session::haveRight("profile", ProfileRight::READ)) {
          return false;
       }
-      if (($canedit = Session::haveRight("profile","w"))
+      if (($canedit = Session::haveRight("profile", ProfileRight::UPDATE))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
@@ -1131,11 +1131,11 @@ class Profile extends CommonDBTM {
    **/
    function showFormLifeCycle($openform=true, $closeform=true) {
 
-      if (!Session::haveRight("profile","r")) {
+      if (!Session::haveRight("profile", ProfileRight::READ)) {
          return false;
       }
 
-      if (($canedit = Session::haveRight("profile","w"))
+      if (($canedit = Session::haveRight("profile", ProfileRight::UPDATE))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
@@ -1373,12 +1373,12 @@ class Profile extends CommonDBTM {
    **/
    function showFormSetup($openform=true, $closeform=true) {
 
-      if (!Session::haveRight("profile","r")) {
+      if (!Session::haveRight("profile", ProfileRight::READ)) {
          return false;
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRight("profile","w"))
+      if (($canedit = Session::haveRight("profile", ProfileRight::UPDATE))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
