@@ -1436,7 +1436,6 @@ class Dropdown {
     *    - on_change           : string / value to transmit to "onChange"
     *    - multiple            : boolean / can select several values (default false)
     *    - size                : integer / number of rows for the select (default = 1)
-    *    - mark_unmark_all     : add buttons to select or deselect all options (only for multiple)
     *    - display             : boolean / display or return string
     *    - other               : boolean or string if not false, then we can use an "other" value
     *                            if it is a string, then the default value will be this string
@@ -1461,7 +1460,6 @@ class Dropdown {
       $param['width']           = '';
       $param['multiple']        = false;
       $param['size']            = 1;
-//       $param['mark_unmark_all'] = false;
       $param['display']         = true;
       $param['other']           = false;
       $param['rand']            = mt_rand();
@@ -1590,32 +1588,6 @@ class Dropdown {
             }
             $output .= ">";
          }
-
-//          if ($param['mark_unmark_all'] && $param['multiple']) {
-//             $select   = __('Select all');
-//             $deselect = __('Deselect all');
-//             $size     = strlen($select) +  strlen($deselect);
-//             $select   = "<input type='button' onclick=\"var element =$('#$field_id');var selected = [];
-//                   element.find('option').each(function(i,e){
-//                      selected[selected.length]=$(e).attr('value');
-//                      });
-//                   element.select2('val', selected);\" value=\"$select\">";
-//             $deselect = "<input type='button' onclick=\"$('#$field_id').val('').trigger('change');\" value=\"$deselect\">";
-//             if ($size < $max_option_size) {
-//                $output = "<table width='100%'><tr><td rowspan='2' width='100%'>".$output."</td>";
-//                $output .= "<td class='center'>";
-//                $output .= $select;
-//                $output .= "</td></tr><tr><td class='center'>";
-//                $output .= $deselect;
-//             } else {
-//                $output = "<table width='100%'><tr><td colspan='2'>".$output."</td>";
-//                $output .= "</tr><tr><td class='center'>";
-//                $output .= $select;
-//                $output .= "</td><td class='center'>";
-//                $output .= $deselect;
-//             }
-//             $output .= "</td></tr></table>";
-//          }
       }
 
       // Width set on select

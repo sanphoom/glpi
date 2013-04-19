@@ -1502,7 +1502,7 @@ class CommonDBTM extends CommonGLPI {
    static function canCreate() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, self::CREATE);
+         return Session::haveRight(static::$rightname, ProfileRight::CREATE);
       }
       return false;
    }
