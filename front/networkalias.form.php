@@ -78,7 +78,7 @@ if (isset($_GET['popup'])) {
       $_GET["id"] = "";
    }
 
-   Session::checkRight("internet","w");
+   Session::checkRight("internet", ProfileRight::UPDATE);
    Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'assets');
 
    $alias->display($_GET);

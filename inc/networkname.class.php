@@ -61,33 +61,41 @@ class NetworkName extends FQDNLabel {
 
    static public $mustBeAttached        = false;
 
+   static $rightname                   = 'internet';
 
 
    static function canCreate() {
 
-      return (Session::haveRight('internet', 'w')
+      return (Session::haveRight('internet', ProfileRight::CREATE)
               && parent::canCreate());
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('internet', 'r')
+      return (Session::haveRight('internet', ProfileRight::READ)
               && parent::canView());
    }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('internet', 'w')
+      return (Session::haveRight('internet', ProfileRight::UPDATE())
               && parent::canUpdate());
    }
 
 
    static function canDelete() {
 
-      return (Session::haveRight('internet', 'w')
+      return (Session::haveRight('internet', ProfileRight::DELETE)
               && parent::canDelete());
+   }
+
+
+   static function canPurge() {
+
+      return (Session::haveRight('internet', ProfileRight::PURGE)
+            && parent::canPurge());
    }
 
 

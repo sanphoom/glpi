@@ -79,7 +79,7 @@ class MigrationCleaner extends CommonGLPI {
 
       if ($_SESSION['glpishowmigrationcleaner']
           && (Session::haveRight("networking", ProfileRight::UPDATE)
-              || Session::haveRight("internet", "w"))) {
+              || Session::haveRight("internet", ProfileRight::UPDATE))) {
          return true;
       }
 

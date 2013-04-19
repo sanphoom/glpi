@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("internet","r");
+Session::checkRight("internet", ProfileRight::READ);
 
 Html::header(NetworkName::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'commondropdown',
             'NetworkName');

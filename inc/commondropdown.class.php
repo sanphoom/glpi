@@ -87,7 +87,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if (get_called_class() == 'CommonDropdown') {
          if (Session::haveRight("dropdown","r")
              || Session::haveRight("entity_dropdown","r")
-             || Session::haveRight("internet","r")) {
+             || Session::haveRight("internet", ProfileRight::READ)) {
             $menu['title']             = static::getTypeName(2);
             $menu['shortcut']          = 'n';
             $menu['page']              = '/front/dropdown.php';
