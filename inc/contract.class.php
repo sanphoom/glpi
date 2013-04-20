@@ -44,19 +44,12 @@ class Contract extends CommonDBTM {
    public $dohistory                   = true;
    static protected $forward_entity_to = array('ContractCost');
 
+   static $rightname                   = 'contract';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Contract', 'Contracts', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('contract', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('contract', 'r');
    }
 
 
@@ -283,9 +276,6 @@ class Contract extends CommonDBTM {
    function showForm($ID,$options=array()) {
 
       $this->initForm($ID, $options);
-
-      $can_edit = $this->can($ID,'w');
-
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -885,7 +875,7 @@ class Contract extends CommonDBTM {
    static function showCentral() {
       global $DB,$CFG_GLPI;
 
-      if (!Session::haveRight("contract", "r")) {
+      if (!Session::haveRight("contract", ProfileRight::READ)) {
          return false;
       }
 

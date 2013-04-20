@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("contract", "r");
+Session::checkRight("contract", ProfileRight::READ);
 
 Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "management", "contract");
 

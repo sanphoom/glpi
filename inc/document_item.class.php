@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -168,7 +168,7 @@ class Document_Item extends CommonDBRelation{
 
          default :
             // Can exist for template
-            if (Session::haveRight("document","r")
+            if (Session::haveRight("document", ProfileRight::READ)
                 || ($item->getType() == 'Ticket')
                 || ($item->getType() == 'KnowbaseItem')) {
 
@@ -248,11 +248,10 @@ class Document_Item extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $instID = $doc->fields['id'];
-      if (!$doc->can($instID,"r")) {
+      if (!$doc->can($instID, ProfileRight::READ)) {
          return false;
       }
-      $canedit = $doc->can($instID,'w');
-
+      $canedit = $doc->can($instID, ProfileRight::UPDATE);
       // for a document,
       // don't show here others documents associated to this one,
       // it's done for both directions in self::showAssociated
@@ -265,7 +264,6 @@ class Document_Item extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       $rand   = mt_rand();
-
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='documentitem_form$rand' id='documentitem_form$rand' method='post'
@@ -294,7 +292,7 @@ class Document_Item extends CommonDBRelation{
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
-       echo "<tr>";
+         echo "<tr>";
 
       if ($canedit && $number) {
          echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
@@ -444,7 +442,7 @@ class Document_Item extends CommonDBRelation{
       }
       if (($item->getType() != 'Ticket')
           && ($item->getType() != 'KnowbaseItem')
-          && !Session::haveRight('document','r')) {
+          && !Session::haveRight('document', ProfileRight::READ)) {
          return false;
       }
 
@@ -583,7 +581,7 @@ class Document_Item extends CommonDBRelation{
          echo "</table>";
          Html::closeForm();
 
-         if (Session::haveRight('document','r')
+         if (Session::haveRight('document', ProfileRight::READ)
              && ($nb > count($used))) {
             echo "<form name='document_form$rand' id='document_form$rand' method='post'
                    action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";

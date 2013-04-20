@@ -79,12 +79,12 @@ class Report extends CommonGLPI{
       $report_list["default"]["name"] = __('Default report');
       $report_list["default"]["file"] = "report.default.php";
 
-      if (Session::haveRight("contract","r")) {
+      if (Session::haveRight("contract", ProfileRight::READ)) {
          // Rapport ajoute par GLPI V0.2
          $report_list["Contrats"]["name"] = __('By contract');
          $report_list["Contrats"]["file"] = "report.contract.php";
       }
-      if (Session::haveRight("infocom","r")) {
+      if (Session::haveRight("infocom", ProfileRight::READ)) {
          $report_list["Par_annee"]["name"] = __('By year');
          $report_list["Par_annee"]["file"] = "report.year.php";
          $report_list["Infocoms"]["name"]  = __('Hardware financial and administrative information');

@@ -45,6 +45,8 @@ class Document extends CommonDBTM {
 
    static protected $forward_entity_to = array('Document_Item');
 
+   static $rightname                   = 'document';
+
 
    static function getTypeName($nb=0) {
       return _n('Document', 'Documents', $nb);
@@ -64,12 +66,8 @@ class Document extends CommonDBTM {
    static function canCreate() {
 
       // Have right to add document OR ticket followup
-      return Session::haveRight('document', 'w') || Session::haveRight('add_followups', '1');
-   }
-
-
-   static function canUpdate() {
-      return Session::haveRight('document', 'w');
+      return (Session::haveRight('document', ProfileRight::CREATE)
+              || Session::haveRight('add_followups', '1'));
    }
 
 
@@ -85,15 +83,10 @@ class Document extends CommonDBTM {
          }
       }
 
-      if (Session::haveRight('document', 'w')) {
+      if (Session::haveRight('document', ProfileRight::CREATE)) {
          return parent::canCreateItem();
       }
       return false;
-   }
-
-
-   static function canView() {
-      return Session::haveRight('document', 'r');
    }
 
 

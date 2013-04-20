@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 $ic = new Infocom();
 
 if (isset($_POST['add'])) {
-   $ic->check(-1, 'w', $_POST);
+   $ic->check(-1, ProfileRight::CREATE, $_POST);
 
    $newID = $ic->add($_POST, false);
    Event::log($newID, "infocom", 4, "financial",
@@ -44,8 +44,8 @@ if (isset($_POST['add'])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $ic->check($_POST["id"],'d');
-
+   $ic->check($_POST["id"], ProfileRight::PURGE);
+   //TODO no is_deleted => purge
    $ic->delete($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial",
               //TRANS: %s is the user login
@@ -53,7 +53,7 @@ if (isset($_POST['add'])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $ic->check($_POST["id"],'w');
+   $ic->check($_POST["id"], ProfileRight::UPDATE);
 
    $ic->update($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial",
@@ -62,7 +62,7 @@ if (isset($_POST['add'])) {
    Html::back();
 
 } else {
-   Session::checkRight("infocom", "r");
+   Session::checkRight("infocom", ProfileRight::READ);
 
    Html::popHeader(Infocom::getTypeName(), $_SERVER['PHP_SELF']);
 

@@ -811,21 +811,21 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Contacts', 'Contacts', 2)." / "._n('Supplier', 'Suppliers', 2)."</td><td>";
-      self::dropdownRight("contact_enterprise",
-                          array('value' => $this->fields["contact_enterprise"]));
+      self::dropdownRights(Contact::getRights(), "_contact_enterprise",
+                           $this->fields["contact_enterprise"]);
       echo "</td>";
       echo "<td>"._n('Document', 'Documents', 2)."</td><td>";
-      self::dropdownRight("document", array('value' => $this->fields["document"]));
+      self::dropdownRights(Document::getRights(), "_document",$this->fields["document"]);
       echo "</td>";
       echo "<td>"._n('Contract', 'Contracts', 2)."</td><td>";
-      self::dropdownRight("contract", array('value' => $this->fields["contract"]));
+      self::dropdownRights(Contract::getRights(), "_contract", $this->fields["contract"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".__('Financial and administratives information')."</td><td>";
-      self::dropdownRight("infocom", array('value' => $this->fields["infocom"]));
+      self::dropdownRights(Infocom::getRights(), "_infocom", $this->fields["infocom"]);
       echo "</td>";
       echo "<td>".__('Budget')."</td><td colspan='3'>";
-      self::dropdownRight("budget", array('value' => $this->fields["budget"]));
+      self::dropdownRights(Budget::getRights(), "_budget", $this->fields["budget"]);
       echo "</td></tr>\n";
 
       // Outils / Tools

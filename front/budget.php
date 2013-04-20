@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("budget", "r");
+Session::checkRight("budget", ProfileRight::READ);
 
 Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
 

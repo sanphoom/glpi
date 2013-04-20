@@ -92,7 +92,7 @@ class Contact_Supplier extends CommonDBRelation{
                } else {
                   return false;
                }
-               
+
                if ($contactsupplier->can(-1, 'w', $input)) {
                   if ($contactsupplier->add($input)) {
                      $res['ok']++;
@@ -144,7 +144,7 @@ class Contact_Supplier extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && Session::haveRight("contact_enterprise","r")) {
+      if (!$withtemplate && Session::haveRight("contact_enterprise", ProfileRight::READ)) {
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -218,11 +218,11 @@ class Contact_Supplier extends CommonDBRelation{
 
       $instID = $contact->fields['id'];
 
-      if (!$contact->can($instID,'r')) {
+      if (!$contact->can($instID, ProfileRight::READ)) {
          return false;
       }
 
-      $canedit = $contact->can($instID,'w');
+      $canedit = $contact->can($instID, ProfileRight::UPDATE);
       $rand = mt_rand();
 
       $query = "SELECT `glpi_contacts_suppliers`.`id`,

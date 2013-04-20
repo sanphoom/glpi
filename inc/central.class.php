@@ -112,7 +112,7 @@ class Central extends CommonGLPI {
       if ($showproblem) {
          Problem::showCentralCount();
       }
-      if (Session::haveRight("contract","r")) {
+      if (Session::haveRight("contract", ProfileRight::READ)) {
          Contract::showCentral();
       }
       echo "</td></tr>";

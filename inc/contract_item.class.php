@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Contracts and Items
+/**
+ * Contract_Item Class
+ *
+ * Relation between Contracts and Items
+**/
 class Contract_Item extends CommonDBRelation{
 
    // From CommonDBRelation
@@ -44,6 +48,7 @@ class Contract_Item extends CommonDBRelation{
 
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
+
 
 
    /**
@@ -255,7 +260,7 @@ class Contract_Item extends CommonDBRelation{
       global $CFG_GLPI;
 
       // Can exists on template
-      if (Session::haveRight("contract","r")) {
+      if (Session::haveRight("contract", ProfileRight::READ)) {
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -344,11 +349,12 @@ class Contract_Item extends CommonDBRelation{
       $itemtype = $item->getType();
       $ID       = $item->fields['id'];
 
-      if (!Session::haveRight("contract","r") || !$item->can($ID,"r")) {
+      if (!Session::haveRight("contract", ProfileRight::READ)
+          || !$item->can($ID, ProfileRight::READ)) {
          return false;
       }
 
-      $canedit = $item->can($ID,"w");
+      $canedit = $item->can($ID, ProfileRight::UPDATE);
       $rand = mt_rand();
 
       $query = "SELECT `glpi_contracts_items`.*

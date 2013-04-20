@@ -2028,7 +2028,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showsupplierlink = 0;
-      if (Session::haveRight('contact_enterprise','r')) {
+      if (Session::haveRight('contact_enterprise', ProfileRight::READ)) {
          $showsupplierlink = 1;
       }
 

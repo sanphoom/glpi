@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// DocumentType class
+/**
+ * DocumentType Class
+**/
 class DocumentType  extends CommonDropdown {
 
    function getAdditionalFields() {

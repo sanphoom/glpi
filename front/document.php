@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("document", "r");
+Session::checkRight("document", ProfileRight::READ);
 
 Html::header(Document::getTypeName(2), $_SERVER['PHP_SELF'], "management", "document");
 

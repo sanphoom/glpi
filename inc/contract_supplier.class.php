@@ -90,7 +90,7 @@ class Contract_Supplier extends CommonDBRelation {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Supplier' :
-               if (Session::haveRight("contract","r")) {
+               if (Session::haveRight("contract", ProfileRight::READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(Contract::getTypeName(2),
                                                  self::countForSupplier($item));
@@ -100,7 +100,7 @@ class Contract_Supplier extends CommonDBRelation {
                break;
 
             case 'Contract' :
-               if (Session::haveRight("contact_enterprise","r")) {
+               if (Session::haveRight("contact_enterprise", ProfileRight::READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(Supplier::getTypeName(2),
                                                  self::countForContract($item));
@@ -142,11 +142,11 @@ class Contract_Supplier extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID = $supplier->fields['id'];
-      if (!Session::haveRight("contract","r")
-          || !$supplier->can($ID,'r')) {
+      if (!Session::haveRight("contract", ProfileRight::READ)
+          || !$supplier->can($ID, ProfileRight::READ)) {
          return false;
       }
-      $canedit = $supplier->can($ID,'w');
+      $canedit = $supplier->can($ID, ProfileRight::UPDATE);
       $rand    = mt_rand();
 
       $query = "SELECT `glpi_contracts`.*,
@@ -273,11 +273,11 @@ class Contract_Supplier extends CommonDBRelation {
 
       $instID = $contract->fields['id'];
 
-      if (!$contract->can($instID,'r')
-          || !Session::haveRight("contact_enterprise","r")) {
+      if (!$contract->can($instID, ProfileRight::READ)
+          || !Session::haveRight("contact_enterprise", ProfileRight::READ)) {
          return false;
       }
-      $canedit = $contract->can($instID,'w');
+      $canedit = $contract->can($instID, ProfileRight::UPDATE);
       $rand    = mt_rand();
 
       $query = "SELECT `glpi_contracts_suppliers`.`id`,

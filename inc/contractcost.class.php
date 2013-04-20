@@ -89,7 +89,7 @@ class ContractCost extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'Contract')
-          && Session::haveRight("contract","r")) {
+          && Session::haveRight("contract", ProfileRight::READ)) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
@@ -256,10 +256,10 @@ class ContractCost extends CommonDBChild {
       $ID = $contract->fields['id'];
 
       if (!$contract->getFromDB($ID)
-          || !$contract->can($ID, "r")) {
+          || !$contract->can($ID,  ProfileRight::READ)) {
          return false;
       }
-      $canedit = $contract->can($ID, "w");
+      $canedit = $contract->can($ID,  ProfileRight::UPDATE);
 
       echo "<div class='center'>";
 

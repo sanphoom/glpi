@@ -37,11 +37,14 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Supplier class (suppliers)
- */
+**/
 class Supplier extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
+
+   static $rightname = 'contact_enterprise';
+
 
 
    /**
@@ -51,16 +54,6 @@ class Supplier extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Supplier', 'Suppliers', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('contact_enterprise', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('contact_enterprise', 'r');
    }
 
 

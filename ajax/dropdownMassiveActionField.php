@@ -41,10 +41,10 @@ if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype'
 }
 
 if (in_array($_POST["itemtype"], $CFG_GLPI["infocom_types"])) {
-   Session::checkSeveralRightsOr(array($_POST["itemtype"] => "w",
-                                       "infocom"          => "w"));
+   Session::checkSeveralRightsOr(array($_POST["itemtype"] => ProfileRight::UPDATE,
+                                       "infocom"          => ProfileRight::UPDATE));
 } else {
-   $item->checkGlobal("w");
+   $item->checkGlobal(ProfileRight::UPDATE);
 }
 
 $inline = false;

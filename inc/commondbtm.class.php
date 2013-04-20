@@ -2265,7 +2265,7 @@ class CommonDBTM extends CommonGLPI {
                return true;
             }
             return (static::canDelete() && $this->canDeleteItem());
-
+/*
          case ProfileRight::PURGE :
             // Personnal item
             if ($this->isPrivate()
@@ -2273,7 +2273,7 @@ class CommonDBTM extends CommonGLPI {
                return true;
             }
             return (static::canPurge() && $this->canPurgeItem());
-
+*/
         case ProfileRight::CREATE :
             // Personnal item
             if ($this->isPrivate()
