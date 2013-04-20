@@ -424,17 +424,17 @@ class Toolbox {
          $msg .= ' ('.number_format(microtime(true)-$tps,3).'", '.
                  number_format(memory_get_usage()/1024/1024,2).'Mio)';
       }
-      $msg .= "\n ";
-      
+      $msg .= "\n  ";
+
       foreach (func_get_args() as $arg) {
          if (is_array($arg) || is_object($arg)) {
-            $msg .= ' ' . print_r($arg, true);
+            $msg .= str_replace("\n", "\n  ",print_r($arg, true));
          } else if (is_null($arg)) {
-            $msg .= ' NULL';
+            $msg .= 'NULL ';
          } else if (is_bool($arg)) {
-            $msg .= ' '.($arg ? 'true' : 'false');
+            $msg .= ($arg ? 'true' : 'false').' ';
          } else {
-            $msg .= ' ' . $arg;
+            $msg .= $arg . ' ';
          }
       }
 
@@ -442,6 +442,39 @@ class Toolbox {
       self::logInFile('php-errors', $msg."\n",true);
    }
 
+
+   /**
+    * Generate a Backtrace
+    *
+    * @param $log    String log file name (default php-errors)
+    *                if false, return the strung
+    *
+    * @since 0.85
+    *
+    * @return string if $log is false
+   **/
+   static function backtrace($log='php-errors') {
+
+      if (function_exists("debug_backtrace")) {
+         $message = "  Backtrace :\n";
+         $traces  = debug_backtrace();
+         foreach ($traces as $trace) {
+            $message .= '  '.
+                        (isset($trace["file"]) ? $trace["file"] : "") . ":" .
+                        (isset($trace["line"]) ? $trace["line"] : "") . "\t\t" .
+                        (isset($trace["class"]) ? $trace["class"] : "") .
+                        (isset($trace["type"]) ? $trace["type"] : "") .
+                        (isset($trace["function"]) ? $trace["function"]."()" : "") ."\n";
+         }
+      } else {
+         $message = "  Script : " . $_SERVER["SCRIPT_FILENAME"]. "\n";
+      }
+      if ($log) {
+         self::logInFile($log, $message, true);
+      } else {
+         return $message;
+      }
+   }
 
    /**
     * Log a message in log file
@@ -454,7 +487,7 @@ class Toolbox {
       global $CFG_GLPI;
 
       $user = '';
-      if (method_exists('Session', 'getLoginUserID')) { 
+      if (method_exists('Session', 'getLoginUserID')) {
          $user = " [".Session::getLoginUserID().'@'.php_uname('n')."]";
       }
 
@@ -505,29 +538,15 @@ class Toolbox {
       // Les niveaux qui seront enregistrés
       $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 
-      $err = $errortype[$errno] . "($errno): $errmsg\n";
+      $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
       if (in_array($errno, $user_errors)) {
          $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
       }
 
-      if (function_exists("debug_backtrace")) {
-         $err   .= "Backtrace :\n";
-         $traces = debug_backtrace();
-         foreach ($traces as $trace) {
-            if (isset($trace["file"]) && isset($trace["line"])) {
-               $err .= $trace["file"] . ":" . $trace["line"] . "\t\t"
-                       . (isset($trace["class"]) ? $trace["class"] : "")
-                       . (isset($trace["type"]) ? $trace["type"] : "")
-                       . (isset($trace["function"]) ? $trace["function"]."()" : ""). "\n";
-            }
-         }
+      $err .= self::backtrace(false);
 
-      } else {
-         $err .= "Script: $filename, Line: $linenum\n" ;
-      }
-
-      // sauvegarde de l'erreur, et mail si c'est critique
-      self::logInFile("php-errors", $err."\n");
+      // sauvegarde de l'erreur
+      self::logInFile("php-errors", $err);
 
       return $errortype[$errno];
    }

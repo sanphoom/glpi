@@ -75,5 +75,9 @@ if (isset($_GET["redirect"])) {
 $central = new Central();
 $central->display();
 
+Toolbox::logDebug("Central", $central, "Session", $_SESSION['glpicsrftokens']);
+Toolbox::backtrace();
+$a=$b;
+$DB->query("SELECT foo FROM bar");
 Html::footer();
 ?>
