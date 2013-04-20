@@ -447,13 +447,15 @@ class Toolbox {
     * Generate a Backtrace
     *
     * @param $log    String log file name (default php-errors)
-    *                if false, return the strung
+    *                       if false, return the strung
+    * @param $hide   String call to hide (but display script/line)
+    * @param $skip   Array  of call to not display at all
     *
     * @since 0.85
     *
     * @return string if $log is false
    **/
-   static function backtrace($log='php-errors') {
+   static function backtrace($log='php-errors', $hide='', Array $skip=array()) {
 
       if (function_exists("debug_backtrace")) {
          $message = "  Backtrace :\n";
@@ -464,16 +466,22 @@ class Toolbox {
             if (strpos($script, GLPI_ROOT)===0) {
                $script = substr($script, strlen(GLPI_ROOT)+1);
             }
-            $call   = (isset($trace["class"]) ? $trace["class"] : "") .
-                        (isset($trace["type"]) ? $trace["type"] : "") .
-                        (isset($trace["function"]) ? $trace["function"]."()" : "");
-
             if (strlen($script)>50) {
                $script = "...".substr($script, -47);
             } else {
                $script = str_pad($script, 50);
             }
-            $message .= "  $script $call\n";
+
+            $call = (isset($trace["class"]) ? $trace["class"] : "") .
+                    (isset($trace["type"]) ? $trace["type"] : "") .
+                    (isset($trace["function"]) ? $trace["function"]."()" : "");
+            if ($call == $hide) {
+               $call = '';
+            }
+
+            if (!in_array($call, $skip)) {
+               $message .= "  $script $call\n";
+            }
          }
       } else {
          $message = "  Script : " . $_SERVER["SCRIPT_FILENAME"]. "\n";
@@ -552,7 +560,8 @@ class Toolbox {
          $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
       }
 
-      $err .= self::backtrace(false);
+      $err .= self::backtrace(false, 'Toolbox::userErrorHandlerDebug()',
+                              array('Toolbox::backtrace()', 'Toolbox::userErrorHandlerNormal()'));
 
       // sauvegarde de l'erreur
       self::logInFile("php-errors", $err);
