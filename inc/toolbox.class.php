@@ -459,12 +459,21 @@ class Toolbox {
          $message = "  Backtrace :\n";
          $traces  = debug_backtrace();
          foreach ($traces as $trace) {
-            $message .= '  '.
-                        (isset($trace["file"]) ? $trace["file"] : "") . ":" .
-                        (isset($trace["line"]) ? $trace["line"] : "") . "\t\t" .
-                        (isset($trace["class"]) ? $trace["class"] : "") .
+            $script = (isset($trace["file"]) ? $trace["file"] : "") . ":" .
+                        (isset($trace["line"]) ? $trace["line"] : "");
+            if (strpos($script, GLPI_ROOT)===0) {
+               $script = substr($script, strlen(GLPI_ROOT)+1);
+            }
+            $call   = (isset($trace["class"]) ? $trace["class"] : "") .
                         (isset($trace["type"]) ? $trace["type"] : "") .
-                        (isset($trace["function"]) ? $trace["function"]."()" : "") ."\n";
+                        (isset($trace["function"]) ? $trace["function"]."()" : "");
+
+            if (strlen($script)>50) {
+               $script = "...".substr($script, -47);
+            } else {
+               $script = str_pad($script, 50);
+            }
+            $message .= "  $script $call\n";
          }
       } else {
          $message = "  Script : " . $_SERVER["SCRIPT_FILENAME"]. "\n";
