@@ -164,7 +164,7 @@ class DBmysql {
       $res = @$this->dbh->query($query);
       if (!$res) {
          // no translation for error logs
-         $error = "  *** MySQL query error: \n  ***\n  SQL: ".addslashes($query)."\n  Error: ".
+         $error = "  *** MySQL query error:\n  SQL: ".addslashes($query)."\n  Error: ".
                    $this->dbh->error."\n";
          $error .= toolbox::backtrace(false, 'DBmysql->query()', array('Toolbox::backtrace()'));
 
