@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", ProfileRight::UPDATE);
 
 $plugin = new Plugin();
 

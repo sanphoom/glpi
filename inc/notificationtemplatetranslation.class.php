@@ -90,7 +90,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    function showForm($ID, $options) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
       $notificationtemplates_id = -1;
@@ -170,7 +170,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $nID     = $template->getField('id');
-      $canedit = Session::haveRight("config", "w");
+      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
 
       if ($canedit) {
          echo "<div class='center'>".

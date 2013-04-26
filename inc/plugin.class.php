@@ -47,6 +47,9 @@ class Plugin extends CommonDBTM {
    const TOBECLEANED    = 5;
    const NOTUPDATED     = 6;
 
+   static $rightname = 'config';
+
+
 
    /**
     * @since version 0.85
@@ -65,11 +68,6 @@ class Plugin extends CommonDBTM {
    **/
    static function getMenuName() {
       return static::getTypeName(2);
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'w');
    }
 
 

@@ -1062,7 +1062,6 @@ class Html {
       // Body
       echo "<body>";
       // Generate array for menu and check right
-
       if (!isset($_SESSION['glpimenu'])
           || !is_array($_SESSION['glpimenu'])
           || (count($_SESSION['glpimenu']) == 0)) {
@@ -1103,7 +1102,6 @@ class Html {
          $menu['preference']['title']   = __('My settings');
          $menu['preference']['default'] = '/front/preference.php';
 
-
          // Permit to plugins to add entry to others sector !
          if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
 
@@ -1117,7 +1115,6 @@ class Html {
                }
             }
          }
-
 
          foreach ($menu as $category => $datas) {
             if (isset($datas['types']) && count($datas['types'])) {

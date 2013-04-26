@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "r");
+Session::checkRight("config", ProfileRight::READ);
 
 Html::header(NotImportedEmail::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailcollector",
              "notimportedemails");

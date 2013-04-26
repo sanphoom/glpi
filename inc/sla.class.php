@@ -28,18 +28,22 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class SLA
+/**
+ * SLA Class
+**/
 class SLA extends CommonDBTM {
 
    // From CommonDBTM
    var $dohistory                      = true;
+
+   static $rightname                   = 'sla';
 
    static protected $forward_entity_to = array('SLALevel');
 
@@ -47,16 +51,6 @@ class SLA extends CommonDBTM {
    static function getTypeName($nb=0) {
       // Acronymous, no plural
       return __('SLA');
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('sla', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('sla', 'r');
    }
 
 
@@ -386,5 +380,18 @@ class SLA extends CommonDBTM {
       }
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      unset($values[ProfileRight::DELETE]);
+
+      return $values;
+   }
 }
 ?>

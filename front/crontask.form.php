@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", ProfileRight::UPDATE);
 
 $crontask = new CronTask();
 
@@ -51,13 +51,13 @@ if (isset($_POST['execute'])) {
    }
    Html::back();
 } else if (isset($_POST["update"])) {
-   Session::checkRight('config', 'w');
+   Session::checkRight('config', ProfileRight::UPDATE);
    $crontask->update($_POST);
    Html::back();
 
 } else if (isset($_POST['resetdate'])
            && isset($_POST["id"])) {
-   Session::checkRight('config', 'w');
+   Session::checkRight('config', ProfileRight::UPDATE);
    if ($crontask->getFromDB($_POST["id"])) {
        $crontask->resetDate();
    }
@@ -65,7 +65,7 @@ if (isset($_POST['execute'])) {
 
 } else if (isset($_POST['resetstate'])
            && isset($_POST["id"])) {
-   Session::checkRight('config', 'w');
+   Session::checkRight('config', ProfileRight::UPDATE);
    if ($crontask->getFromDB($_POST["id"])) {
        $crontask->resetState();
    }

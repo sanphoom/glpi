@@ -43,13 +43,14 @@ if (!defined('GLPI_ROOT')) {
 /// TODO move function to class
 class Control extends CommonGLPI {
 
+
    static function getTypeName($nb=0) {
       return _n('Check', 'Checks', $nb);
    }
 
 
    static function canView() {
-      return Session::haveRight('config', 'w');
+      return Session::haveRight('config', ProfileRight::READ);
    }
 
 

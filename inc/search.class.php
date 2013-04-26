@@ -2506,7 +2506,7 @@ class Search {
             return Reminder::addVisibilityRestrict();
 
          case 'Notification' :
-            if (!Session::haveRight('config','w')) {
+            if (!Session::haveRight('config', ProfileRight::READ)) {
                return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
             }
             break;

@@ -2229,7 +2229,7 @@ class User extends CommonDBTM {
          Location::dropdown(array('value'  => $this->fields['locations_id'],
                                   'entity' => $entities));
 
-        if (Session::haveRight("config", "w")) {
+        if (Session::haveRight("config", ProfileRight::UPDATE)) {
             echo "<td>" . __('Use GLPI in mode') . "</td><td>";
             $modes[Session::NORMAL_MODE]      = __('Normal');
             //$modes[Session::TRANSLATION_MODE] = __('Translation');

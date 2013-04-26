@@ -69,6 +69,8 @@ class MailCollector  extends CommonDBTM {
    /// Body converted
    var $body_converted = false;
 
+   static $rightname = 'config';
+
    // Destination folder
    const REFUSED_FOLDER  = 'refused';
    const ACCEPTED_FOLDER = 'accepted';
@@ -94,16 +96,6 @@ class MailCollector  extends CommonDBTM {
          return $options;
       }
       return false;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
@@ -41,15 +41,9 @@ class SsoVariable extends CommonDropdown {
 
    var $refresh_page = true;
 
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
+   static $rightname = 'config';
 
 
-   static function canView() {
-      return Session::haveRight('config', 'r');
-   }
 
 
    static function getTypeName($nb=0) {

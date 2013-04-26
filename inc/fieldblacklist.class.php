@@ -28,28 +28,23 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Fieldblacklist
+/**
+ * Fieldblacklist Class
+**/
 class Fieldblacklist extends CommonDropdown {
+
+   static $rightname = 'config';
+
 
    static function getTypeName($nb=0) {
       return _n('Ignored value for the unicity', 'Ignored values for the unicity', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 

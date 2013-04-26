@@ -121,7 +121,7 @@ class Notification extends CommonDBTM {
       $menu = array();
 
       if (Session::haveRight("notification","r")
-          || Session::haveRight("config","r")) {
+          || Session::haveRight("config", ProfileRight::READ)) {
          $menu['title']                                      = _n('Notification', 'Notifications', 2);
          $menu['page']                                       = '/front/setup.notification.php';
          $menu['options']['notification']['title']           = _n('Notification', 'Notifications', 2);
@@ -182,7 +182,7 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td>";
       echo "<td>";
-      if (Session::haveRight('config', 'w')
+      if (Session::haveRight('config', ProfileRight::UPDATE)
           && ($this->getEntityID() == 0)) {
          $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
                                           array('value' => $this->fields['itemtype']));
@@ -357,7 +357,7 @@ class Notification extends CommonDBTM {
 
       if ((($this->fields['itemtype'] == 'Crontask')
            || ($this->fields['itemtype'] == 'DBConnection'))
-          && !Session::haveRight('config', 'w')) {
+          && !Session::haveRight('config', ProfileRight::READ)) {
           return false;
       }
       return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
@@ -373,7 +373,7 @@ class Notification extends CommonDBTM {
 
       if ((($this->fields['itemtype'] == 'Crontask')
            || ($this->fields['itemtype'] == 'DBConnection'))
-          && !Session::haveRight('config', 'w')) {
+          && !Session::haveRight('config', ProfileRight::UPDATE)) {
           return false;
       }
       return Session::haveAccessToEntity($this->getEntityID());

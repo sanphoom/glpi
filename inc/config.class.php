@@ -47,6 +47,9 @@ class Config extends CommonDBTM {
    public $auto_message_on_action = false;
    public $showdebug              = true;
 
+   static $rightname              = 'config';
+
+
 
    static function getTypeName($nb=0) {
       return __('Setup');
@@ -75,16 +78,6 @@ class Config extends CommonDBTM {
 
    static function canCreate() {
       return false;
-   }
-
-
-   static function canUpdate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 
@@ -229,7 +222,7 @@ class Config extends CommonDBTM {
    function showFormDisplay() {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Session::haveRight("config", ProfileRight::READ)) {
          return false;
       }
 
@@ -364,7 +357,7 @@ class Config extends CommonDBTM {
    function showFormInventory() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
 
@@ -492,7 +485,7 @@ class Config extends CommonDBTM {
    function showFormAuthentication() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
 
@@ -536,7 +529,7 @@ class Config extends CommonDBTM {
    function showFormDBSlave() {
       global $DB, $CFG_GLPI, $DBslave;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
 
@@ -605,7 +598,7 @@ class Config extends CommonDBTM {
    function showFormHelpdesk() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
 
@@ -774,7 +767,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td>";
       echo "<td>";
-      if (Session::haveRight("config","w")
+      if (Session::haveRight("config", ProfileRight::UPDATE)
           || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
@@ -1762,5 +1755,21 @@ class Config extends CommonDBTM {
          }
       }
    }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      unset($values[ProfileRight::CREATE], $values[ProfileRight::DELETE],
+            $values[ProfileRight::PURGE]);
+
+      return $values;
+   }
+
 }
 ?>

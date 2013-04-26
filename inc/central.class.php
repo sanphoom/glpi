@@ -148,7 +148,7 @@ class Central extends CommonGLPI {
 
       echo "<table class='tab_cadre_central'>";
 
-      if (Session::haveRight("config", "w")) {
+      if (Session::haveRight("config", ProfileRight::UPDATE)) {
          $logins = User::checkDefaultPasswords();
          $user   = new User();
          if (!empty($logins)) {

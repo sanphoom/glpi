@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", ProfileRight::UPDATE);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";

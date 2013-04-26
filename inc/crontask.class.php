@@ -46,6 +46,7 @@ class CronTask extends CommonDBTM{
    private $timer           = 0.0;
    private $startlog        = 0;
    private $volume          = 0;
+   static $rightname        = 'config';
 
    // Class constant
    const STATE_DISABLE = 0;
@@ -54,6 +55,7 @@ class CronTask extends CommonDBTM{
 
    const MODE_INTERNAL = 1;
    const MODE_EXTERNAL = 2;
+
 
 
    /**
@@ -88,16 +90,6 @@ class CronTask extends CommonDBTM{
       $this->addStandardTab('CronTaskLog', $ong, $options);
 
       return $ong;
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
    }
 
 
@@ -384,7 +376,7 @@ class CronTask extends CommonDBTM{
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config","r") || !$this->getFromDB($ID)) {
+      if (!Session::haveRight("config", ProfileRight::READ) || !$this->getFromDB($ID)) {
          return false;
       }
 
@@ -1192,7 +1184,7 @@ class CronTask extends CommonDBTM{
 
       switch ($input['action']) {
          case 'reset' :
-            if (Session::haveRight('config', 'w')) {
+            if (Session::haveRight('config', ProfileRight::UPDATE)) {
                foreach ($input["item"] as $key => $val) {
                   if (($val == 1)
                       && $this->getFromDB($key)) {

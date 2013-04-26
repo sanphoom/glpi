@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 if (isset($_GET["sub_type"])) {
-   Session::checkRight("config", "r");
+   Session::checkRight("config", ProfileRight::READ);
    NotificationTemplateTranslation::showAvailableTags($_GET["sub_type"]);
    Html::ajaxFooter();
 } else {

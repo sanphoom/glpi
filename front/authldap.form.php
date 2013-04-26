@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", ProfileRight::UPDATE);
 
 $config      = new Config();
 $config_ldap = new AuthLDAP();

@@ -37,7 +37,7 @@ include ('../inc/includes.php');
 $item = new SlaLevel();
 
 if (isset($_POST["update"])) {
-   $item->check($_POST["id"], 'w');
+   $item->check($_POST["id"], ProfileRight::UPDATE);
 
    $item->update($_POST);
 
@@ -48,7 +48,7 @@ if (isset($_POST["update"])) {
    Html::back();
 
 } else if (isset($_POST["add"])) {
-   $item->check(-1, 'w', $_POST);
+   $item->check(-1, ProfileRight::CREATE, $_POST);
 
    if ($item->add($_POST)) {
       Event::log($_POST["slas_id"], "slas", 4, "setup",
@@ -60,7 +60,8 @@ if (isset($_POST["update"])) {
 } else if (isset($_POST["delete"])) {
 
    if (isset($_POST['id'])) {
-      $item->check($_POST['id'], 'd');
+      $item->check($_POST['id'], ProfileRight::PURGE);
+      //TODO no dustbin => purge
       $ok = $item->delete($_POST);
       if ($ok) {
          Event::log($_POST["id"], "slas", 4, "setup",
@@ -73,7 +74,7 @@ if (isset($_POST["update"])) {
    Html::back();
 
 } else if (isset($_POST["add_action"])) {
-   $item->check($_POST['slalevels_id'], 'w');
+   $item->check($_POST['slalevels_id'], ProfileRight::UPDATE);
 
    $action = new SlaLevelAction();
    $action->add($_POST);
@@ -82,7 +83,7 @@ if (isset($_POST["update"])) {
 
 }  else if (isset($_POST["add_criteria"])) {
 
-   $item->check($_POST['slalevels_id'], 'w');
+   $item->check($_POST['slalevels_id'], ProfileRight::UPDATE);
    $criteria = new SlaLevelCriteria();
    $criteria->add($_POST);
 

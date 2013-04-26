@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "r");
+Session::checkRight("config", ProfileRight::READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";

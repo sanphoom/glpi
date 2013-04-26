@@ -64,7 +64,7 @@ if (Session::haveRight("transfer","r" )
    echo "</td></tr>";
 }
 
-if (Session::haveRight("config","r" )) {
+if (Session::haveRight("config", ProfileRight::READ)) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href='".$CFG_GLPI['root_doc']."/front/blacklist.php'>".
         _n('Blacklist','Blacklists',2)."</a>";

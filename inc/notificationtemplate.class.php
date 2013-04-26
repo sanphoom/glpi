@@ -47,6 +47,9 @@ class NotificationTemplate extends CommonDBTM {
    //Store templates for each language
    public $templates_by_languages = array();
 
+   static $rightname = 'config';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Notification template', 'Notification templates', $nb);
@@ -64,16 +67,6 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
-   }
-
-
    /**
     * Reset already computed templates
    **/
@@ -85,7 +78,7 @@ class NotificationTemplate extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
 

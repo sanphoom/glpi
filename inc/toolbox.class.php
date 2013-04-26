@@ -2003,7 +2003,7 @@ class Toolbox {
    **/
    static function showMailServerConfig($value) {
 
-      if (!Session::haveRight("config", "w")) {
+      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
 

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", "w");
+Session::checkRight("config", ProfileRight::UPDATE);
 
 Html::header(AuthMail::getTypeName(2), $_SERVER['PHP_SELF'],"config","auth","imap");
 

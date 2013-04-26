@@ -34,7 +34,7 @@
 include ('../inc/includes.php');
 
 Session::checkSeveralRightsOr(array('notification' => 'r',
-                                    'config'       => 'w'));
+                                    'config'       => ProfileRight::UPDATE));
 
 Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'], "config", "notification");
 
@@ -47,13 +47,13 @@ if (isset($_POST['activate'])) {
 }
 
 if (!$CFG_GLPI['use_mailing']) {
-   if (Session::haveRight("config","w")) {
+   if (Session::haveRight("config", ProfileRight::UPDATE)) {
       echo "<div class='center'>";
       Html::showSimpleForm($_SERVER['PHP_SELF'], 'activate', __('Enable followup via email'));
       echo "</div>";
    }
 } else {
-   if (!Session::haveRight("config","r")
+   if (!Session::haveRight("config", ProfileRight::READ)
        && Session::haveRight("notification","r")
        && $CFG_GLPI['use_mailing']) {
       Html::redirect($CFG_GLPI["root_doc"].'/front/notification.php');
@@ -61,7 +61,7 @@ if (!$CFG_GLPI['use_mailing']) {
    } else {
       echo "<table class='tab_cadre'>";
       echo "<tr><th>" . _n('Notification', 'Notifications',2)."</th></tr>";
-      if (Session::haveRight("config","r")) {
+      if (Session::haveRight("config", ProfileRight::READ)) {
          echo "<tr class='tab_bg_1'><td class='center'>".
               "<a href='notificationmailsetting.form.php'>". __('Email followups configuration') .
               "</a></td></tr>";

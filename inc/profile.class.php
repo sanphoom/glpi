@@ -810,18 +810,20 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Management')."</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Contacts', 'Contacts', 2)." / "._n('Supplier', 'Suppliers', 2)."</td><td>";
+      echo "<td width='18%'>"._n('Contacts', 'Contacts', 2)." / "._n('Supplier', 'Suppliers', 2).
+           "</td><td width='15%'>";
       self::dropdownRights(Contact::getRights(), "_contact_enterprise",
                            $this->fields["contact_enterprise"]);
       echo "</td>";
-      echo "<td>"._n('Document', 'Documents', 2)."</td><td>";
+      echo "<td width='18%'>"._n('Document', 'Documents', 2)."</td><td width='15%'>";
       self::dropdownRights(Document::getRights(), "_document",$this->fields["document"]);
       echo "</td>";
-      echo "<td>"._n('Contract', 'Contracts', 2)."</td><td>";
+      echo "<td width='18%'>"._n('Contract', 'Contracts', 2)."</td><td width='15%'>";
       self::dropdownRights(Contract::getRights(), "_contract", $this->fields["contract"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td>".__('Financial and administratives information')."</td><td>";
+      echo "<tr class='tab_bg_2'><td>".__('Financial and administratives information')."</td>".
+           "<td colspan='2'>";
       self::dropdownRights(Infocom::getRights(), "_infocom", $this->fields["infocom"]);
       echo "</td>";
       echo "<td>".__('Budget')."</td><td colspan='3'>";
@@ -854,10 +856,14 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
       self::dropdownRight("reports", array('value'   => $this->fields["reports"],
                                            'nowrite' => true));
+      echo "</td><td>".__('Item notes')."</td><td>";
+      $tab = CommonDBTM::getRights();
+      unset($tab[ProfileRight::CREATE], $tab[ProfileRight::DELETE], $tab[ProfileRight::PURGE]);
+      self::dropdownRights($tab, "_notes", $this->fields["notes"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Knowledge base')."</td><td>";
+      echo "<td>".__('Knowledge base')."</td><td colspan='2'>";
       $tab = CommonDBTM::getRights();
       unset($tab[ProfileRight::DELETE]);
       $tab[ProfileRight::KNOWBASEADMIN] = __('Knowledge base administration');
@@ -867,14 +873,6 @@ class Profile extends CommonDBTM {
       self::dropdownRights(ReservationItem::getRights(), "_reservation_central",
                            $this->fields["reservation_central"]);
       echo "</td></tr>\n";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Item notes')."</td><td>";
-      $tab = CommonDBTM::getRights();
-      unset($tab[ProfileRight::CREATE], $tab[ProfileRight::DELETE], $tab[ProfileRight::PURGE]);
-      self::dropdownRights($tab, "_notes", $this->fields["notes"]);
-      echo "</td>";
-      echo "<td colspan='4'>";
-      echo "</td></tr>";
 
       if ($canedit
           && $closeform) {
@@ -1395,8 +1393,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td width='18%'>".__('General setup')."</td><td width='15%'>";
-      self::dropdownRight("config", array('value'   => $this->fields["config"],
-                                          'noread'  => true));
+      self::dropdownRights(Config::getRights(), "_config", $this->fields["config"]);
 
       echo "</td>";
       echo "<td width='18%'>".__('Search result default display')."</td><td width='15%'>";
@@ -1450,7 +1447,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('SLA')."</td><td>";
-      self::dropdownRight("sla", array('value' => $this->fields["sla"]));
+      self::dropdownRights(SLA::getRights(), "_sla", $this->fields["sla"]);
       echo "</td>";
       echo "<td colspan='4'>&nbsp;</td>";
       echo "</tr>\n";

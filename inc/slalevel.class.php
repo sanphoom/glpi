@@ -43,7 +43,7 @@ class SlaLevel extends RuleTicket {
    // No criteria
    protected $rulecriteriaclass = 'SlaLevelCriteria';
 
-   static public $right         = 'sla';
+   static $rightname            = 'sla';
 
 
    /**
@@ -93,11 +93,11 @@ class SlaLevel extends RuleTicket {
       global $DB;
 
       $ID = $sla->getField('id');
-      if (!$sla->can($ID, 'r')) {
+      if (!$sla->can($ID, ProfileRight::READ)) {
          return false;
       }
 
-      $canedit = $sla->can($ID,'w');
+      $canedit = $sla->can($ID, ProfileRight::UPDATE);
 
       $rand    = mt_rand();
 
@@ -254,7 +254,7 @@ class SlaLevel extends RuleTicket {
    **/
    function showForm($ID, $options=array()) {
 
-      $canedit = $this->can(static::$right,"w");
+      $canedit = $this->can('sla', ProfileRight::UPDATE);
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);

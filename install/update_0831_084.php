@@ -2026,6 +2026,8 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   `fqdns_id` int(11) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `FQDN` (`name`,`fqdns_id`),
