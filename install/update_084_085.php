@@ -214,6 +214,21 @@ function update084to085() {
              WHERE `name` = 'import_externalauth_users right'";
    $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
 
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'knowbase_admin' AND `right` = '1'") as $profrights) {
+
+         $query  = "UPDATE `glpi_profilerights`
+                    SET `rights` = `rights` | " . ProfileRight::KNOWBASEADMIN ."
+                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                         AND `name` = 'knowbase'";
+         $DB->queryOrDie($query, "0.85 update knowbase with knowbase_admin right");
+   }
+
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'import_externalauth_users right'";
+   $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
+
    // don't drop column right  - be done later
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -67,7 +67,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    static function showFirstLevel($options) {
       global $DB, $CFG_GLPI;
 
-      $faq = !Session::haveRight("knowbase","r");
+      $faq = !Session::haveRight("knowbase", ProfileRight::READ);
 
       // Default values of parameters
       $params["knowbaseitemcategories_id"] = "0";
@@ -91,7 +91,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
       if ($faq) {
          if (!$CFG_GLPI["use_public_faq"]
-             && !Session::haveRight("faq","r")) {
+             && !Session::haveRight("faq", ProfileRight::READ)) {
             return false;
          }
 
@@ -146,7 +146,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                    ORDER BY `name` ASC";
 
       } else {
-         if (!Session::haveRight("knowbase", "r")) {
+         if (!Session::haveRight("knowbase", ProfileRight::READ)) {
             return false;
          }
          $faq_limit = getEntitiesRestrictRequest("AND", "glpi_knowbaseitemcategories", "entities_id",

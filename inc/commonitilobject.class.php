@@ -3345,8 +3345,8 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                        $rand_type))));
 
          echo "</td><td colspan='2'>";
-         if (Session::haveRight('knowbase','r')
-             || Session::haveRight('faq','r')) {
+         if (Session::haveRight('knowbase', ProfileRight::READ)
+             || Session::haveRight('faq', ProfileRight::READ)) {
             echo "<a class='vsubmit' title\"".__s('Search a solution')."\"
                    href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?item_itemtype=".
                    $this->getType()."&amp;item_items_id=".$this->getField('id').
@@ -3369,7 +3369,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                         $this->getField('solutiontypes_id'));
       }
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      if ($canedit && Session::haveRight('knowbase','w')) {
+      if ($canedit && Session::haveRight('knowbase', ProfileRight::UPDATE)) {
          echo "<tr class='tab_bg_2'><td>".__('Save and add to the knowledge base')."</td><td>";
          Dropdown::showYesNo('_sol_to_kb', false);
          echo "</td><td colspan='2'>&nbsp;</td></tr>";

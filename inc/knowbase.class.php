@@ -35,12 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// class Knowbase
 /**
- * class Knowbase
+ * Knowbase Class
  *
  * @since version 0.84
- *
 **/
 class Knowbase extends CommonGLPI {
 
@@ -102,6 +100,7 @@ class Knowbase extends CommonGLPI {
     * Show the knowbase search view
    **/
    static function showSearchView() {
+
       // Search a solution
       if (!isset($_GET["contains"])
           && isset($_GET["itemtype"])
@@ -141,6 +140,7 @@ class Knowbase extends CommonGLPI {
     * Show the knowbase browse view
    **/
    static function showBrowseView() {
+
       if (isset($_GET["knowbaseitemcategories_id"])) {
          $_SESSION['kbknowbaseitemcategories_id'] = $_GET["knowbaseitemcategories_id"];
       } else if (isset($_SESSION['kbknowbaseitemcategories_id'])) {
@@ -174,5 +174,6 @@ class Knowbase extends CommonGLPI {
       $ki->showManageForm($_GET);
       KnowbaseItem::showList($_GET, $_GET["unpublished"]);
    }
+
 }
 ?>

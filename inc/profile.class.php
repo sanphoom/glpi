@@ -217,8 +217,8 @@ class Profile extends CommonDBTM {
 
       // Check for faq
       if (isset($input["interface"]) && ($input["interface"] == 'helpdesk')) {
-         if (isset($input["faq"]) && ($input["faq"] == 'w')) {
-            $input["faq"] == 'r';
+         if (isset($input["faq"]) && ($input["faq"] == ProfileRight::UPDATE)) {
+            $input["faq"] == ProfileRight::READ;
          }
       }
 
@@ -674,8 +674,8 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('FAQ')."</td><td>";
       if (($this->fields["interface"] == "helpdesk")
-          && ($this->fields["faq"] == 'w')) {
-         $this->fields["faq"] = 'r';
+          && ($this->fields["faq"] == ProfileRight::UPDATE)) {
+         $this->fields["faq"] = ProfileRight::READ;
       }
       self::dropdownRight("faq", array('value'   => $this->fields["faq"],
                                        'nowrite' => true));
@@ -847,7 +847,9 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('FAQ')."</td><td>";
-      self::dropdownRight("faq", array('value' => $this->fields["faq"]));
+      $tab = CommonDBTM::getRights();
+      unset($tab[ProfileRight::DELETE]);
+      self::dropdownRights($tab, "_faq", $this->fields["faq"]);
       echo "</td>";
       echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
       self::dropdownRight("reports", array('value'   => $this->fields["reports"],
@@ -859,11 +861,14 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Knowledge base')."</td><td>";
-      self::dropdownRight("knowbase", array('value' => $this->fields["knowbase"]));
+      $tab = CommonDBTM::getRights();
+      unset($tab[ProfileRight::DELETE]);
+      $tab[ProfileRight::KNOWBASEADMIN] = __('Knowledge base administration');
+      self::dropdownRights($tab, "_knowbase", $this->fields["knowbase"]);
       echo "</td>";
-      echo "<td>".__('Knowledge base administration')."</td><td>";
-      Dropdown::showYesNo("knowbase_admin", $this->fields["knowbase_admin"]);
-      echo "</td>";
+//      echo "<td>".__('Knowledge base administration')."</td><td>";
+//      Dropdown::showYesNo("knowbase_admin", $this->fields["knowbase_admin"]);
+//      echo "</td>";
       echo "<td>".__('Administration of reservations')."</td><td colspan='3'>";
       self::dropdownRight("reservation_central",
                           array('value' => $this->fields["reservation_central"]));

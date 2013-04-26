@@ -677,7 +677,7 @@ class Session {
       global $CFG_GLPI;
 
       if (($CFG_GLPI["use_public_faq"] == 0)
-          && !self::haveRight("faq", "r")) {
+          && !self::haveRight("faq", ProfileRight::READ)) {
          Html::displayRightError();
       }
    }

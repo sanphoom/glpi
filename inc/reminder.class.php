@@ -50,21 +50,23 @@ class Reminder extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      if (Session::haveRight('reminder_public', 'r')) {
+
+      if (Session::haveRight('reminder_public', ProfileRight::READ)) {
          return _n('Reminder', 'Reminders', $nb);
-      } else {
-         return _n('Personal reminder', 'Personal reminders', $nb);
       }
+      return _n('Personal reminder', 'Personal reminders', $nb);
    }
 
 
    static function canCreate() {
+
       return (Session::haveRight('reminder_public', ProfileRight::CREATE)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
 
    static function canView() {
+
       return (Session::haveRight('reminder_public', ProfileRight::READ)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
@@ -205,7 +207,7 @@ class Reminder extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public reminder right : no visibility check
-      if (!Session::haveRight('reminder_public', 'r')) {
+      if (!Session::haveRight('reminder_public', ProfileRight::READ)) {
          return false;
       }
 
@@ -293,7 +295,7 @@ class Reminder extends CommonDBTM {
    **/
    static function addVisibilityJoins($forceall=false) {
 
-      if (!Session::haveRight('reminder_public', 'r')) {
+      if (!Session::haveRight('reminder_public', ProfileRight::READ)) {
          return '';
       }
 
@@ -337,7 +339,7 @@ class Reminder extends CommonDBTM {
 
       $restrict = "`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."' ";
 
-      if (!Session::haveRight('reminder_public', 'r')) {
+      if (!Session::haveRight('reminder_public', ProfileRight::READ)) {
          return $restrict;
       }
 
@@ -522,7 +524,7 @@ class Reminder extends CommonDBTM {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("reminder_public","r")) {
+      if (Session::haveRight("reminder_public", ProfileRight::READ)) {
          switch ($item->getType()) {
             case 'Reminder' :
                if ($item->canUpdate()) {
@@ -863,7 +865,7 @@ class Reminder extends CommonDBTM {
 
       // See public reminder ?
       if (($who === Session::getLoginUserID())
-          && Session::haveRight("reminder_public","r")) {
+          && Session::haveRight("reminder_public", ProfileRight::READ)) {
          $readpub    = self::addVisibilityRestrict();
       }
 
@@ -1075,7 +1077,7 @@ class Reminder extends CommonDBTM {
 
       } else {
          // Show public reminders / not mines : need to have access to public reminders
-         if (!Session::haveRight('reminder_public', 'r')) {
+         if (!Session::haveRight('reminder_public', ProfileRight::READ)) {
             return false;
          }
 

@@ -43,6 +43,8 @@ if (!defined('GLPI_ROOT')) {
 class Report extends CommonGLPI{
 
    static protected $notable = false;
+   static $rightname         = 'reports';
+
 
 
    static function getTypeName($nb=0) {
@@ -57,14 +59,6 @@ class Report extends CommonGLPI{
    **/
    static function getMenuShorcut() {
       return 'e';
-   }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canView() {
-      return Session::haveRight("reports","r");
    }
 
 

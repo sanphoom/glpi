@@ -215,7 +215,7 @@ class RSSFeed extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public rssfeed right : no visibility check
-      if (!Session::haveRight('rssfeed_public', 'r')) {
+      if (!Session::haveRight('rssfeed_public', ProfileRight::READ)) {
          return false;
       }
 
@@ -303,7 +303,7 @@ class RSSFeed extends CommonDBTM {
    **/
    static function addVisibilityJoins($forceall=false) {
 
-      if (!Session::haveRight('rssfeed_public', 'r')) {
+      if (!Session::haveRight('rssfeed_public', ProfileRight::READ)) {
          return '';
       }
 
@@ -347,7 +347,7 @@ class RSSFeed extends CommonDBTM {
 
       $restrict = "`glpi_rssfeeds`.`users_id` = '".Session::getLoginUserID()."' ";
 
-      if (!Session::haveRight('rssfeed_public', 'r')) {
+      if (!Session::haveRight('rssfeed_public', ProfileRight::READ)) {
          return $restrict;
       }
 
@@ -499,7 +499,7 @@ class RSSFeed extends CommonDBTM {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("rssfeed_public","r")) {
+      if (Session::haveRight("rssfeed_public", ProfileRight::READ)) {
          switch ($item->getType()) {
             case 'RSSFeed' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -891,7 +891,7 @@ class RSSFeed extends CommonDBTM {
 
       } else {
          // Show public rssfeeds / not mines : need to have access to public rssfeeds
-         if (!Session::haveRight('rssfeed_public', 'r')) {
+         if (!Session::haveRight('rssfeed_public', ProfileRight::READ)) {
             return false;
          }
 

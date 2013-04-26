@@ -35,7 +35,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reports", "r");
+Session::checkRight("reports", ProfileRight::READ);
 
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {

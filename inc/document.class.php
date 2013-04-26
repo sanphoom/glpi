@@ -502,7 +502,7 @@ class Document extends CommonDBTM {
          }
 
          // Knowbase Case
-         if (Session::haveRight("knowbase","r")) {
+         if (Session::haveRight("knowbase", ProfileRight::READ)) {
             $query = "SELECT *
                       FROM `glpi_documents_items`
                       LEFT JOIN `glpi_knowbaseitems`
@@ -517,7 +517,7 @@ class Document extends CommonDBTM {
             }
          }
 
-         if (Session::haveRight("faq","r")) {
+         if (Session::haveRight("faq", ProfileRight::READ)) {
             $query = "SELECT *
                       FROM `glpi_documents_items`
                       LEFT JOIN `glpi_knowbaseitems`
@@ -572,7 +572,7 @@ class Document extends CommonDBTM {
             return true;
          }
 
-         if (Session::haveRight("faq","r")) {
+         if (Session::haveRight("faq", ProfileRight::READ)) {
             // Check if it is a FAQ document
             $query = "SELECT *
                       FROM `glpi_documents_items`

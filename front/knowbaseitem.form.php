@@ -50,7 +50,7 @@ $kb = new KnowbaseItem();
 
 if (isset($_POST["add"])) {
    // ajoute un item dans la base de connaisssances
-   $kb->check(-1,'w',$_POST);
+   $kb->check(-1, ProfileRight::CREATE,$_POST);
 
    $newID = $kb->add($_POST);
    Event::log($newID, "knowbaseitem", 5, "tools",
@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update"])) {
    // actualiser  un item dans la base de connaissances
-   $kb->check($_POST["id"],'w');
+   $kb->check($_POST["id"], ProfileRight::UPDATE);
 
    $kb->update($_POST);
    Event::log($_POST["id"], "knowbaseitem", 5, "tools",
@@ -69,8 +69,8 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["delete"])) {
    // effacer un item dans la base de connaissances
-   $kb->check($_POST["id"],'d');
-
+   $kb->check($_POST["id"], ProfileRight::PURGE);
+   //TODO no dustbin => purge
    $kb->delete($_POST);
    Event::log($_POST["id"], "knowbaseitem", 5, "tools",
               //TRANS: %s is the user login
@@ -114,7 +114,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_GET["id"])) {
    // modifier un item dans la base de connaissance
-   $kb->check($_GET["id"],'r');
+   $kb->check($_GET["id"], ProfileRight::READ);
 
    Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
    $available_options = array('item_itemtype', 'item_items_id', 'id');

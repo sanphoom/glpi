@@ -61,6 +61,10 @@ class ProfileRight extends CommonDBChild {
    // rights for rule
    const RULETICKET           = 1024;
 
+   // rights for knowbase
+   const KNOWBASEADMIN        = 1024;
+
+
 
    static function getAllPossibleRights() {
       global $DB;

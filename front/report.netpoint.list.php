@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reports", "r");
+Session::checkRight("reports", ProfileRight::READ);
 
 if (isset($_POST["prise"]) && $_POST["prise"]) {
    Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");

@@ -117,7 +117,7 @@ class Bookmark extends CommonDBTM {
          case __CLASS__:
             $ong     = array();
             $ong[1]  = __('Personal');
-            if (Session::haveRight('bookmark_public','r')) {
+            if (Session::haveRight('bookmark_public', ProfileRight::READ)) {
                $ong[2] = __('Public');
             }
             return $ong;
