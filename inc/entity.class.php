@@ -279,7 +279,8 @@ class Entity extends CommonTreeDropdown {
                if (Session::haveRight('notification', ProfileRight::READ)) {
                   $ong[4] = _n('Notification', 'Notifications',2);
                }
-               if (Session::haveRight('entity_helpdesk', ProfileRight::READ)) {
+               if (Session::haveRight('entity_helpdesk', ProfileRight::READ)
+                   || Session::haveRight('entity_helpdesk', ProfileRight::UPDATE)) {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
@@ -1643,7 +1644,8 @@ class Entity extends CommonTreeDropdown {
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, ProfileRight::READ)
-          || !Session::haveRight('entity_helpdesk', ProfileRight::READ)) {
+          || (!Session::haveRight('entity_helpdesk', ProfileRight::READ)
+             && !Session::haveRight('entity_helpdesk', ProfileRight::UPDATE))) {
          return false;
       }
       $canedit = Session::haveRight('entity_helpdesk', ProfileRight::UPDATE)
