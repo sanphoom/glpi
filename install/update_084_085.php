@@ -198,6 +198,10 @@ function update084to085() {
                        AND `name` = 'User'";
       $DB->queryOrDie($query, "0.85 update user with import_externalauth_users right");
    }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'import_externalauth_users'";
+   $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
 
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'rule_ticket' AND `right` = 'r'") as $profrights) {
@@ -208,11 +212,10 @@ function update084to085() {
                        AND `name` = 'entity_rule_ticket'";
          $DB->queryOrDie($query, "0.85 update entity_rule_ticket with rule_ticket right");
    }
-
    $query = "DELETE
              FROM `glpi_profilerights`
-             WHERE `name` = 'import_externalauth_users right'";
-   $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
+             WHERE `name` = 'rule_ticket'";
+   $DB->queryOrDie($query, "0.85 delete rule_ticket right");
 
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'knowbase_admin' AND `right` = '1'") as $profrights) {
@@ -223,11 +226,11 @@ function update084to085() {
                          AND `name` = 'knowbase'";
          $DB->queryOrDie($query, "0.85 update knowbase with knowbase_admin right");
    }
-
    $query = "DELETE
              FROM `glpi_profilerights`
-             WHERE `name` = 'import_externalauth_users right'";
-   $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
+             WHERE `name` = 'knowbase_admin'";
+   $DB->queryOrDie($query, "0.85 delete knowbase_admin right");
+
 
    // don't drop column right  - be done later
 
