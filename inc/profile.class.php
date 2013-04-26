@@ -833,13 +833,16 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
-      self::dropdownRight("reminder_public", array('value' => $this->fields["reminder_public"]));
+      self::dropdownRights(Reminder::getRights(), "_reminder_public",
+                           $this->fields["reminder_public"]);
       echo "</td>";
       echo "<td>"._n('Public RSS feed', 'Public RSS feeds', 2)."</td><td>";
-      self::dropdownRight("rssfeed_public", array('value' => $this->fields["rssfeed_public"]));
+      self::dropdownRights(RSSFeed::getRights(), "_rssfeed_public",
+                           $this->fields["rssfeed_public"]);
       echo "</td>";
       echo "<td>"._n('Public bookmark', 'Public bookmarks', 2)."</td><td>";
-      self::dropdownRight("bookmark_public", array('value' => $this->fields["bookmark_public"]));
+      self::dropdownRights(Bookmark::getRights(), "_bookmark_public",
+                           $this->fields["bookmark_public"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";

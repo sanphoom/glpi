@@ -45,6 +45,9 @@ class Reminder extends CommonDBTM {
    protected $profiles  = array();
    protected $entities  = array();
 
+   static $rightname    = 'reminder_public';
+
+
 
    static function getTypeName($nb=0) {
       if (Session::haveRight('reminder_public', 'r')) {
@@ -56,13 +59,13 @@ class Reminder extends CommonDBTM {
 
 
    static function canCreate() {
-      return (Session::haveRight('reminder_public', 'w')
+      return (Session::haveRight('reminder_public', ProfileRight::CREATE)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
 
    static function canView() {
-      return (Session::haveRight('reminder_public', 'r')
+      return (Session::haveRight('reminder_public', ProfileRight::READ)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
@@ -71,7 +74,7 @@ class Reminder extends CommonDBTM {
 
       // Is my reminder or is in visibility
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight('reminder_public', 'r')
+              || (Session::haveRight('reminder_public', ProfileRight::READ)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -85,7 +88,20 @@ class Reminder extends CommonDBTM {
    function canUpdateItem() {
 
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight('reminder_public', 'w')
+              || (Session::haveRight('reminder_public', ProfileRight::UPDATE)
+                  && $this->haveVisibilityAccess()));
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::canPurgeItem()
+   **/
+   function canPurgeItem() {
+
+      return ($this->fields['users_id'] == Session::getLoginUserID()
+              || (Session::haveRight('reminder_public', ProfileRight::PURGE)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -673,7 +689,7 @@ class Reminder extends CommonDBTM {
          $onfocus="onfocus=\"if (this.value=='".$this->fields['name']."') this.value='';\"";
       }
 
-      $canedit = $this->can($ID,'w');
+      $canedit = $this->can($ID, ProfileRight::UPDATE);
 
       if ($canedit) {
          Html::initEditorSystem('text');
@@ -1318,6 +1334,20 @@ class Reminder extends CommonDBTM {
       // Add items
 
       return true;
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      unset($values[ProfileRight::DELETE]);
+
+      return $values;
    }
 
 }

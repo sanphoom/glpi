@@ -40,7 +40,7 @@ $remind = new Reminder();
 Session::checkLoginUser();
 
 if (isset($_POST["add"])) {
-   $remind->check(-1,'w',$_POST);
+   $remind->check(-1, ProfileRight::CREATE, $_POST);
 
    $newID = $remind->add($_POST);
    Event::log($newID, "reminder", 4, "tools",
@@ -48,8 +48,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $remind->check($_POST["id"],'d');
-
+   $remind->check($_POST["id"], ProfileRight::PURGE);
+   //TODO no dustbin => purge
    $remind->delete($_POST);
    Event::log($_POST["id"], "reminder", 4, "tools",
               //TRANS: %s is the user login
@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
    $remind->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $remind->check($_POST["id"],'w');   // Right to update the reminder
+   $remind->check($_POST["id"], ProfileRight::UPDATE);   // Right to update the reminder
 
    $remind->update($_POST);
    Event::log($_POST["id"], "reminder", 4, "tools",

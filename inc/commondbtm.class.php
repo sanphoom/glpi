@@ -1637,6 +1637,29 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Have I the right to "purge" the Object
+    *
+    * @since version 0.85
+    *
+    * @return booleen
+   **/
+   function canPurgeItem() {
+      global $CFG_GLPI;
+
+      // Can delete an object with Infocom only if can delete Infocom
+      if (in_array($this->getType(), $CFG_GLPI['infocom_types'])) {
+         $infocom = new Infocom();
+
+         if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+            return $infocom->canPurge();
+         }
+      }
+
+      return true;
+   }
+
+
+   /**
     * Have I the global right to "view" the Object
     *
     * Default is true and check entity if the objet is entity assign

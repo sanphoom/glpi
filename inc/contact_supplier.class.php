@@ -352,10 +352,10 @@ class Contact_Supplier extends CommonDBRelation{
       global $DB,$CFG_GLPI;
 
       $instID = $supplier->fields['id'];
-      if (!$supplier->can($instID,'r')) {
+      if (!$supplier->can($instID, ProfileRight::READ)) {
          return false;
       }
-      $canedit = $supplier->can($instID,'w');
+      $canedit = $supplier->can($instID, ProfileRight::UPDATE);
       $rand = mt_rand();
 
       $query = "SELECT `glpi_contacts`.*,

@@ -497,10 +497,10 @@ class Contract_Item extends CommonDBRelation{
 
       $instID = $contract->fields['id'];
 
-      if (!$contract->can($instID,'r')) {
+      if (!$contract->can($instID, ProfileRight::READ)) {
          return false;
       }
-      $canedit = $contract->can($instID,'w');
+      $canedit = $contract->can($instID, ProfileRight::UPDATE);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`

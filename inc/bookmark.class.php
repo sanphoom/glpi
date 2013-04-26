@@ -37,13 +37,13 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Bookmark class
- */
+**/
 class Bookmark extends CommonDBTM {
 
    var       $auto_message_on_action = false;
    protected $displaylist            = false;
 
-   static $rightname = 'bookmark_public';
+   static $rightname                 = 'bookmark_public';
 
    const WIDTH  = 750;
    const SEARCH = 1; //SEARCH SYSTEM bookmark
@@ -217,9 +217,9 @@ class Bookmark extends CommonDBTM {
 
       // Only an edit form : always check w right
       if ($ID > 0) {
-         $this->check($ID,'w');
+         $this->check($ID, ProfileRight::UPDATE);
       } else {
-         $this->check(-1,'w');
+         $this->check(-1, ProfileRight::CREATE);
       }
 
       echo '<br>';
@@ -675,6 +675,20 @@ class Bookmark extends CommonDBTM {
              title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookmark')."\"
              class='calendrier'>";
       echo "</a>";
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      unset($values[ProfileRight::DELETE]);
+
+      return $values;
    }
 
 }

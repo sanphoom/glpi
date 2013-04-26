@@ -194,11 +194,11 @@ class ContractCost extends CommonDBChild {
    function showForm($ID, $options=array()) {
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, ProfileRight::READ);
       } else {
          // Create item
          $options['contracts_id'] = $options['parent']->getField('id');
-         $this->check(-1,'w',$options);
+         $this->check(-1, ProfileRight::CREATE, $options);
          $this->initBasedOnPrevious();
       }
 

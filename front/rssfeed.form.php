@@ -41,7 +41,7 @@ $rssfeed = new RSSFeed();
 Session::checkLoginUser();
 
 if (isset($_POST["add"])) {
-   $rssfeed->check(-1,'w',$_POST);
+   $rssfeed->check(-1, ProfileRight::CREATE,$_POST);
 
    $newID = $rssfeed->add($_POST);
    Event::log($newID, "rssfeed", 4, "tools",
@@ -50,8 +50,8 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/rssfeed.form.php?id=".$newID);
 
 } else if (isset($_POST["delete"])) {
-   $rssfeed->check($_POST["id"],'d');
-
+   $rssfeed->check($_POST["id"], ProfileRight::PURGE);
+   // TODO no dustbin => purge
    $rssfeed->delete($_POST);
    Event::log($_POST["id"], "rssfeed", 4, "tools",
               //TRANS: %s is the user login
@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    $rssfeed->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $rssfeed->check($_POST["id"],'w');   // Right to update the rssfeed
+   $rssfeed->check($_POST["id"], ProfileRight::UPDATE);   // Right to update the rssfeed
 
    $rssfeed->update($_POST);
    Event::log($_POST["id"], "rssfeed", 4, "tools",

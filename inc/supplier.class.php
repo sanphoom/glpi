@@ -387,7 +387,7 @@ class Supplier extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $instID = $this->fields['id'];
-      if (!$this->can($instID,'r')) {
+      if (!$this->can($instID, ProfileRight::READ)) {
          return false;
       }
 

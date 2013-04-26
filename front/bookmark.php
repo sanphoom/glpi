@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!isset($_GET["type"])) {
@@ -46,14 +46,14 @@ if (!isset($_GET["url"])) {
 $bookmark = new Bookmark();
 
 if (isset($_POST["add"])) {
-   $bookmark->check(-1, 'w', $_POST);
+   $bookmark->check(-1, ProfileRight::CREATE, $_POST);
 
    $bookmark->add($_POST);
    $_GET["action"] = "load";
 
 } else if (isset($_POST["update"])) {
-   $bookmark->check($_POST["id"], 'w');   // Right to update the bookmark
-   $bookmark->check(-1, 'w', $_POST);     // Right when entity change
+   $bookmark->check($_POST["id"], ProfileRight::UPDATE);   // Right to update the bookmark
+   $bookmark->check(-1, ProfileRight::CREATE, $_POST);     // Right when entity change
 
    $bookmark->update($_POST);
    $_GET["action"] = "load";
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
 } else if ($_GET["action"] == "edit"
            && isset($_GET['mark_default'])
            && isset($_GET["id"])) {
-   $bookmark->check($_GET["id"], 'w');
+   $bookmark->check($_GET["id"], ProfileRight::UPDATE);
 
    if ($_GET["mark_default"] > 0) {
       $bookmark->mark_default($_GET["id"]);
@@ -72,12 +72,12 @@ if (isset($_POST["add"])) {
 
 } else if (($_GET["action"] == "load")
            && isset($_GET["id"]) && ($_GET["id"] > 0)) {
-   $bookmark->check($_GET["id"], 'r');
+   $bookmark->check($_GET["id"], ProfileRight::READ);
    $bookmark->load($_GET["id"]);
 
 } else if (isset($_POST["delete"])) {
-   $bookmark->check($_POST["id"], 'd');
-
+   $bookmark->check($_POST["id"], ProfileRight::PURGE);
+   //TODO no dustbin => purge
    $bookmark->delete($_POST);
    $_GET["action"] = "load";
 
@@ -87,11 +87,11 @@ if ($_GET["action"] == "edit") {
 
    if (isset($_GET['id']) && ($_GET['id'] > 0)) {
       // Modify
-      $bookmark->check($_GET["id"], 'w');
+      $bookmark->check($_GET["id"], ProfileRight::UPDATE);
       $bookmark->showForm($_GET['id']);
    } else {
       // Create
-      $bookmark->check(-1, 'w');
+      $bookmark->check(-1, ProfileRight::CREATE);
       $bookmark->showForm(0, array('type'     => $_GET["type"],
                                    'url'      => rawurldecode($_GET["url"]),
                                    'itemtype' => $_GET["itemtype"]));

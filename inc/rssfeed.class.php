@@ -55,8 +55,11 @@ if (!defined('GLPI_ROOT')) {
 //    echo $feed->get_link();
 // }
 
-/// RSSFeed class
-/// @since version 0.84
+/**
+ * RSSFeed Class
+ *
+ * @since version 0.84
+**/
 class RSSFeed extends CommonDBTM {
 
    // For visibility checks
@@ -64,6 +67,9 @@ class RSSFeed extends CommonDBTM {
    protected $groups    = array();
    protected $profiles  = array();
    protected $entities  = array();
+
+   static $rightname    = 'rssfeed_public';
+
 
 
    static function getTypeName($nb=0) {
@@ -73,14 +79,14 @@ class RSSFeed extends CommonDBTM {
 
    static function canCreate() {
 
-      return (Session::haveRight('rssfeed_public', 'w')
+      return (Session::haveRight('rssfeed_public', ProfileRight::CREATE)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('rssfeed_public', 'r')
+      return (Session::haveRight('rssfeed_public', ProfileRight::READ)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
@@ -89,7 +95,7 @@ class RSSFeed extends CommonDBTM {
 
       // Is my rssfeed or is in visibility
       return (($this->fields['users_id'] == Session::getLoginUserID())
-              || (Session::haveRight('rssfeed_public', 'r')
+              || (Session::haveRight('rssfeed_public', ProfileRight::READ)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -103,7 +109,20 @@ class RSSFeed extends CommonDBTM {
    function canUpdateItem() {
 
       return (($this->fields['users_id'] == Session::getLoginUserID())
-              || (Session::haveRight('rssfeed_public', 'w')
+              || (Session::haveRight('rssfeed_public', ProfileRight::UPDATE)
+                  && $this->haveVisibilityAccess()));
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::canPurgeItem()
+   **/
+   function canPurgeItem() {
+
+      return (($this->fields['users_id'] == Session::getLoginUserID())
+              || (Session::haveRight('rssfeed_public', ProfileRight::PURGE)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -615,7 +634,7 @@ class RSSFeed extends CommonDBTM {
 
       $this->initForm($ID, $options);
 
-      $canedit = $this->can($ID,'w');
+      $canedit = $this->can($ID, ProfileRight::UPDATE);
 
       $this->showFormHeader($options);
 
@@ -1148,6 +1167,8 @@ class RSSFeed extends CommonDBTM {
 
       return true;
    }
+
+
 
 }
 ?>
