@@ -39,7 +39,7 @@ $item = new CalendarSegment();
 
 if (isset($_POST["add"])) {
 
-   $item->check(-1, 'w', $_POST);
+   $item->check(-1, ProfileRight::CREATE, $_POST);
    if ($item->add($_POST)) {
       Event::log($_POST["calendars_id"], "calendars", 4, "setup",
                  //TRANS: %s is the user login

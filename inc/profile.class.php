@@ -1436,13 +1436,16 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Notification', 'Notifications',2)."</td><td>";
-      self::dropdownRight("notification", array('value' => $this->fields["notification"]));
+      self::dropdownRights(Notification::getRights(), "_notification",
+                           $this->fields["notification"]);
       echo "</td>";
       echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td>";
-      self::dropdownRight("calendar", array('value' => $this->fields["calendar"]));
+      self::dropdownRights(CommonDropdown::getRights(), "_calendar", $this->fields["calendar"]);
       echo "</td>\n";
       echo "<td>".__('Assistance')."</td><td>";
-      self::dropdownRight("entity_helpdesk", array('value' => $this->fields["entity_helpdesk"]));
+      $tab = CommonDBTM::getRights();
+      unset($tab[ProfileRight::CREATE], $tab[ProfileRight::DELETE], $tab[ProfileRight::PURGE]);
+      self::dropdownRights($tab, "_entity_helpdesk", $this->fields["entity_helpdesk"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";

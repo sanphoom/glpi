@@ -41,7 +41,7 @@ if (!isset($_GET["id"])) {
 
 $notificationtemplate = new NotificationTemplate();
 if (isset($_POST["add"])) {
-   $notificationtemplate->check(-1,'w',$_POST);
+   $notificationtemplate->check(-1, ProfileRight::CREATE,$_POST);
 
    $newID = $notificationtemplate->add($_POST);
    Event::log($newID, "notificationtemplates", 4, "notification",
@@ -53,7 +53,8 @@ if (isset($_POST["add"])) {
    Html::redirect($url);
 
 } else if (isset($_POST["delete"])) {
-   $notificationtemplate->check($_POST["id"],'d');
+   $notificationtemplate->check($_POST["id"], ProfileRight::PURGE);
+   // TODO no dustbin => purge
    $notificationtemplate->delete($_POST);
 
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
@@ -62,7 +63,7 @@ if (isset($_POST["add"])) {
    $notificationtemplate->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $notificationtemplate->check($_POST["id"],'w');
+   $notificationtemplate->check($_POST["id"], ProfileRight::UPDATE);
 
    $notificationtemplate->update($_POST);
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",

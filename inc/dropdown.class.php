@@ -1464,7 +1464,6 @@ class Dropdown {
       $param['other']           = false;
       $param['rand']            = mt_rand();
 
-
       if (is_array($options) && count($options)) {
          if (isset($options['value']) && strlen($options['value'])) {
             $options['values'] = array($options['value']);

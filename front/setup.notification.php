@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array('notification' => 'r',
+Session::checkSeveralRightsOr(array('notification' => ProfileRight::READ,
                                     'config'       => ProfileRight::UPDATE));
 
 Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'], "config", "notification");
@@ -54,7 +54,7 @@ if (!$CFG_GLPI['use_mailing']) {
    }
 } else {
    if (!Session::haveRight("config", ProfileRight::READ)
-       && Session::haveRight("notification","r")
+       && Session::haveRight("notification", ProfileRight::READ)
        && $CFG_GLPI['use_mailing']) {
       Html::redirect($CFG_GLPI["root_doc"].'/front/notification.php');
 
@@ -69,7 +69,7 @@ if (!$CFG_GLPI['use_mailing']) {
                   _n('Notification template', 'Notification templates', 2) ."</a></td> </tr>";
       }
 
-      if (Session::haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
+      if (Session::haveRight("notification", ProfileRight::READ) && $CFG_GLPI['use_mailing']) {
          echo "<tr class='tab_bg_1'><td class='center'>".
               "<a href='notification.php'>". _n('Notification', 'Notifications',2)."</a></td></tr>";
       } else {

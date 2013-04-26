@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("notification", 'r');
+Session::checkRight("notification", ProfileRight::READ);
 
 Html::header(Notification::getTypeName(2), $_SERVER['PHP_SELF'], "config", "notification",
              "notification");

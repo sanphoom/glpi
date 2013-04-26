@@ -292,12 +292,12 @@ class NotificationTarget extends CommonDBChild {
    function showForNotification(Notification $notification) {
       global $DB;
 
-      if (!Session::haveRight("notification", "r")) {
+      if (!Session::haveRight("notification", ProfileRight::READ)) {
          return false;
       }
       if ($notification->getField('itemtype') != '') {
          $notifications_id = $notification->fields['id'];
-         $canedit = $notification->can($notifications_id,'w');
+         $canedit = $notification->can($notifications_id, ProfileRight::UPDATE);
 
          if ($canedit) {
             echo "<form name='notificationtargets_form' id='notificationtargets_form'
@@ -1058,7 +1058,7 @@ class NotificationTarget extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && Session::haveRight('notification', 'r')) {
+          && Session::haveRight('notification', ProfileRight::READ)) {
          switch ($item->getType()) {
             case 'Group' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -1118,7 +1118,7 @@ class NotificationTarget extends CommonDBChild {
    static function showForGroup(Group $group) {
       global $DB;
 
-      if (!Session::haveRight("notification", "r")) {
+      if (!Session::haveRight("notification", ProfileRight::READ)) {
          return false;
       }
 

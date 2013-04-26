@@ -42,14 +42,15 @@ if (!isset($_GET["id"])) {
 $language = new NotificationTemplateTranslation();
 
 if (isset($_POST["add"])) {
-   $language->check(-1,'w',$_POST);
+   $language->check(-1, ProfileRight::CREATE, $_POST);
    $newID = $language->add($_POST);
    Event::log($newID, "notificationtemplatetranslations", 4, "notification",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["language"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $language->check($_POST["id"],'d');
+   $language->check($_POST["id"], ProfileRight::PURGE);
+   //TODO no dustbin => purge
    $language->delete($_POST);
 
    Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",
@@ -58,7 +59,7 @@ if (isset($_POST["add"])) {
    $language->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $language->check($_POST["id"],'w');
+   $language->check($_POST["id"], ProfileRight::UPDATE);
    $language->update($_POST);
 
    Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",

@@ -120,7 +120,7 @@ class Notification extends CommonDBTM {
 
       $menu = array();
 
-      if (Session::haveRight("notification","r")
+      if (Session::haveRight("notification", ProfileRight::READ)
           || Session::haveRight("config", ProfileRight::READ)) {
          $menu['title']                                      = _n('Notification', 'Notifications', 2);
          $menu['page']                                       = '/front/setup.notification.php';
@@ -343,16 +343,6 @@ class Notification extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('notification', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('notification', 'r');
-   }
-
-
    function canViewItem() {
 
       if ((($this->fields['itemtype'] == 'Crontask')
@@ -489,5 +479,18 @@ class Notification extends CommonDBTM {
       return $DB->request($query);
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      unset($values[ProfileRight::DELETE]);
+
+      return $values;
+   }
 }
 ?>

@@ -276,10 +276,10 @@ class Entity extends CommonTreeDropdown {
                $ong[1] = $this->getTypeName(2);
                $ong[2] = __('Address');
                $ong[3] = __('Advanced information');
-               if (Session::haveRight('notification','r')) {
+               if (Session::haveRight('notification', ProfileRight::READ)) {
                   $ong[4] = _n('Notification', 'Notifications',2);
                }
-               if (Session::haveRight('entity_helpdesk','r')) {
+               if (Session::haveRight('entity_helpdesk', ProfileRight::READ)) {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
@@ -1244,12 +1244,13 @@ class Entity extends CommonTreeDropdown {
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r')
-          || !Session::haveRight('notification','r')) {
+          || !Session::haveRight('notification', ProfileRight::READ)) {
          return false;
       }
 
       // Notification right applied
-      $canedit = Session::haveRight('notification','w') && Session::haveAccessToEntity($ID);
+      $canedit = (Session::haveRight('notification', ProfileRight::UPDATE)
+                  && Session::haveAccessToEntity($ID));
 
       echo "<div class='spaced'>";
       if ($canedit) {
@@ -1641,8 +1642,8 @@ class Entity extends CommonTreeDropdown {
       global $CFG_GLPI;
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,'r')
-          || !Session::haveRight('entity_helpdesk','r')) {
+      if (!$entity->can($ID, ProfileRight::READ)
+          || !Session::haveRight('entity_helpdesk', ProfileRight::READ)) {
          return false;
       }
       $canedit = Session::haveRight('entity_helpdesk', ProfileRight::UPDATE)
