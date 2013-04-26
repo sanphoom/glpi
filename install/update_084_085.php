@@ -189,6 +189,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 right in profile $old to $new");
    }
 
+
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'import_externalauth_users' AND `right` = 'w'") as $profrights) {
 
@@ -230,6 +231,20 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'knowbase_admin'";
    $DB->queryOrDie($query, "0.85 delete knowbase_admin right");
+
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'reservation_helpdesk' AND `right` = '1'") as $profrights) {
+
+         $query  = "UPDATE `glpi_profilerights`
+                    SET `rights` = `rights` | " . ProfileRight::KNOWBASEADMIN ."
+                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                         AND `name` = 'reservation_central'";
+         $DB->queryOrDie($query, "0.85 update reservation_central with reservation_helpdesk right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'reservation_helpdesk'";
+   $DB->queryOrDie($query, "0.85 delete reservation_helpdesk right");
 
 
    // don't drop column right  - be done later
