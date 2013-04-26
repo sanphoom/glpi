@@ -64,6 +64,8 @@ class ProfileRight extends CommonDBChild {
    // rights for knowbase
    const KNOWBASEADMIN        = 1024;
 
+   // rights for reservation
+   const RESERVEITEM      = 1024;
 
 
    static function getAllPossibleRights() {

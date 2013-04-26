@@ -44,6 +44,9 @@ class ReservationItem extends CommonDBChild {
 
    static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
+   static $rightname                = 'reservation_central';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Reservable item', 'Reservable items',$nb);
@@ -87,32 +90,8 @@ class ReservationItem extends CommonDBChild {
    /**
     * @since 0.84
    **/
-   static function canCreate() {
-      return static::canUpdate();
-   }
-
-
-   /**
-    * @since 0.84
-   **/
    static function canView() {
       return true;
-   }
-
-
-   /**
-    * @since 0.84
-   **/
-   static function canUpdate() {
-      return Session::haveRight("reservation_central", "w");
-   }
-
-
-   /**
-    * @since 0.84
-   **/
-   static function canDelete() {
-      return static::canUpdate();
    }
 
 
@@ -259,7 +238,7 @@ class ReservationItem extends CommonDBChild {
    **/
    static function showActivationFormForItem(CommonDBTM $item) {
 
-      if (!Session::haveRight("reservation_central","w")) {
+      if (!Session::haveRight("reservation_central", ProfileRight::UPDATE)) {
          return false;
       }
       if ($item->getID()) {
@@ -316,7 +295,7 @@ class ReservationItem extends CommonDBChild {
 
    function showForm($ID, $options=array()) {
 
-      if (!Session::haveRight("reservation_central","w")) {
+      if (!Session::haveRight("reservation_central", ProfileRight::UPDATE)) {
          return false;
       }
 
@@ -362,7 +341,7 @@ class ReservationItem extends CommonDBChild {
    static function showListSimple() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("reservation_helpdesk","1")) {
+      if (!Session::haveRight("reservation_helpdesk", ProfileRight::RESERVEITEM)) {
          return false;
       }
 
@@ -657,5 +636,18 @@ class ReservationItem extends CommonDBChild {
       NotificationEvent::debugEvent($resa);
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   static function getRights() {
+
+      $values = parent::getRights();
+      $values[ProfileRight::RESERVEITEM] = __('Reserve an item');
+
+      return $values;
+   }
 }
 ?>

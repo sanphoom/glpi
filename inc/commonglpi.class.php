@@ -195,7 +195,7 @@ class CommonGLPI {
 
       switch ($itemtype) {
          case 'Note' :
-            if (Session::haveRight("notes","r")) {
+            if (Session::haveRight("notes", ProfileRight::READ)) {
                $ong['Note'] = __('Notes');
             }
             break;

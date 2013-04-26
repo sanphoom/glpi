@@ -48,7 +48,7 @@ class Profile extends CommonDBTM {
                                           'create_incident_validation',
                                           'faq', 'helpdesk_hardware', 'helpdesk_item_type',
                                           'observe_ticket', 'password_update', 'reminder_public',
-                                          'reservation_helpdesk', 'rssfeed_public',
+                                          ProfileRight::RESERVEITEM, 'rssfeed_public',
                                           'show_group_hardware', 'show_group_ticket',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
                                           'update_own_followups', 'validate_incident', 'validate_request');
@@ -854,9 +854,6 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
       self::dropdownRight("reports", array('value'   => $this->fields["reports"],
                                            'nowrite' => true));
-      echo "</td>";
-      echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
-      Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -866,16 +863,15 @@ class Profile extends CommonDBTM {
       $tab[ProfileRight::KNOWBASEADMIN] = __('Knowledge base administration');
       self::dropdownRights($tab, "_knowbase", $this->fields["knowbase"]);
       echo "</td>";
-//      echo "<td>".__('Knowledge base administration')."</td><td>";
-//      Dropdown::showYesNo("knowbase_admin", $this->fields["knowbase_admin"]);
-//      echo "</td>";
       echo "<td>".__('Administration of reservations')."</td><td colspan='3'>";
-      self::dropdownRight("reservation_central",
-                          array('value' => $this->fields["reservation_central"]));
+      self::dropdownRights(ReservationItem::getRights(), "_reservation_central",
+                           $this->fields["reservation_central"]);
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Item notes')."</td><td>";
-      self::dropdownRight("notes", array('value' => $this->fields["notes"]));
+      $tab = CommonDBTM::getRights();
+      unset($tab[ProfileRight::CREATE], $tab[ProfileRight::DELETE], $tab[ProfileRight::PURGE]);
+      self::dropdownRights($tab, "_notes", $this->fields["notes"]);
       echo "</td>";
       echo "<td colspan='4'>";
       echo "</td></tr>";

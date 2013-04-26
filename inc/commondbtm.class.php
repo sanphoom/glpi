@@ -3979,7 +3979,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function showNotesForm() {
 
-      if (!Session::haveRight("notes","r")) {
+      if (!Session::haveRight("notes", ProfileRight::READ)) {
          return false;
       }
 
@@ -3989,7 +3989,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       //getFromDB
-      $canedit = (Session::haveRight("notes", "w")
+      $canedit = (Session::haveRight("notes", ProfileRight::UPDATE)
                   && (!$this->isEntityAssign()
                       || Session::haveAccessToEntity($this->getEntityID())));
       $target = $this->getFormURL();

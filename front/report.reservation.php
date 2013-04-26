@@ -48,7 +48,7 @@ echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td rowspan='2' class='center'>";
 User::dropdown(array('name'   => 'id',
                      'value'  => $_GET["id"],
-                     'right'  => 'reservation_helpdesk'));
+                     'right'  => ProfileRight::RESERVEITEM));
 
 echo "</td>";
 echo "<td rowspan='2' class='center'><input type='submit' class='submit' name='submit' value='".

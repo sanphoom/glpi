@@ -90,7 +90,7 @@ class Report extends CommonGLPI{
          $report_list["Rapport prises reseau"]["name"] = __('Network report');
          $report_list["Rapport prises reseau"]["file"] = "report.networking.php";
       }
-      if (Session::haveRight("reservation_central","r")) {
+      if (Session::haveRight("reservation_central", ProfileRight::READ)) {
          $report_list["reservation"]["name"] = __('Loan');
          $report_list["reservation"]["file"] = "report.reservation.php";
       }
