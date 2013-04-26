@@ -879,7 +879,7 @@ class NetworkName extends FQDNLabel {
                             AND `glpi_networkports`.`is_deleted` ='0'
                             AND `glpi_networknames`.`itemtype` = 'NetworkPort'
                             AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
-                            AND `glpi_networkports`.`is_deleted` = '0'";
+                            AND `glpi_networknames`.`is_deleted` = '0'";
             $result = $DB->query($query);
             $ligne  = $DB->fetch_assoc($result);
             return $ligne['cpt'];
