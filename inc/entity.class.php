@@ -252,9 +252,9 @@ class Entity extends CommonTreeDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab($this->getType(), $ong, $options);
-      $this->addStandardTab('Profile_User',$ong, $options);
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Profile_User',$ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
       $this->addStandardTab('Document_Item',$ong, $options);
       $this->addStandardTab('Note',$ong, $options);
