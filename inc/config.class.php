@@ -222,11 +222,14 @@ class Config extends CommonDBTM {
    function showFormDisplay() {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::READ)) {
+      if (!Session::haveRight("config", ProfileRight::READ)
+          && !Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
-
-      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+      if ($canedit) {
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      }
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -339,10 +342,12 @@ class Config extends CommonDBTM {
                               array('value' => $CFG_GLPI['allow_search_all']));
       echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
-      echo "</td></tr>";
+      if ($canedit) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='4' class='center'>";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
+         echo "</td></tr>";
+      }
 
       echo "</table></div>";
       Html::closeForm();
@@ -357,11 +362,15 @@ class Config extends CommonDBTM {
    function showFormInventory() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Session::haveRight("config", ProfileRight::READ)
+          && !Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
 
-      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+      if ($canedit) {
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      }
       echo "<div class='center' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -467,10 +476,12 @@ class Config extends CommonDBTM {
                                $CFG_GLPI["state_autoclean_mode"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='6' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
-      echo "</td></tr>";
+      if ($canedit) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' class='center'>";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "</td></tr>";
+      }
 
       echo "</table></div>";
       Html::closeForm();
@@ -598,11 +609,15 @@ class Config extends CommonDBTM {
    function showFormHelpdesk() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Session::haveRight("config", ProfileRight::READ)
+          && !Session::haveRight("config", ProfileRight::UPDATE)) {
          return false;
       }
 
-      echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+      if ($canedit) {
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      }
       echo "<div class='center spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -719,11 +734,12 @@ class Config extends CommonDBTM {
          }
          echo "</tr>\n";
       }
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='7' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
-      echo "</td></tr>";
+      if ($canedit) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='7' class='center'>";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
+         echo "</td></tr>";
+      }
 
       echo "</table></div>";
       Html::closeForm();
@@ -753,8 +769,10 @@ class Config extends CommonDBTM {
             $url  = $CFG_GLPI['root_doc']."/front/user.form.php";
          }
       }
-
-      echo "<form name='form' action='$url' method='post'>";
+      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+      if ($canedit) {
+         echo "<form name='form' action='$url' method='post'>";
+      }
       // Only set id for user prefs
       if ($userpref) {
          echo "<input type='hidden' name='id' value='".$data['id']."'>";
@@ -997,10 +1015,12 @@ class Config extends CommonDBTM {
                               array('value' => $data['duedatecritical_unit']));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
-      echo "</td></tr>";
+      if ($canedit) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='4' class='center'>";
+         echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+         echo "</td></tr>";
+      }
 
       echo "</table></div>";
       Html::closeForm();
@@ -1150,9 +1170,12 @@ class Config extends CommonDBTM {
    function showSystemInformations() {
       global $DB, $CFG_GLPI;
 
+      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+         return false;
+      }
+
       echo "<div class='center' id='tabsbody'>";
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
-
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
@@ -1474,9 +1497,12 @@ class Config extends CommonDBTM {
             $tabs[2] = __('Default values');   // Prefs
             $tabs[3] = __('Assets');
             $tabs[4] = __('Assistance');
-            $tabs[5] = __('System');
+            if (Session::haveRight("config", ProfileRight::UPDATE)) {
+               $tabs[5] = __('System');
+            }
 
-            if (DBConnection::isDBSlaveActive()) {
+            if (DBConnection::isDBSlaveActive()
+                && Session::haveRight("config", ProfileRight::UPDATE)) {
                $tabs[6]  = _n('Mysql replica', 'Mysql replicas', 2);  // Slave
             }
             return $tabs;
