@@ -80,7 +80,7 @@ class NetworkName extends FQDNLabel {
 
    static function canUpdate() {
 
-      return (Session::haveRight('internet', ProfileRight::UPDATE())
+      return (Session::haveRight('internet', ProfileRight::UPDATE)
               && parent::canUpdate());
    }
 
