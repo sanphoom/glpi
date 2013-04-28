@@ -277,6 +277,11 @@ class Profile extends CommonDBTM {
          if (isset($input['_'.$right])) {
             $this->profileRight[$right] = array_sum($input['_'.$right]);
             unset($input['_'.$right]);
+            // if right UPDATE, you can read the object
+            if ($this->profileRight[$right] & ProfileRight::UPDATE) {
+               $this->profileRight[$right] |= ProfileRight::READ;
+            }
+
          }
          // TODO For not converted dropdown (still r or w)
          else if (isset($input[$right])) {
