@@ -970,6 +970,8 @@ class Html {
 
       // PLugins jquery
       echo "<script type='text/javascript' src='".
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js'></script>\n";
+      echo "<script type='text/javascript' src='".
              $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js'></script>\n";
       echo "<script type='text/javascript' src='".
              $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js'></script>\n";
@@ -1608,6 +1610,20 @@ class Html {
          echo "</div>";
       }
 
+      // Back to top
+      echo "<script type='text/javascript'>
+            $(document).ready(function(){
+               BackToTop({
+               text : '".__s("^Top^")."',
+               autoShow : true,
+               timeEffect : 100,
+               autoShowOffset : '0',
+               appearMethod : '',
+               effectScroll : 'linear' 
+               });
+            });
+         </script>";
+      
       // call static function callcron() every 5min
       CronTask::callCron();
       self::displayMessageAfterRedirect();
