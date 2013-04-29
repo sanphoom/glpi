@@ -105,59 +105,6 @@ define("WEEK_TIMESTAMP",604800);
 define("MONTH_TIMESTAMP",2592000);
 
 
-// ITEMS TYPE
-/// Temporary definition for test
-// TODO clean it.
-if (!strstr($_SERVER['PHP_SELF'], "/install/")
-    && !strstr($_SERVER['PHP_SELF'], 'cliupdate.php')) {
-   define("GENERAL_TYPE",'');
-   define("COMPUTER_TYPE",'Computer');
-   define("NETWORKING_TYPE",'NetworkEquipment');
-   define("PRINTER_TYPE",'Printer');
-   define("MONITOR_TYPE",'Monitor');
-   define("PERIPHERAL_TYPE",'Peripheral');
-   define("SOFTWARE_TYPE",'Software');
-   define("CONTACT_TYPE",'Contact');
-   define("ENTERPRISE_TYPE",'Supplier');
-   define("INFOCOM_TYPE",'Infocom');
-   define("CONTRACT_TYPE",'Contract');
-   define("CARTRIDGEITEM_TYPE",'CartridgeItem');
-   define("TYPEDOC_TYPE",'DocumentType');
-   define("DOCUMENT_TYPE",'Document');
-   define("KNOWBASE_TYPE",'KnowbaseItem');
-   define("USER_TYPE",'User');
-   define("TRACKING_TYPE",'Ticket');
-   define("CONSUMABLEITEM_TYPE",'ConsumableItem');
-   define("CONSUMABLE_TYPE",'Consumable');
-   define("CARTRIDGE_TYPE",'Cartridge');
-   define("SOFTWARELICENSE_TYPE",'SoftwareLicense');
-   define("LINK_TYPE",'Link');
-   define("STATE_TYPE",'State');
-   define("PHONE_TYPE",'Phone');
-   define("DEVICE_TYPE",'Device');
-   define("REMINDER_TYPE",'Reminder');
-   define("STAT_TYPE",'Stat');
-   define("GROUP_TYPE",'Group');
-   define("ENTITY_TYPE",'Entity');
-   define("RESERVATION_TYPE",'ReservationItem');
-   define("AUTHMAIL_TYPE",'AuthMail');
-   define("AUTHLDAP_TYPE",'AuthLDAP');
-   define("OCSNG_TYPE",'OcsServer');
-   define("REGISTRY_TYPE",'RegistryKey');
-   define("PROFILE_TYPE",'Profile');
-   define("MAILGATE_TYPE",'MailCollector');
-   define("RULE_TYPE",'Rule');
-   define("TRANSFER_TYPE",'Transfer');
-   define("BOOKMARK_TYPE",'Bookmark');
-   define("SOFTWAREVERSION_TYPE",'SoftwareVersion');
-   define("PLUGIN_TYPE",'Plugin');
-   define("COMPUTERDISK_TYPE",'ComputerDisk');
-   define("NETWORKING_PORT_TYPE",'NetworkPort');
-   define("FOLLOWUP_TYPE",'TicketFollowup');
-   define("BUDGET_TYPE",'Budget');
-}
-
-
 //Management modes
 define("MANAGEMENT_UNITARY",0);
 define("MANAGEMENT_GLOBAL",1);
