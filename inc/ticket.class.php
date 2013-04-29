@@ -3906,7 +3906,7 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize4%' class='nopadding'>";
       if ($ID) {
          if ($this->fields["slas_id"] > 0) {
-            echo "<table width='100%'><tr><td class='nopadding'>";
+            echo "<table width='100%' ><tr><td class='nopadding'>";
             echo Html::convDateTime($this->fields["due_date"]);
             echo "</td><td class='b'>".__('SLA')."</td>";
             echo "<td class='nopadding'>";
@@ -3923,7 +3923,7 @@ class Ticket extends CommonITILObject {
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
                $commentsla .= '<span class="b spaced">'.
                                 sprintf(__('Next escalation: %s'),
-                                        Html::convDateTime($nextaction->fields['date'])).'</span>';
+                                        Html::convDateTime($nextaction->fields['date'])).'</span><br>';
                if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
                   $commentsla .= '<span class="b spaced">'.
                                    sprintf(__('%1$s: %2$s'), __('Escalation level'),
@@ -3944,7 +3944,7 @@ class Ticket extends CommonITILObject {
             echo "</tr></table>";
 
          } else {
-            echo "<table><tr><td class='nopadding'>";
+            echo "<table width='100%'><tr><td class='nopadding'>";
             echo $tt->getBeginHiddenFieldValue('due_date');
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true, $canupdate);
             echo $tt->getEndHiddenFieldValue('due_date',$this);
@@ -3971,7 +3971,7 @@ class Ticket extends CommonITILObject {
          }
 
       } else { // New Ticket
-         echo "<table><tr><td class='nopadding'>";
+         echo "<table width='100%'><tr><td width='40%' class='nopadding'>";
          if ($this->fields["due_date"] == 'NULL') {
             $this->fields["due_date"]='';
          }
