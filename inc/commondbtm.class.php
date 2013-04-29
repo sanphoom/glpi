@@ -4632,11 +4632,11 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function getRights() {
 
-      $values = array(ProfileRight::READ    => __('Read'),
+      $values = array(ProfileRight::CREATE  => __('Create'),
+                      ProfileRight::READ    => __('Read'),
                       ProfileRight::UPDATE  => __('Update'),
-                      ProfileRight::CREATE  => __('Create'),
-                      ProfileRight::DELETE  => __('Delete'),
-                      ProfileRight::PURGE   => __('Delete permanently'));
+                      ProfileRight::DELETE  => _x('button', 'Put in dustbin'),
+                      ProfileRight::PURGE   => _x('button', 'Delete permanently'));
 
       return $values;
    }
