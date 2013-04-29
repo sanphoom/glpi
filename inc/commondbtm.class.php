@@ -4446,10 +4446,8 @@ class CommonDBTM extends CommonGLPI {
                if (!isset($options['entity'])) {
                   $options['entity'] = $_SESSION['glpiactiveentities'];
                }
-               if ($searchoptions['table'] == 'glpi_users') {
-                  return User::dropdown($options);
-               }
-               return Dropdown::show(getItemTypeForTable($searchoptions["table"]), $options);
+               $itemtype = getItemTypeForTable($searchoptions['table']);
+               return $itemtype::dropdown($options);
 
             case "right" :
                $copytooption     = array('nonone', 'noread', 'nowrite');

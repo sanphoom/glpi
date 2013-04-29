@@ -1132,6 +1132,20 @@ abstract class CommonITILObject extends CommonDBTM {
       // Add document if needed, without notification
       $this->addFiles($this->fields['id'], 0);
 
+      // Add default document if set in template
+      if (isset($this->input['_documents_id'])
+            && is_array($this->input['_documents_id'])
+            && count($this->input['_documents_id'])) {
+         $docitem = new Document_Item();
+         foreach ($this->input['_documents_id'] as $docID) {   
+            if ($docitem->add(array('documents_id' => $docID,
+                                    '_do_notif'    => false,
+                                    'itemtype'     => $this->getType(),
+                                    'items_id'     => $this->fields['id']))) {
+            }
+         }
+      }
+      
       $useractors = NULL;
       // Add user groups linked to ITIL objects
       if (!empty($this->userlinkclass)) {

@@ -213,6 +213,11 @@ class TicketTemplate extends CommonDropdown {
          }
          // Add validation request
          $allowed_fields[$withtypeandcategory][$with_items_id][-2] = '_add_validation';
+         
+         // Add document
+         $allowed_fields[$withtypeandcategory][$with_items_id]
+               [$ticket->getSearchOptionIDByField('field', 'name',
+                                                  'glpi_documents')] = '_documents_id';
       }
 
       return $allowed_fields[$withtypeandcategory][$with_items_id];
@@ -259,7 +264,8 @@ class TicketTemplate extends CommonDropdown {
                       $ticket->getSearchOptionIDByField('field', 'completename',
                                                         'glpi_itilcategories'),
                       $ticket->getSearchOptionIDByField('field', 'type', 'glpi_tickets'),
-                      $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_tickets'));
+                      $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_tickets'),
+                      $ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'));
 
       return $fields;
    }

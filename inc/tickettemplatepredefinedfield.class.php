@@ -165,15 +165,25 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
       $fields         = array();
-
+      $multiple = self::getMultiplePredefinedValues();
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
-            $fields[$allowed_fields[$rule['num']]] = $rule['value'];
+            if (in_array($rule['num'], $multiple)) {
+               $fields[$allowed_fields[$rule['num']]][] = $rule['value'];
+            } else {
+               $fields[$allowed_fields[$rule['num']]] = $rule['value'];
+            }
          }
       }
       return $fields;
    }
 
+   static function getMultiplePredefinedValues() {
+      $ticket = new Ticket();
+      $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'));
+
+      return $fields;   
+   }
 
    /**
     * Print the predefined fields
@@ -242,6 +252,14 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
             // Force validation request as used
             $used[-2] = -2;
+            // Unset multiple items
+            $multiple = self::getMultiplePredefinedValues();
+            foreach ($multiple as $val) {
+               if (isset($used[$val])) {
+                  unset($used[$val]);
+               }
+            }
+            
             $rand_dp  = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
                                                                               'toadd'));
             echo "</td><td class='top'>";

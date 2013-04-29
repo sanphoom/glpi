@@ -1098,7 +1098,6 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
       // save value before clean;
       $title = ltrim($input['name']);
-
       // Standard clean datas
       $input =  parent::prepareInputForAdd($input);
 
@@ -2084,6 +2083,19 @@ class Ticket extends CommonITILObject {
       $tab[64]['datatype']          = 'dropdown';
       $tab[64]['right']             = 'all';
 
+      // For ticket template
+      $tab[142]['table']         = 'glpi_documents';
+      $tab[142]['field']         = 'name';
+      $tab[142]['name']          = _n('Document', 'Documents', 2);
+      $tab[142]['forcegroupby']  = true;
+      $tab[142]['usehaving']     = true;
+      $tab[142]['nosearch']      = true;
+      $tab[142]['datatype']      = 'dropdown';
+      $tab[142]['massiveaction'] = false;
+      $tab[142]['joinparams']    = array('jointype' => 'items_id',
+                                         'beforejoin' => array('table' => 'glpi_documents_items',
+                                                               'joinparams'
+                                                                  => array('jointype' => 'itemtype_item')));
 
       $tab += $this->getSearchOptionsActors();
 
@@ -3563,7 +3575,8 @@ class Ticket extends CommonITILObject {
                     'due_date'                  => 'NULL',
                     'slas_id'                   => 0,
                     '_add_validation'           => 0,
-                    'type'                      => $type);
+                    'type'                      => $type,
+                    '_documents_id'             => array());
    }
 
 
@@ -3802,7 +3815,6 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
       // Put ticket template on $values for actors
       $values['_tickettemplate'] = $tt;
 
@@ -4392,10 +4404,10 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td width='".(100-$colsize1)."%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
-         echo $tt->getBeginHiddenFieldText('name');
+         echo $tt->getBeginHiddenFieldValue('name');
          echo "<input type='text' size='90' maxlength=250 name='name' ".
                 " value=\"".Html::cleanInputText($this->fields["name"])."\">";
-         echo $tt->getEndHiddenFieldText('name');
+         echo $tt->getEndHiddenFieldValue('name', $this);
       } else {
          if (empty($this->fields["name"])) {
             _e('Without title');
@@ -4415,12 +4427,12 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td width='".(100-$colsize1)."%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
-         echo $tt->getBeginHiddenFieldText('content');
+         echo $tt->getBeginHiddenFieldValue('content');
 
          echo "<textarea cols='90' rows='6' name='content' >";
          echo $this->fields["content"];
          echo "</textarea>\n";
-         echo $tt->getEndHiddenFieldText('content');
+         echo $tt->getEndHiddenFieldValue('content', $this);
 
       } else {
          echo nl2br($this->fields["content"]);
@@ -4432,17 +4444,43 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       // Permit to add doc when creating a ticket
       if (!$ID) {
-         echo "<th width='$colsize1%'>".sprintf(__('File (%s)'), Document::getMaxUploadSize());
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
-               __s('Help')."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
-               "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,".
-               "height=800')\">";
-         echo "&nbsp;";
-         self::showDocumentAddButton();
-
+         echo "<th width='$colsize1%'>";
+         echo $tt->getBeginHiddenFieldText('_documents_id');
+         $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
+         printf(__('%1$s%2$s'), $doctitle, $tt->getMandatoryMark('_documents_id'));
+         // Do not show if hidden.
+         if (!$tt->isHiddenField('_documents_id')) {
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
+                  __s('Help')."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
+                  "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,".
+                  "height=800')\">";
+            echo "&nbsp;";
+            self::showDocumentAddButton();
+         }
+         echo $tt->getEndHiddenFieldText('_documents_id');
          echo "</th>";
          echo "<td width='$colsize2%'>";
-         echo "<div id='uploadfiles'><input type='file' name='filename[]' size='20'></div></td>";
+         echo $tt->getBeginHiddenFieldValue('_documents_id');
+         echo "<div id='uploadfiles'><input type='file' name='filename[]' size='20'></div>";
+         // Do not set values
+         echo $tt->getEndHiddenFieldValue('_documents_id');
+         if ($tt->isPredefinedField('_documents_id')) {
+            if (isset($values['_documents_id'])
+                  && is_array($values['_documents_id'])
+                  && count($values['_documents_id'])) {
+               echo "<span class='b'>".__('Default documents:').'</span>';
+               echo "<br>";
+               $doc = new Document();
+               foreach ($values['_documents_id'] as $key => $val) {
+                  if ($doc->getFromDB($val)){
+                     echo "<input type='hidden' name='_documents_id[$key]' value='$val'>";
+                     echo "- ".$doc->getNameID()."<br>";
+                  }
+               }
+            }
+         }
+         
+         echo "</td>";
 
       } else {
          echo "<th colspan='2'>";
