@@ -52,7 +52,9 @@ class DeviceNetworkCard extends CommonDevice {
     * @since version 0.84
    **/
    function getImportCriteria() {
-      return array('designation', 'manufacturers_id', 'mac');
+      return array('designation'      => 'equal',
+                   'manufacturers_id' => 'equal',
+                   'mac'              => 'equal');
    }
 
 
