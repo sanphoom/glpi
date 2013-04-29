@@ -286,13 +286,29 @@ class CommonGLPI {
       if ($data = static::getAdditionalMenuOptions()) {
          $menu['options'] = $data;
       }
+      if ($data = static::getAdditionalMenuContent()) {
+         $newmenu[strtolower($type)] = $menu;
+         $newmenu += $data;
+         $newmenu['is_multi_entries'] = true;
+         $menu = $newmenu;
+      }
       if (count($menu)) {
          return $menu;
       }
       return false;
    }
-
-
+   
+   /**
+    * get additional menu content
+    *
+    * @since version 0.85
+    *
+    * @return array for menu
+   **/
+   static function getAdditionalMenuContent() {
+      return false;
+   }
+   
    /**
     * Get forbidden actions for menu : may be add / template
     *

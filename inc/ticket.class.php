@@ -128,7 +128,17 @@ class Ticket extends CommonITILObject {
       return false;
    }
 
-
+   /**
+    * @see CommonGLPI::getAdditionalMenuContent()
+    *
+    * @since version 0.85
+   **/
+   static function getAdditionalMenuContent() {
+      $menu['create_ticket']['title']    = __('Create ticket');
+      $menu['create_ticket']['page']     = static::getFormURL(false);
+      return $menu;
+   }
+   
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
     *
