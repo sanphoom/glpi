@@ -898,9 +898,8 @@ class Search {
             // No search Case
             if ($nosearch) {
                $begin_display = 0;
-               $end_display   = min($numrows-$p['start'], $p['start']+$LIST_LIMIT);
+               $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
             }
-
             // Export All case
             if ($p['export_all']) {
                $begin_display = 0;
