@@ -174,6 +174,7 @@ class SLA extends CommonDBTM {
       }
       for ($i=1 ; $i<30 ; $i++) {
          $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i),$i);
+         $possible_values[-$i]              = sprintf(_n('%d day (end of working day)','%d days (end of working day)',$i),$i);
       }
       Dropdown::showFromArray('resolution_time', $possible_values,
                               array('value' => $this->fields["resolution_time"]));
@@ -253,9 +254,15 @@ class SLA extends CommonDBTM {
          }
 
          // No calendar defined or invalid calendar
-         $starttime = strtotime($start_date);
-         $endtime   = $starttime+$this->fields['resolution_time']+$additional_delay;
-         return date('Y-m-d H:i:s',$endtime);
+         if ($this->fields['resolution_time'] > 0) {
+            $starttime = strtotime($start_date);
+            $endtime   = $starttime+$this->fields['resolution_time']+$additional_delay;
+            return date('Y-m-d H:i:s',$endtime);
+         } else { // Case of end of next business day
+            $endtime = strtotime($start_date)+$additional_delay;
+            $endtime += abs($this->fields['resolution_time']) * DAY_TIMESTAMP;
+            return date('Y-m-d 23:59:59',$endtime);
+         }
       }
 
       return NULL;
@@ -282,21 +289,28 @@ class SLA extends CommonDBTM {
                $work_in_days = ($this->fields['resolution_time'] >= DAY_TIMESTAMP);
                $delay        = $this->fields['resolution_time'];
 
-               // Based on a calendar
-               if ($this->fields['calendars_id'] > 0) {
-                  $cal = new Calendar();
-                  if ($cal->getFromDB($this->fields['calendars_id'])) {
-                     return $cal->computeEndDate($start_date, $delay,
-                                                 $slalevel->fields['execution_time'] + $additional_delay,
-                                                 $work_in_days);
+               // End of next working hour
+               if ($delay < 0) {
+                  $due_date = $this->computeDueDate($start_date, $additional_delay);
+                  $endtime = strtotime($due_date)+$slalevel->fields['execution_time'];
+                  return date('Y-m-d H:i:s',$endtime);
+               } else {
+                  // Based on a calendar
+                  if ($this->fields['calendars_id'] > 0) {
+                     $cal = new Calendar();
+                     if ($cal->getFromDB($this->fields['calendars_id'])) {
+                        return $cal->computeEndDate($start_date, $delay,
+                                                   $slalevel->fields['execution_time'] + $additional_delay,
+                                                   $work_in_days);
+                     }
                   }
+
+                  // No calendar defined or invalid calendar
+                  $delay += $additional_delay+$slalevel->fields['execution_time'];
+                  $starttime = strtotime($start_date);
+                  $endtime   = $starttime+$delay;
+                  return date('Y-m-d H:i:s',$endtime);
                }
-               
-               // No calendar defined or invalid calendar
-               $delay += $additional_delay+$slalevel->fields['execution_time'];
-               $starttime = strtotime($start_date);
-               $endtime   = $starttime+$delay;
-               return date('Y-m-d H:i:s',$endtime);
             }
          }
       }

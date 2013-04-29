@@ -346,10 +346,41 @@ class Calendar extends CommonDropdown {
          return false;
       }
 
-      $delay += $additional_delay;
       $actualtime = strtotime($start);
       $timestart  = strtotime($start);
-      $datestart  = date('Y-m-d',$timestart);
+      $datestart  = date('Y-m-d', $timestart);
+      
+      // End of working day
+      if ($delay < 0) {
+         $numberofdays = abs($delay);
+         // Add $additional_delay to start time.
+         // If start + delay is next day : +1 day
+         $actualtime += $additional_delay;
+         
+         // Begin next day
+         $actualtime += DAY_TIMESTAMP;
+         $numberofdays--;
+         $cache_duration = $this->getDurationsCache();
+         $dayofweek  = self::getDayNumberInWeek($actualtime);
+         $actualdate = date('Y-m-d',$actualtime);
+         
+         while ($numberofdays > 0) {
+            if (!$this->isHoliday($actualdate)
+                  && ($cache_duration[$dayofweek] > 0)) {
+               $numberofdays --;
+            }
+            $actualtime += DAY_TIMESTAMP;
+            $actualdate  = date('Y-m-d',$actualtime);
+            $dayofweek   = self::getDayNumberInWeek($actualtime);
+         }
+         $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
+         $actualtime   = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
+
+         return date('Y-m-d H:i:s', $actualtime);
+      }
+      
+      // Add additional delay to initial delay
+      $delay += $additional_delay;
 
       if ($work_in_days) { // only based on days
          $cache_duration = $this->getDurationsCache();
@@ -390,7 +421,7 @@ class Calendar extends CommonDropdown {
          // If > last working hour set last working hour
          $dayofweek       = self::getDayNumberInWeek($actualtime);
          $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
-         if ($lastworkinghour< date('H:i:s', $actualtime)) {
+         if ($lastworkinghour < date('H:i:s', $actualtime)) {
             $actualtime   = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
          }
 

@@ -116,9 +116,15 @@ class SlaLevel extends RuleTicket {
          echo "</td><td><input  name='name' value=''>";
          echo "</td><td class='center'>".__('Execution')."</td><td>";
 
+         $resolution_time = $sla->fields['resolution_time'];
+         // Case of end of days
+         if ($resolution_time < 0)  {
+            $resolution_time = - $resolution_time * DAY_TIMESTAMP;
+         }
+         
          self::dropdownExecutionTime('execution_time',
                                      array('max_time'
-                                             => $sla->fields['resolution_time'],
+                                             => $resolution_time,
                                            'used'
                                              => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
 
