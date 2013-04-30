@@ -203,7 +203,7 @@ class Dropdown {
                             onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['rand']).".dialog('open');\">";
                $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['rand'],
                                                 $item->getFormURL(),
-                                                array('reloadonclose' => false));
+                                                array('display' => false));
          }
          // Display specific Links
          if ($itemtype == "Supplier") {

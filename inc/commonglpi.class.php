@@ -51,6 +51,7 @@ class CommonGLPI {
 
    /// Tab orientation : horizontal or vertical
    public $taborientation          = 'horizontal';
+
    /// Need to get item to show tab
    public $get_item_to_display_tab = false;
    static protected $othertabs     = array();

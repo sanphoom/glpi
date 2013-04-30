@@ -876,7 +876,9 @@ class Search {
                   $search_config .= $tmp.">";
                   $search_config .= Ajax::createIframeModalWindow('search_config',
                                                    $CFG_GLPI["root_doc"]."/front/displaypreference.form.php?itemtype=$itemtype",
-                                                   array('title' => __('Select default items to show')));
+                                                   array('title' => __('Select default items to show'),
+                                                         'reloadonclose' => true,
+                                                         'display' => false));
                }
 
                Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype, 0,

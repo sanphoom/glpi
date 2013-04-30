@@ -46,6 +46,7 @@ if (!isset($_GET["modify"])) {
    $_GET["modify"] = "";
 }
 
+
 $kb = new KnowbaseItem();
 
 if (isset($_POST["add"])) {
@@ -113,19 +114,28 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_GET["id"])) {
-   // modifier un item dans la base de connaissance
-   $kb->check($_GET["id"], ProfileRight::READ);
 
-   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
-   $available_options = array('item_itemtype', 'item_items_id', 'id');
-   $options           = array();
-   foreach ($available_options as $key) {
-      if (isset($_GET[$key])) {
-         $options[$key] = $_GET[$key];
+   if (isset($_GET["_in_modal"])) {
+
+      Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
+      $kb = new KnowbaseItem();
+      $kb->check($_GET["id"],'r');
+      $kb->showFull();
+      Html::popFooter();
+   } else {
+      // modifier un item dans la base de connaissance
+      $kb->check($_GET["id"], ProfileRight::READ);
+
+      Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
+      $available_options = array('item_itemtype', 'item_items_id', 'id');
+      $options           = array();
+      foreach ($available_options as $key) {
+         if (isset($_GET[$key])) {
+            $options[$key] = $_GET[$key];
+         }
       }
+      $kb->display($options);
+      Html::footer();
    }
-   $kb->display($options);
-   Html::footer();
-
 }
 ?>

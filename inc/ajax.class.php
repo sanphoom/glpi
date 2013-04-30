@@ -173,7 +173,7 @@ class Ajax {
     *          - modal : is a modal window ? (default true)
     *          - title : window title (default empty)
     *          - display : display or get string ? (default true)
-    *          - reloadonclose : reload main page on close ? (default true)
+    *          - reloadonclose : reload main page on close ? (default false)
    **/
    static function createIframeModalWindow($domid, $url, $options=array() ) {
 
@@ -182,7 +182,7 @@ class Ajax {
                      'modal'         => true,
                      'title'         => '',
                      'display'       => true,
-                     'reloadonclose' => true);
+                     'reloadonclose' => false);
 
       if (count($options)) {
          foreach ($options as $key => $val) {

@@ -1410,23 +1410,21 @@ function generate_entity($ID_entity) {
       if (isset($items[$i])) {
          $val = $items[$i];
       } else {
-         $val = "Etat $ID_entity '$i";
+         $val = "State $ID_entity '$i";
       }
-      $dp->add(toolbox::addslashes_deep(array('name'         => $val,
+      $state_id = $dp->add(toolbox::addslashes_deep(array('name'         => $val,
                                               'entities_id'  => $ID_entity,
                                               'is_recursive' => 1,
                                               'comment'      => "comment $val")));
 
       // generate sub status
       for ($j=0 ; $j<$MAX['state'] ; $j++) {
-         if (isset($items[$j])) {
-            $val = $items[$j];
-         } else {
-            $val = "Etat $ID_entity '$j";
-         }
+         $val = "Sub State $ID_entity '$j";
+
          $dp->add(toolbox::addslashes_deep(array('name'         => $val,
                                                  'entities_id'  => $ID_entity,
                                                  'is_recursive' => 1,
+                                                 'states_id'    => $state_id,
                                                  'comment'      => "comment $val")));
       }
 

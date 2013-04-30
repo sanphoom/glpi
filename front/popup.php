@@ -83,13 +83,6 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          include "notification.tags.php";
          break;
 
-      case "show_kb" :
-         Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
-         $kb = new KnowbaseItem();
-         $kb->check($_GET["id"],'r');
-         $kb->showFull();
-         break;
-
       case "display_options" :
          Html::popHeader(__('Display options'), $_SERVER['PHP_SELF']);
          include "display.options.php";

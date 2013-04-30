@@ -1171,19 +1171,20 @@ class KnowbaseItem extends CommonDBTM {
                echo Search::showNewLine($output_type, $i%2);
 
                if ($output_type == Search::HTML_OUTPUT) {
+                  $toadd = '';
                   if (isset($options['item_itemtype'])
                       && isset($options['item_items_id'])) {
-                     $href = " href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-                              "/front/popup.php?popup=show_kb&amp;id=".$data['id']."' ,'glpipopup', ".
-                              "'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
-                              "w.focus();\"" ;
+                     $href = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"" ;
+                     $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
+                                                   $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"],
+                                                   array('display' => false));
                   } else {
                      $href = " href=\"".$CFG_GLPI['root_doc']."/front/knowbaseitem.form.php?id=".
                                     $data["id"]."\" ";
                   }
 
                   echo Search::showItem($output_type,
-                                        "<div class='kb'><a ".
+                                        "<div class='kb'>$toadd<a ".
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
                                           " $href>".Html::resume_text($data["name"], 80)."</a></div>
                                           <div class='kb_resume'>".
