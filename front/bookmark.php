@@ -31,6 +31,13 @@
 * @brief
 */
 
+if (!defined('GLPI_ROOT')) {
+   include ('../inc/includes.php');
+}
+
+
+Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
+
 if (!isset($_GET["type"])) {
    $_GET["type"] = -1;
 }
@@ -43,20 +50,23 @@ if (!isset($_GET["url"])) {
    $_GET["url"] = "";
 }
 
+if (!isset($_GET["action"])) {
+   $_GET["action"] = "";
+}
+
 $bookmark = new Bookmark();
 
 if (isset($_POST["add"])) {
    $bookmark->check(-1, ProfileRight::CREATE, $_POST);
 
    $bookmark->add($_POST);
-   $_GET["action"] = "load";
 
 } else if (isset($_POST["update"])) {
    $bookmark->check($_POST["id"], ProfileRight::UPDATE);   // Right to update the bookmark
    $bookmark->check(-1, ProfileRight::CREATE, $_POST);     // Right when entity change
 
    $bookmark->update($_POST);
-   $_GET["action"] = "load";
+   $_GET["action"] = "";
 
 } else if ($_GET["action"] == "edit"
            && isset($_GET['mark_default'])
@@ -68,18 +78,17 @@ if (isset($_POST["add"])) {
    } else if ($_GET["mark_default"] == 0) {
       $bookmark->unmark_default($_GET["id"]);
    }
-   $_GET["action"] = "load";
+   $_GET["action"] = "";
 
 } else if (($_GET["action"] == "load")
            && isset($_GET["id"]) && ($_GET["id"] > 0)) {
    $bookmark->check($_GET["id"], ProfileRight::READ);
    $bookmark->load($_GET["id"]);
-
+   $_GET["action"] = "";
 } else if (isset($_POST["delete"])) {
    $bookmark->check($_POST["id"], ProfileRight::PURGE);
-   //TODO no dustbin => purge
-   $bookmark->delete($_POST);
-   $_GET["action"] = "load";
+   $bookmark->delete($_POST,1);
+   $_GET["action"] = "";
 
 }
 
@@ -99,4 +108,6 @@ if ($_GET["action"] == "edit") {
 } else {
    $bookmark->display();
 }
+
+Html::popFooter();
 ?>

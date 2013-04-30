@@ -200,6 +200,11 @@ class Ajax {
                      src=\"$url\"></iframe></div>";
 
       $out .= "<script type='text/javascript'>
+            function closeIframeDialog()
+            {
+               $('#$domid').dialog('close');
+               return false;
+            }
             $('#$domid').dialog({
                modal: true,
                autoOpen: false,

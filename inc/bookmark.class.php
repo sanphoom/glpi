@@ -40,6 +40,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Bookmark extends CommonDBTM {
 
+   // From CommonGLPI
+   public $taborientation          = 'horizontal';
+   
    var       $auto_message_on_action = false;
    protected $displaylist            = false;
 
@@ -223,8 +226,7 @@ class Bookmark extends CommonDBTM {
       }
 
       echo '<br>';
-      echo "<form method='post' name='form_save_query' action='".$CFG_GLPI['root_doc'].
-             "/front/popup.php'>";
+      echo "<form method='post' name='form_save_query' action='".$_SERVER['PHP_SELF']."'>";
       echo "<div class='center'>";
       if (isset($options['itemtype'])) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
@@ -441,8 +443,9 @@ class Bookmark extends CommonDBTM {
 
          if ($opener) {
             echo "<script type='text/javascript' >\n";
-            echo "window.opener.location.href='$url';";
+            echo "window.parent.location.href='$url';";
             echo "</script>";
+            exit();
          } else {
             Html::redirect($url);
          }
@@ -616,7 +619,7 @@ class Bookmark extends CommonDBTM {
                echo "<td>$current_type_name</td>";
                echo "<td>";
                if ($canedit) {
-                  echo "<a href=\"".$CFG_GLPI['root_doc']."/front/popup.php?popup=edit_bookmark&amp;id=".
+                  echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;id=".
                            $this->fields["id"]."\" alt='".__s('Update')."'>".
                            $this->fields["name"]."</a>";
                } else {
@@ -624,18 +627,18 @@ class Bookmark extends CommonDBTM {
                }
                echo "</td>";
 
-               echo "<td><a href=\"".$CFG_GLPI['root_doc']."/front/popup.php?popup=load_bookmark&amp;id=".
+               echo "<td><a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=load&amp;id=".
                            $this->fields["id"]."\" class='vsubmit'>".__('Load')."</a>";
                echo "</td>";
                echo "<td class='center'>";
                if ($this->fields['type'] == self::SEARCH) {
                   if (is_null($this->fields['IS_DEFAULT'])) {
-                     echo "<a href=\"".$CFG_GLPI['root_doc']."/front/popup.php?popup=edit_bookmark&amp;".
+                     echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                             "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
                             __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
                             "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\"></a>";
                   } else {
-                     echo "<a href=\"".$CFG_GLPI['root_doc']."/front/popup.php?popup=edit_bookmark&amp;".
+                     echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                             "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
                             __s('Default search')."\" title=\"".__s('Default search')."\">".
                             "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\"></a>";
@@ -667,14 +670,18 @@ class Bookmark extends CommonDBTM {
    static function showSaveButton($type, $itemtype=0) {
       global $CFG_GLPI;
 
-      echo " <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-              "/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".
-              rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=500, width=".
-              (self::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
+      
+      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('bookmarksave').".dialog('open');\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
              title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookmark')."\"
              class='calendrier'>";
       echo "</a>";
+      Ajax::createIframeModalWindow('bookmarksave',
+                                    $CFG_GLPI["root_doc"]."/front/bookmark.php?type=$type".
+                                    "&amp;action=edit&amp;itemtype=$itemtype&amp;".
+                                    "url=".rawurlencode($_SERVER["REQUEST_URI"]),
+                                    array('title' => __('Save as bookmark'),
+                                          'reloadonclose' => true));
    }
 
 

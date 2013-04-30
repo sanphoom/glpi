@@ -76,7 +76,7 @@ if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
    }
 }
 
-Html::header(__('Bulk modification'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
 
 if (isset($_GET['multiple_actions'])) {
    if (isset($_SESSION['glpi_massiveaction'])
@@ -166,5 +166,5 @@ if (isset($_POST["action"])
    echo "</div>";
 }
 
-Html::footer();
+Html::popFooter();
 ?>

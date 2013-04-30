@@ -56,18 +56,6 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          include "rule.cache.php";
          break;
 
-      case "load_bookmark" :
-         Html::popHeader(_n('Bookmark', 'Bookmarks', 2), $_SERVER['PHP_SELF']);
-         $_GET["action"] = "load";
-         include "bookmark.php";
-         break;
-
-      case "edit_bookmark" :
-         Html::popHeader(_n('Bookmark', 'Bookmarks', 2), $_SERVER['PHP_SELF']);
-         $_GET["action"] = "edit";
-         include "bookmark.php";
-         break;
-
       case "edit_user_notification" :
          Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
          include "ticket_user.form.php";
