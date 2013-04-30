@@ -1419,9 +1419,9 @@ function generate_entity($ID_entity) {
 
       // generate sub status
       for ($j=0 ; $j<$MAX['state'] ; $j++) {
-         $val = "Sub State $ID_entity '$j";
+         $val2 = "Sub $val $j";
 
-         $dp->add(toolbox::addslashes_deep(array('name'         => $val,
+         $dp->add(toolbox::addslashes_deep(array('name'         => $val2,
                                                  'entities_id'  => $ID_entity,
                                                  'is_recursive' => 1,
                                                  'states_id'    => $state_id,
