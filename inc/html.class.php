@@ -1983,11 +1983,13 @@ class Html {
 
       /// Bookmark load
       echo "<li>";
-      echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-             "/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=400, width=600, ".
-             "top=100, left=100, scrollbars=yes' );w.focus();\">";
+      Ajax::createIframeModalWindow('loadbookmark',
+                                    $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
+                                    array('title' => __('Load a bookmark'),
+                                          'reloadonclose' => true));
+      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\"\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\" alt=\"".__s('Load a bookmark')."\">";
+             "\"  alt=\"".__s('Load a bookmark')."\">";
       echo "</a></li>";
 
       // check user id : header used for display messages when session logout
