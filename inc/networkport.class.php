@@ -562,7 +562,7 @@ class NetworkPort extends CommonDBChild {
       // Make table name and add the correct show/hide parameters
       $table_name  = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
 
-      // Add the link to the popup to display the options ...
+      // Add the link to the modal to display the options ...
       $table_namelink = self::getDisplayOptionsLink($itemtype);
 
       $table_name = sprintf(__('%1$s - %2$s'), $table_name, $table_namelink);

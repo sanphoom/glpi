@@ -43,8 +43,6 @@ if (!defined('GLPI_ROOT')) {
  */
 class NetworkAlias extends FQDNLabel {
 
-   var $refresh_page                 = true;
-
    // From CommonDBChild
    static public $itemtype           = 'NetworkName';
    static public $items_id           = 'networknames_id';
@@ -123,7 +121,7 @@ class NetworkAlias extends FQDNLabel {
          echo "<input type='hidden' name='networknames_id' value='".
                $this->fields["networknames_id"]."'>\n";
       }
-      $this->displayRecursiveItems($recursiveItems, (isset($options['popup']) ? "Name" : "Link"));
+      $this->displayRecursiveItems($recursiveItems, "Link");
       echo "</td><td>" . __('Name') . "</td><td>\n";
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";

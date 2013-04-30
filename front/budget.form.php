@@ -47,8 +47,6 @@ if (isset($_POST["add"])) {
    $budget->check(-1, ProfileRight::CREATE, $_POST);
 
    if ($newID = $budget->add($_POST)) {
-      $budget->refreshParentInfos();
-
       Event::log($newID, "budget", 4, "financial",
                   //TRANS: %1$s is the user login, %2$s is the name of the item to add
                   sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));

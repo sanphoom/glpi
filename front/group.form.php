@@ -47,7 +47,6 @@ if (isset($_POST["add"])) {
       Event::log($newID, "groups", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    }
-   Ajax::refreshDropdownPopupInMainWindow();
    Html::back();
 
    // TODO Review after showFormButton => purge not delete

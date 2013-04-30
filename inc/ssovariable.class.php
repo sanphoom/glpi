@@ -39,12 +39,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class SsoVariable extends CommonDropdown {
 
-   var $refresh_page = true;
-
    static $rightname = 'config';
-
-
-
 
    static function getTypeName($nb=0) {
 

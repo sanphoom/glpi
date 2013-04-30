@@ -41,10 +41,6 @@ abstract class CommonDropdown extends CommonDBTM {
    // For delete operation (entity will overload this value)
    public $must_be_replace = false;
 
-   //Indicates if only the dropdown or the whole page is refreshed when a new dropdown value
-   //is added using popup window
-   public $refresh_page = false;
-
    //Menu & navigation
    public $first_level_menu  = "config";
    public $second_level_menu = "CommonDropdown";
@@ -759,15 +755,6 @@ abstract class CommonDropdown extends CommonDBTM {
       return ($add ? $this->import($input) : $this->findID($input));
    }
 
-
-   function refreshParentInfos() {
-
-      if (!$this->refresh_page) {
-         Ajax::refreshDropdownPopupInMainWindow();
-      } else {
-         Ajax::refreshPopupMainWindow();
-      }
-   }
 
 
    /**

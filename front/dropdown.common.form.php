@@ -53,7 +53,6 @@ if (isset($_POST["add"])) {
    $dropdown->check(-1, ProfileRight::READ, $_POST);
 
    if ($newID=$dropdown->add($_POST)) {
-      $dropdown->refreshParentInfos();
       if ($dropdown instanceof CommonDevice) {
          Event::log($newID, get_class($dropdown), 4, "inventory",
                     sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
@@ -75,7 +74,6 @@ if (isset($_POST["add"])) {
       Html::footer();
    } else {
       $dropdown->delete($_POST, 1);
-      $dropdown->refreshParentInfos();
 
       Event::log($_POST["id"], get_class($dropdown), 4, "setup",
                  //TRANS: %s is the user login
@@ -86,7 +84,6 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["replace"])) {
    $dropdown->check($_POST["id"], ProfileRight::DELETE);
    $dropdown->delete($_POST, 1);
-   $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
               //TRANS: %s is the user login
@@ -96,7 +93,6 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    $dropdown->check($_POST["id"], ProfileRight::UPDATE);
    $dropdown->update($_POST);
-   $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
               //TRANS: %s is the user login

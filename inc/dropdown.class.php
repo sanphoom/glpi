@@ -196,7 +196,7 @@ class Dropdown {
 
          if (($item instanceof CommonDropdown)
              && $item->canCreate()
-             && !isset($_GET['popup'])) {
+             && !isset($_REQUEST['_in_modal'])) {
 
                $output .= "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                             "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'

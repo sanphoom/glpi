@@ -161,7 +161,7 @@ class Ajax {
    
    /**
     * Create modal window in Iframe
-    * After display it using $name.dialog("open");
+    * After display it using Html::jsGetElementbyID($domid).dialog("open");
     *
     * @since version 0.85
     *
@@ -195,8 +195,7 @@ class Ajax {
       
       $out = "<div id=\"$domid\">";
       $out .= "<iframe id='Iframe$domid' width='100%' height='100%' marginWidth='0' marginHeight='0'
-                     frameBorder='0' scrolling='auto'
-                     src=\"$url\"></iframe></div>";
+                     frameBorder='0' scrolling='auto'></iframe></div>";
 
       $out .= "<script type='text/javascript'>
             $('#$domid').dialog({
@@ -205,7 +204,9 @@ class Ajax {
                height: ".$param['height'].",
                width: ".$param['width'].",
                draggable: true,
-               resizeable: true,";
+               resizeable: true,
+               open: function(ev, ui){
+               $('#Iframe$domid').attr('src','$url');},";
       if ($param['reloadonclose']) {
          $out .= "close: function(ev, ui) { window.location.reload() },";
       }
@@ -218,48 +219,6 @@ class Ajax {
       } else {
          return $out;
       }
-   }
-
-
-
-   /**
-    * Call from a popup Windows, refresh the dropdown in main window
-   **/
-   static function refreshDropdownPopupInMainWindow() {
-
-      if (isset($_SESSION["glpipopup"]["rand"])) {
-         echo "<script type='text/javascript' >\n";
-         echo "window.opener.update_results_".$_SESSION["glpipopup"]["rand"]."();";
-         echo "</script>";
-      }
-   }
-
-
-   /**
-    * Call from a popup Windows, refresh the dropdown in main window
-   **/
-   static function refreshPopupMainWindow() {
-
-      // $_SESSION["glpipopup"]["rand"] is not use here but do check to be sure that
-      // we are in popup
-      if (isset($_SESSION["glpipopup"]["rand"])) {
-         echo "<script type='text/javascript' >\n";
-         echo "window.opener.location.reload(true)";
-         echo "</script>";
-      }
-   }
-
-
-   /**
-    * Call from a popup Windows, refresh the tab in main window
-    *
-    * @since version 0.84
-   **/
-   static function refreshPopupTab() {
-
-      echo "<script type='text/javascript' >\n";
-      echo "window.opener.reloadTab()";
-      echo "</script>";
    }
 
 
@@ -656,81 +615,6 @@ class Ajax {
          return $out;
       }
    }
-
-
-   /**
-    * Complete Dropdown system using ajax to get datas
-    *
-    * @param $use_ajax              Use ajax search system (if not display a standard dropdown)
-    * @param $relativeurl           Relative URL to the root directory of GLPI
-    * @param $params       array    of parameters to send to ajax URL
-    * @param $default               Default datas to print in case of $use_ajax (default '&nbsp;')
-    * @param $rand                  Random parameter used (default 0)
-    * @param $display      boolean  display or get string (default true)
-    * @deprecated  Since version 0.85
-   **/
-   static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0,
-                            $display=true) {
-      global $CFG_GLPI, $DB;
-
-      $initparams = $params;
-      if ($rand == 0) {
-         $rand = mt_rand();
-      }
-      $locoutput = '';
-      if ($use_ajax) {
-         $locoutput .= self::getSearchTextForDropdown($rand);
-         $locoutput .= self::updateItemOnInputTextEvent("search_$rand", "results_$rand",
-                                                        $CFG_GLPI["root_doc"].$relativeurl,
-                                                        $params,
-                                                        0/*$CFG_GLPI['ajax_min_textsearch_load']*/,
-                                                        0/*$CFG_GLPI['ajax_buffertime_load']*/,
-                                                        array(), false);
-      }
-      $locoutput .=  "<span id='results_$rand'>\n";
-      if (!$use_ajax) {
-         // Save post datas if exists
-         $oldpost = array();
-         if (isset($_POST) && count($_POST)) {
-            $oldpost = $_POST;
-         }
-         $_POST = $params;
-//         $_POST["searchText"] = $CFG_GLPI["ajax_wildcard"];
-         ob_start();
-         include (GLPI_ROOT.$relativeurl);
-         $locoutput .= ob_get_contents();
-         ob_end_clean();
-
-         // Restore $_POST datas
-         if (count($oldpost)) {
-            $_POST = $oldpost;
-         }
-      } else {
-         $locoutput .=  $default;
-      }
-
-      $locoutput .=  "</span>\n";
-      $locoutput .=  "<script type='text/javascript'>";
-      $locoutput .=  "function update_results_$rand() {";
-      if ($use_ajax) {
-         $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl,
-                                              $initparams, "search_$rand", false);
-      } else {
-//          $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
-         $locoutput               .= self::updateItemJsCode("results_$rand",
-                                                            $CFG_GLPI['root_doc'].$relativeurl,
-                                                            $initparams, '', false);
-      }
-      $locoutput .=  "}";
-      $locoutput .=  "</script>";
-
-      if ($display) {
-         echo $locoutput;
-      } else {
-         return $locoutput;
-      }
-   }
-
 
    /**
     * Javascript code for update an item

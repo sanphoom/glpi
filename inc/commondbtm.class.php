@@ -2101,11 +2101,6 @@ class CommonDBTM extends CommonGLPI {
 
             }
          }
-
-         // No link on popup window
-         if (isset($_GET['popup']) && $_GET['popup']) {
-            echo "<input type='hidden' name='_no_message_link' value='1'>";
-         }
       }
 
       echo "<div class='spaced' id='tabsbody'>";

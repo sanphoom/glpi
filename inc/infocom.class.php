@@ -649,15 +649,14 @@ class Infocom extends CommonDBChild {
 
 
    /**
-    * Show infocom link to display popup
+    * Show infocom link to display modal
     *
     * @param $itemtype   integer  item type
     * @param $device_id  integer  item ID
-    * @param $update     integer  (default 0)
     *
     * @return float
    **/
-   static function showDisplayLink($itemtype, $device_id, $update=0) {
+   static function showDisplayLink($itemtype, $device_id) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("infocom", ProfileRight::READ)
@@ -681,11 +680,13 @@ class Infocom extends CommonDBChild {
       }
 
       if ($item->canView()) {
-         echo "<span onClick=\"window.open('".$CFG_GLPI["root_doc"].
-               "/front/infocom.form.php?itemtype=$itemtype&amp;items_id=$device_id&amp;update=$update',
-               'infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\" style='cursor:pointer'>
+         echo "<span onClick=\"".Html::jsGetElementbyID('infocom'.$itemtype.$device_id).".dialog('open');\" style='cursor:pointer'>
                <img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
+         Ajax::createIframeModalWindow('infocom'.$itemtype.$device_id,
+                                       $CFG_GLPI["root_doc"]."/front/infocom.form.php".
+                                       "?itemtype=$itemtype&items_id=$device_id",
+                                       array('height' => 600));
       }
    }
 

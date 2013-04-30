@@ -99,7 +99,6 @@ class Netpoint extends CommonDropdown {
       }
       Event::log(0, "dropdown", 5, "setup",
                  sprintf(__('%1$s adds several netpoints'), $_SESSION["glpiname"]));
-      Ajax::refreshDropdownPopupInMainWindow();
    }
 
 
@@ -152,9 +151,10 @@ class Netpoint extends CommonDropdown {
          if ($item->canCreate()) {
             echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                   "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;' ".
-                  "onClick=\"var w = window.open('".$item->getFormURL().
-                  "?popup=1&amp;rand=$rand' ,'glpipopup', 'height=400, ".
-                  "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+                  "onClick=\"".Html::jsGetElementbyID('netpoint'.$rand).".dialog('open');\">";
+            Ajax::createIframeModalWindow('netpoint'.$rand,
+                                          $item->getFormURL());
+                  
          }
          $paramscomment = array('value' => '__VALUE__',
                                 'table' => "glpi_netpoints");

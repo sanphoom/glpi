@@ -1047,9 +1047,10 @@ class Rule extends CommonDBTM {
          $itemtype = get_class($this).'Parameter';
          echo "<img alt='' title=\"".__s('Add a criterion')."\" src='".$CFG_GLPI["root_doc"].
                 "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                onClick=\"var w = window.open('".Toolbox::getItemTypeFormURL($itemtype).
-                "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
-                "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+                onClick=\"".Html::jsGetElementbyID('addcriterion'.$rand).".dialog('open');\">";
+         Ajax::createIframeModalWindow('addcriterion'.$rand,
+                                       Toolbox::getItemTypeFormURL($itemtype),
+                                       array('reloadonclose' => true));
       }
 
       echo "</td><td class='left'><span id='criteria_span'>\n";

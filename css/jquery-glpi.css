@@ -72,6 +72,7 @@
 
 .ui-autocomplete {
    max-height: 200px;
+   font-size: 11px;
    overflow-y: auto;
    /* prevent horizontal scrollbar */
    overflow-x: hidden;
@@ -98,7 +99,7 @@ html .ui-autocomplete {
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
 {
   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-  font-size: 12px;
+  font-size: 11px;
 }
 .select2-results li {
    font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
@@ -106,7 +107,7 @@ html .ui-autocomplete {
 }
 .select2-search input {
    font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-   font-size: 12px;
+   font-size: 11px;
 }
 
 .select2-container .select2-choice {
@@ -186,4 +187,8 @@ html .ui-autocomplete {
    background-image: -o-linear-gradient(#fddb6f, #ffb94b);
    background-image: -ms-linear-gradient(#fddb6f, #ffb94b);
    background-image: linear-gradient(#fddb6f, #ffb94b);
+}
+
+input.submit {
+   font-size : 12px;
 }

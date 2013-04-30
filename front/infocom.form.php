@@ -78,12 +78,7 @@ if (isset($_POST['add'])) {
       }
    }
 
-   if (isset($_GET["update"]) && ($_GET["update"] == 1)) {
-      $withtemplate = 0;
-   } else {
-      $withtemplate = 2;
-   }
-   Infocom::showForItem($item, $withtemplate);
+   Infocom::showForItem($item, 0);
 
    Html::popFooter();
 }

@@ -46,7 +46,6 @@ if (isset($_POST["add"])) {
    $alias->check(-1,'w',$_POST);
 
    if ($newID=$alias->add($_POST)) {
-      Ajax::refreshPopupTab();
       Event::log($newID, $alias->getType(), 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    }
@@ -55,7 +54,6 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    $alias->check($_POST["id"],'w');
    $alias->update($_POST);
-   Ajax::refreshPopupMainWindow();
 
    Event::log($_POST["id"], $alias->getType(), 4, "setup",
               //TRANS: %s is the user login

@@ -534,7 +534,7 @@ class Consumable extends CommonDBTM {
                echo "</td>";
             }
             echo "<td class='center'>";
-            Infocom::showDisplayLink('Consumable', $data["id"],1);
+            Infocom::showDisplayLink('Consumable', $data["id"]);
             echo "</td>";
             echo "</tr>";
          }

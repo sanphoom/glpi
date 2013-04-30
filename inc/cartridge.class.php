@@ -637,7 +637,7 @@ class Cartridge extends CommonDBChild {
                echo "</td>";
             }
             echo "<td class='center'>";
-            Infocom::showDisplayLink('Cartridge',$data["id"],1);
+            Infocom::showDisplayLink('Cartridge',$data["id"]);
             echo "</td>";
             echo "</tr>";
          }
