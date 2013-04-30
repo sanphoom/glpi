@@ -170,6 +170,14 @@ abstract class CommonITILTask  extends CommonDBTM {
           && ($uid = Session::getLoginUserID())) { // Change from task form
          $input["users_id"] = $uid;
       }
+      
+      $itemtype    = $this->getItilObjectItemType();
+      $input["_job"] = new $itemtype();
+
+      if (!$input["_job"]->getFromDB($input[$input["_job"]->getForeignKeyField()])) {
+         return false;
+      }
+
       if (isset($input["plan"])) {
          $input["begin"]         = $input['plan']["begin"];
          $input["end"]           = $input['plan']["end"];
@@ -188,6 +196,22 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          Planning::checkAlreadyPlanned($input["users_id_tech"], $input["begin"], $input["end"],
                                        array($this->getType() => array($input["id"])));
+
+         $calendars_id = Entity::getUsedConfig('calendars_id', $input["_job"]->fields['entities_id']);
+         $calendar     = new Calendar();
+
+         // Using calendar
+         if (($calendars_id > 0)
+             && $calendar->getFromDB($calendars_id)) {
+            if (!$calendar->isAWorkingHour(strtotime($input["begin"]))) {
+               Session::addMessageAfterRedirect(__('Begin of the selected timeframe is not a working hour.'),
+                                                false, ERROR);
+            }
+            if (!$calendar->isAWorkingHour(strtotime($input["end"]))) {
+               Session::addMessageAfterRedirect(__('End of the selected timeframe is not a working hour.'),
+                                                false, ERROR);
+            }
+         }                                       
       }
 
       return $input;
@@ -311,6 +335,22 @@ abstract class CommonITILTask  extends CommonDBTM {
          Planning::checkAlreadyPlanned($this->fields["users_id_tech"], $this->fields["begin"],
                                        $this->fields["end"],
                                        array($this->getType() => array($this->fields["id"])));
+
+         $calendars_id = Entity::getUsedConfig('calendars_id', $this->input["_job"]->fields['entities_id']);
+         $calendar     = new Calendar();
+
+         // Using calendar
+         if (($calendars_id > 0)
+             && $calendar->getFromDB($calendars_id)) {
+            if (!$calendar->isAWorkingHour(strtotime($this->fields["begin"]))) {
+               Session::addMessageAfterRedirect(__('Begin of the selected timeframe is not a working hour.'),
+                                                false, ERROR);
+            }
+            if (!$calendar->isAWorkingHour(strtotime($this->fields["end"]))) {
+               Session::addMessageAfterRedirect(__('End of the selected timeframe is not a working hour.'),
+                                                false, ERROR);
+            }
+         }
       }
 
       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {

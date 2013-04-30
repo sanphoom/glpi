@@ -326,6 +326,27 @@ class Calendar extends CommonDropdown {
       return (($cache_duration[$dayofweek] > 0) && !$this->isHoliday($date));
    }
 
+   /**
+    * Is the time passed is in a working hour
+    *
+    * @since version 0.85
+    *
+    * @param $time    time  time to check
+    *
+    * @return boolean
+   **/
+   function isAWorkingHour($time) {
+
+      if ($this->isAWorkingDay($time)) {
+         $dayofweek        = self::getDayNumberInWeek($time);
+         return CalendarSegment::isAWorkingHour($this->fields['id'], $dayofweek,
+                                                date('H:i:s', $time));
+      }
+
+      return false;
+   }
+
+
 
    /**
     * Add a delay to a date using the active calendar

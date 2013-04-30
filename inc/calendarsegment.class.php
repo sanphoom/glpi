@@ -277,7 +277,36 @@ class CalendarSegment extends CommonDBChild {
       return false;
    }
 
+   /**
+    * Is the hour passed is a workign hour ?
+    *
+    * @param $calendars_id    id of the calendar
+    * @param $day             day number
+    * @param $hour            hour (Format HH:MM::SS)
+    *
+    * @return boolean
+   **/
+   static function isAWorkingHour($calendars_id, $day, $hour) {
+      global $DB;
 
+      $sum = 0;
+      // Do not check hour if day before the end day of after the begin day
+      $query = "SELECT *
+                FROM `glpi_calendarsegments`
+                WHERE `calendars_id` = '$calendars_id'
+                      AND `day` = '$day'
+                      AND `begin` <= '$hour'
+                      AND `end` >= '$hour'";
+      Toolbox::logDebug($query);
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   
    /**
     * Show segments of a calendar
     *
