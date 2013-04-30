@@ -1058,11 +1058,6 @@ class CommonGLPI {
                                         => exportArrayToDB($_SESSION['glpi_display_options'])));
             }
          }
-
-         echo "<script type='text/javascript' >\n";
-         echo "window.opener.location.reload();";
-         echo "</script>";
-
       }
    }
 
@@ -1077,7 +1072,6 @@ class CommonGLPI {
     * @return nothing
    **/
    static function getDisplayOptions($sub_itemtype='') {
-
       if (!isset($_SESSION['glpi_display_options'])) {
          // Load display_options from user table
          $_SESSION['glpi_display_options'] = array();
@@ -1100,6 +1094,7 @@ class CommonGLPI {
       } else {
          $display_options = &$_SESSION['glpi_display_options'][self::getType()];
       }
+      
       // Load default values if not set
       $options = static::getAvailableDisplayOptions();
       if (count($options)) {
@@ -1125,6 +1120,7 @@ class CommonGLPI {
       global $CFG_GLPI;
 
       $options      = static::getAvailableDisplayOptions($sub_itemtype);
+
       if (count($options)) {
          if (empty($sub_itemtype)) {
             $display_options = $_SESSION['glpi_display_options'][self::getType()];
@@ -1132,7 +1128,7 @@ class CommonGLPI {
             $display_options = $_SESSION['glpi_display_options'][self::getType()][$sub_itemtype];
          }
          echo "<div class='center'>";
-         echo "\n<form method='get' action='".$CFG_GLPI['root_doc']."/front/popup.php'>\n";
+         echo "\n<form method='get' action='".$CFG_GLPI['root_doc']."/front/display.options.php'>\n";
          echo "<input type='hidden' name='itemtype' value='NetworkPort'>\n";
          echo "<input type='hidden' name='sub_itemtype' value='$sub_itemtype'>\n";
          echo "<table class='tab_cadre'>";
@@ -1190,13 +1186,20 @@ class CommonGLPI {
    static function getDisplayOptionsLink($sub_itemtype = '') {
       global $CFG_GLPI;
 
+      $rand = mt_rand();
+
       $link ="<img alt=\"".__s('Display options')."\" title=\"";
       $link .= __s('Display options')."\" src='";
       $link .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
-      $link .= " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"];
-      $link .= "/front/popup.php?popup=display_options&amp;itemtype=".static::getType()."&amp;";
-      $link .= "sub_itemtype=$sub_itemtype' ,'glpipopup', 'height=500, width=600, top=100,";
-      $link .= "left=100, scrollbars=yes'); w.focus();\">";
+      $link .= " class='pointer' onClick=\"".Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');\">";
+      $link .= Ajax::createIframeModalWindow("displayoptions".$rand,
+                              $CFG_GLPI['root_doc']."/front/display.options.php?itemtype=".
+                                 static::getType()."&sub_itemtype=$sub_itemtype",
+                              array('display'       => false,
+                                    'width'         => 600,
+                                    'height'        => 500,
+                                    'reloadonclose' => true));
+      
 
       return $link;
    }

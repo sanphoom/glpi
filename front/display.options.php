@@ -36,6 +36,8 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
+Html::popHeader(__('Display options'), $_SERVER['PHP_SELF']);
+
 if (!isset($_GET['itemtype'])) {
    Html::displayErrorAndDie("lost");
 }
@@ -50,8 +52,7 @@ if ($item = getItemForItemtype($itemtype)) {
    }
    $item->checkGlobal('r');
    $item->showDislayOptions($_GET["sub_itemtype"]);
-   Html::ajaxFooter();
 }
 
-
+Html::popFooter();
 ?>
