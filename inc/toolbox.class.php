@@ -560,8 +560,15 @@ class Toolbox {
          $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
       }
 
-      $err .= self::backtrace(false, 'Toolbox::userErrorHandlerDebug()',
-                              array('Toolbox::backtrace()'));
+      $skip = array('Toolbox::backtrace()');
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         $hide = "Toolbox::userErrorHandlerDebug()";
+         $skip[] = "Toolbox::userErrorHandlerNormal()";
+      } else {
+         $hide = "Toolbox::userErrorHandlerNormal()";
+      }
+      
+      $err .= self::backtrace(false, $hide, $skip);
 
       // Save error
       self::logInFile("php-errors", $err);
