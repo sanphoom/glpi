@@ -2613,15 +2613,16 @@ abstract class CommonITILObject extends CommonDBTM {
                   }
                   $text .= sprintf(__('%1$s: %2$s'),__('Email'), $uemail);
                   if (!NotificationMail::isUserAddressValid($uemail)) {
-                     $text .= "<span class='red'>".__('Invalid email address')."</span>";
+                     $text .= "&nbsp;<span class='red'>".__('Invalid email address')."</span>";
                   }
                }
                echo "&nbsp;";
 
                if ($canedit
                    || ($d['users_id'] == Session::getLoginUserID())) {
+                  $linkuser = new $this->userlinkclass();
                   $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
-                               'popup' => 'edit_user_notification&amp;id='.$d['id']);
+                               'popup' => $linkuser->getFormURL()."?id=".$d['id']);
                   Html::showToolTip($text, $opt);
                }
             }

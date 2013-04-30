@@ -3179,11 +3179,7 @@ class Html {
             $out .= " href='".$param['link']."'";
 
             if (!empty($param['popup'])) {
-               $out .= " onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
-                                                     "/front/popup.php?popup=".$param['popup']."', ".
-                                                     "'glpibookmarks', 'height=400, width=600, ".
-                                                     "top=100, left=100, scrollbars=yes' ); ".
-                       "w.focus();\" ";
+               $out .= " onClick=\"".Html::jsGetElementbyID('tooltippopup'.$rand).".dialog('open');\" ";
             }
             $out .= '>';
          }
@@ -3192,6 +3188,7 @@ class Html {
          if (!empty($param['link'])) {
             $out .= "</a>";
          }
+
          $param['applyto'] = "tooltip$rand";
       }
 
@@ -3200,7 +3197,13 @@ class Html {
       }
 
       $out .= "<div id='".$param['contentid']."' class='invisible'>$content</div>";
-
+      if (!empty($param['popup'])) {
+         $out .= Ajax::createIframeModalWindow('tooltippopup'.$rand,
+                                          $param['popup'],
+                                          array('display' => false,
+                                                'width'   => 600,
+                                                'height'  => 300));
+      }
       $out .= "<script type='text/javascript' >\n";
       $out .= Html::jsGetElementbyID($param['applyto']).".tooltip({
          content: function() {return $('#".$param['contentid']."').html()},

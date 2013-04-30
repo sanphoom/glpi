@@ -56,11 +56,6 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          include "rule.cache.php";
          break;
 
-      case "edit_user_notification" :
-         Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
-         include "ticket_user.form.php";
-         break;
-
       case "add_ldapuser" :
          Html::popHeader(__('Import a user'), $_SERVER['PHP_SELF']);
          include "ldap.import.php";

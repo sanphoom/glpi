@@ -696,8 +696,6 @@ class KnowbaseItem extends CommonDBTM {
          $linkusers_id = false;
       }
 
-      $inpopup = strpos($_SERVER['PHP_SELF'],"popup.php");
-
       $this->updateCounter();
 
       $knowbaseitemcategories_id = $this->fields["knowbaseitemcategories_id"];

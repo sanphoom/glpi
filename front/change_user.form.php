@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-$link = new Ticket_User();
+$link = new Change_User();
 
 Session ::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
@@ -46,7 +46,7 @@ if (isset($_POST["update"])) {
    $link->update($_POST);
    echo "<script type='text/javascript' >\n";
    echo "window.parent.location.reload();";
-   echo "</script>";
+   echo "</script>";   
 } else if (isset($_GET["id"])) {
    $link->showUserNotificationForm($_GET["id"]);
 } else {

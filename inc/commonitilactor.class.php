@@ -156,7 +156,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       }
       $item = new static::$itemtype_1();
 
-      echo "<br><form method='post' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
+      echo "<br><form method='post' action='".$_SERVER['PHP_SELF']."'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre' width='80%'>";
       echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."</td>";

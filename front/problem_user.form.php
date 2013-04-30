@@ -35,20 +35,17 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-$link = new Ticket_User();
+$ticket_user = new Ticket_User();
 
 Session ::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {
-   $link->check($_POST["id"], 'w');
+   $ticket_user->check($_POST["id"], 'w');
 
-   $link->update($_POST);
-   echo "<script type='text/javascript' >\n";
-   echo "window.parent.location.reload();";
-   echo "</script>";
+   $ticket_user->update($_POST);
 } else if (isset($_GET["id"])) {
-   $link->showUserNotificationForm($_GET["id"]);
+   $ticket_user->showUserNotificationForm($_GET["id"]);
 } else {
    Html::displayErrorAndDie('Lost');
 }

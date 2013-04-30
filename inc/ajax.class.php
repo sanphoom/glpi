@@ -193,31 +193,25 @@ class Ajax {
       }
       $url .= (strstr($url,'?') ?'&' :  '?').'_in_modal=1';
       
-      $rand = mt_rand();
-      $out = "<div id='$domid'>";
+      $out = "<div id=\"$domid\">";
       $out .= "<iframe id='Iframe$domid' width='100%' height='100%' marginWidth='0' marginHeight='0'
-                     frameBorder='0' scrolling='auto' title=\"".addslashes($param['title'])."\"
+                     frameBorder='0' scrolling='auto'
                      src=\"$url\"></iframe></div>";
 
       $out .= "<script type='text/javascript'>
-            function closeIframeDialog()
-            {
-               $('#$domid').dialog('close');
-               return false;
-            }
             $('#$domid').dialog({
                modal: true,
                autoOpen: false,
                height: ".$param['height'].",
                width: ".$param['width'].",
                draggable: true,
-               resizeable: true,
-               title: \"".addslashes($param['title'])."\",";
+               resizeable: true,";
       if ($param['reloadonclose']) {
-         $out .= "close: function(ev, ui) { window.location.reload() }";
+         $out .= "close: function(ev, ui) { window.location.reload() },";
       }
-      $out .= "});
-         </script>";
+               
+      $out.= "title: \"".addslashes($param['title'])."\"});
+            </script>";
         
       if ($param['display']) {
          echo $out;
