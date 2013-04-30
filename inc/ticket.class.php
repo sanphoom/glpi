@@ -566,10 +566,10 @@ class Ticket extends CommonITILObject {
             switch ($tabnum) {
 
                case 2 :
-                     if (!isset($_POST['load_kb_sol'])) {
-                        $_POST['load_kb_sol'] = 0;
+                     if (!isset($_GET['load_kb_sol'])) {
+                        $_GET['load_kb_sol'] = 0;
                      }
-                     $item->showSolutionForm($_POST['load_kb_sol']);
+                     $item->showSolutionForm($_GET['load_kb_sol']);
                      if ($item->canApprove()) {
                         $fup = new TicketFollowup();
                         $fup->showApprobationForm($item);
