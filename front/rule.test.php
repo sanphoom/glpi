@@ -60,9 +60,7 @@ $rule->checkGlobal(ProfileRight::READ);
 
 $test_rule_output = null;
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","display");
-}
+Html::popHeader(__('Setup'),$_SERVER['PHP_SELF']);
 
 $rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'], $rules_id);
 
@@ -87,7 +85,5 @@ if (isset($_POST["test_rule"])) {
    $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'], $input, $params);
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::footer();
-}
+Html::popFooter();
 ?>

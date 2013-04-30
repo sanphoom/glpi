@@ -746,7 +746,7 @@ class Rule extends CommonDBTM {
       }
 
       $canedit = $this->can(static::$rightname, ProfileRight::UPDATE);
-
+      $rand = mt_rand();
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -793,11 +793,14 @@ class Rule extends CommonDBTM {
                $url = $CFG_GLPI["root_doc"];
             }
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<a class='vsubmit' href='#' onClick=\"var w=window.open('".$url.
-                  "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType().
-                  "&amp;rules_id=".$this->fields["id"]."' ,'glpipopup', 'height=400,".
-                  "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
+            echo "<a class='vsubmit' href='#' onClick=\"".
+                  Html::jsGetElementbyID('ruletest'.$rand).".dialog('open');\">".
                   __('Test')."</a>";
+            Ajax::createIframeModalWindow('ruletest'.$rand,
+                                          $url."/front/rule.test.php?".
+                                          "sub_type=".$this->getType().
+                                          "&rules_id=".$this->fields["id"],
+                                          array('title' => __('Test')));
             echo "</td></tr>\n";
          }
       }
@@ -2264,7 +2267,7 @@ class Rule extends CommonDBTM {
       if ($this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
          echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
          echo "<div class='spaced'>";
-         echo "<table class='tab_cadre'>";
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>" . _n('Criterion', 'Criteria', 2) . "</th></tr>";
 
          $type_match        = (($this->fields["match"] == self::AND_MATCHING) ?__('and') :__('or'));

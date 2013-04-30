@@ -98,7 +98,7 @@ html .ui-autocomplete {
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
 {
   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-  font-size: 11px;
+  font-size: 12px;
 }
 .select2-results li {
    font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
@@ -106,7 +106,7 @@ html .ui-autocomplete {
 }
 .select2-search input {
    font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
-   font-size: 11px;
+   font-size: 12px;
 }
 
 .select2-container .select2-choice {

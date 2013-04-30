@@ -553,7 +553,6 @@ class NetworkPort extends CommonDBChild {
          // Manage NetworkportMigration
          $porttypes[] = '';
       }
-
       $display_options = self::getDisplayOptions($itemtype);
       $table           = new HTMLTableMain();
       $number_port     = self::countForItem($item);

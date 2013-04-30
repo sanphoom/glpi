@@ -470,10 +470,14 @@ class RuleCollection extends CommonDBTM {
          $url = $CFG_GLPI["root_doc"];
       }
 
-      echo "<a class='vsubmit' href='#' onClick=\"var w=window.open('".$url.
-             "/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->getRuleClassName().
-             "&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
-             "w.focus();\">".__('Test rules engine')."</a></div>";
+      echo "<a class='vsubmit' href='#' onClick=\"".
+                  Html::jsGetElementbyID('allruletest'.$rand).".dialog('open');\">".
+                  __('Test rules engine')."</a>";
+      Ajax::createIframeModalWindow('allruletest'.$rand,
+                                    $url."/front/rulesengine.test.php?".
+                                    "sub_type=".$this->getRuleClassName(),
+                                    array('title' => __('Test rules engine')));
+      echo "</div>";
 
       if ($this->can_replay_rules) {
          echo "<div class='spaced center'>";

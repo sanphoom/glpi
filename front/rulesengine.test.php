@@ -51,9 +51,7 @@ if ($rulecollection->isRuleRecursive()) {
 }
 $rulecollection->checkGlobal('r');
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","display");
-}
+Html::popHeader(__('Setup'),$_SERVER['PHP_SELF']);
 
 // Need for RuleEngines
 foreach ($_POST as $key => $val) {
@@ -70,7 +68,5 @@ if (isset($_POST["test_all_rules"])) {
    $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'], $_POST);
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::footer();
-}
+Html::popFooter();
 ?>
