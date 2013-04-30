@@ -61,11 +61,6 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          include "ldap.import.php";
          break;
 
-      case "list_notificationtags" :
-         Html::popHeader(__('List of available tags'), $_SERVER['PHP_SELF']);
-         include "notification.tags.php";
-         break;
-
       case "display_options" :
          Html::popHeader(__('Display options'), $_SERVER['PHP_SELF']);
          include "display.options.php";
