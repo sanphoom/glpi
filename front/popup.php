@@ -41,22 +41,6 @@ if (isset($_GET["popup"])) {
 
 if (isset($_SESSION["glpipopup"]["name"])) {
    switch ($_SESSION["glpipopup"]["name"]) {
-      case "search_config" :
-         Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
-         if (isset($_POST["add"])
-             || isset($_POST["delete"])
-             || isset($_POST["delete_x"])
-             || isset($_POST["up"])
-             || isset($_POST["up_x"])
-             || isset($_POST["down"])
-             || isset($_POST["down_x"])) {
-            echo "<script type='text/javascript' >\n";
-            echo "window.opener.location.reload();";
-            echo "</script>";
-         }
-         include "displaypreference.form.php";
-         break;
-
       case "test_rule" :
          Html::popHeader(__('Test'), $_SERVER['PHP_SELF']);
          include "rule.test.php";

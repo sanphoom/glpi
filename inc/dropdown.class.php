@@ -200,9 +200,10 @@ class Dropdown {
 
                $output .= "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                             "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                            onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
-                            $params['rand']."' ,'glpipopup', 'height=400, ".
-                            "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+                            onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['rand']).".dialog('open');\">";
+               $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['rand'],
+                                                $item->getFormURL(),
+                                                array('reloadonclose' => false));
          }
          // Display specific Links
          if ($itemtype == "Supplier") {

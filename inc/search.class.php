@@ -868,7 +868,7 @@ class Search {
                if (Session::haveRight("search_config","w")
                    || Session::haveRight("search_config_global","w")) {
 
-                  $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".dialog('open')\"";
+                  $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".dialog('open');\"";
 
                   $search_config  = "<img alt=\"".__s('Select default items to show')."\" title=\"".
                                       __s('Select default items to show')."\" src='".
@@ -876,9 +876,7 @@ class Search {
                   $search_config .= $tmp.">";
                   $search_config .= Ajax::createIframeModalWindow('search_config',
                                                    $CFG_GLPI["root_doc"]."/front/displaypreference.form.php?itemtype=$itemtype",
-                                                   array('title' => __('Select default items to show'),
-                                                         'width' => 1050,
-                                                         'height'=> 500));
+                                                   array('title' => __('Select default items to show')));
                }
 
                Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype, 0,

@@ -2181,6 +2181,12 @@ class CommonDBTM extends CommonGLPI {
             echo $entityname;
          }
       }
+
+      // If in modal : do not display link on message after redirect
+      if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
+         echo "<input type='hidden' name='_no_message_link' value='1'>";
+      }
+      
       echo "</th></tr>\n";
    }
 

@@ -67,14 +67,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_GET['popup'])) {
+} else if (isset($_GET['_in_modal'])) {
    Html::popHeader(Group::getTypeName(2),$_SERVER['PHP_SELF']);
-   if (isset($_GET["rand"])) {
-      $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
-   }
    $group->showForm($_GET["id"]);
-   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
-   echo "</div>";
    Html::popFooter();
 
 } else {

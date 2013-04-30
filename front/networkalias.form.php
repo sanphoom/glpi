@@ -63,14 +63,9 @@ if (isset($_POST["add"])) {
    Html::back();
 }
 
-if (isset($_GET['popup'])) {
+if (isset($_GET['_in_modal'])) {
    Html::popHeader(NetworkAlias::getTypeName(1), $_SERVER['PHP_SELF']);
-   if (isset($_GET["rand"])) {
-      $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
-   }
    $alias->showForm($_GET["id"], $_GET);
-   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
-   echo "</div>";
    Html::popFooter();
 
 } else {

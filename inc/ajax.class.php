@@ -177,7 +177,7 @@ class Ajax {
    **/
    static function createIframeModalWindow($domid, $url, $options=array() ) {
 
-      $param = array('width'         => 900,
+      $param = array('width'         => 1050,
                      'height'        => 500,
                      'modal'         => true,
                      'title'         => '',
@@ -191,6 +191,7 @@ class Ajax {
             }
          }
       }
+      $url .= (strstr($url,'?') ?'&' :  '?').'_in_modal=1';
       
       $rand = mt_rand();
       $out = "<div id='$domid'>";

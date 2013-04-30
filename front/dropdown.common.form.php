@@ -113,14 +113,9 @@ if (isset($_POST["add"])) {
       Html::displayErrorAndDie(__('No selected element or badly defined operation'));
    }
 
-} else if (isset($_GET['popup'])) {
+} else if (isset($_GET['_in_modal'])) {
    Html::popHeader($dropdown->getTypeName(1),$_SERVER['PHP_SELF']);
-   if (isset($_GET["rand"])) {
-      $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
-   }
    $dropdown->showForm($_GET["id"]);
-   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
-   echo "</div>";
    Html::popFooter();
 
 } else {

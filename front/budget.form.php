@@ -95,25 +95,17 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else {
-   if (isset($_GET['popup'])) {
+} else if (isset($_GET['_in_modal'])) {
       Html::popHeader(Budget::getTypeName(1),$_SERVER['PHP_SELF']);
-      if (isset($_GET["rand"])) {
-         $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
-      }
-   } else {
-      Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
-   }
+      $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
+      Html::popFooter();
+
+} else {
+   
+   Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
    $budget->display(array('id'           => $_GET["id"],
                           'withtemplate' => $_GET["withtemplate"]));
 
-   if (isset($_GET['popup'])) {
-      echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
-      echo "</div>";
-
-      Html::popFooter();
-   } else {
-      Html::footer();
-   }
+   Html::footer();
 }
 ?>

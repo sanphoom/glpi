@@ -1050,12 +1050,15 @@ class Html {
    static function header($title, $url='', $sector="none", $item="none", $option="") {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
 
+      // If in modal : display popHeader
+      if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
+         return self::popHeader($title, $url);
+      }
       // Print a nice HTML-head for every page
       if ($HEADER_LOADED) {
          return;
       }
       $HEADER_LOADED = true;
-
       // Force lower case for sector and item
       $sector = strtolower($sector);
       $item   = strtolower($item);
@@ -1638,6 +1641,11 @@ class Html {
    static function footer($keepDB=false) {
       global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
 
+      // If in modal : display popHeader
+      if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
+         return self::popFooter();
+      }
+      
       // Print foot for every page
       if ($FOOTER_LOADED) {
          return;
