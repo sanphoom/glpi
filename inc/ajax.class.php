@@ -55,6 +55,7 @@ class Ajax {
     *          - modal : is a modal window ? (default true)
     *          - container : specify a html element to render (default empty to html.body)
     *          - title : window title (default empty)
+    *          - display : display or get string ? (default true)
    **/
    static function createModalWindow($name, $url, $options=array() ) {
 
@@ -63,7 +64,8 @@ class Ajax {
                      'modal'       => true,
                      'container'   => '',
                      'title'       => '',
-                     'extraparams' => array());
+                     'extraparams' => array(),
+                     'display'     => true);
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -72,14 +74,14 @@ class Ajax {
             }
          }
       }
-      echo "<script type='text/javascript'>\n";
-      echo "var $name=";
+      $out = "<script type='text/javascript'>\n";
+      $out .= "var $name=";
       if (!empty($param['container'])) {
-         echo Html::jsGetElementbyID(Html::cleanId($param['container']));
+         $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
       } else {
-         echo "$('<div />')";
+         $out .= "$('<div />')";
       }
-      echo ".dialog({\n
+      $out .= ".dialog({\n
          width:".$param['width'].",\n
          autoOpen: false,\n
          height:".$param['height'].",\n
@@ -87,14 +89,19 @@ class Ajax {
          title: \"".addslashes($param['title'])."\",\n
          open: function (){\n
             $(this).load('$url'";
-            if (is_array($param['extraparams']) && count($param['extraparams'])) {
-               echo ", ".json_encode($param['extraparams'],JSON_FORCE_OBJECT);
-            }
-      echo ");\n}\n
+      if (is_array($param['extraparams']) && count($param['extraparams'])) {
+         $out .= ", ".json_encode($param['extraparams'],JSON_FORCE_OBJECT);
+      }
+      $out .= ");\n}\n
          });\n";
-      echo "</script>";
-   }
+      $out .= "</script>";
 
+      if ($param['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }      
+   }
 
    /**
     * Create fixed modal window
@@ -109,14 +116,16 @@ class Ajax {
     *          - modal : is a modal window ? (default true)
     *          - container : specify a html element to render (default empty to html.body)
     *          - title : window title (default empty)
+    *          - display : display or get string ? (default true)
    **/
    static function createFixedModalWindow($name, $options=array() ) {
 
       $param = array('width'     => 800,
                      'height'    => 400,
                      'modal'     => true,
-                     'container'  => '',
-                     'title'     => '');
+                     'container' => '',
+                     'title'     => '',
+                     'display'   => true);
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -125,22 +134,88 @@ class Ajax {
             }
          }
       }
-      echo "<script type='text/javascript'>\n";
-      echo "var $name=";
+      
+      $out =  "<script type='text/javascript'>\n";
+      $out .= "var $name=";
       if (!empty($param['container'])) {
-         echo Html::jsGetElementbyID(Html::cleanId($param['container']));
+         $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
       } else {
-         echo "$('<div></div>')";
+         $out .= "$('<div></div>')";
       }
-      echo ".dialog({\n
+      $out .= ".dialog({\n
          width:".$param['width'].",\n
          autoOpen: false,\n
          height:".$param['height'].",\n
          modal: ".($param['modal']?'true':'false').",\n
          title: \"".addslashes($param['title'])."\"\n
          });\n";
-      echo "</script>";
+      $out .= "</script>";
+     
+      if ($param['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
+      
    }
+   
+   /**
+    * Create modal window in Iframe
+    * After display it using $name.dialog("open");
+    *
+    * @since version 0.85
+    *
+    * @param $domid           DOM ID of the js object
+    * @param $url             URL to display in modal
+    * @param $options array   of possible options:
+    *          - width (default 800)
+    *          - height (default 400)
+    *          - modal : is a modal window ? (default true)
+    *          - title : window title (default empty)
+    *          - display : display or get string ? (default true)
+   **/
+   static function createIframeModalWindow($domid, $url, $options=array() ) {
+
+      $param = array('width'       => 900,
+                     'height'      => 500,
+                     'modal'       => true,
+                     'title'       => '',
+                     'display'     => true);
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            if (isset($param[$key])) {
+               $param[$key] = $val;
+            }
+         }
+      }
+      
+      $rand = mt_rand();
+      $out = "<div id='$domid'>";
+      $out .= "<iframe id='Iframe$domid' width='100%' height='100%' marginWidth='0' marginHeight='0'
+                     frameBorder='0' scrolling='auto' title=\"".addslashes($param['title'])."\"
+                     src=\"$url\"></iframe></div>";
+
+      $out .= "<script type='text/javascript'>
+            $('#$domid').dialog({
+               modal: true,
+               autoOpen: false,
+               height: ".$param['height'].",
+               width: ".$param['width'].",
+               draggable: true,
+               resizeable: true,
+               title: \"".addslashes($param['title'])."\",
+               close: function(ev, ui) { window.location.reload() }
+            });
+         </script>";
+        
+      if ($param['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
+   }
+
 
 
    /**
@@ -229,12 +304,11 @@ class Ajax {
     * @param $type                     itemtype for active tab
     * @param $ID                       ID of element for active tab (default 0)
     * @param $orientation              orientation of tabs (default vertical may also be horizontal)
-    * @param $size                     width of tabs panel (default 950)
     *
     * @return nothing
    **/
    static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type, $ID=0, $orientation='vertical', $size=950) {
+                              $type, $ID=0, $orientation='vertical') {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!

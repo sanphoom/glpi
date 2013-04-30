@@ -868,21 +868,17 @@ class Search {
                if (Session::haveRight("search_config","w")
                    || Session::haveRight("search_config_global","w")) {
 
-//                   Ajax::createModalWindow('searchconfig_window',
-//                         $CFG_GLPI['root_doc']."/ajax/searchconfig.php?itemtype=$itemtype",
-//                         array('title'    => __('Select default items to show'),
-//                               'width'    => '1000'));
-
-//                   $tmp = " class='pointer' onClick=\"searchconfig_window.show()\"";
-
-                  $tmp = " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-                         "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
-                         "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
+                  $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".dialog('open')\"";
 
                   $search_config  = "<img alt=\"".__s('Select default items to show')."\" title=\"".
                                       __s('Select default items to show')."\" src='".
                                       $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
                   $search_config .= $tmp.">";
+                  $search_config .= Ajax::createIframeModalWindow('search_config',
+                                                   $CFG_GLPI["root_doc"]."/front/displaypreference.form.php?itemtype=$itemtype",
+                                                   array('title' => __('Select default items to show'),
+                                                         'width' => 1050,
+                                                         'height'=> 500));
                }
 
                Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype, 0,

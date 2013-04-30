@@ -35,9 +35,8 @@ if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "display");
-}
+
+Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
 Session::checkSeveralRightsOr(array("search_config_global" => "w",
                                     "search_config"        => "w"));
@@ -61,12 +60,9 @@ if (isset($_POST["activate"])) {
 }
 
 // Datas may come from GET or POST : use REQUEST
-if ((strpos($_SERVER['PHP_SELF'],"popup")
-    && $_REQUEST["itemtype"])) {
+if (isset($_REQUEST["itemtype"])) {
    $setupdisplay->display(array('displaytype' => $_REQUEST['itemtype']));
 }
 
-if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::footer();
-}
+Html::popFooter();
 ?>
