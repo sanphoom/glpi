@@ -37,7 +37,8 @@ include ('../inc/includes.php');
 // Manage tabs
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
    if ($item = getItemForItemtype($_GET['itemtype'])) {
-      if (isset($_GET['id']) && $_GET['id']) {
+   
+      if (isset($_GET['id']) && !$item->isNewID($_GET['id'])) {
          $item->getFromDB($_GET['id']);
       }
 
@@ -46,6 +47,7 @@ if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
       $tabs[-1]     = 'All';
       $selected_tab = '';
       $current      = 0;
+      
       foreach ($tabs as $key => $val) {
          if ($current == $_GET['tab']) {
             $selected_tab = $key;

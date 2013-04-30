@@ -2414,6 +2414,12 @@ class Html {
          $p['extraparams']['specific_actions'] = $p['specific_actions'];
       }
 
+      // Manage modal window
+      if (isset($_REQUEST['_is_modal']) && $_REQUEST['_is_modal']) {
+         $p['extraparams']['hidden']['_is_modal'] = 1;
+      }
+
+      
       if ($p['fixed']) {
          $width= '950px';
       } else {

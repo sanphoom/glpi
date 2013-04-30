@@ -225,7 +225,7 @@ class AuthLDAP extends CommonDBTM {
          case "import" :
          case "sync" :
             if (!Session::haveRight("import_externalauth_users",ProfileRight::IMPORTEXTAUTHUSERS)) {
-               $res['nbnoright']++;
+               $res['noright']++;
             } else if (isset($_GET['multiple_actions'])
                        && isset($_SESSION["glpi_massiveaction"])) {
 
@@ -284,7 +284,7 @@ class AuthLDAP extends CommonDBTM {
             $group = new Group;
             if (!Session::haveRight("user_authtype", ProfileRight::UPDATE) ||
                !$group->canGlobal('w')) {
-               $res['nbnoright']++;
+               $res['noright']++;
             } else if (isset($_GET['multiple_actions'])
                        && isset($_SESSION["glpi_massiveaction"])) {
 
@@ -355,6 +355,7 @@ class AuthLDAP extends CommonDBTM {
          default :
             return parent::doSpecificMassiveActions($input);
       }
+      print_r($res);
       return $res;
    }
 
@@ -2537,21 +2538,22 @@ class AuthLDAP extends CommonDBTM {
       $fields = array('action', 'authldaps_id', 'basedn', 'begin_date', 'criterias',  'end_date',
                       'entities_id', 'interface', 'ldap_filter', 'mode');
 
-      //If form accessed via popup, do not show expert mode link
-      if (isset($options['popup'])) {
-         //If coming form the helpdesk form : reset all criterias
-         $_SESSION['ldap_import']['popup']          = 1;
-         $_SESSION['ldap_import']['no_expert_mode'] = 1;
-         $_SESSION['ldap_import']['action']         = 'show';
-         $_SESSION['ldap_import']['interface']      = self::SIMPLE_INTERFACE;
-         $_SESSION['ldap_import']['mode']           = self::ACTION_IMPORT;
+      //If form accessed via modal, do not show expert mode link
+      // Manage new value is set : entity or mode
+      if (isset($options['entity']) || isset($options['mode'])) {
+         if (isset($options['_in_modal']) && $options['_in_modal']) {
+            //If coming form the helpdesk form : reset all criterias
+            $_SESSION['ldap_import']['_in_modal']      = 1;
+            $_SESSION['ldap_import']['no_expert_mode'] = 1;
+            $_SESSION['ldap_import']['action']         = 'show';
+            $_SESSION['ldap_import']['interface']      = self::SIMPLE_INTERFACE;
+            $_SESSION['ldap_import']['mode']           = self::ACTION_IMPORT;
+         } else {
+            $_SESSION['ldap_import']['_in_modal']      = 0;
+         }
       }
 
       if (!$delete) {
-
-         if (isset($options["rand"])) {
-            $_SESSION["glpipopup"]["rand"] = $options["rand"];
-         }
 
          if (!isset($_SESSION['ldap_import']['entities_id'])) {
             $options['entities_id'] = $_SESSION['glpiactive_entity'];
@@ -2664,6 +2666,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<div class='center'>";
 
       echo "<form method='post' action='".$_SERVER['PHP_SELF']."'>";
+
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4' class='middle'><div class='relative'>";

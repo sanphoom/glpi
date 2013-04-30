@@ -1622,7 +1622,7 @@ class Entity extends CommonTreeDropdown {
       $entity = new self();
 
       if ($entity->getFromDB($entities_id)
-          && ($entity->getField('authldaps_id') != NOT_AVAILABLE)) {
+          && ($entity->getField('authldaps_id') > 0)) {
          return true;
       }
 

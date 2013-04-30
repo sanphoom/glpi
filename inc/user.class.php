@@ -3110,10 +3110,12 @@ class User extends CommonDBTM {
 
          $output .= "<img alt='' title=\"".__s('Import a user')."\" src='".$CFG_GLPI["root_doc"].
                       "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                      onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
-                      "/front/popup.php?popup=add_ldapuser&amp;rand=".$p['rand']."&amp;entity=".
-                      $_SESSION['glpiactive_entity']."' ,'glpipopup', 'height=400, ".
-                      "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+                      onClick=\"".Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');\">";
+         $output .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
+                                          $CFG_GLPI["root_doc"]."/front/ldap.import.php?entity=".$_SESSION['glpiactive_entity'],
+                                          array('title' => __('Import a user'),
+                                                'display' => false));
+
       }
 
       if ($p['display']) {

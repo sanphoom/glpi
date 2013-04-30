@@ -55,12 +55,6 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          Html::popHeader(__('Cache information'), $_SERVER['PHP_SELF']);
          include "rule.cache.php";
          break;
-
-      case "add_ldapuser" :
-         Html::popHeader(__('Import a user'), $_SERVER['PHP_SELF']);
-         include "ldap.import.php";
-         break;
-
   }
    echo "<div class='center'><br><a href='javascript:window.close()'>".__('Close')."</a>";
    echo "</div>";
