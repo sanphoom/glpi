@@ -471,7 +471,6 @@ class Toolbox {
             } else {
                $script = str_pad($script, 50);
             }
-
             $call = (isset($trace["class"]) ? $trace["class"] : "") .
                     (isset($trace["type"]) ? $trace["type"] : "") .
                     (isset($trace["function"]) ? $trace["function"]."()" : "");
@@ -486,6 +485,7 @@ class Toolbox {
       } else {
          $message = "  Script : " . $_SERVER["SCRIPT_FILENAME"]. "\n";
       }
+      
       if ($log) {
          self::logInFile($log, $message, true);
       } else {
@@ -561,9 +561,9 @@ class Toolbox {
       }
 
       $err .= self::backtrace(false, 'Toolbox::userErrorHandlerDebug()',
-                              array('Toolbox::backtrace()', 'Toolbox::userErrorHandlerNormal()'));
+                              array('Toolbox::backtrace()'));
 
-      // sauvegarde de l'erreur
+      // Save error
       self::logInFile("php-errors", $err);
 
       return $errortype[$errno];
