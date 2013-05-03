@@ -5714,7 +5714,7 @@ class Ticket extends CommonITILObject {
             $link .= "&amp;forcetab=".$forcetab;
          }
          $link .= "'>";
-         $link .= "<span class='b'>".$job->fields["name"]."</span></a>";
+         $link .= "<span class='b'>".$job->getNameID()."</span></a>";
          $link = sprintf(__('%1$s (%2$s)'), $link,
                          sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
                                  $job->numberOfTasks($showprivate)));
