@@ -211,7 +211,7 @@ function update084to085() {
                  SET `rights` = `rights` | " . ProfileRight::RULETICKET ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'entity_rule_ticket'";
-         $DB->queryOrDie($query, "0.85 update entity_rule_ticket with rule_ticket right");
+      $DB->queryOrDie($query, "0.85 update entity_rule_ticket with rule_ticket right");
    }
    $query = "DELETE
              FROM `glpi_profilerights`
@@ -221,30 +221,51 @@ function update084to085() {
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'knowbase_admin' AND `right` = '1'") as $profrights) {
 
-         $query  = "UPDATE `glpi_profilerights`
-                    SET `rights` = `rights` | " . ProfileRight::KNOWBASEADMIN ."
-                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                         AND `name` = 'knowbase'";
-         $DB->queryOrDie($query, "0.85 update knowbase with knowbase_admin right");
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . ProfileRight::KNOWBASEADMIN ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'knowbase'";
+      $DB->queryOrDie($query, "0.85 update knowbase with knowbase_admin right");
    }
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'knowbase_admin'";
    $DB->queryOrDie($query, "0.85 delete knowbase_admin right");
 
+   $tables = array('budget', 'cartridge', 'computer', 'consumable', 'contact_enterprise',
+                   'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
+                   'phone', 'printer', 'software');
+   // TODO voir aussi pour 'glpi_changes','glpi_problems'
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'reservation_helpdesk' AND `right` = '1'") as $profrights) {
+                         "`name` = 'notes' AND `right` = 'r'") as $profrights) {
 
+      foreach ($tables as $table) {
          $query  = "UPDATE `glpi_profilerights`
-                    SET `rights` = `rights` | " . ProfileRight::KNOWBASEADMIN ."
+                    SET `rights` = `rights` | " . READNOTE ."
                     WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                         AND `name` = 'reservation_central'";
-         $DB->queryOrDie($query, "0.85 update reservation_central with reservation_helpdesk right");
+                          AND `name` = '$table'";
+         toolbox::logdebug("query", $query);
+         $DB->queryOrDie($query, "0.85 update $table with readnote right");
+      }
    }
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'notes' AND `right` = 'w'") as $profrights) {
+
+      foreach ($tables as $table) {
+         $query  = "UPDATE `glpi_profilerights`
+                    SET `rights` = `rights` | " . READNOTE ." | ".UPDATENOTE ."
+                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                          AND `name` = '$table'";
+         toolbox::logdebug("query", $query);
+         $DB->queryOrDie($query, "0.85 update $table with updatenote right");
+      }
+   }
+
    $query = "DELETE
              FROM `glpi_profilerights`
-             WHERE `name` = 'reservation_helpdesk'";
-   $DB->queryOrDie($query, "0.85 delete reservation_helpdesk right");
+             WHERE `name` = 'notes'";
+   $DB->queryOrDie($query, "0.85 delete notes right");
+
 
 
    // don't drop column right  - be done later

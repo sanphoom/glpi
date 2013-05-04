@@ -316,9 +316,9 @@ class Profile extends CommonDBTM {
    function pre_deleteItem() {
       global $DB;
 
-      if (($this->fields['profile'] & ProfileRight::DELETE)
+      if (($this->fields['profile'] & DELETE)
           && (countElementsInTable("glpi_profilerights",
-                                   "`name` = 'profile' AND `rights` & ".ProfileRight::DELETE))) {
+                                   "`name` = 'profile' AND `rights` & ".DELETE))) {
           Session::addMessageAfterRedirect(__("This profile is the last with write rights on profiles"),
                                            false, ERROR);
           Session::addMessageAfterRedirect(__("Deletion refused"), false, ERROR);
@@ -405,7 +405,7 @@ class Profile extends CommonDBTM {
       }
 
       // Profile right : may modify profile so can attach all profile
-      if (Session::haveRight("profile", ProfileRight::CREATE)) {
+      if (Profile::canCreate()) {
          return $query." 1 ";
       }
 
@@ -721,7 +721,7 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
-      if (($canedit = Session::haveRight("profile", (UPDATE | CREATE | PURGE))) && $openform) {
+      if (($canedit = Session::haveRight(self::$rightname, (UPDATE | CREATE | PURGE))) && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -807,7 +807,7 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
-      if ($canedit = Session::haveRight("profile", (UPDATE | CREATE | PURGE)) && $openform) {
+      if ($canedit = Session::haveRight(self::$rightname, (UPDATE | CREATE | PURGE)) && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -867,10 +867,6 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
       self::dropdownRight("reports", array('value'   => $this->fields["reports"],
                                            'nowrite' => true));
-      echo "</td><td>".__('Item notes')."</td><td>";
-      $tab = CommonDBTM::getRights();
-      unset($tab[CREATE], $tab[DELETE], $tab[   PURGE]);
-      self::dropdownRights($tab, "_notes", $this->fields["notes"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -1433,7 +1429,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "<td>"._n('Dropdown', 'Dropdowns', 2)."</td><td>";
       $tab = CommonDBTM::getRights();
-      unset($tab[ProfileRight::DELETE]);
+      unset($tab[DELETE]);
       self::dropdownRights($tab, "_dropdown", $this->fields["dropdown"]);
       echo "</td>";
       echo "<td class='tab_bg_2'>".__('Entity dropdowns')."</td>";
@@ -1455,21 +1451,22 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Notification', 'Notifications',2)."</td><td>";
-      self::dropdownRights(Notification::getRights(), "_notification",
+      self::dropdownRights(ProfileRight::getRightsFor('Notification'), "_notification",
                            $this->fields["notification"]);
       echo "</td>";
       echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td>";
-      self::dropdownRights(CommonDropdown::getRights(), "_calendar", $this->fields["calendar"]);
+      self::dropdownRights(ProfileRight::getRightsFor('Calendar'), "_calendar",
+                           $this->fields["calendar"]);
       echo "</td>\n";
       echo "<td>".__('Assistance')."</td><td>";
       $tab = CommonDBTM::getRights();
-      unset($tab[ProfileRight::CREATE], $tab[ProfileRight::DELETE], $tab[ProfileRight::PURGE]);
+      unset($tab[CREATE], $tab[DELETE], $tab[PURGE]);
       self::dropdownRights($tab, "_entity_helpdesk", $this->fields["entity_helpdesk"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('SLA')."</td><td>";
-      self::dropdownRights(SLA::getRights(), "_sla", $this->fields["sla"]);
+      self::dropdownRights(ProfileRight::getRightsFor('SLA'), "_sla", $this->fields["sla"]);
       echo "</td>";
       echo "<td colspan='4'>&nbsp;</td>";
       echo "</tr>\n";

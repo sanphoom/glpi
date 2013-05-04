@@ -279,8 +279,7 @@ class Entity extends CommonTreeDropdown {
                if (Notification::canView()) {
                   $ong[4] = _n('Notification', 'Notifications',2);
                }
-               if (Session::haveRight('entity_helpdesk', ProfileRight::READ)
-                   || Session::haveRight('entity_helpdesk', ProfileRight::UPDATE)) {
+               if (Session::haveRight("entity_helpdesk", (READ | UPDATE))) {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
@@ -1026,7 +1025,7 @@ class Entity extends CommonTreeDropdown {
 
       $con_spotted = false;
       $ID          = $entity->getField('id');
-      if (!$entity->can($ID,'r')) {
+      if (!$entity->can($ID, READ)) {
          return false;
       }
 
@@ -1109,7 +1108,7 @@ class Entity extends CommonTreeDropdown {
    static function showInventoryOptions(Entity $entity) {
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,'r')) {
+      if (!$entity->can($ID, READ)) {
          return false;
       }
 
@@ -1244,7 +1243,7 @@ class Entity extends CommonTreeDropdown {
    static function showNotificationOptions(Entity $entity) {
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID,'r')
+      if (!$entity->can($ID, READ)
           || !Notification::canView()) {
          return false;
       }
@@ -1644,12 +1643,11 @@ class Entity extends CommonTreeDropdown {
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)
-          || (!Session::haveRight('entity_helpdesk', ProfileRight::READ)
-             && !Session::haveRight('entity_helpdesk', ProfileRight::UPDATE))) {
+          || !Session::haveRight('entity_helpdesk', READ | UPDATE)) {
          return false;
       }
-      $canedit = Session::haveRight('entity_helpdesk', ProfileRight::UPDATE)
-                 && Session::haveAccessToEntity($ID);
+      $canedit = (!Session::haveRight('entity_helpdesk', UPDATE)
+                 && Session::haveAccessToEntity($ID));
 
       echo "<div class='spaced'>";
       if ($canedit) {

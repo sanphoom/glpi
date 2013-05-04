@@ -485,7 +485,7 @@ class Toolbox {
       } else {
          $message = "  Script : " . $_SERVER["SCRIPT_FILENAME"]. "\n";
       }
-      
+
       if ($log) {
          self::logInFile($log, $message, true);
       } else {
@@ -567,7 +567,7 @@ class Toolbox {
       } else {
          $hide = "Toolbox::userErrorHandlerNormal()";
       }
-      
+
       $err .= self::backtrace(false, $hide, $skip);
 
       // Save error
@@ -2010,7 +2010,7 @@ class Toolbox {
    **/
    static function showMailServerConfig($value) {
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Config::canUpdate()) {
          return false;
       }
 
