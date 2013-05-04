@@ -194,7 +194,7 @@ function update084to085() {
                          "`name` = 'import_externalauth_users' AND `right` = 'w'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . ProfileRight::IMPORTEXTAUTHUSERS ."
+                 SET `rights` = `rights` | " . User::IMPORTEXTAUTHUSERS ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'User'";
       $DB->queryOrDie($query, "0.85 update user with import_externalauth_users right");
@@ -208,7 +208,7 @@ function update084to085() {
                          "`name` = 'rule_ticket' AND `right` = 'r'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . ProfileRight::RULETICKET ."
+                 SET `rights` = `rights` | " . RuleTicket::RULETICKET ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'entity_rule_ticket'";
       $DB->queryOrDie($query, "0.85 update entity_rule_ticket with rule_ticket right");
@@ -222,7 +222,7 @@ function update084to085() {
                          "`name` = 'knowbase_admin' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . ProfileRight::KNOWBASEADMIN ."
+                 SET `rights` = `rights` | " . Knowbase::KNOWBASEADMIN ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'knowbase'";
       $DB->queryOrDie($query, "0.85 update knowbase with knowbase_admin right");

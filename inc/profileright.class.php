@@ -47,15 +47,6 @@ class ProfileRight extends CommonDBChild {
    static public $items_id = 'profiles_id'; // Field name
 
 
-   // rights for rule
-   const RULETICKET           = 1024;
-
-   // rights for knowbase
-   const KNOWBASEADMIN        = 1024;
-
-   // rights for reservation
-   const RESERVEITEM      = 1024;
-
 
    static function getAllPossibleRights() {
       global $DB;
@@ -245,25 +236,6 @@ class ProfileRight extends CommonDBChild {
       }
    }
 
-
-   /**
-    * Get rights for an itemtype
-    *
-    * @since version 0.85
-    *
-    * @param $itemtype   string   itemtype
-    * @param $interface  string   (defautl 'central')
-    *
-    * @return rights
-    **/
-   static function getRightsFor($itemtype, $interface='central') {
-
-      $item = new $itemtype();
-      if (class_exists($itemtype)) {
-         return $item->getRights($interface);
-      }
-      return false;
-   }
 
 }
 ?>

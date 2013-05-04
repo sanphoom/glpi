@@ -46,6 +46,8 @@ class KnowbaseItem extends CommonDBTM {
    protected $profiles  = array();
    protected $entities  = array();
 
+
+
    static function getTypeName($nb=0) {
       return __('Knowledge base');
    }
@@ -81,7 +83,7 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
-      if (Session::haveRight('knowbase_admin', ProfileRight::KNOWBASEADMIN)) {
+      if (Knowbase::KNOWBASEADMIN) {
          return true;
       }
 
@@ -98,7 +100,7 @@ class KnowbaseItem extends CommonDBTM {
    function canUpdateItem() {
 
       // Personal knowbase or visibility and write access
-      return (Session::haveRight('knowbase_admin', ProfileRight::KNOWBASEADMIN)
+      return (Knowbase::KNOWBASEADMIN
               || ($this->fields['users_id'] == Session::getLoginUserID())
               || ((($this->fields["is_faq"] && Session::haveRight("faq", ProfileRight::UPDATE))
                    || (!$this->fields["is_faq"]
@@ -330,7 +332,7 @@ class KnowbaseItem extends CommonDBTM {
          return true;
       }
       // Admin
-      if (Session::haveRight('knowbase_admin', ProfileRight::KNOWBASEADMIN)) {
+      if (Knowbase::KNOWBASEADMIN) {
          return true;
       }
       // Users
@@ -891,7 +893,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       $values = array('myunpublished' => __('My unpublished articles'),
                       'allmy'         => __('All my articles'));
-      if (Session::haveRight('knowbase_admin', ProfileRight::KNOWBASEADMIN)) {
+      if (Knowbase::KNOWBASEADMIN) {
          $values['allunpublished'] = __('All unpublished articles');
       }
       Dropdown::showFromArray('unpublished', $values, array('value' => $params['unpublished']));
@@ -1066,7 +1068,7 @@ class KnowbaseItem extends CommonDBTM {
             break;
 
          case 'allunpublished' :
-            if (!Session::haveRight('knowbase_admin', ProfileRight::KNOWBASEADMIN)) {
+            if (!Knowbase::KNOWBASEADMIN) {
                return false;
             }
             break;
