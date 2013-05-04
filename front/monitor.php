@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("monitor", ProfileRight::READ);
+Session::checkRight("monitor", READ);
 
 Html::header(Monitor::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "monitor");
 

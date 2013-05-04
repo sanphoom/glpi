@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", ProfileRight::READ);
+Session::checkRight("config", READ);
 
 Html::header(AuthLDAP::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'auth', 'ldap');
 

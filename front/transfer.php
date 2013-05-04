@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("transfer", ProfileRight::READ);
+Session::checkRight("transfer", READ);
 
 Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
 

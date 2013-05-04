@@ -50,7 +50,7 @@ if (isset($_POST["id"])) {
 
 
 if (isset($_POST["add"])) {
-   $dropdown->check(-1, ProfileRight::READ, $_POST);
+   $dropdown->check(-1, READ, $_POST);
 
    if ($newID=$dropdown->add($_POST)) {
       if ($dropdown instanceof CommonDevice) {
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    Html::back();
    // TODO Review after showFormButton => purge not delete
 } else if (isset($_POST["delete"])) {
-   $dropdown->check($_POST["id"], ProfileRight::PURGE);
+   $dropdown->check($_POST["id"], PURGE);
    if ($dropdown->isUsed()
        && empty($_POST["forcedelete"])) {
       Html::header($dropdown->getTypeName(1), $_SERVER['PHP_SELF'], "config",
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["replace"])) {
-   $dropdown->check($_POST["id"], ProfileRight::DELETE);
+   $dropdown->check($_POST["id"], DELETE);
    $dropdown->delete($_POST, 1);
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
    $dropdown->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $dropdown->check($_POST["id"], ProfileRight::UPDATE);
+   $dropdown->check($_POST["id"], UPDATE);
    $dropdown->update($_POST);
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",

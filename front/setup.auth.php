@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", ProfileRight::READ);
+Session::checkRight("config", READ);
 
 Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "auth", -1);
 

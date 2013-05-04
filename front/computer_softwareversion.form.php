@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", ProfileRight::UPDATE);
+Session::checkRight("software", UPDATE);
 $inst = new Computer_SoftwareVersion();
 
 // From Computer - Software tab (add form)

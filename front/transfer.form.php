@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("transfer", ProfileRight::READ);
+Session::checkRight("transfer", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,7 +42,7 @@ if (empty($_GET["id"])) {
 $transfer = new Transfer();
 
 if (isset($_POST["add"])) {
-   $transfer->check(-1, ProfileRight::CREATE, $_POST);
+   $transfer->check(-1, CREATE, $_POST);
 
    $newID = $transfer->add($_POST);
    Event::log($newID, "transfers", 4, "setup",
@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
    Html::back();
    // TODO Review after showFormButton => purge not delete
 } else if (isset($_POST["delete"])) {
-   $transfer->check($_POST["id"], ProfileRight::PURGE);
+   $transfer->check($_POST["id"], PURGE);
 
    $transfer->delete($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup",
@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/transfer.php");
 
 } else if (isset($_POST["update"])) {
-   $transfer->check($_POST["id"], ProfileRight::UPDATE);
+   $transfer->check($_POST["id"], UPDATE);
 
    $transfer->update($_POST);
    Event::log($_POST["id"], "transfers", 4, "setup",

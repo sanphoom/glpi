@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("consumable", ProfileRight::READ);
+Session::checkRight("consumable", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -43,7 +43,7 @@ if (!isset($_GET["id"])) {
 $constype = new ConsumableItem();
 
 if (isset($_POST["add"])) {
-   $constype->check(-1, ProfileRight::CREATE, $_POST);
+   $constype->check(-1, CREATE, $_POST);
 
    if ($newID = $constype->add($_POST)) {
       Event::log($newID, "consumables", 4, "inventory",
@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $constype->check($_POST["id"], ProfileRight::DELETE);
+   $constype->check($_POST["id"], DELETE);
 
    if ($constype->delete($_POST)) {
       Event::log($_POST["id"], "consumables", 4, "inventory",
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $constype->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $constype->check($_POST["id"], ProfileRight::PURGE);
+   $constype->check($_POST["id"], PURGE);
 
    if ($constype->restore($_POST)) {
       Event::log($_POST["id"], "consumables", 4, "inventory",
@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
    $constype->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $constype->check($_POST["id"], ProfileRight::PURGE);
+   $constype->check($_POST["id"], PURGE);
 
    if ($constype->delete($_POST,1)) {
       Event::log($_POST["id"], "consumables", 4, "inventory",
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
    $constype->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $constype->check($_POST["id"], ProfileRight::UPDATE);
+   $constype->check($_POST["id"], UPDATE);
 
    if ($constype->update($_POST)) {
       Event::log($_POST["id"], "consumables", 4, "inventory",

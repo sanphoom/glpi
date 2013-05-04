@@ -33,13 +33,13 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("consumable", ProfileRight::READ);
+Session::checkRight("consumable", READ);
 
 $con      = new Consumable();
 $constype = new ConsumableItem();
 
 if (isset($_POST["add_several"])) {
-   $constype->check($_POST["consumableitems_id"], ProfileRight::UPDATE);
+   $constype->check($_POST["consumableitems_id"], UPDATE);
 
    for ($i=0 ; $i<$_POST["to_add"] ; $i++) {
       unset($con->fields["id"]);

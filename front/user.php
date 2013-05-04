@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("user", ProfileRight::READ);
+Session::checkRight("user", READ);
 
 Html::header(User::getTypeName(2), '', "admin", "user");
 

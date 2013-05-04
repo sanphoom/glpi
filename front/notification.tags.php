@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 Html::popHeader(__('List of available tags'), $_SERVER['PHP_SELF']);
 
 if (isset($_GET["sub_type"])) {
-   Session::checkRight("config", ProfileRight::READ);
+   Session::checkRight("config", READ);
    NotificationTemplateTranslation::showAvailableTags($_GET["sub_type"]);
    Html::ajaxFooter();
 } else {

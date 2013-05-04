@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", ProfileRight::READ);
+Session::checkRight("software", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -44,7 +44,7 @@ if (!isset($_GET["softwares_id"])) {
 $license = new SoftwareLicense();
 
 if (isset($_POST["add"])) {
-   $license->check(-1, ProfileRight::CREATE,$_POST);
+   $license->check(-1, CREATE,$_POST);
 
    $newID = $license->add($_POST);
    Event::log($_POST['softwares_id'], "software", 4, "inventory",
@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $license->check($_POST['id'], ProfileRight::PURGE);
+   $license->check($_POST['id'], PURGE);
    // TODO no fields is_deleted => purge
    $license->delete($_POST);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $license->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $license->check($_POST['id'], ProfileRight::UPDATE);
+   $license->check($_POST['id'], UPDATE);
 
    $license->update($_POST);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",

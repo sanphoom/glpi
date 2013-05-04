@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("sla", ProfileRight::READ);
+Session::checkRight("sla", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,7 +42,7 @@ if (empty($_GET["id"])) {
 $sla = new SLA();
 
 if (isset($_POST["add"])) {
-   $sla->check(-1, 'w');
+   $sla->check(-1, CREATE);
    $newID = $sla->add($_POST);
 
    Event::log($newID, "slas", 4, "setup",
@@ -50,7 +50,8 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
 
 } else if (isset($_POST["delete"])) {
-   $sla->check($_POST["id"], 'd');
+   $sla->check($_POST["id"], PURGE);
+   //TODO => purge
    $sla->delete($_POST);
 
    Event::log($_POST["id"], "slas", 4, "setup",
@@ -59,7 +60,7 @@ if (isset($_POST["add"])) {
    $sla->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $sla->check($_POST["id"], 'w');
+   $sla->check($_POST["id"], UPDATE);
    $sla->update($_POST);
 
    Event::log($_POST["id"], "slas", 4, "setup",

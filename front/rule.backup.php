@@ -44,7 +44,7 @@ if (isset($_GET['action'])) {
 }
 
 $rulecollection = new RuleCollection();
-$rulecollection->checkGlobal(ProfileRight::READ);
+$rulecollection->checkGlobal(READ);
 
 if ($action != "export") {
    Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "rule", -1);

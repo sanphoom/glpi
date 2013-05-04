@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", ProfileRight::UPDATE);
+Session::checkRight("config", UPDATE);
 
 Html::header(MailCollector::getTypeName(2), $_SERVER['PHP_SELF'], "config","mailcollector");
 

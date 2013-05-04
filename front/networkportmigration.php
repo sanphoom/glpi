@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("networking", ProfileRight::UPDATE);
+Session::checkRight("networking", UPDATE);
 
 if (!TableExists('glpi_networkportmigrations')) {
    Html::displayNotFoundError();

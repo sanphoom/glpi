@@ -73,10 +73,10 @@ if (!Session::haveRight('create_ticket',1)) {
        || Session::haveRight('validate_incident',1)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/ticket.php");
 
-   } else if (Session::haveRight('reservation_helpdesk', ProfileRight::RESERVEITEM)) {
+   } else if (Session::haveRight('reservation_helpdesk', READ)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/reservationitem.php");
 
-   } else if (Session::haveRight('faq', ProfileRight::READ)) {
+   } else if (Session::haveRight('faq', READ)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.faq.php");
    }
 }
@@ -100,13 +100,13 @@ if (isset($_GET['create_ticket'])) {
       echo "</td></tr>";
    }
 
-   if (Session::haveRight("reminder_public", ProfileRight::READ)) {
+   if (Session::haveRight("reminder_public", READ)) {
       echo "<tr><td class='top' width='450px'>";
       Reminder::showListForCentral(false);
       echo "</td></tr>";
    }
 
-   if (Session::haveRight("rssfeed_public", ProfileRight::READ)) {
+   if (Session::haveRight("rssfeed_public", READ)) {
       echo "<tr><td class='top' width='450px'>";
       RSSFeed::showListForCentral(false);
       echo "</td></tr>";
@@ -117,7 +117,7 @@ if (isset($_GET['create_ticket'])) {
    echo "<table>";
 
    // Show KB items
-   if (Session::haveRight("faq", ProfileRight::READ)) {
+   if (Session::haveRight("faq", READ)) {
       echo "<tr><td class='top' width='450px'>";
       KnowbaseItem::showRecentPopular("popular");
       echo "</td></tr>";

@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", ProfileRight::UPDATE);
+Session::checkRight("config", UPDATE);
 
 $config = new Config();
 

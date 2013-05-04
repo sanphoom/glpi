@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("profile", ProfileRight::READ);
+Session::checkRight("profile", READ);
 
 if (!isset($_GET['id'])) {
    $_GET['id'] = "";
@@ -42,14 +42,15 @@ if (!isset($_GET['id'])) {
 $prof = new Profile();
 
 if (isset($_POST["add"])) {
-   $prof->check(-1, ProfileRight::CREATE, $_POST);
+   $prof->check(-1, CREATE, $_POST);
    $ID = $prof->add($_POST);
 
    // We need to redirect to form to enter rights
    Html::redirect($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
 
 } else if (isset($_POST["delete"])) {
-   $prof->check($_POST['id'], ProfileRight::PURGE);
+   $prof->check($_POST['id'], PURGE);
+   //TODO purge
    if ($prof->delete($_POST)) {
       $prof->redirectToList();
    } else {
@@ -58,7 +59,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["update"])
            || isset($_POST["interface"])) {
-   $prof->check($_POST['id'], ProfileRight::UPDATE);
+   $prof->check($_POST['id'], UPDATE);
 
    $prof->update($_POST);
    Html::back();

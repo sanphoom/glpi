@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("printer", ProfileRight::READ);
+Session::checkRight("printer", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -44,7 +44,7 @@ if (!isset($_GET["withtemplate"])) {
 
 $print = new Printer();
 if (isset($_POST["add"])) {
-   $print->check(-1, ProfileRight::CREATE,$_POST);
+   $print->check(-1, CREATE,$_POST);
 
    if ($newID=$print->add($_POST)) {
       Event::log($newID, "printers", 4, "inventory",
@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $print->check($_POST["id"], ProfileRight::DELETE);
+   $print->check($_POST["id"], DELETE);
    $print->delete($_POST);
 
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $print->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $print->check($_POST["id"], ProfileRight::PURGE);
+   $print->check($_POST["id"], PURGE);
 
    $print->restore($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $print->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $print->check($_POST["id"], ProfileRight::PURGE);
+   $print->check($_POST["id"], PURGE);
 
    $print->delete($_POST, 1);
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
    $print->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $print->check($_POST["id"], ProfileRight::UPDATE);
+   $print->check($_POST["id"], UPDATE);
 
    $print->update($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory",
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["unglobalize"])) {
-   $print->check($_POST["id"], ProfileRight::UPDATE);
+   $print->check($_POST["id"], UPDATE);
 
    Computer_Item::unglobalizeItem($print);
    Event::log($_POST["id"], "printers", 4, "inventory",

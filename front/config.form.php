@@ -33,20 +33,17 @@
 
 
 include ('../inc/includes.php');
+Session::checkRight("config", UPDATE);
 
 $config = new Config();
 $_POST['id'] = 1;
 if (!empty($_POST["update_auth"])) {
-   if (Session::checkRight("config", ProfileRight::UPDATE)) {
-      $config->update($_POST);
-      Html::back();
-   }
+   $config->update($_POST);
+   Html::back();
 }
 if (!empty($_POST["update"])) {
-   if (Session::checkRight("config", ProfileRight::UPDATE)) {
-      $config->update($_POST);
-      Html::redirect(Toolbox::getItemTypeFormURL('Config'));
-   }
+   $config->update($_POST);
+   Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 
 Html::header(Config::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config");

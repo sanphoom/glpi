@@ -37,7 +37,7 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownValuesBlacklist.php")) {
    Html::header_nocache();
 }
 
-Session::checkRight("config", ProfileRight::UPDATE);
+Session::checkRight("config", UPDATE);
 if (isset($_POST['itemtype'])
     && isset($_POST['id_field'])) {
 

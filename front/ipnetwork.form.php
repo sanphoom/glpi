@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 if (isset($_POST['reinit_network'])) {
 
-   if (Session::haveRight('internet', ProfileRight::UPDATE)
+   if (Session::haveRight('internet', UPDATE)
        // Check access to all entities
        && Session::isViewAllEntities()) {
       IPNetwork::recreateTree();

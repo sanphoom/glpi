@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("computer", ProfileRight::READ);
+Session::checkRight("computer", READ);
 
 Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "assets", "computer");
 

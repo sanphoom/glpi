@@ -33,7 +33,7 @@
 
 include ("../inc/includes.php");
 
-Session::checkRight("reports", ProfileRight::READ);
+Session::checkRight("reports", READ);
 
 Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");
 

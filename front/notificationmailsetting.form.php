@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("config", ProfileRight::UPDATE);
+Session::checkRight("config", UPDATE);
 $notificationmail = new NotificationMailSetting();
 
 if (!empty($_POST["test_smtp_send"])) {

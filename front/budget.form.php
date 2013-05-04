@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("budget", ProfileRight::READ);
+Session::checkRight("budget", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = '';
@@ -44,7 +44,7 @@ if (!isset($_GET["withtemplate"])) {
 
 $budget = new Budget();
 if (isset($_POST["add"])) {
-   $budget->check(-1, ProfileRight::CREATE, $_POST);
+   $budget->check(-1, CREATE, $_POST);
 
    if ($newID = $budget->add($_POST)) {
       Event::log($newID, "budget", 4, "financial",
@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $budget->check($_POST["id"], ProfileRight::DELETE);
+   $budget->check($_POST["id"], DELETE);
 
    if ($budget->delete($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $budget->check($_POST["id"], ProfileRight::PURGE);
+   $budget->check($_POST["id"], PURGE);
 
    if ($budget->restore($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $budget->check($_POST["id"], ProfileRight::PURGE);
+   $budget->check($_POST["id"], PURGE);
 
    if ($budget->delete($_POST,1)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $budget->check($_POST["id"], ProfileRight::UPDATE);
+   $budget->check($_POST["id"], UPDATE);
 
    if ($budget->update($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",
@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
       Html::popFooter();
 
 } else {
-   
+
    Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
    $budget->display(array('id'           => $_GET["id"],
                           'withtemplate' => $_GET["withtemplate"]));

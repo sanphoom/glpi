@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("printer", ProfileRight::READ);
+Session::checkRight("printer", READ);
 
 Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "printer");
 

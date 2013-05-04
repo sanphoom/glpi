@@ -57,13 +57,13 @@ if (!isset($_GET["action"])) {
 $bookmark = new Bookmark();
 
 if (isset($_POST["add"])) {
-   $bookmark->check(-1, ProfileRight::CREATE, $_POST);
+   $bookmark->check(-1, CREATE, $_POST);
 
    $bookmark->add($_POST);
 
 } else if (isset($_POST["update"])) {
-   $bookmark->check($_POST["id"], ProfileRight::UPDATE);   // Right to update the bookmark
-   $bookmark->check(-1, ProfileRight::CREATE, $_POST);     // Right when entity change
+   $bookmark->check($_POST["id"], UPDATE);   // Right to update the bookmark
+   $bookmark->check(-1, CREATE, $_POST);     // Right when entity change
 
    $bookmark->update($_POST);
    $_GET["action"] = "";
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
 } else if ($_GET["action"] == "edit"
            && isset($_GET['mark_default'])
            && isset($_GET["id"])) {
-   $bookmark->check($_GET["id"], ProfileRight::UPDATE);
+   $bookmark->check($_GET["id"], UPDATE);
 
    if ($_GET["mark_default"] > 0) {
       $bookmark->mark_default($_GET["id"]);
@@ -82,11 +82,11 @@ if (isset($_POST["add"])) {
 
 } else if (($_GET["action"] == "load")
            && isset($_GET["id"]) && ($_GET["id"] > 0)) {
-   $bookmark->check($_GET["id"], ProfileRight::READ);
+   $bookmark->check($_GET["id"], READ);
    $bookmark->load($_GET["id"]);
    $_GET["action"] = "";
 } else if (isset($_POST["delete"])) {
-   $bookmark->check($_POST["id"], ProfileRight::PURGE);
+   $bookmark->check($_POST["id"], PURGE);
    $bookmark->delete($_POST,1);
    $_GET["action"] = "";
 
@@ -96,11 +96,11 @@ if ($_GET["action"] == "edit") {
 
    if (isset($_GET['id']) && ($_GET['id'] > 0)) {
       // Modify
-      $bookmark->check($_GET["id"], ProfileRight::UPDATE);
+      $bookmark->check($_GET["id"], UPDATE);
       $bookmark->showForm($_GET['id']);
    } else {
       // Create
-      $bookmark->check(-1, ProfileRight::CREATE);
+      $bookmark->check(-1, CREATE);
       $bookmark->showForm(0, array('type'     => $_GET["type"],
                                    'url'      => rawurldecode($_GET["url"]),
                                    'itemtype' => $_GET["itemtype"]));

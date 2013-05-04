@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("peripheral", ProfileRight::READ);
+Session::checkRight("peripheral", READ);
 
 Html::header(Peripheral::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "peripheral");
 

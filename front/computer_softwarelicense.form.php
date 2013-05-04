@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", ProfileRight::UPDATE);
+Session::checkRight("software", UPDATE);
 $csl = new Computer_SoftwareLicense();
 
 if (isset($_POST["add"])) {

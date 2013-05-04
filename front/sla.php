@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("sla", ProfileRight::READ);
+Session::checkRight("sla", READ);
 
 Html::header(SLA::getTypeName(2), $_SERVER['PHP_SELF'], "config", "sla");
 

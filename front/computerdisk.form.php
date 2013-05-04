@@ -45,7 +45,7 @@ if (!isset($_GET["computers_id"])) {
 
 $disk = new ComputerDisk();
 if (isset($_POST["add"])) {
-   $disk->check(-1, CommonDBTM::CREATE, $_POST);
+   $disk->check(-1, CREATE, $_POST);
 
    if ($newID = $disk->add($_POST)) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $disk->check($_POST["id"], ProfileRight::DELETE);
+   $disk->check($_POST["id"], DELETE);
 
    if ($disk->delete($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
                   ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
-   $disk->check($_POST["id"], ProfileRight::UPDATE);
+   $disk->check($_POST["id"], UPDATE);
 
    if ($disk->update($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",

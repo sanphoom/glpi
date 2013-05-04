@@ -42,7 +42,7 @@ if (!isset($_GET["id"])) {
 $doc          = new Document();
 
 if (isset($_POST["add"])) {
-   $doc->check(-1, ProfileRight::CREATE, $_POST);
+   $doc->check(-1, CREATE, $_POST);
 
    if ($newID = $doc->add($_POST)) {
       Event::log($newID, "documents", 4, "login",
@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $doc->check($_POST["id"], ProfileRight::DELETE);
+   $doc->check($_POST["id"], DELETE);
 
    if ($doc->delete($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",
@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
    $doc->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $doc->check($_POST["id"], ProfileRight::PURGE);
+   $doc->check($_POST["id"], PURGE);
 
    if ($doc->restore($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",
@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
    $doc->redirectToList();
 
 } else if (isset($_POST["purge"])) {
-   $doc->check($_POST["id"], ProfileRight::PURGE);
+   $doc->check($_POST["id"], PURGE);
 
    if ($doc->delete($_POST,1)) {
       Event::log($_POST["id"], "documents", 4, "document",
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
    $doc->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $doc->check($_POST["id"], ProfileRight::UPDATE);
+   $doc->check($_POST["id"], UPDATE);
 
    if ($doc->update($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",

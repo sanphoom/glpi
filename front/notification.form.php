@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("notification", ProfileRight::READ);
+Session::checkRight("notification", READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
@@ -41,7 +41,7 @@ if (!isset($_GET["id"])) {
 
 $notification = new Notification();
 if (isset($_POST["add"])) {
-   $notification->check(-1, ProfileRight::CREATE,$_POST);
+   $notification->check(-1, CREATE,$_POST);
 
    $newID = $notification->add($_POST);
    Event::log($newID, "notifications", 4, "notification",
@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    Html::redirect($_SERVER['PHP_SELF']."?id=$newID");
 
 } else if (isset($_POST["delete"])) {
-   $notification->check($_POST["id"], ProfileRight::PURGE);
+   $notification->check($_POST["id"], PURGE);
    // TODO no dustbin => purge
    $notification->delete($_POST);
 
@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    $notification->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $notification->check($_POST["id"], ProfileRight::UPDATE);
+   $notification->check($_POST["id"], UPDATE);
 
    $notification->update($_POST);
    Event::log($_POST["id"], "notifications", 4, "notification",
