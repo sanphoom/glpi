@@ -260,7 +260,7 @@ class Contract_Item extends CommonDBRelation{
       global $CFG_GLPI;
 
       // Can exists on template
-      if (Session::haveRight("contract", ProfileRight::READ)) {
+      if (Contract::canView()) {
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -349,12 +349,12 @@ class Contract_Item extends CommonDBRelation{
       $itemtype = $item->getType();
       $ID       = $item->fields['id'];
 
-      if (!Session::haveRight("contract", ProfileRight::READ)
-          || !$item->can($ID, ProfileRight::READ)) {
+      if (!Contract::canView()
+          || !$item->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $item->can($ID, ProfileRight::UPDATE);
+      $canedit = $item->can($ID, UPDATE);
       $rand = mt_rand();
 
       $query = "SELECT `glpi_contracts_items`.*
@@ -497,10 +497,10 @@ class Contract_Item extends CommonDBRelation{
 
       $instID = $contract->fields['id'];
 
-      if (!$contract->can($instID, ProfileRight::READ)) {
+      if (!$contract->can($instID, READ)) {
          return false;
       }
-      $canedit = $contract->can($instID, ProfileRight::UPDATE);
+      $canedit = $contract->can($instID, UPDATE);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`

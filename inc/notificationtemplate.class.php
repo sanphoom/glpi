@@ -78,7 +78,7 @@ class NotificationTemplate extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Config::canUpdate()) {
          return false;
       }
 

@@ -376,7 +376,7 @@ class CronTask extends CommonDBTM{
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::READ) || !$this->getFromDB($ID)) {
+      if (!Config::canView() || !$this->getFromDB($ID)) {
          return false;
       }
 
@@ -1184,7 +1184,7 @@ class CronTask extends CommonDBTM{
 
       switch ($input['action']) {
          case 'reset' :
-            if (Session::haveRight('config', ProfileRight::UPDATE)) {
+            if (Config::canUpdate()) {
                foreach ($input["item"] as $key => $val) {
                   if (($val == 1)
                       && $this->getFromDB($key)) {

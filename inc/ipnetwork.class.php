@@ -1006,7 +1006,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function title() {
       parent::title();
 
-      if (Session::haveRight('internet', ProfileRight::UPDATE)
+      if (Session::haveRight('internet', UPDATE)
           && Session::isViewAllEntities()) {
 
          echo "<div class='spaced' id='tabsbody'>";

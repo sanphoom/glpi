@@ -210,7 +210,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'delete'            => __('Deletion of a ticket'),
                       'alertnotclosed'    => __('Not solved tickets'),
                       'recall'            => __('Automatic reminders of SLAs'),
-                      'satisfaction'      => __('Satisfaction survey'));
+                      'satisfaction'      => __('Satisfaction survey'),
+                      'replysatisfaction' => __('Reply to satisfaction survey'));
       asort($events);
       return $events;
    }

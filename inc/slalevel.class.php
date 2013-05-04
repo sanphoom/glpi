@@ -93,11 +93,11 @@ class SlaLevel extends RuleTicket {
       global $DB;
 
       $ID = $sla->getField('id');
-      if (!$sla->can($ID, ProfileRight::READ)) {
+      if (!$sla->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $sla->can($ID, ProfileRight::UPDATE);
+      $canedit = $sla->can($ID, UPDATE);
 
       $rand    = mt_rand();
 
@@ -121,7 +121,7 @@ class SlaLevel extends RuleTicket {
          if ($resolution_time < 0)  {
             $resolution_time = - $resolution_time * DAY_TIMESTAMP;
          }
-         
+
          self::dropdownExecutionTime('execution_time',
                                      array('max_time'
                                              => $resolution_time,
@@ -260,7 +260,7 @@ class SlaLevel extends RuleTicket {
    **/
    function showForm($ID, $options=array()) {
 
-      $canedit = $this->can('sla', ProfileRight::UPDATE);
+      $canedit = $this->can('sla',UPDATE);
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);

@@ -745,7 +745,7 @@ class Change extends CommonITILObject {
       }
 
       $showuserlink = 0;
-      if (Session::haveRight('user', ProfileRight::READ)) {
+      if (User::canView()) {
          $showuserlink = 1;
       }
 

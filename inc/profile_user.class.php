@@ -69,7 +69,7 @@ class Profile_User extends CommonDBRelation {
    function canCreateItem() {
 
       $user = new User();
-      return $user->can($this->fields['users_id'], ProfileRight::READ)
+      return $user->can($this->fields['users_id'],READ)
              && Profile::currentUserHaveMoreRightThan(array($this->fields['profiles_id']
                                                                => $this->fields['profiles_id']))
              && Session::haveAccessToEntity($this->fields['entities_id']);
@@ -98,11 +98,11 @@ class Profile_User extends CommonDBRelation {
       global $DB,$CFG_GLPI;
 
       $ID = $user->getField('id');
-      if (!$user->can($ID,'r')) {
+      if (!$user->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $user->can($ID,'w');
+      $canedit = $user->can($ID, (CREATE | UPDATE | DELETE | PURGE));
 
       $strict_entities = self::getUserEntities($ID,false);
       if (!Session::haveAccessToOneOfEntities($strict_entities)
@@ -110,7 +110,7 @@ class Profile_User extends CommonDBRelation {
          $canedit = false;
       }
 
-      $canshowentity = Session::haveRight("entity","r");
+      $canshowentity = Entity::canView();
       $rand          = mt_rand();
 
       if ($canedit) {
@@ -198,7 +198,7 @@ class Profile_User extends CommonDBRelation {
             echo $link.($canshowentity ? "</a>" : '');
             echo "</td>";
 
-            if (Session::haveRight('profile', ProfileRight::READ)) {
+            if (Profile::canView()) {
                $entname = "<a href='".Toolbox::getItemTypeFormURL('Profile')."?id=".$data["id"]."'>".
                             $data["name"]."</a>";
             } else {
@@ -249,12 +249,12 @@ class Profile_User extends CommonDBRelation {
 
 
       $ID = $entity->getField('id');
-      if (!$entity->can($ID, "r")) {
+      if (!$entity->can($ID, READ)) {
          return false;
       }
 
-      $canedit     = $entity->can($ID,"w");
-      $canshowuser = Session::haveRight("user", ProfileRight::READ);
+      $canedit     = $entity->can($ID, (CREATE | UPDATE | DELETE | PURGE));
+      $canshowuser = User::canView();
       $nb_per_line = 3;
       $rand        = mt_rand();
 
@@ -420,9 +420,9 @@ class Profile_User extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID      = $prof->fields['id'];
-      $canedit = Session::haveRight("user", ProfileRight::UPDATE);
+      $canedit = Session::haveRight("user", (CREATE | UPDATE | DELETE | PURGE));
       $rand = mt_rand();
-      if (!$prof->can($ID,'r')) {
+      if (!$prof->can($ID, READ)) {
          return false;
       }
 
@@ -862,7 +862,7 @@ class Profile_User extends CommonDBRelation {
          $nb = 0;
          switch ($item->getType()) {
             case 'Entity' :
-               if (Session::haveRight('user', ProfileRight::READ)) {
+               if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),
@@ -873,7 +873,7 @@ class Profile_User extends CommonDBRelation {
                break;
 
             case 'Profile' :
-               if (Session::haveRight('user', ProfileRight::READ)) {
+               if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Keep this ? (only approx. as count deleted users)
                      $nb = countElementsInTable($this->getTable(),

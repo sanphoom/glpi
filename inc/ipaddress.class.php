@@ -105,35 +105,35 @@ class IPAddress extends CommonDBChild {
    // Keep can* because IP Address can be attach to whatever type of item
    static function canView() {
 
-      return (Session::haveRight('internet', ProfileRight::READ)
+      return (Session::haveRight('internet', READ)
               && parent::canView());
    }
 
 
    static function canCreate() {
 
-      return (Session::haveRight('internet', ProfileRight::CREATE)
+      return (Session::haveRight('internet', CREATE)
               && parent::canCreate());
    }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('internet', ProfileRight::UPDATE)
+      return (Session::haveRight('internet', UPDATE)
               && parent::canUpdate());
    }
 
 
    static function canDelete() {
 
-      return (Session::haveRight('internet', ProfileRight::DELETE)
+      return (Session::haveRight('internet', DELETE)
               && parent::canDelete());
    }
 
 
    static function canDPurge() {
 
-      return (Session::haveRight('internet', ProfileRight::PURGE)
+      return (Session::haveRight('internet', PURGE)
             && parent::canPurge());
    }
 

@@ -81,7 +81,7 @@ class Auth extends CommonGLPI {
     * @since version 0.85
    **/
    static function canView() {
-      return Session::haveRight('config', ProfileRight::READ);
+      return Session::haveRight('config', READ);
    }
 
 
@@ -93,7 +93,7 @@ class Auth extends CommonGLPI {
    static function getMenuContent() {
 
       $menu = array();
-      if (Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (Config::canUpdate()) {
             $menu['title']                              = __('Authentication');
             $menu['page']                               = '/front/setup.auth.php';
 
@@ -1106,7 +1106,7 @@ class Auth extends CommonGLPI {
    static function showOtherAuthList() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Config::canUpdate()) {
          return false;
       }
 

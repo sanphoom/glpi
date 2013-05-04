@@ -120,12 +120,12 @@ class Group_User extends CommonDBRelation{
       global $CFG_GLPI;
 
       $ID = $user->fields['id'];
-      if (!Session::haveRight("group", ProfileRight::READ)
-          || !$user->can($ID, ProfileRight::READ)) {
+      if (!Group::canView()
+          || !$user->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $user->can($ID, ProfileRight::UPDATE);
+      $canedit = $user->can($ID, UPDATE);
 
       $rand    = mt_rand();
 
@@ -395,8 +395,8 @@ class Group_User extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID = $group->getID();
-      if (!Session::haveRight("user", ProfileRight::READ)
-          || !$group->can($ID, ProfileRight::READ)) {
+      if (!User::canView()
+          || !$group->can($ID, READ)) {
          return false;
       }
 
@@ -710,7 +710,7 @@ class Group_User extends CommonDBRelation{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'User' :
-               if (Session::haveRight("group", ProfileRight::READ)) {
+               if (Group::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(Group::getTypeName(2),
                                                  countElementsInTable($this->getTable(),
@@ -722,7 +722,7 @@ class Group_User extends CommonDBRelation{
                break;
 
             case 'Group' :
-               if (Session::haveRight("user", ProfileRight::READ)) {
+               if (User::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(User::getTypeName(2),
                                                  countElementsInTable("glpi_groups_users",

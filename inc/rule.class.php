@@ -132,11 +132,11 @@ class Rule extends CommonDBTM {
 
       $menu = array();
 
-      if (Session::haveRight("rule_ldap", ProfileRight::READ)
-          || Session::haveRight("rule_ocs", ProfileRight::READ)
-          || Session::haveRight("entity_rule_ticket", ProfileRight::READ)
-          || Session::haveRight("rule_softwarecategories", ProfileRight::READ)
-          || Session::haveRight("rule_mailcollector", ProfileRight::READ)) {
+      if (Session::haveRight("rule_ldap", READ)
+          || Session::haveRight("rule_ocs", READ)
+          || Session::haveRight("entity_rule_ticket", READ)
+          || Session::haveRight("rule_softwarecategories", READ)
+          || Session::haveRight("rule_mailcollector", READ)) {
 
          $menu['rule']['title'] = static::getTypeName(2);
          $menu['rule']['page']  = static::getSearchURL(false);
@@ -159,7 +159,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      if (Session::haveRight("transfer", ProfileRight::READ)
+      if (Transfer::canView()
           && Session::isMultiEntitiesMode()) {
 
          $menu['rule']['title'] = static::getTypeName(2);
@@ -177,9 +177,9 @@ class Rule extends CommonDBTM {
       }
 
 
-      if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::READ)
-          || Session::haveRight("rule_dictionnary_software", ProfileRight::READ)
-          || Session::haveRight("rule_dictionnary_printer", ProfileRight::READ)) {
+      if (Session::haveRight("rule_dictionnary_dropdown", READ)
+          || Session::haveRight("rule_dictionnary_software", READ)
+          || Session::haveRight("rule_dictionnary_printer", READ)) {
 
          $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', 2);
          $menu['dictionnary']['shortcut'] = '';
@@ -192,7 +192,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['manufacturers']['links']['search']
                            = '/front/ruledictionnarymanufacturer.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['manufacturers']['links']['add']
                               = '/front/ruledictionnarymanufacturer.form.php';
          }
@@ -205,7 +205,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['software']['links']['search']
                            = '/front/ruledictionnarysoftware.php';
 
-         if (Session::haveRight("rule_dictionnary_software", ProfileRight::CREATE)) {
+         if (RuleDictionnarySoftware::canCreate()) {
             $menu['dictionnary']['options']['software']['links']['add']
                               = '/front/ruledictionnarysoftware.form.php';
          }
@@ -218,7 +218,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.computer']['links']['search']
                            = '/front/ruledictionnarycomputermodel.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['model.computer']['links']['add']
                               = '/front/ruledictionnarycomputermodel.form.php';
          }
@@ -231,7 +231,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.monitor']['links']['search']
                            = '/front/ruledictionnarymonitormodel.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['model.monitor']['links']['add']
                               = '/front/ruledictionnarymonitormodel.form.php';
          }
@@ -244,7 +244,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.printer']['links']['search']
                            = '/front/ruledictionnaryprintermodel.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['model.printer']['links']['add']
                               = '/front/ruledictionnaryprintermodel.form.php';
          }
@@ -257,7 +257,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.peripheral']['links']['search']
                            = '/front/ruledictionnaryperipheralmodel.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['model.peripheral']['links']['add']
                               = '/front/ruledictionnaryperipheralmodel.form.php';
          }
@@ -270,7 +270,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.networking']['links']['search']
                            = '/front/ruledictionnarynetworkequipmentmodel.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['model.networking']['links']['add']
                               = '/front/ruledictionnarynetworkequipmentmodel.form.php';
          }
@@ -283,7 +283,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['model.phone']['links']['search']
                            = '/front/ruledictionnaryphonemodel.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['model.phone']['links']['add']
                               = '/front/ruledictionnaryphonemodel.form.php';
          }
@@ -296,7 +296,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.computer']['links']['search']
                            = '/front/ruledictionnarycomputertype.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['type.computer']['links']['add']
                               = '/front/ruledictionnarycomputertype.form.php';
          }
@@ -309,7 +309,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.monitor']['links']['search']
                            = '/front/ruledictionnarymonitortype.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['type.monitor']['links']['add']
                               = '/front/ruledictionnarymonitortype.form.php';
          }
@@ -322,7 +322,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.printer']['links']['search']
                            = '/front/ruledictionnaryprintertype.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['type.printer']['links']['add']
                               = '/front/ruledictionnaryprintertype.form.php';
          }
@@ -335,7 +335,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.peripheral']['links']['search']
                            = '/front/ruledictionnaryperipheraltype.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['type.peripheral']['links']['add']
                               = '/front/ruledictionnaryperipheraltype.form.php';
          }
@@ -348,7 +348,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.networking']['links']['search']
                            = '/front/ruledictionnarynetworkequipmenttype.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['type.networking']['links']['add']
                               = '/front/ruledictionnarynetworkequipmenttype.form.php';
          }
@@ -361,7 +361,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['type.phone']['links']['search']
                            = '/front/ruledictionnaryphonetype.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['type.phone']['links']['add']
                               = '/front/ruledictionnaryphonetype.form.php';
          }
@@ -374,7 +374,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['os']['links']['search']
                            = '/front/ruledictionnaryoperatingsystem.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['os']['links']['add']
                               = '/front/ruledictionnaryoperatingsystem.form.php';
          }
@@ -387,7 +387,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['os_sp']['links']['search']
                            = '/front/ruledictionnaryoperatingsystemservicepack.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['os_sp']['links']['add']
                               = '/front/ruledictionnaryoperatingsystemservicepack.form.php';
          }
@@ -400,7 +400,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['os_version']['links']['search']
                            = '/front/ruledictionnaryoperatingsystemversion.php';
 
-         if (Session::haveRight("rule_dictionnary_dropdown", ProfileRight::CREATE)) {
+         if (RuleDictionnaryDropdown::canCreate()) {
             $menu['dictionnary']['options']['os_version']['links']['add']
                               = '/front/ruledictionnaryoperatingsystemversion.form.php';
          }
@@ -412,7 +412,7 @@ class Rule extends CommonDBTM {
          $menu['dictionnary']['options']['printer']['links']['search']
                            = '/front/ruledictionnaryprinter.php';
 
-         if (Session::haveRight("rule_dictionnary_printer", ProfileRight::CREATE)) {
+         if (RuleDictionnaryPrinter::canCreate()) {
             $menu['dictionnary']['options']['printer']['links']['add']
                               = '/front/ruledictionnaryprinter.form.php';
          }
@@ -745,7 +745,7 @@ class Rule extends CommonDBTM {
          $this->checkGlobal('w');
       }
 
-      $canedit = $this->can(static::$rightname, ProfileRight::UPDATE);
+      $canedit = $this->can(static::$rightname, UPDATE);
       $rand = mt_rand();
       $this->showFormHeader($options);
 
@@ -922,7 +922,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, ProfileRight::UPDATE);
+      $canedit = $this->can($rules_id, UPDATE);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -1089,7 +1089,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, ProfileRight::UPDATE);
+      $canedit = $this->can($rules_id, UPDATE);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -1681,7 +1681,7 @@ class Rule extends CommonDBTM {
    function showMinimalForm($target, $first=false, $last=false, $display_entities=false) {
       global $CFG_GLPI;
 
-      $canedit = Session::haveRight(static::$rightname, ProfileRight::UPDATE) && !$display_entities;
+      $canedit = (self::canUpdate() && !$display_entities);
       echo "<tr class='tab_bg_1'>";
 
       if ($canedit) {
@@ -2523,7 +2523,7 @@ class Rule extends CommonDBTM {
    function showAndAddRuleForm($item) {
 
       $rand    = mt_rand();
-      $canedit = Session::haveRight(static::$rightname, ProfileRight::UPDATE);
+      $canedit = self::canUpdate();
 
       if ($canedit
           && ($item->getType() == 'Entity')) {
@@ -2866,17 +2866,5 @@ class Rule extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
-   static function getRights() {
-
-      $values = parent::getRights();
-      unset($values[ProfileRight::DELETE]);
-
-      return $values;
-   }
 }
 ?>

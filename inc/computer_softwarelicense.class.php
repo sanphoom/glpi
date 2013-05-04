@@ -271,7 +271,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $softwarelicense_id = $license->getField('id');
 
-      if (!Session::haveRight("software", ProfileRight::READ) || !$softwarelicense_id) {
+      if (!Software::canView() || !$softwarelicense_id) {
          return false;
       }
 
@@ -319,12 +319,12 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       $searchID = $license->getField('id');
 
-      if (!Session::haveRight("software", ProfileRight::READ) || !$searchID) {
+      if (!Software::canView() || !$searchID) {
          return false;
       }
 
-      $canedit         = Session::haveRight("software", ProfileRight::UPDATE);
-      $canshowcomputer = Session::haveRight("computer", ProfileRight::READ);
+      $canedit         = Session::haveRight("software", (CREATE | UPDATE | DELETE | PURGE));
+      $canshowcomputer = Computer::canView();
 
 
       if (isset($_GET["start"])) {
@@ -457,7 +457,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $soft = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
-            $linkUser   = Session::haveRight('user', ProfileRight::READ);
+            $linkUser   = User::canView();
 
             $text = sprintf(__('%1$s = %2$s'), Software::getTypeName(1), $soft->fields["name"]);
             $text = sprintf(__('%1$s - %2$s'), $text, $data["vername"]);

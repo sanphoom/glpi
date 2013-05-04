@@ -1624,11 +1624,11 @@ class Html {
                timeEffect : 100,
                autoShowOffset : '0',
                appearMethod : '',
-               effectScroll : 'linear' 
+               effectScroll : 'linear'
                });
             });
          </script>";
-      
+
       // call static function callcron() every 5min
       CronTask::callCron();
       self::displayMessageAfterRedirect();
@@ -1647,7 +1647,7 @@ class Html {
       if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
          return self::popFooter();
       }
-      
+
       // Print foot for every page
       if ($FOOTER_LOADED) {
          return;
@@ -1877,7 +1877,7 @@ class Html {
       }
 
       // Reservation
-      if (Session::haveRight("reservation_helpdesk", ProfileRight::RESERVEITEM)) {
+      if (Session::haveRight("reservation_helpdesk", READ)) {
          echo "<li id='menu4'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
                 _sn('Reservation', 'Reservations', 2)."\" class='itemP'>".
@@ -1886,7 +1886,7 @@ class Html {
       }
 
       // FAQ
-      if (Session::haveRight("faq", ProfileRight::READ)) {
+      if (Session::haveRight("faq", READ)) {
          echo "<li id='menu5' >";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
                 __s('FAQ')."\" class='itemP'>".__('FAQ')."</a>";
@@ -2419,7 +2419,7 @@ class Html {
          $p['extraparams']['hidden']['_is_modal'] = 1;
       }
 
-      
+
       if ($p['fixed']) {
          $width= '950px';
       } else {

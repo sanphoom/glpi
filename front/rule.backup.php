@@ -52,13 +52,13 @@ if ($action != "export") {
 
 switch ($action) {
    case "preview_import":
-      $rulecollection->checkGlobal(ProfileRight::CREATE);
+      $rulecollection->checkGlobal(CREATE);
       if (RuleCollection::previewImportRules()) {
          break;
       }
 
    case "import":
-      $rulecollection->checkGlobal(ProfileRight::CREATE);
+      $rulecollection->checkGlobal(CREATE);
       RuleCollection::displayImportRulesForm();
       break;
 
@@ -81,7 +81,7 @@ switch ($action) {
       break;
 
    case "process_import":
-      $rulecollection->checkGlobal(ProfileRight::CREATE);
+      $rulecollection->checkGlobal(CREATE);
       RuleCollection::processImportRules();
       Html::back();
       break;

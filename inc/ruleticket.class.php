@@ -477,10 +477,9 @@ class RuleTicket extends Rule {
     *
     * @see commonDBTM::getRights()
    **/
-   static function getRights() {
+   function getRights($interface='central') {
 
       $values = parent::getRights();
-      unset($values[ProfileRight::DELETE]);
       $values[ProfileRight::RULETICKET] = __('Business rules for ticket (entity parent)');
 
       return $values;

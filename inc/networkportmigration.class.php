@@ -60,14 +60,14 @@ class NetworkPortMigration extends CommonDBChild {
 
    static function canUpdate() {
 
-      return (Session::haveRight('networking', ProfileRight::UPDATE)
+      return (Session::haveRight(self::$rightname, UPDATE)
               && parent::canUpdate());
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('networking', ProfileRight::READ)
+      return (Session::haveRight(self::$rightname, READ)
               && parent::canView());
    }
 
@@ -77,7 +77,7 @@ class NetworkPortMigration extends CommonDBChild {
    **/
    static function canPurge() {
 
-      return (Session::haveRight('networking', ProfileRight::PURGE)
+      return (Session::haveRight(self::$rightname, PURGE)
               && parent::canPurge());
    }
 
@@ -146,11 +146,11 @@ class NetworkPortMigration extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $DB;
 
-      if (!Session::haveRight("networking", ProfileRight::READ)) {
+      if (!self::canView()) {
          return false;
       }
 
-      $this->check($ID,'r');
+      $this->check($ID, READ);
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) > 0) {

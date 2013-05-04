@@ -1489,7 +1489,7 @@ class CommonDBTM extends CommonGLPI {
     * @return rights
    **/
    function canAddItem($type) {
-      return $this->can($this->getID(), 'w');
+      return $this->can($this->getID(), UPDATE);
    }
 
 
@@ -1502,7 +1502,7 @@ class CommonDBTM extends CommonGLPI {
    static function canCreate() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, ProfileRight::CREATE);
+         return Session::haveRight(static::$rightname, CREATE);
       }
       return false;
    }
@@ -1518,7 +1518,7 @@ class CommonDBTM extends CommonGLPI {
    static function canDelete() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, ProfileRight::DELETE);
+         return Session::haveRight(static::$rightname, DELETE);
       }
       /// hack for old right management to avoid put $rightname in each class
       $class = get_called_class();
@@ -1540,7 +1540,7 @@ class CommonDBTM extends CommonGLPI {
    static function canPurge() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, ProfileRight::PURGE);
+         return Session::haveRight(static::$rightname, PURGE);
       }
       return false;
    }
@@ -1558,7 +1558,7 @@ class CommonDBTM extends CommonGLPI {
    static function canUpdate() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, ProfileRight::UPDATE);
+         return Session::haveRight(static::$rightname, UPDATE);
       }
 
       /// hack for old right management to avoid put $rightname in each class
@@ -1602,7 +1602,7 @@ class CommonDBTM extends CommonGLPI {
     * @see canCreate
    **/
    function canUpdateItem() {
-      return $this->canCreateItem();
+      return true;
    }
 
 
@@ -1617,10 +1617,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    function canDeleteItem() {
       global $CFG_GLPI;
-
-      if (!$this->canCreateItem()) {
-         return false;
-      }
 
       // Can delete an object with Infocom only if can delete Infocom
       if (in_array($this->getType(), $CFG_GLPI['infocom_types'])) {
@@ -1671,7 +1667,7 @@ class CommonDBTM extends CommonGLPI {
    static function canView() {
 
       If (static::$rightname) {
-         return Session::haveRight(static::$rightname, ProfileRight::READ);
+         return Session::haveRight(static::$rightname, READ);
       }
       return false;
    }
@@ -1898,10 +1894,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (!$params['canedit']
-          || (!$this->can($ID, ProfileRight::CREATE)
-              && !$this->can($ID, ProfileRight::UPDATE)
-              && !$this->can($ID, ProfileRight::DELETE)
-              && !$this->can($ID, ProfileRight::PURGE))) {
+          || (!$this->can($ID, (CREATE | UPDATE | DELETE | PURGE)))) {
          echo "</table></div>";
          // Form Header always open form
          if (!$params['canedit']) {
@@ -1925,13 +1918,13 @@ class CommonDBTM extends CommonGLPI {
 
       } else {
          if ($params['candel']
-             && !$this->can($ID, ProfileRight::DELETE) && !$this->can($ID, ProfileRight::PURGE)) {
+             && !$this->can($ID, (DELETE | PURGE))) {
             $params['candel'] = false;
          }
 
          if ($params['candel']) {
             if ($params['canedit']
-                && $this->can($ID, ProfileRight::UPDATE)) {
+                && $this->can($ID, UPDATE)) {
                echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
                echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
                       class='submit'>";
@@ -2014,20 +2007,20 @@ class CommonDBTM extends CommonGLPI {
           && !$this->isNewID($ID)) {
          // Create item from template
          // Check read right on the template
-         $this->check($ID, ProfileRight::READ);
+         $this->check($ID, READ);
          // Restore saved input or template data
          $input = $this->restoreInput($this->fields);
          // Check create right
-         $this->check(-1, ProfileRight::CREATE, $input);
+         $this->check(-1, CREATE, $input);
 
       } else if ($this->isNewID($ID)) {
          // Restore saved input if available
          $input = $this->restoreInput($options);
          // Create item
-         $this->check(-1, ProfileRight::PURGE, $input);
+         $this->check(-1, PURGE, $input);
       } else {
          // Modify item
-         $this->check($ID, ProfileRight::READ);
+         $this->check($ID, READ);
       }
 
       return (isset($options['withtemplate']) ? $options['withtemplate'] : '');
@@ -2181,7 +2174,7 @@ class CommonDBTM extends CommonGLPI {
       if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
          echo "<input type='hidden' name='_no_message_link' value='1'>";
       }
-      
+
       echo "</th></tr>\n";
    }
 
@@ -2264,7 +2257,7 @@ class CommonDBTM extends CommonGLPI {
       }
       switch ($right) {
          case 'r' :
-         case ProfileRight::READ :
+         case READ :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2273,7 +2266,7 @@ class CommonDBTM extends CommonGLPI {
             return (static::canView() && $this->canViewItem());
 
          case 'w' :
-         case ProfileRight::UPDATE :
+         case UPDATE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2282,23 +2275,23 @@ class CommonDBTM extends CommonGLPI {
             return (static::canUpdate() && $this->canUpdateItem());
 
          case 'd' :
-         case ProfileRight::DELETE :
+         case DELETE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
             return (static::canDelete() && $this->canDeleteItem());
-/*
-         case ProfileRight::PURGE :
+
+         case PURGE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
                return true;
             }
             return (static::canPurge() && $this->canPurgeItem());
-*/
-        case ProfileRight::CREATE :
+
+        case CREATE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -2380,22 +2373,22 @@ class CommonDBTM extends CommonGLPI {
 
       switch ($right) {
          case 'r' :
-         case ProfileRight::READ :
+         case READ :
             return static::canView();
 
          case 'w' :
-         case ProfileRight::UPDATE :
+         case UPDATE :
             return static::canUpdate();
 
          case 'c' :
-         case ProfileRight::CREATE :
+         case CREATE :
             return static::canCreate();
 
          case 'd' :
-         case ProfileRight::DELETE :
+         case DELETE :
             return static::canDelete();
 
-         case ProfileRight::PURGE :
+         case PURGE :
             return static::canPurge();
 
       }
@@ -3980,7 +3973,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function showNotesForm() {
 
-      if (!Session::haveRight("notes", ProfileRight::READ)) {
+      if (!Session::haveRight("notes", READ)) {
          return false;
       }
 
@@ -4627,15 +4620,24 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since version 0.85
     *
+    * @param $interface   string   (defalt 'central')
+    *
     * @return array of rights to display
    **/
-   static function getRights() {
+   function getRights($interface='central') {
 
-      $values = array(ProfileRight::CREATE  => __('Create'),
-                      ProfileRight::READ    => __('Read'),
-                      ProfileRight::UPDATE  => __('Update'),
-                      ProfileRight::DELETE  => _x('button', 'Put in dustbin'),
-                      ProfileRight::PURGE   => _x('button', 'Delete permanently'));
+      $values = array(CREATE  => __('Create'),
+                      READ    => __('Read'),
+                      UPDATE  => __('Update'),
+                      PURGE   => _x('button', 'Delete permanently'));
+
+      if ($this->maybeDeleted()) {
+         $values[DELETE] = _x('button', 'Put in dustbin');
+      }
+      if ($this->isField("notepad")) {
+         $values[READNOTE] = __("Read the item's note");
+         $values[UPDATENOTE] = __("Update the item's note");
+      }
 
       return $values;
    }

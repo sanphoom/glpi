@@ -148,10 +148,6 @@ class SoftwareLicense extends CommonDBTM {
          $softwares_id = $options['softwares_id'];
       }
 
-      if (!Session::haveRight("software", ProfileRight::UPDATE)) {
-         return false;
-      }
-
       if ($ID < 0) {
          // Create item
          $this->fields['softwares_id'] = $softwares_id;
@@ -542,7 +538,7 @@ class SoftwareLicense extends CommonDBTM {
 
 
       // Righ type is enough. Can add a License on a software we have Read access
-      $canedit             = Session::haveRight("software", ProfileRight::UPDATE);
+      $canedit             = Software::canUpdate();
       $showmassiveactions  = $canedit;
 
       // Total Number of events

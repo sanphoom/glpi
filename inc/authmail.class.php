@@ -135,7 +135,7 @@ class AuthMail extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Config::canUpdate()) {
          return false;
       }
       $spotted = false;

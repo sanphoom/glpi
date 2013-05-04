@@ -65,14 +65,14 @@ class Infocom extends CommonDBChild {
 
    static function canCreate() {
 
-      return (Session::haveRight('infocom', ProfileRight::CREATE)
+      return (Session::haveRight(self::$rightname, CREATE)
               && parent::canCreate());
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('infocom', ProfileRight::READ)
+      return (Session::haveRight(self::$rightname, READ)
               && parent::canView());
    }
 
@@ -82,7 +82,7 @@ class Infocom extends CommonDBChild {
    **/
    static function canUpdate() {
 
-      return (Session::haveRight('infocom', ProfileRight::UPDATE)
+      return (Session::haveRight(self::$rightname, UPDATE)
               && parent::canUpdate());
    }
 
@@ -92,7 +92,7 @@ class Infocom extends CommonDBChild {
    **/
    static function canPurge() {
 
-      return (Session::haveRight('infocom',  ProfileRight::PURGE)
+      return (Session::haveRight(self::$rightname, PURGE)
               && parent::canPurge());
    }
 
@@ -116,7 +116,7 @@ class Infocom extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // Can exists on template
-      if (Session::haveRight("infocom", ProfileRight::READ)) {
+      if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -659,7 +659,7 @@ class Infocom extends CommonDBChild {
    static function showDisplayLink($itemtype, $device_id) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("infocom", ProfileRight::READ)
+      if (!Session::haveRight(self::$rightname, READ)
           || !($item = getItemForItemtype($itemtype))) {
          return false;
       }
@@ -675,7 +675,7 @@ class Infocom extends CommonDBChild {
       if ($DB->result($result,0,0) > 0) {
          $add = "";
          $text = __('Show');
-      } else if (!Session::haveRight("infocom", ProfileRight::UPDATE)) {
+      } else if (!Infocom::canUpdate()) {
          return false;
       }
 
@@ -891,7 +891,7 @@ class Infocom extends CommonDBChild {
       global $CFG_GLPI;
 
       // Show Infocom or blank form
-      if (!Session::haveRight("infocom", ProfileRight::READ)) {
+      if (!self::canView()) {
          return false;
       }
 
@@ -954,7 +954,7 @@ class Infocom extends CommonDBChild {
                                         'width'  => '70%'));
             }
             echo "</td>";
-            if (Session::haveRight("budget", ProfileRight::READ)) {
+            if (Budget::canView()) {
                echo "<td>".__('Budget')."</td><td >";
                Budget::dropdown(array('value'    => $ic->fields["budgets_id"],
                                       'entity'   => $item->getEntityID(),
@@ -1621,19 +1621,6 @@ class Infocom extends CommonDBChild {
       return Html::convDate(date("Y-m-d", $datetime));
    }
 
-
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
-   static function getRights() {
-
-      $values = parent::getRights();
-      unset($values[ProfileRight::DELETE]);
-
-      return $values;
-   }
 
 }
 ?>

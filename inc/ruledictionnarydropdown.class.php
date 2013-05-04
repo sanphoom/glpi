@@ -46,18 +46,5 @@ class RuleDictionnaryDropdown extends Rule {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
-   static function getRights() {
-
-      $values = parent::getRights();
-      unset($values[ProfileRight::DELETE]);
-
-      return $values;
-   }
-
 }
 ?>

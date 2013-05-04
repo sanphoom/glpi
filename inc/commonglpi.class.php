@@ -196,7 +196,7 @@ class CommonGLPI {
 
       switch ($itemtype) {
          case 'Note' :
-            if (Session::haveRight("notes", ProfileRight::READ)) {
+            if (Session::haveRight("notes", READ)) {
                $ong['Note'] = __('Notes');
             }
             break;
@@ -298,7 +298,7 @@ class CommonGLPI {
       }
       return false;
    }
-   
+
    /**
     * get additional menu content
     *
@@ -309,7 +309,7 @@ class CommonGLPI {
    static function getAdditionalMenuContent() {
       return false;
    }
-   
+
    /**
     * Get forbidden actions for menu : may be add / template
     *
@@ -1094,7 +1094,7 @@ class CommonGLPI {
       } else {
          $display_options = &$_SESSION['glpi_display_options'][self::getType()];
       }
-      
+
       // Load default values if not set
       $options = static::getAvailableDisplayOptions();
       if (count($options)) {
@@ -1199,7 +1199,7 @@ class CommonGLPI {
                                     'width'         => 600,
                                     'height'        => 500,
                                     'reloadonclose' => true));
-      
+
 
       return $link;
    }

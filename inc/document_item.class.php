@@ -168,7 +168,7 @@ class Document_Item extends CommonDBRelation{
 
          default :
             // Can exist for template
-            if (Session::haveRight("document", ProfileRight::READ)
+            if (Document::canView()
                 || ($item->getType() == 'Ticket')
                 || ($item->getType() == 'KnowbaseItem')) {
 
@@ -248,10 +248,10 @@ class Document_Item extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $instID = $doc->fields['id'];
-      if (!$doc->can($instID, ProfileRight::READ)) {
+      if (!$doc->can($instID, READ)) {
          return false;
       }
-      $canedit = $doc->can($instID, ProfileRight::UPDATE);
+      $canedit = $doc->can($instID, UPDATE);
       // for a document,
       // don't show here others documents associated to this one,
       // it's done for both directions in self::showAssociated
@@ -442,7 +442,7 @@ class Document_Item extends CommonDBRelation{
       }
       if (($item->getType() != 'Ticket')
           && ($item->getType() != 'KnowbaseItem')
-          && !Session::haveRight('document', ProfileRight::READ)) {
+          && !Document::canView()) {
          return false;
       }
 
@@ -581,7 +581,7 @@ class Document_Item extends CommonDBRelation{
          echo "</table>";
          Html::closeForm();
 
-         if (Session::haveRight('document', ProfileRight::READ)
+         if (Document::canView()
              && ($nb > count($used))) {
             echo "<form name='document_form$rand' id='document_form$rand' method='post'
                    action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";

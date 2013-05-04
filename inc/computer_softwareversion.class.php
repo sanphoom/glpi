@@ -288,12 +288,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    private static function showInstallations($searchID, $crit) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("software", ProfileRight::READ) || !$searchID) {
+      if (!Software::canView() || !$searchID) {
          return false;
       }
 
-      $canedit         = Session::haveRight("software", ProfileRight::UPDATE);
-      $canshowcomputer = Session::haveRight("computer", ProfileRight::READ);
+      $canedit         = Session::haveRight("software", (CREATE | UPDATE | DELETE | PURGE));
+      $canshowcomputer = Computer::canView();
 
       if (isset($_GET["start"])) {
          $start = $_GET["start"];
@@ -413,7 +413,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $softwares_id  = $data['sID'];
             $soft          = new Software();
             $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser      = Session::haveRight('user', ProfileRight::READ);
+            $linkUser      = User::canView();
             $title         = $soft->fields["name"];
 
             if ($crit == "id") {
@@ -587,7 +587,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $softwareversions_id = $version->getField('id');
 
-      if (!Session::haveRight("software", ProfileRight::READ) || !$softwareversions_id) {
+      if (!Software::canView() || !$softwareversions_id) {
          return false;
       }
 
@@ -634,13 +634,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    static function showForComputer(Computer $comp, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("software", ProfileRight::READ)) {
+      if (!Software::canView()) {
          return false;
       }
 
       $computers_id = $comp->getField('id');
       $rand         = mt_rand();
-      $canedit      = Session::haveRight("software", ProfileRight::UPDATE);
+      $canedit      = Session::haveRight("software", (CREATE | UPDATE | DELETE | PURGE));
       $entities_id  = $comp->fields["entities_id"];
 
       $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
@@ -1135,7 +1135,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          case 'Computer' :
             // Installation allowed for template
-            if (Session::haveRight("software", ProfileRight::READ)) {
+            if (Software::canView()) {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(Software::getTypeName(2),
                                               countElementsInTable('glpi_computers_softwareversions',

@@ -112,7 +112,7 @@ class Central extends CommonGLPI {
       if ($showproblem) {
          Problem::showCentralCount();
       }
-      if (Session::haveRight("contract", ProfileRight::READ)) {
+      if (Contract::canView()) {
          Contract::showCentral();
       }
       echo "</td></tr>";
@@ -148,7 +148,7 @@ class Central extends CommonGLPI {
 
       echo "<table class='tab_cadre_central'>";
 
-      if (Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (Session::haveRight("config", UPDATE)) {
          $logins = User::checkDefaultPasswords();
          $user   = new User();
          if (!empty($logins)) {
@@ -195,7 +195,7 @@ class Central extends CommonGLPI {
       echo "<tr><td>";
       Planning::showCentral(Session::getLoginUserID());
       Reminder::showListForCentral();
-      if (Session::haveRight("reminder_public", ProfileRight::READ)) {
+      if (Session::haveRight("reminder_public", READ)) {
          Reminder::showListForCentral(false);
       }
       echo "</td></tr>";
@@ -215,7 +215,7 @@ class Central extends CommonGLPI {
       echo "<tr><td class='top' width='50%'>";
       RSSFeed::showListForCentral();
       echo "</td><td class='top' width='50%'>";
-      if (Session::haveRight("rssfeed_public", ProfileRight::READ)) {
+      if (Session::haveRight("rssfeed_public", READ)) {
          RSSFeed::showListForCentral(false);
       } else {
          echo "&nbsp;";

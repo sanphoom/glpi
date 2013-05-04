@@ -222,11 +222,10 @@ class Config extends CommonDBTM {
    function showFormDisplay() {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::READ)
-          && !Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!self::canView()) {
          return false;
       }
-      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+      $canedit = Session::haveRight(self::$rightname, UPDATE);
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       }
@@ -362,12 +361,11 @@ class Config extends CommonDBTM {
    function showFormInventory() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::READ)
-          && !Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!self::canView()) {
          return false;
       }
 
-      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+      $canedit = Config::canUpdate();
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       }
@@ -496,7 +494,7 @@ class Config extends CommonDBTM {
    function showFormAuthentication() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Config::canUpdate()) {
          return false;
       }
 
@@ -540,7 +538,7 @@ class Config extends CommonDBTM {
    function showFormDBSlave() {
       global $DB, $CFG_GLPI, $DBslave;
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Config::canUpdate()) {
          return false;
       }
 
@@ -609,12 +607,11 @@ class Config extends CommonDBTM {
    function showFormHelpdesk() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::READ)
-          && !Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!self::canView()) {
          return false;
       }
 
-      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+      $canedit = Config::canUpdate();
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       }
@@ -769,7 +766,7 @@ class Config extends CommonDBTM {
             $url  = $CFG_GLPI['root_doc']."/front/user.form.php";
          }
       }
-      $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+      $canedit = Config::canUpdate();
       if ($canedit) {
          echo "<form name='form' action='$url' method='post'>";
       }
@@ -785,7 +782,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td>";
       echo "<td>";
-      if (Session::haveRight("config", ProfileRight::UPDATE)
+      if (Config::canUpdate()
           || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
@@ -1170,7 +1167,7 @@ class Config extends CommonDBTM {
    function showSystemInformations() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Config::canUpdate()) {
          return false;
       }
 
@@ -1486,7 +1483,7 @@ class Config extends CommonDBTM {
             return __('Personalization');
 
          case 'User' :
-            if (Session::haveRight('user', ProfileRight::UPDATE)
+            if (User::canUpdate()
                 && $item->currentUserHaveMoreRightThan($item->getID())) {
                return __('Settings');
             }
@@ -1497,12 +1494,12 @@ class Config extends CommonDBTM {
             $tabs[2] = __('Default values');   // Prefs
             $tabs[3] = __('Assets');
             $tabs[4] = __('Assistance');
-            if (Session::haveRight("config", ProfileRight::UPDATE)) {
+            if (Config::canUpdate()) {
                $tabs[5] = __('System');
             }
 
             if (DBConnection::isDBSlaveActive()
-                && Session::haveRight("config", ProfileRight::UPDATE)) {
+                && Config::canUpdate()) {
                $tabs[6]  = _n('Mysql replica', 'Mysql replicas', 2);  // Slave
             }
             return $tabs;
@@ -1788,11 +1785,11 @@ class Config extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-   static function getRights() {
+   function getRights($interface='central') {
 
       $values = parent::getRights();
-      unset($values[ProfileRight::CREATE], $values[ProfileRight::DELETE],
-            $values[ProfileRight::PURGE]);
+      unset($values[CREATE], $values[DELETE],
+            $values[PURGE]);
 
       return $values;
    }

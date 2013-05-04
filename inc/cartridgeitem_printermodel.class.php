@@ -71,7 +71,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && Session::haveRight("printer", ProfileRight::READ)) {
+          && Printer::canView()) {
          switch ($item->getType()) {
             case 'CartridgeItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {

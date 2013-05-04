@@ -224,7 +224,7 @@ class AuthLDAP extends CommonDBTM {
       switch ($input['action']) {
          case "import" :
          case "sync" :
-            if (!Session::haveRight("import_externalauth_users",ProfileRight::IMPORTEXTAUTHUSERS)) {
+            if (!Session::haveRight("import_externalauth_users", User::IMPORTEXTAUTHUSERS)) {
                $res['noright']++;
             } else if (isset($_GET['multiple_actions'])
                        && isset($_SESSION["glpi_massiveaction"])) {
@@ -371,7 +371,7 @@ class AuthLDAP extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-      if (!Session::haveRight("config", ProfileRight::UPDATE)) {
+      if (!Config::canUpdate()) {
          return false;
       }
       $spotted = false;
@@ -566,7 +566,7 @@ class AuthLDAP extends CommonDBTM {
 
       if (($nb = $DB->numrows($result)) > 0) {
          echo "<br>";
-         $canedit = Session::haveRight("config", ProfileRight::UPDATE);
+         $canedit = Config::canUpdate();
          Html::openMassiveActionsForm('massAuthLdapReplicate'.$rand);
          echo "<div class='center'>";
          $massiveactionparams = array('num_displayed' => $nb,
@@ -1318,7 +1318,7 @@ class AuthLDAP extends CommonDBTM {
 
             foreach ($ldap_users as $userinfos) {
                $link = $user = $userinfos["user"];
-               if (isset($userinfos['id']) && Session::haveRight('user', ProfileRight::READ)) {
+               if (isset($userinfos['id']) && User::canView()) {
                   $link = "<a href='".Toolbox::getItemTypeFormURL('User').'?id='.$userinfos['id'].
                           "'>$user</a>";
                }
@@ -2571,8 +2571,8 @@ class AuthLDAP extends CommonDBTM {
             $_SESSION['ldap_import']['authldaps_id'] = NOT_AVAILABLE;
          }
 
-         if ((!Session::haveRight('config', ProfileRight::UPDATE)
-              && !Session::haveRight('entity', ProfileRight::UPDATE))
+         if ((!Config::canUpdate()
+              && !Entity::canUpdate())
              || (!isset($_SESSION['ldap_import']['interface']) && !isset($options['interface']))) {
             $options['interface'] = self::SIMPLE_INTERFACE;
          }
@@ -2675,8 +2675,8 @@ class AuthLDAP extends CommonDBTM {
 
       // Expert interface allow user to override configuration.
       // If not coming from the ticket form, then give expert/simple link
-      if ((Session::haveRight('config', ProfileRight::UPDATE)
-           || Session::haveRight('entity', ProfileRight::UPDATE))
+      if ((Config::canUpdate()
+           || Entity::canUpdate())
           && !isset($_SESSION['ldap_import']['no_expert_mode'])) {
 
          echo "</span>&nbsp;<span class='ldap_right'><a href='".$_SERVER['PHP_SELF']."?action=".

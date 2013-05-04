@@ -407,7 +407,7 @@ class Consumable extends CommonDBTM {
 
       $ID = $consitem->getField('id');
 
-      if (!$consitem->can($ID, ProfileRight::UPDATE)) {
+      if (!$consitem->can($ID, UPDATE)) {
          return false;
       }
 
@@ -440,10 +440,10 @@ class Consumable extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $tID = $consitem->getField('id');
-      if (!$consitem->can($tID, ProfileRight::READ)) {
+      if (!$consitem->can($tID, READ)) {
          return false;
       }
-      $canedit = $consitem->can($tID, ProfileRight::UPDATE);
+      $canedit = $consitem->can($tID, UPDATE);
       $rand = mt_rand();
       $where = "";
       if (!$show_old) { // NEW
@@ -555,7 +555,7 @@ class Consumable extends CommonDBTM {
    static function showSummary() {
       global $DB;
 
-      if (!Session::haveRight("consumable", ProfileRight::READ)) {
+      if (!Consumable::canView()) {
          return false;
       }
 
@@ -676,7 +676,7 @@ class Consumable extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && Session::haveRight("consumable", ProfileRight::READ)) {
+      if (!$withtemplate && Consumable::canView()) {
          switch ($item->getType()) {
             case 'ConsumableItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {

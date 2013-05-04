@@ -46,17 +46,6 @@ class ProfileRight extends CommonDBChild {
    static public $itemtype = 'Profile';
    static public $items_id = 'profiles_id'; // Field name
 
-   // global rights (for all items)
-   const READ               =  1;
-   const UPDATE             =  2;
-   const CREATE             =  4;
-   const DELETE             =  8;
-   const PURGE              = 16;
-   const ALLSTANDARDRIGHT   = 31;
-   // reserve still 1024 for futur global rights
-
-   // rights for user
-   const IMPORTEXTAUTHUSERS   = 1024;
 
    // rights for rule
    const RULETICKET           = 1024;
@@ -255,5 +244,26 @@ class ProfileRight extends CommonDBChild {
          unset($_SESSION['glpimenu']);
       }
    }
+
+
+   /**
+    * Get rights for an itemtype
+    *
+    * @since version 0.85
+    *
+    * @param $itemtype   string   itemtype
+    * @param $interface  string   (defautl 'central')
+    *
+    * @return rights
+    **/
+   static function getRightsFor($itemtype, $interface='central') {
+
+      $item = new $itemtype();
+      if (class_exists($itemtype)) {
+         return $item->getRights($interface);
+      }
+      return false;
+   }
+
 }
 ?>

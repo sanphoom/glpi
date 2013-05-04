@@ -42,7 +42,7 @@ class Bookmark extends CommonDBTM {
 
    // From CommonGLPI
    public $taborientation          = 'horizontal';
-   
+
    var       $auto_message_on_action = false;
    protected $displaylist            = false;
 
@@ -120,7 +120,7 @@ class Bookmark extends CommonDBTM {
          case __CLASS__:
             $ong     = array();
             $ong[1]  = __('Personal');
-            if (Session::haveRight('bookmark_public', ProfileRight::READ)) {
+            if (self::canView()) {
                $ong[2] = __('Public');
             }
             return $ong;
@@ -220,9 +220,9 @@ class Bookmark extends CommonDBTM {
 
       // Only an edit form : always check w right
       if ($ID > 0) {
-         $this->check($ID, ProfileRight::UPDATE);
+         $this->check($ID, UPDATE);
       } else {
-         $this->check(-1, ProfileRight::CREATE);
+         $this->check(-1, CREATE);
       }
 
       echo '<br>';
@@ -670,7 +670,7 @@ class Bookmark extends CommonDBTM {
    static function showSaveButton($type, $itemtype=0) {
       global $CFG_GLPI;
 
-      
+
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('bookmarksave').".dialog('open');\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
              title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookmark')."\"
@@ -684,19 +684,6 @@ class Bookmark extends CommonDBTM {
                                           'reloadonclose' => true));
    }
 
-
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
-   static function getRights() {
-
-      $values = parent::getRights();
-      unset($values[ProfileRight::DELETE]);
-
-      return $values;
-   }
 
 }
 ?>

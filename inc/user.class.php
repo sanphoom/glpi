@@ -46,6 +46,8 @@ class User extends CommonDBTM {
    const REALNAME_BEFORE   = 0;
    const FIRSTNAME_BEFORE  = 1;
 
+   const IMPORTEXTAUTHUSERS   = 1024;
+
 
    static $rightname = 'user';
 
@@ -72,7 +74,7 @@ class User extends CommonDBTM {
    **/
    static function getAdditionalMenuOptions() {
 
-      if (Session::haveRight('import_externalauth_users', ProfileRight::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight('import_externalauth_users', self::IMPORTEXTAUTHUSERS)) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(2);
          $options['ldap']['page']  = "/front/ldap.php";
          return $options;
@@ -1709,7 +1711,7 @@ class User extends CommonDBTM {
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
       }
-      if (Session::haveRight("import_externalauth_users", ProfileRight::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight("import_externalauth_users", self::IMPORTEXTAUTHUSERS)) {
          if (AuthLdap::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
@@ -1747,7 +1749,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       // Affiche un formulaire User
-      if (($ID != Session::getLoginUserID()) && !Session::haveRight("user", ProfileRight::READ)) {
+      if (($ID != Session::getLoginUserID()) && !self::canView()) {
          return false;
       }
 
@@ -1812,7 +1814,7 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       //do some rights verification
-      if (Session::haveRight("user", ProfileRight::UPDATE)
+      if (self::canUpdate()
           && (!$extauth || empty($ID))
           && $caneditpassword) {
          echo "<tr class='tab_bg_1'>";
@@ -2229,7 +2231,7 @@ class User extends CommonDBTM {
          Location::dropdown(array('value'  => $this->fields['locations_id'],
                                   'entity' => $entities));
 
-        if (Session::haveRight("config", ProfileRight::UPDATE)) {
+        if (Config::canUpdate()) {
             echo "<td>" . __('Use GLPI in mode') . "</td><td>";
             $modes[Session::NORMAL_MODE]      = __('Normal');
             //$modes[Session::TRANSLATION_MODE] = __('Translation');
@@ -2285,7 +2287,7 @@ class User extends CommonDBTM {
 
       /// Security system except for login update
       if (Session::getLoginUserID()
-          && !Session::haveRight("user", ProfileRight::UPDATE)
+          && !Session::haveRight("user", UPDATE)
           && !strpos($_SERVER['PHP_SELF'], "login.php")) {
 
          if (Session::getLoginUserID() === $this->input['id']) {
@@ -2404,7 +2406,7 @@ class User extends CommonDBTM {
             return $gu->doSpecificMassiveActions($input);
 
          case "force_user_ldap_update" :
-            if (Session::haveRight("user", ProfileRight::UPDATE)) {
+            if (self::canUpdate()) {
                $ids = array();
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
@@ -3053,7 +3055,7 @@ class User extends CommonDBTM {
       // Make a select box with all glpi users
       $user = getUserName($p['value'], 2);
 
-      $view_users = (Session::haveRight("user", ProfileRight::READ));
+      $view_users = self::canView();
 
       if (!empty($p['value']) && ($p['value'] > 0)) {
           $default = $user["name"];
@@ -3104,7 +3106,7 @@ class User extends CommonDBTM {
       }
       $output .= Ajax::commonDropdownUpdateItem($p, false);
 
-      if (Session::haveRight('import_externalauth_users', ProfileRight::IMPORTEXTAUTHUSERS)
+      if (Session::haveRight('import_externalauth_users', self::IMPORTEXTAUTHUSERS)
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
@@ -3131,7 +3133,7 @@ class User extends CommonDBTM {
    **/
    static function showAddExtAuthForm() {
 
-      if (!Session::haveRight("import_externalauth_users", ProfileRight::IMPORTEXTAUTHUSERS)) {
+      if (!Session::haveRight("import_externalauth_users", self::IMPORTEXTAUTHUSERS)) {
          return false;
       }
 
@@ -3319,7 +3321,7 @@ class User extends CommonDBTM {
 
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $cansee = $item->can($data["id"], ProfileRight::READ);
+                  $cansee = $item->can($data["id"], READ);
                   $link   = $data["name"];
                   if ($cansee) {
                      $link_item = Toolbox::getItemTypeFormURL($itemtype);
@@ -3395,7 +3397,7 @@ class User extends CommonDBTM {
 
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_assoc($result)) {
-                     $cansee = $item->can($data["id"], ProfileRight::READ);
+                     $cansee = $item->can($data["id"], READ);
                      $link   = $data["name"];
                      if ($cansee) {
                         $link_item = Toolbox::getItemTypeFormURL($itemtype);
@@ -3978,10 +3980,10 @@ class User extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-   static function getRights() {
+    function getRights($interface='central') {
 
       $values = parent::getRights();
-      $values[ProfileRight::IMPORTEXTAUTHUSERS] = __('Add users from an external source');
+      $values[self::IMPORTEXTAUTHUSERS] = __('Add users from an external source');
 
       return $values;
    }

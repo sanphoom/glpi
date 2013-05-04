@@ -51,7 +51,7 @@ class Reminder extends CommonDBTM {
 
    static function getTypeName($nb=0) {
 
-      if (Session::haveRight('reminder_public', ProfileRight::READ)) {
+      if (Session::haveRight('reminder_public',READ)) {
          return _n('Reminder', 'Reminders', $nb);
       }
       return _n('Personal reminder', 'Personal reminders', $nb);
@@ -60,14 +60,14 @@ class Reminder extends CommonDBTM {
 
    static function canCreate() {
 
-      return (Session::haveRight('reminder_public', ProfileRight::CREATE)
+      return (Session::haveRight('reminder_public',CREATE)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('reminder_public', ProfileRight::READ)
+      return (Session::haveRight('reminder_public', READ)
               || ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'));
    }
 
@@ -76,7 +76,7 @@ class Reminder extends CommonDBTM {
 
       // Is my reminder or is in visibility
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight('reminder_public', ProfileRight::READ)
+              || (Session::haveRight('reminder_public', READ)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -90,7 +90,7 @@ class Reminder extends CommonDBTM {
    function canUpdateItem() {
 
       return ($this->fields['users_id'] == Session::getLoginUserID()
-              || (Session::haveRight('reminder_public', ProfileRight::UPDATE)
+              || (Session::haveRight('reminder_public', UPDATE)
                   && $this->haveVisibilityAccess()));
    }
 
@@ -1154,7 +1154,6 @@ class Reminder extends CommonDBTM {
    }
 
 
-
    /**
     * Show visibility config for a reminder
    **/
@@ -1338,19 +1337,6 @@ class Reminder extends CommonDBTM {
       return true;
    }
 
-
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
-   static function getRights() {
-
-      $values = parent::getRights();
-      unset($values[ProfileRight::DELETE]);
-
-      return $values;
-   }
 
 }
 ?>

@@ -50,7 +50,7 @@ class Control extends CommonGLPI {
 
 
    static function canView() {
-      return Session::haveRight('config', ProfileRight::READ);
+      return Session::haveRight('config', READ);
    }
 
 

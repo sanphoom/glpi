@@ -1137,7 +1137,7 @@ abstract class CommonITILObject extends CommonDBTM {
             && is_array($this->input['_documents_id'])
             && count($this->input['_documents_id'])) {
          $docitem = new Document_Item();
-         foreach ($this->input['_documents_id'] as $docID) {   
+         foreach ($this->input['_documents_id'] as $docID) {
             if ($docitem->add(array('documents_id' => $docID,
                                     '_do_notif'    => false,
                                     'itemtype'     => $this->getType(),
@@ -1145,7 +1145,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
       }
-      
+
       $useractors = NULL;
       // Add user groups linked to ITIL objects
       if (!empty($this->userlinkclass)) {
@@ -2001,7 +2001,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showgrouplink = 0;
-      if (Session::haveRight('group', ProfileRight::READ)) {
+      if (Group::canView()) {
          $showgrouplink = 1;
       }
 
@@ -2042,7 +2042,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showsupplierlink = 0;
-      if (Session::haveRight('contact_enterprise', ProfileRight::READ)) {
+      if (Session::haveRight('contact_enterprise', READ)) {
          $showsupplierlink = 1;
       }
 
@@ -2573,7 +2573,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showuserlink = 0;
-      if (Session::haveRight('user', ProfileRight::READ)) {
+      if (User::canView()) {
          $showuserlink = 2;
       }
       $usericon = self::getActorIcon('user',$type);
@@ -2897,7 +2897,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
       $showuserlink = 0;
-      if (Session::haveRight('user', ProfileRight::READ)) {
+      if (User::canView()) {
          $showuserlink = 1;
       }
 

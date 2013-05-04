@@ -66,35 +66,35 @@ class NetworkName extends FQDNLabel {
 
    static function canCreate() {
 
-      return (Session::haveRight('internet', ProfileRight::CREATE)
+      return (Session::haveRight(static::$rightname, CREATE)
               && parent::canCreate());
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('internet', ProfileRight::READ)
+      return (Session::haveRight(static::$rightname, READ)
               && parent::canView());
    }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('internet', ProfileRight::UPDATE)
+      return (Session::haveRight(static::$rightname, UPDATE)
               && parent::canUpdate());
    }
 
 
    static function canDelete() {
 
-      return (Session::haveRight('internet', ProfileRight::DELETE)
+      return (Session::haveRight(static::$rightname, DELETE)
               && parent::canDelete());
    }
 
 
    static function canPurge() {
 
-      return (Session::haveRight('internet', ProfileRight::PURGE)
+      return (Session::haveRight(static::$rightname, PURGE)
             && parent::canPurge());
    }
 

@@ -888,9 +888,9 @@ class Session {
       }
 
       if (($right == 'r')) {
-         $right = ProfileRight::READ;
+         $right = READ;
       } else if ($right == 'w') {
-         $right = ProfileRight::ALLSTANDARDRIGHT;
+         $right = ALLSTANDARDRIGHT;
       }
       if (isset($_SESSION["glpiactiveprofile"][$module])) {
          return $_SESSION["glpiactiveprofile"][$module] & $right;

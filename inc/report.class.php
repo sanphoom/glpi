@@ -73,12 +73,12 @@ class Report extends CommonGLPI{
       $report_list["default"]["name"] = __('Default report');
       $report_list["default"]["file"] = "report.default.php";
 
-      if (Session::haveRight("contract", ProfileRight::READ)) {
+      if (Contract::canView()) {
          // Rapport ajoute par GLPI V0.2
          $report_list["Contrats"]["name"] = __('By contract');
          $report_list["Contrats"]["file"] = "report.contract.php";
       }
-      if (Session::haveRight("infocom", ProfileRight::READ)) {
+      if (Infocom::canView()) {
          $report_list["Par_annee"]["name"] = __('By year');
          $report_list["Par_annee"]["file"] = "report.year.php";
          $report_list["Infocoms"]["name"]  = __('Hardware financial and administrative information');
@@ -86,20 +86,20 @@ class Report extends CommonGLPI{
          $report_list["Infocoms2"]["name"] = __('Other financial and administrative information (licenses, cartridges, consumables)');
          $report_list["Infocoms2"]["file"] = "report.infocom.conso.php";
       }
-      if (Session::haveRight("networking", ProfileRight::READ)) {
+      if (Session::haveRight("networking", READ)) {
          $report_list["Rapport prises reseau"]["name"] = __('Network report');
          $report_list["Rapport prises reseau"]["file"] = "report.networking.php";
       }
-      if (Session::haveRight("reservation_central", ProfileRight::READ)) {
+      if (Session::haveRight("reservation_central", READ)) {
          $report_list["reservation"]["name"] = __('Loan');
          $report_list["reservation"]["file"] = "report.reservation.php";
       }
-      if (Session::haveRight("computer", ProfileRight::READ)
-          || Session::haveRight("monitor", ProfileRight::READ)
-          || Session::haveRight("networking", ProfileRight::READ)
-          || Session::haveRight("peripheral", ProfileRight::READ)
-          || Session::haveRight("printer", ProfileRight::READ)
-          || Session::haveRight("phone", ProfileRight::READ)) {
+      if (Computer::canView()
+          || Monitor::canView()
+          || Session::haveRight("networking", READ)
+          || Peripheral::canView()
+          || Printer::canView()
+          || Phone::canView()) {
          $report_list["state"]["name"] = _n('Status', 'Statuses', 2);
          $report_list["state"]["file"] = "report.state.php";
       }

@@ -43,6 +43,7 @@ class Reservation extends CommonDBChild {
    static public $items_id = 'reservationitems_id';
 
 
+
    /**
     * @param $nb  integer  for singular or plural
    **/
@@ -57,7 +58,7 @@ class Reservation extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && Session::haveRight("reservation_central", ProfileRight::READ)) {
+          && Session::haveRight("reservation_central", READ)) {
          return self::getTypeName(2);
       }
       return '';
@@ -86,7 +87,7 @@ class Reservation extends CommonDBChild {
 
       if (isset($this->fields["users_id"])
           && (($this->fields["users_id"] === Session::getLoginUserID())
-              || Session::haveRight("reservation_central", ProfileRight::DELETE))) {
+              || Session::haveRight("reservation_central", DELETE))) {
 
          // Processing Email
          if ($CFG_GLPI["use_mailing"]) {
@@ -292,7 +293,7 @@ class Reservation extends CommonDBChild {
    **/
    static function canCreate() {
 
-      return (Session::haveRight("reservation_helpdesk", ProfileRight::RESERVEITEM)
+      return (Session::haveRight("reservation_helpdesk", READ)
               && parent::canCreate());
    }
 
@@ -302,7 +303,7 @@ class Reservation extends CommonDBChild {
    **/
    static function canView() {
 
-      return (Session::haveRight("reservation_central", ProfileRight::READ)
+      return (Session::haveRight("reservation_central", READ)
               && parent::canView());
    }
 
@@ -312,7 +313,7 @@ class Reservation extends CommonDBChild {
    **/
    static function canUpdate() {
 
-      return (Session::haveRight("reservation_central", ProfileRight::UPDATE)
+      return (Session::haveRight("reservation_central", UPDATE)
               && parent::canUpdate());
    }
 
@@ -322,7 +323,7 @@ class Reservation extends CommonDBChild {
    **/
    static function canDelete() {
 
-      return (Session::haveRight("reservation_central", ProfileRight::DELETE)
+      return (Session::haveRight("reservation_central", DELETE)
               && parent::canDelete());
    }
 
@@ -380,7 +381,7 @@ class Reservation extends CommonDBChild {
    static function showCalendar($ID="") {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("reservation_helpdesk", ProfileRight::RESERVEITEM)) {
+      if (!Session::haveRight("reservation_helpdesk", READ)) {
          return false;
       }
 
@@ -608,7 +609,7 @@ class Reservation extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("reservation_helpdesk", ProfileRight::RESERVEITEM)) {
+      if (!Session::haveRight("reservation_helpdesk", READ)) {
          return false;
       }
 
@@ -619,7 +620,7 @@ class Reservation extends CommonDBChild {
             return false;
          }
 
-         if (!$resa->can($ID, ProfileRight::UPDATE)) {
+         if (!$resa->can($ID, UPDATE)) {
             return false;
          }
          // Set item if not set
@@ -674,7 +675,7 @@ class Reservation extends CommonDBChild {
       }
 
       echo "</td></tr>\n";
-      if (!Session::haveRight("reservation_central", ProfileRight::UPDATE)
+      if (!Session::haveRight("reservation_central", UPDATE)
           || is_null($item)
           || !Session::haveAccessToEntity($item->fields["entities_id"])) {
 
@@ -1039,7 +1040,7 @@ class Reservation extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       $resaID = 0;
-      if (!Session::haveRight("reservation_central", ProfileRight::READ)) {
+      if (!Session::haveRight("reservation_central", READ)) {
          return false;
       }
 
@@ -1159,7 +1160,7 @@ class Reservation extends CommonDBChild {
 
       $resaID = 0;
 
-      if (!Session::haveRight("reservation_central", ProfileRight::READ)) {
+      if (!Session::haveRight("reservation_central", READ)) {
          return false;
       }
 

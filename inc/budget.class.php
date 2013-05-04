@@ -252,7 +252,7 @@ class Budget extends CommonDropdown{
 
       $budgets_id = $this->fields['id'];
 
-      if (!$this->can($budgets_id, ProfileRight::READ)) {
+      if (!$this->can($budgets_id, READ)) {
          return false;
       }
 
@@ -447,7 +447,7 @@ class Budget extends CommonDropdown{
 
       $budgets_id = $this->fields['id'];
 
-      if (!$this->can($budgets_id, ProfileRight::READ)) {
+      if (!$this->can($budgets_id, READ)) {
          return false;
       }
 

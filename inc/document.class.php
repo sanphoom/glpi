@@ -66,7 +66,7 @@ class Document extends CommonDBTM {
    static function canCreate() {
 
       // Have right to add document OR ticket followup
-      return (Session::haveRight('document', ProfileRight::CREATE)
+      return (Session::haveRight('document', CREATE)
               || Session::haveRight('add_followups', '1'));
    }
 
@@ -83,7 +83,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      if (Session::haveRight('document', ProfileRight::CREATE)) {
+      if (Document::canCreate()) {
          return parent::canCreateItem();
       }
       return false;

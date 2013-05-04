@@ -61,16 +61,16 @@ class KnowbaseItem extends CommonDBTM {
    }
 
    static function canCreate() {
-      return (Session::haveRight('knowbase', ProfileRight::CREATE)
-              || Session::haveRight('faq', ProfileRight::CREATE));
+      return (Session::haveRight('knowbase', CREATE)
+              || Session::haveRight('faq', CREATE));
    }
 
 
    static function canView() {
       global $CFG_GLPI;
 
-      return (Session::haveRight('knowbase', ProfileRight::READ)
-              || Session::haveRight('faq', ProfileRight::READ)
+      return (Session::haveRight('knowbase', READ)
+              || Session::haveRight('faq', READ)
               || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
    }
 
@@ -86,12 +86,12 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       if ($this->fields["is_faq"]) {
-         return (((Session::haveRight('knowbase', ProfileRight::READ)
-                   || Session::haveRight('faq', ProfileRight::READ))
+         return (((Session::haveRight('knowbase', READ)
+                   || Session::haveRight('faq', READ))
                   && $this->haveVisibilityAccess())
                  || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
       }
-      return (Session::haveRight("knowbase", ProfileRight::READ) && $this->haveVisibilityAccess());
+      return (Session::haveRight("knowbase", READ) && $this->haveVisibilityAccess());
    }
 
 
@@ -561,7 +561,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $this->initForm($ID, $options);
-      $canedit = $this->can($ID, ProfileRight::UPDATE);
+      $canedit = $this->can($ID, UPDATE);
 
       // Load ticket solution
       if (empty($ID)
@@ -685,14 +685,14 @@ class KnowbaseItem extends CommonDBTM {
    function showFull($options=array()) {
       global $DB, $CFG_GLPI;
 
-      if (!$this->can($this->fields['id'], ProfileRight::READ)) {
+      if (!$this->can($this->fields['id'], READ)) {
          return false;
       }
 
       $linkusers_id = true;
       // show item : question and answer
       if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
-          || !Session::haveRight("user", ProfileRight::READ)) {
+          || !User::canView()) {
          $linkusers_id = false;
       }
 
@@ -1406,7 +1406,7 @@ class KnowbaseItem extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $this->fields['id'];
-      $canedit = $this->can($ID, ProfileRight::UPDATE);
+      $canedit = $this->can($ID, UPDATE);
 
       echo "<div class='center'>";
 

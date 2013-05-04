@@ -680,11 +680,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
             }
             $canedit = $item->canUpdate();
          } else {
-            if (!$item->can($items_id, ProfileRight::READ)) {
+            if (!$item->can($items_id, READ)) {
                return false;
             }
 
-            $canedit = $item->can($items_id, ProfileRight::UPDATE);
+            $canedit = $item->can($items_id, UPDATE);
          }
       }
 
@@ -733,11 +733,11 @@ abstract class CommonDBChild extends CommonDBConnexity {
             }
             $canedit = $item->canUpdate();
          } else {
-            if (!$item->can($items_id, ProfileRight::READ)) {
+            if (!$item->can($items_id, READ)) {
                return false;
             }
 
-            $canedit = $item->can($items_id, ProfileRight::UPDATE);
+            $canedit = $item->can($items_id, UPDATE);
          }
       }
 

@@ -2501,7 +2501,7 @@ class Search {
             return Reminder::addVisibilityRestrict();
 
          case 'Notification' :
-            if (!Session::haveRight('config', ProfileRight::READ)) {
+            if (!Config::canView()) {
                return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
             }
             break;
@@ -4872,12 +4872,12 @@ class Search {
     *
     * @param $itemtype              item type to manage
     * @param $action                action which is used to manupulate searchoption
-    *                               (default profileRight::READ)
+    *                               (default READ)
     * @param $withplugins  boolean  get plugins options (true by default)
     *
     * @return clean $SEARCH_OPTION array
    **/
-   static function getCleanedOptions($itemtype, $action=ProfileRight::READ, $withplugins=true) {
+   static function getCleanedOptions($itemtype, $action=READ, $withplugins=true) {
       global $CFG_GLPI;
 
       $options = &self::getOptions($itemtype, $withplugins);

@@ -68,11 +68,11 @@ class Calendar_Holiday extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID = $calendar->getField('id');
-      if (!$calendar->can($ID, ProfileRight::READ)) {
+      if (!$calendar->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $calendar->can($ID, ProfileRight::UPDATE);
+      $canedit = $calendar->can($ID, (CREATE | UPDATE | PURGE));
 
       $rand    = mt_rand();
 

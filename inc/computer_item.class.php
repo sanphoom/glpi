@@ -413,7 +413,7 @@ class Computer_Item extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID      = $comp->fields['id'];
-      $canedit = $comp->can($ID,'w');
+      $canedit = $comp->can($ID, (UPDATE | CREATE | DELETE | PURGE));
       $rand    = mt_rand();
 
       $datas = array();
@@ -557,10 +557,10 @@ class Computer_Item extends CommonDBRelation{
       $comp   = new Computer();
       $ID     = $item->getField('id');
 
-      if (!$item->can($ID,"r")) {
+      if (!$item->can($ID, READ)) {
          return false;
       }
-      $canedit = $item->can($ID,"w");
+      $canedit = $item->can($ID, (CREATE | UPDATE | DELETE | PURGE));
       $rand    = mt_rand();
 
       // Is global connection ?
@@ -793,13 +793,13 @@ class Computer_Item extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // can exists for Template
-      if ($item->can($item->getField('id'),'r')) {
+      if ($item->can($item->getField('id'), READ)) {
          switch ($item->getType()) {
             case 'Phone' :
             case 'Printer' :
             case 'Peripheral' :
             case 'Monitor' :
-               if (Session::haveRight('computer', ProfileRight::READ)) {
+               if (Computer::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(_n('Connection','Connections',2),
                                                  self::countForItem($item));
@@ -809,10 +809,10 @@ class Computer_Item extends CommonDBRelation{
                break;
 
             case 'Computer' :
-               if (Session::haveRight('phone', ProfileRight::READ)
-                   || Session::haveRight('printer', ProfileRight::READ)
-                   || Session::haveRight('peripheral',ProfileRight::READ)
-                   || Session::haveRight('monitor', ProfileRight::READ)) {
+               if (Phone::canView()
+                   || Printer::canView()
+                   || Peripheral::canView()
+                   || Monitor::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      return self::createTabEntry(_n('Connection','Connections',2),
                                                  self::countForComputer($item));

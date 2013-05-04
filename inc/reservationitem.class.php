@@ -238,7 +238,7 @@ class ReservationItem extends CommonDBChild {
    **/
    static function showActivationFormForItem(CommonDBTM $item) {
 
-      if (!Session::haveRight("reservation_central", ProfileRight::UPDATE)) {
+      if (!Session::haveRight("reservation_central", UPDATE)) {
          return false;
       }
       if ($item->getID()) {
@@ -295,7 +295,7 @@ class ReservationItem extends CommonDBChild {
 
    function showForm($ID, $options=array()) {
 
-      if (!Session::haveRight("reservation_central", ProfileRight::UPDATE)) {
+      if (!Session::haveRight("reservation_central", READ)) {
          return false;
       }
 
@@ -341,7 +341,7 @@ class ReservationItem extends CommonDBChild {
    static function showListSimple() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("reservation_helpdesk", ProfileRight::RESERVEITEM)) {
+      if (!Session::haveRight("reservation_helpdesk", READ)) {
          return false;
       }
 
@@ -637,17 +637,5 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
-   static function getRights() {
-
-      $values = parent::getRights();
-      $values[ProfileRight::RESERVEITEM] = __('Reserve an item');
-
-      return $values;
-   }
 }
 ?>

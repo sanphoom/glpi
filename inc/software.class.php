@@ -68,7 +68,7 @@ class Software extends CommonDBTM {
          switch ($item->getType()) {
             case __CLASS__ :
                if ($item->isRecursive()
-                   && $item->can($item->fields['id'], ProfileRight::UPDATE)) {
+                   && $item->can($item->fields['id'], UPDATE)) {
                   return __('Merging');
                }
                break;

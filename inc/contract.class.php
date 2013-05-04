@@ -875,7 +875,7 @@ class Contract extends CommonDBTM {
    static function showCentral() {
       global $DB,$CFG_GLPI;
 
-      if (!Session::haveRight("contract", ProfileRight::READ)) {
+      if (!Contract::canView()) {
          return false;
       }
 

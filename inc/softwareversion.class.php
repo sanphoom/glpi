@@ -99,16 +99,12 @@ class SoftwareVersion extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("software", ProfileRight::READ)) {
-         return false;
-      }
-
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
          $softwares_id = $this->fields['softwares_id'];
       } else {
          $softwares_id = $options['softwares_id'];
-         $this->check(-1, 'w', $options);
+         $this->check(-1, CREATE, $options);
       }
 
       $this->showFormHeader($options);

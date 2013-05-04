@@ -83,7 +83,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if (get_called_class() == 'CommonDropdown') {
          if (Session::haveRight("dropdown","r")
              || Session::haveRight("entity_dropdown","r")
-             || Session::haveRight("internet", ProfileRight::READ)) {
+             || Session::haveRight("internet", READ)) {
             $menu['title']             = static::getTypeName(2);
             $menu['shortcut']          = 'n';
             $menu['page']              = '/front/dropdown.php';
@@ -755,20 +755,6 @@ abstract class CommonDropdown extends CommonDBTM {
       return ($add ? $this->import($input) : $this->findID($input));
    }
 
-
-
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
-   static function getRights() {
-
-      $values = parent::getRights();
-      unset($values[ProfileRight::DELETE]);
-
-      return $values;
-   }
 
 }
 ?>
