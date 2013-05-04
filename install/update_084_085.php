@@ -106,7 +106,7 @@ function update084to085() {
          foreach ($configs as $name => $value) {
             $query = "INSERT INTO `glpi_configs`
                              (`context`, `name`, `value`)
-                      VALUES ('core', '$name', '$value');";
+                      VALUES ('core', '$name', '".addslashes($value)."');";
             $DB->query($query);
          }
       }
