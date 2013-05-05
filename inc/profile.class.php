@@ -807,7 +807,8 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
-      if ($canedit = Session::haveRight(self::$rightname, (UPDATE | CREATE | PURGE)) && $openform) {
+      if (($canedit = Session::haveRight(self::$rightname, (UPDATE | CREATE | PURGE)))
+          && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -1263,12 +1264,12 @@ class Profile extends CommonDBTM {
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRight("profile", (CREATE | UPDATE | DELETE | PURGE)))
+      if (($canedit = Session::haveRight(self::$rightname, (CREATE | UPDATE | PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      echo "<table class='tab_cadre_fixe'><tr>";
+      echo "<table class='tab_cadre_fixe'>";
 
       // Administration
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Administration')."</th></tr>\n";
@@ -1322,7 +1323,7 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Rules for assigning a computer to an entity')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('RuleImportComputer'), "_rule_import",
                            $this->fields["rule_import"]);
-      echo "</td>></tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td>";
@@ -1461,11 +1462,6 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td>";
       self::dropdownRights(Profile::getRightsFor('Calendar'), "_calendar",
                            $this->fields["calendar"]);
-      echo "</td>\n";
-      echo "<td>".__('Assistance')."</td><td>";
-      $tab = CommonDBTM::getRights();
-      unset($tab[CREATE], $tab[DELETE], $tab[PURGE]);
-      self::dropdownRights($tab, "_entity_helpdesk", $this->fields["entity_helpdesk"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";

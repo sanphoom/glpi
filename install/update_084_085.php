@@ -324,6 +324,32 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete user_authtype right");
 
 
+   // delete entity_helpdesk
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'entity_helpdesk' AND `right` = 'r'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Entity::READHELPDESK ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'entity'";
+         $DB->queryOrDie($query, "0.85 update entity with read entity_helpdesk right");
+   }
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'entity_helpdesk' AND `right` = 'w'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Entity::READHELPDESK ." | ".Entity::UPDATEHELPDESK."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'entity'";
+         $DB->queryOrDie($query, "0.85 update user with write entity_helpdesk right");
+   }
+
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'entity_helpdesk'";
+   $DB->queryOrDie($query, "0.85 delete entity_helpdesk right");
+
+
    // don't drop column right  - be done later
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));

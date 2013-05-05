@@ -48,6 +48,9 @@ class Entity extends CommonTreeDropdown {
 
    static $rightname = 'entity';
 
+   const READHELPDESK    = 1024;
+   const UPDATEHELPDESK  = 2048;
+
    const CONFIG_PARENT   = -2;
    const CONFIG_NEVER    = -10;
 
@@ -88,7 +91,7 @@ class Entity extends CommonTreeDropdown {
                                                    'send_infocoms_alert_before_delay',
                                                    'notification_subject_tag'),
                                        // Helpdesk
-                                       'entity_helpdesk'
+                                       'entity'
                                           => array('calendars_id', 'tickettype', 'auto_assign_mode',
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay', 'inquest_URL',
@@ -174,7 +177,11 @@ class Entity extends CommonTreeDropdown {
 
       foreach (self::$field_right as $right => $fields) {
 
-         if (Session::haveRight($right, 'w')) {
+         if (($right == 'Entity')
+             && !Session::haveRight(self::$rightname, self::UPDATEHELPDESK )) {
+            return false ;
+         }
+         if (Session::haveRight($right, UPDATE)) {
             foreach ($fields as $field) {
                if (isset($input[$field])) {
                   $tmp[$field] = $input[$field];
@@ -279,7 +286,7 @@ class Entity extends CommonTreeDropdown {
                if (Notification::canView()) {
                   $ong[4] = _n('Notification', 'Notifications',2);
                }
-               if (Session::haveRight("entity_helpdesk", (READ | UPDATE))) {
+               if (Session::haveRight(self::$rightname, (self::READHELPDESK | self::UPDATEHELPDESK))) {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
@@ -1643,11 +1650,11 @@ class Entity extends CommonTreeDropdown {
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)
-          || !Session::haveRight('entity_helpdesk', READ | UPDATE)) {
+          || !Session::haveRight(self::$rightname, (self::READHELPDESK | self::UPDATEHELPDESK))) {
          return false;
       }
-      $canedit = (!Session::haveRight('entity_helpdesk', UPDATE)
-                 && Session::haveAccessToEntity($ID));
+      $canedit = (Session::haveRight(self::$rightname, self::UPDATEHELPDESK)
+                  && Session::haveAccessToEntity($ID));
 
       echo "<div class='spaced'>";
       if ($canedit) {
@@ -2368,6 +2375,21 @@ class Entity extends CommonTreeDropdown {
 
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      $values[self::READHELPDESK]   = __('Read helpdesk parameters');
+      $values[self::UPDATEHELPDESK] = __('Update helpdesk parameters');
+
+      return $values;
    }
 
 }
