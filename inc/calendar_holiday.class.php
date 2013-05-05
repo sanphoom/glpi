@@ -72,7 +72,7 @@ class Calendar_Holiday extends CommonDBRelation {
          return false;
       }
 
-      $canedit = $calendar->can($ID, (CREATE | UPDATE | PURGE));
+      $canedit = $calendar->can($ID, UPDATE);
 
       $rand    = mt_rand();
 

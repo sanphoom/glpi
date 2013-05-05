@@ -2020,7 +2020,7 @@ class CommonDBTM extends CommonGLPI {
          $this->check(-1, PURGE, $input);
       } else {
          // Modify item
-         $this->check($ID, READ);
+         $this->check($ID, UPDATE);
       }
 
       return (isset($options['withtemplate']) ? $options['withtemplate'] : '');

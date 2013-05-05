@@ -40,6 +40,10 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DocumentType  extends CommonDropdown {
 
+   static $rightname = 'typdedoc';
+
+
+
    function getAdditionalFields() {
 
       return array(array('name'  => 'icon',
@@ -138,15 +142,6 @@ class DocumentType  extends CommonDropdown {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-
-   static function canCreate() {
-      return Session::haveRight('typedoc', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('typedoc', 'r');
-   }
 
 }
 ?>

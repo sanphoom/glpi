@@ -50,7 +50,7 @@ if (isset($_POST["id"])) {
 
 
 if (isset($_POST["add"])) {
-   $dropdown->check(-1, READ, $_POST);
+   $dropdown->check(-1, CREATE, $_POST);
 
    if ($newID=$dropdown->add($_POST)) {
       if ($dropdown instanceof CommonDevice) {

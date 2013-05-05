@@ -1444,10 +1444,11 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Document type')."</td><td>";
-      self::dropdownRight("typedoc", array('value' => $this->fields["typedoc"]));
+      self::dropdownRights(Profile::getRightsFor('DocumentType'), "_typedoc",
+                           $this->fields["typedoc"]);
       echo "</td>";
       echo "<td>"._n('External link', 'External links',2)."</td><td>";
-      self::dropdownRight("link", array('value' => $this->fields["link"]));
+      self::dropdownRights(Profile::getRightsFor('Link'), "_link", $this->fields["link"]);
       echo "</td>";
       echo "<td>".__('Check for upgrade')."</td><td>";
       self::dropdownRight("check_update", array('value'   => $this->fields["check_update"],

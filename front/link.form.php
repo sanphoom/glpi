@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("link", "r");
+Session::checkRight("link", READ);
 
 if (empty($_GET["id"])) {
    $_GET["id"] = "";
@@ -42,7 +42,7 @@ if (empty($_GET["id"])) {
 $link = new Link();
 
 if (isset($_POST["add"])) {
-   $link->check(-1,'w');
+   $link->check(-1, CREATE);
 
    $newID = $link->add($_POST);
    Event::log($newID, "links", 4, "setup",
@@ -50,7 +50,8 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
 
 } else if (isset($_POST["delete"])) {
-   $link->check($_POST["id"],'d');
+   $link->check($_POST["id"], PURGE);
+   //TODO delete => purge
    $link->delete($_POST);
    Event::log($_POST["id"], "links", 4, "setup",
               //TRANS: %s is the user login
@@ -58,7 +59,7 @@ if (isset($_POST["add"])) {
    $link->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $link->check($_POST["id"],'w');
+   $link->check($_POST["id"], UPDATE);
    $link->update($_POST);
    Event::log($_POST["id"], "links", 4, "setup",
               //TRANS: %s is the user login

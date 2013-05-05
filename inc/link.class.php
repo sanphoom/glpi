@@ -35,8 +35,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES link
+/** Link Class
+**/
 class Link extends CommonDBTM {
+
+   static $rightname = 'link';
+
 
 
    static function getTypeName($nb=0) {
@@ -44,19 +48,9 @@ class Link extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('link', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('link', 'r');
-   }
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("link","r")) {
+      if (self::canView()) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(_n('Link','Links',2),
                                         countElementsInTable('glpi_links_itemtypes',
@@ -380,7 +374,7 @@ class Link extends CommonDBTM {
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("link","r")) {
+      if (!self::canView()) {
          return false;
       }
 

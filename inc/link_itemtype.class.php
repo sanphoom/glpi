@@ -64,11 +64,11 @@ class Link_Itemtype extends CommonDBChild {
 
       $links_id = $link->getField('id');
 
-      $canedit  = $link->can($links_id, 'w');
+      $canedit  = $link->can($links_id, (CREATE | UPDATE | PURGE));
       $rand     = mt_rand();
 
-      if (!Session::haveRight("link","r")
-          || !$link->can($links_id, 'r')) {
+      if (!Link::canView()
+          || !$link->can($links_id, READ)) {
          return false;
       }
 
