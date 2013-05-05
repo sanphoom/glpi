@@ -76,7 +76,7 @@ if (!Session::haveRight('create_ticket',1)) {
    } else if (Session::haveRight('reservation_helpdesk', READ)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/reservationitem.php");
 
-   } else if (Session::haveRight('faq', READ)) {
+   } else if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.faq.php");
    }
 }
@@ -117,7 +117,7 @@ if (isset($_GET['create_ticket'])) {
    echo "<table>";
 
    // Show KB items
-   if (Session::haveRight("faq", READ)) {
+   if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
       echo "<tr><td class='top' width='450px'>";
       KnowbaseItem::showRecentPopular("popular");
       echo "</td></tr>";

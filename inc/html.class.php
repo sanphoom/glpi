@@ -1886,7 +1886,7 @@ class Html {
       }
 
       // FAQ
-      if (Session::haveRight("faq", READ)) {
+      if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
          echo "<li id='menu5' >";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
                 __s('FAQ')."\" class='itemP'>".__('FAQ')."</a>";

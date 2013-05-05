@@ -244,7 +244,6 @@ function update084to085() {
                     SET `rights` = `rights` | " . READNOTE ."
                     WHERE `profiles_id` = '".$profrights['profiles_id']."'
                           AND `name` = '$table'";
-         toolbox::logdebug("query", $query);
          $DB->queryOrDie($query, "0.85 update $table with readnote right");
       }
    }
@@ -256,16 +255,39 @@ function update084to085() {
                     SET `rights` = `rights` | " . READNOTE ." | ".UPDATENOTE ."
                     WHERE `profiles_id` = '".$profrights['profiles_id']."'
                           AND `name` = '$table'";
-         toolbox::logdebug("query", $query);
          $DB->queryOrDie($query, "0.85 update $table with updatenote right");
       }
    }
-
+/* DELETE AT THE END
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'notes'";
    $DB->queryOrDie($query, "0.85 delete notes right");
+*/
 
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'faq' AND `right` = 'r'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . KnowbaseItem::READFAQ ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'knowbase'";
+      $DB->queryOrDie($query, "0.85 update knowbase with readfaq right");
+   }
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'faq' AND `right` = 'w'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . KnowbaseItem::READFAQ ." | ".KnowbaseItem::PUBLISHFAQ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'knowbase'";
+      $DB->queryOrDie($query, "0.85 update knowbase with publishfaq right");
+   }
+
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'faq'";
+   $DB->queryOrDie($query, "0.85 delete faq right");
 
 
    // don't drop column right  - be done later

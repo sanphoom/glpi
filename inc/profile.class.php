@@ -46,7 +46,7 @@ class Profile extends CommonDBTM {
    static public $helpdesk_rights = array('add_followups', 'create_ticket',
                                           'create_ticket_on_login', 'create_request_validation',
                                           'create_incident_validation',
-                                          'faq', 'helpdesk_hardware', 'helpdesk_item_type',
+                                          'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
                                           'observe_ticket', 'password_update', 'reminder_public',
                                           'reservation_helpdesk', 'rssfeed_public',
                                           'show_group_hardware', 'show_group_ticket',
@@ -217,8 +217,8 @@ class Profile extends CommonDBTM {
 
       // Check for faq
       if (isset($input["interface"]) && ($input["interface"] == 'helpdesk')) {
-         if (isset($input["faq"]) && ($input["faq"] == ProfileRight::UPDATE)) {
-            $input["faq"] == ProfileRight::READ;
+         if (isset($input["faq"]) && ($input["faq"] == KnowbaseItem::PUBLISHFAQ)) {
+            $input["faq"] == KnowbaseItem::READFAQ;
          }
       }
 
@@ -674,11 +674,11 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('FAQ')."</td><td>";
       if (($this->fields["interface"] == "helpdesk")
-          && ($this->fields["faq"] == UPDATE)) {
-         $this->fields["faq"] = READ;
+          && ($this->fields["knowbase"] == KnowbaseItem::PUBLISHFAQ)) {
+         $this->fields["knowbase"] = KnowbaseItem::READFAQ;
       }
-      self::dropdownRight("faq", array('value'   => $this->fields["faq"],
-                                       'nowrite' => true));
+      self::dropdownRights(Profile::getRightsFor('KnowbaseItem', 'helpdesk'), "_knowbase",
+                           $this->fields["knowbase"]);
       echo "</td>";
       echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
       Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
@@ -859,11 +859,6 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('FAQ')."</td><td>";
-      $tab = CommonDBTM::getRights();
-      unset($tab[DELETE]);
-      self::dropdownRights($tab, "_faq", $this->fields["faq"]);
-      echo "</td>";
       echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
       self::dropdownRight("reports", array('value'   => $this->fields["reports"],
                                            'nowrite' => true));
@@ -871,7 +866,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Knowledge base')."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('Knowbase'), "_knowbase",
+      self::dropdownRights(Profile::getRightsFor('KnowbaseItem'), "_knowbase",
                            $this->fields["knowbase"]);
       echo "</td>";
       echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
@@ -1659,7 +1654,7 @@ class Profile extends CommonDBTM {
       $tab[35]['name']           = __('FAQ');
       $tab[35]['datatype']       = 'right';
       $tab[35]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'faq'");
+                                         'condition' => "AND `NEWTABLE`.`name`= 'knowbase'");
 
       $tab[36]['table']          = 'glpi_profilerights';
       $tab[36]['field']          = 'right';

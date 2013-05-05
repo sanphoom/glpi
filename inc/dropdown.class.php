@@ -213,7 +213,7 @@ class Dropdown {
          }
 
          if (($itemtype == 'ITILCategory')
-             && Session::haveRight('knowbase', ProfileRight::READ)) {
+             && Session::haveRight('knowbase', READ)) {
 
             if ($params['value'] && $item->getFromDB($params['value'])) {
                $output .= '&nbsp;'.$item->getLinks();

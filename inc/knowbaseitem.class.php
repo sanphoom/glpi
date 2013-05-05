@@ -46,6 +46,11 @@ class KnowbaseItem extends CommonDBTM {
    protected $profiles  = array();
    protected $entities  = array();
 
+   const KNOWBASEADMIN = 1024;
+   const READFAQ       = 2048;
+   const PUBLISHFAQ    = 4096;
+
+   static $rightname   = 'knowbase';
 
 
    static function getTypeName($nb=0) {
@@ -62,17 +67,17 @@ class KnowbaseItem extends CommonDBTM {
       return 'b';
    }
 
+
    static function canCreate() {
-      return (Session::haveRight('knowbase', CREATE)
-              || Session::haveRight('faq', CREATE));
+
+      return (Session::haveRight(self::$rightname, (CREATE | self::PUBLISHFAQ)));
    }
 
 
    static function canView() {
       global $CFG_GLPI;
 
-      return (Session::haveRight('knowbase', READ)
-              || Session::haveRight('faq', READ)
+      return (Session::haveRight(self::$rightname, (READ | self::READFAQ))
               || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
    }
 
@@ -83,28 +88,27 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
-      if (Knowbase::KNOWBASEADMIN) {
+      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          return true;
       }
 
       if ($this->fields["is_faq"]) {
-         return (((Session::haveRight('knowbase', READ)
-                   || Session::haveRight('faq', READ))
+         return ((Session::haveRight(self::$rightname, (READ | self::READFAQ))
                   && $this->haveVisibilityAccess())
                  || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
       }
-      return (Session::haveRight("knowbase", READ) && $this->haveVisibilityAccess());
+      return (Session::haveRight(self::$rightname, READ) && $this->haveVisibilityAccess());
    }
 
 
    function canUpdateItem() {
 
       // Personal knowbase or visibility and write access
-      return (Knowbase::KNOWBASEADMIN
+      return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
               || ($this->fields['users_id'] == Session::getLoginUserID())
-              || ((($this->fields["is_faq"] && Session::haveRight("faq", ProfileRight::UPDATE))
+              || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
                    || (!$this->fields["is_faq"]
-                       && Session::haveRight("knowbase", ProfileRight::UPDATE)))
+                       && Session::haveRight(self::$rightname, UPDATE)))
                   && $this->haveVisibilityAccess()));
    }
 
@@ -189,8 +193,8 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function post_getEmpty() {
 
-      if (Session::haveRight("faq", ProfileRight::UPDATE)
-          && !Session::haveRight("knowbase", ProfileRight::UPDATE)) {
+      if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)
+          && !Session::haveRight("knowbase", UPDATE)) {
          $this->fields["is_faq"] = 1;
       }
    }
@@ -322,8 +326,7 @@ class KnowbaseItem extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public knowbaseitem right : no visibility check
-      if (!Session::haveRight('faq', ProfileRight::READ)
-          && !Session::haveRight('knowbase', ProfileRight::READ) ) {
+      if (!Session::haveRight(self::$rightname, (self::READFAQ | READ))) {
          return false;
       }
 
@@ -332,7 +335,7 @@ class KnowbaseItem extends CommonDBTM {
          return true;
       }
       // Admin
-      if (Knowbase::KNOWBASEADMIN) {
+      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          return true;
       }
       // Users
@@ -520,12 +523,12 @@ class KnowbaseItem extends CommonDBTM {
          $input["name"] = __('New item');
       }
 
-      if (Session::haveRight("faq", ProfileRight::UPDATE)
-          && !Session::haveRight("knowbase", ProfileRight::UPDATE)) {
+      if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)
+          && !Session::haveRight(self::$rightname, UPDATE)) {
          $input["is_faq"] = 1;
       }
-      if (!Session::haveRight("faq", ProfileRight::UPDATE)
-          && Session::haveRight("knowbase", ProfileRight::UPDATE)) {
+      if (!Session::haveRight(self::$rightname, self::PUBLISHFAQ)
+          && Session::haveRight(self::$rightname, UPDATE)) {
          $input["is_faq"] = 0;
       }
       return $input;
@@ -557,8 +560,7 @@ class KnowbaseItem extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       // show kb item form
-      if (!Session::haveRight("knowbase", ProfileRight::UPDATE)
-          && !Session::haveRight("faq", ProfileRight::UPDATE)) {
+      if (!Session::haveRight(self::$rightname, (UPDATE | self::PUBLISHFAQ))) {
          return false;
       }
 
@@ -776,8 +778,7 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRight("knowbase", ProfileRight::READ)
-          && !Session::haveRight("faq", ProfileRight::READ)) {
+          && !Session::haveRight(self::$rightname, (READ | READFAQ))) {
          return false;
       }
 
@@ -825,8 +826,7 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRight("knowbase", ProfileRight::READ)
-          && !Session::haveRight("faq", ProfileRight::READ)) {
+          && !Session::haveRight(self::$rightname, (READ | self::READFAQ))) {
          return false;
       }
 
@@ -838,7 +838,7 @@ class KnowbaseItem extends CommonDBTM {
             $params[$key] = $val;
          }
       }
-      $faq = !Session::haveRight("knowbase", ProfileRight::READ);
+      $faq = !Session::haveRight(self::$rightname, READ);
 
       // Category select not for anonymous FAQ
       if (Session::getLoginUserID()
@@ -874,8 +874,7 @@ class KnowbaseItem extends CommonDBTM {
    function showManageForm($options) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("knowbase", ProfileRight::UPDATE)
-          && !Session::haveRight("faq", ProfileRight::UPDATE)) {
+      if (!Session::haveRight(self::$rightname, (UPDATE | self::PUBLISHFAQ))) {
          return false;
       }
       $params['unpublished'] = 'my';
@@ -885,7 +884,7 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
 
-      $faq = !Session::haveRight("knowbase", ProfileRight::UPDATE);
+      $faq = !Session::haveRight(self::$rightname, UPDATE);
 
       echo "<div>";
       echo "<form method='get' action='".$this->getSearchURL()."'>";
@@ -893,7 +892,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       $values = array('myunpublished' => __('My unpublished articles'),
                       'allmy'         => __('All my articles'));
-      if (Knowbase::KNOWBASEADMIN) {
+      if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          $values['allunpublished'] = __('All unpublished articles');
       }
       Dropdown::showFromArray('unpublished', $values, array('value' => $params['unpublished']));
@@ -1047,7 +1046,7 @@ class KnowbaseItem extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       // Default values of parameters
-      $params['faq']                       = !Session::haveRight("knowbase", ProfileRight::READ);
+      $params['faq']                       = !Session::haveRight(self::$rightname, READ);
       $params["start"]                     = "0";
       $params["knowbaseitemcategories_id"] = "0";
       $params["contains"]                  = "";
@@ -1061,14 +1060,13 @@ class KnowbaseItem extends CommonDBTM {
       $ki = new self();
       switch ($type) {
          case 'myunpublished' :
-            if (!Session::haveRight('knowbase', ProfileRight::UPDATE)
-                && !Session::haveRight('faq', ProfileRight::UPDATE)) {
+            if (!Session::haveRight(self::$rightname, (UPDATE | self::PUBLISHFAQ))) {
                return false;
             }
             break;
 
          case 'allunpublished' :
-            if (!Knowbase::KNOWBASEADMIN) {
+            if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
                return false;
             }
             break;
@@ -1262,7 +1260,7 @@ class KnowbaseItem extends CommonDBTM {
    static function showRecentPopular($type) {
       global $DB, $CFG_GLPI;
 
-      $faq = !Session::haveRight("knowbase", ProfileRight::READ);
+      $faq = !Session::haveRight(self::$rightname, READ);
 
       if ($type == "recent") {
          $orderby = "ORDER BY `date` DESC";
@@ -1591,6 +1589,22 @@ class KnowbaseItem extends CommonDBTM {
       return true;
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      if ($interface == 'central') {
+         $values = parent::getRights();
+         $values[self::KNOWBASEADMIN] = __('Knowledge base administration');
+      }
+      $values[self::READFAQ]       = __('Read the FAQ');
+      $values[self::PUBLISHFAQ]    = __('Publish in the FAQ');
+      return $values;
+   }
 
 }
 ?>

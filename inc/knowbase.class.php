@@ -43,10 +43,6 @@ if (!defined('GLPI_ROOT')) {
 class Knowbase extends CommonGLPI {
 
 
-   const KNOWBASEADMIN = 1024;
-
-
-
    static function getTypeName($nb=0) {
 
       // No plural
@@ -178,6 +174,7 @@ class Knowbase extends CommonGLPI {
       $ki->showManageForm($_GET);
       KnowbaseItem::showList($_GET, $_GET["unpublished"]);
    }
+
 
 }
 ?>
