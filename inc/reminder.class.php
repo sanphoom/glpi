@@ -36,7 +36,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-/// Reminder class
+/**
+ * Reminder Class
+**/
 class Reminder extends CommonDBTM {
 
    // For visibility checks
@@ -1337,6 +1339,21 @@ class Reminder extends CommonDBTM {
       return true;
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      if ($interface == 'helpdesk') {
+         $values = array(READ => __('Read'));
+      } else {
+         $values = parent::getRights();
+      }
+      return $values;
+   }
 
 }
 ?>

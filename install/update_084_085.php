@@ -189,7 +189,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 right in profile $old to $new");
    }
 
-
+// delete import_externalauth_users
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'import_externalauth_users' AND `right` = 'w'") as $profrights) {
 
@@ -204,6 +204,8 @@ function update084to085() {
              WHERE `name` = 'import_externalauth_users'";
    $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
 
+
+   // delete rule_ticket
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'rule_ticket' AND `right` = 'r'") as $profrights) {
 
@@ -218,6 +220,8 @@ function update084to085() {
              WHERE `name` = 'rule_ticket'";
    $DB->queryOrDie($query, "0.85 delete rule_ticket right");
 
+
+   // delete knowbase_admin
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'knowbase_admin' AND `right` = '1'") as $profrights) {
 
@@ -232,6 +236,8 @@ function update084to085() {
              WHERE `name` = 'knowbase_admin'";
    $DB->queryOrDie($query, "0.85 delete knowbase_admin right");
 
+
+   // delete notes
    $tables = array('budget', 'cartridge', 'computer', 'consumable', 'contact_enterprise',
                    'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
                    'phone', 'printer', 'software');
@@ -244,7 +250,7 @@ function update084to085() {
                     SET `rights` = `rights` | " . READNOTE ."
                     WHERE `profiles_id` = '".$profrights['profiles_id']."'
                           AND `name` = '$table'";
-         $DB->queryOrDie($query, "0.85 update $table with readnote right");
+         $DB->queryOrDie($query, "0.85 update $table with read notes right");
       }
    }
    foreach ($DB->request("glpi_profilerights",
@@ -255,7 +261,7 @@ function update084to085() {
                     SET `rights` = `rights` | " . READNOTE ." | ".UPDATENOTE ."
                     WHERE `profiles_id` = '".$profrights['profiles_id']."'
                           AND `name` = '$table'";
-         $DB->queryOrDie($query, "0.85 update $table with updatenote right");
+         $DB->queryOrDie($query, "0.85 update $table with update notes right");
       }
    }
 /* DELETE AT THE END
@@ -265,6 +271,8 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete notes right");
 */
 
+
+   // delete faq
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'faq' AND `right` = 'r'") as $profrights) {
 
@@ -272,7 +280,7 @@ function update084to085() {
                  SET `rights` = `rights` | " . KnowbaseItem::READFAQ ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'knowbase'";
-      $DB->queryOrDie($query, "0.85 update knowbase with readfaq right");
+      $DB->queryOrDie($query, "0.85 update knowbase with read faq right");
    }
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'faq' AND `right` = 'w'") as $profrights) {
@@ -281,13 +289,39 @@ function update084to085() {
                  SET `rights` = `rights` | " . KnowbaseItem::READFAQ ." | ".KnowbaseItem::PUBLISHFAQ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'knowbase'";
-      $DB->queryOrDie($query, "0.85 update knowbase with publishfaq right");
+      $DB->queryOrDie($query, "0.85 update knowbase with write faq right");
    }
 
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'faq'";
    $DB->queryOrDie($query, "0.85 delete faq right");
+
+
+   // delete user_authtype
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'user_authtype' AND `right` = 'r'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . User::READAUTHENT ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'user'";
+      $DB->queryOrDie($query, "0.85 update user with read user_authtype right");
+   }
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'user_authtype' AND `right` = 'w'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . User::READAUTHENT ." | ".User::UPDATEAUTHENT."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'user'";
+         $DB->queryOrDie($query, "0.85 update user with write user_authtype right");
+   }
+
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'user_authtype'";
+   $DB->queryOrDie($query, "0.85 delete user_authtype right");
 
 
    // don't drop column right  - be done later

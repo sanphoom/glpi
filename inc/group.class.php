@@ -56,7 +56,7 @@ class Group extends CommonTreeDropdown {
    **/
    static function getAdditionalMenuOptions() {
 
-      if (Session::haveRight('user_authtype', UPDATE)) {
+      if (Session::haveRight('user', User::UPDATEAUTHENT)) {
          $options['ldap']['title'] = AuthLDAP::getTypeName(2);
          $options['ldap']['page']  = "/front/ldap.group.php";
          return $options;
@@ -141,7 +141,7 @@ class Group extends CommonTreeDropdown {
                }
                if ($item->getField('is_usergroup')
                    && Group::canUpdate()
-                   && Session::haveRight("user_authtype", ProfileRight::UPDATE)
+                   && Session::haveRight("user", User::UPDATEAUTHENT)
                    && AuthLdap::useAuthLdap()) {
                   $ong[3] = __('LDAP directory link');
                }
@@ -293,7 +293,7 @@ class Group extends CommonTreeDropdown {
 
       $buttons = array();
       if (Group::canUpdate()
-          && Session::haveRight("user_authtype", ProfileRight::UPDATE)
+          && Session::haveRight("user", User::UPDATEAUTHENT)
           && AuthLdap::useAuthLdap()) {
 
          $buttons["ldap.group.php"] = __('LDAP directory link');
@@ -506,7 +506,7 @@ class Group extends CommonTreeDropdown {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
       if (Group::canUpdate()
-          && Session::haveRight("user_authtype", ProfileRight::UPDATE)
+          && Session::haveRight("user", User::UPDATEAUTHENT)
           && AuthLdap::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2' class='center'>".__('In users')."</th></tr>";

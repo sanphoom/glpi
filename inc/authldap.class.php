@@ -282,8 +282,8 @@ class AuthLDAP extends CommonDBTM {
 
          case "import_group" :
             $group = new Group;
-            if (!Session::haveRight("user_authtype", ProfileRight::UPDATE) ||
-               !$group->canGlobal('w')) {
+            if (!Session::haveRight("user", User::UPDATEAUTHENT) ||
+               !$group->canGlobal('UPDATE')) {
                $res['noright']++;
             } else if (isset($_GET['multiple_actions'])
                        && isset($_SESSION["glpi_massiveaction"])) {

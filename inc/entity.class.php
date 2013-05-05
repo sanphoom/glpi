@@ -1029,7 +1029,7 @@ class Entity extends CommonTreeDropdown {
          return false;
       }
 
-      // Entity right applied (could be user_authtype)
+      // Entity right applied (could be User::UPDATEAUTHENT)
       $canedit = $entity->can($ID, UPDATE);
 
       if ($canedit) {

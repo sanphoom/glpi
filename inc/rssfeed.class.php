@@ -1169,6 +1169,19 @@ class RSSFeed extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
 
+      if ($interface == 'helpdesk') {
+         $values = array(READ => __('Read'));
+      } else {
+         $values = parent::getRights();
+      }
+      return $values;
+   }
 }
 ?>

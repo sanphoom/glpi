@@ -686,12 +686,12 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
-      self::dropdownRight("_reminder_public", array('value'   => $this->fields["reminder_public"],
-                                                    'nowrite' => true));
+      self::dropdownRights(Profile::getRightsFor('Reminder', 'helpdesk'), "_reminder_public",
+                           $this->fields["reminder_public"]);
       echo "</td>";
       echo "<td>"._n('Public RSS feed', 'Public RSS feeds', 2)."</td><td>";
-      self::dropdownRight("_rssfeed_public", array('value'   => $this->fields["rssfeed_public"],
-                                                   'nowrite' => true));
+      self::dropdownRights(Profile::getRightsFor('RSSFeed', 'helpdesk'), "_rssfeed_public",
+                           $this->fields["rssfeed_public"]);
       echo "</td>";
       echo "</td></tr>\n";
 
@@ -1274,25 +1274,22 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Administration')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='13%'>"._n('User', 'Users', 2)."</td><td  colspan='2'>";
+      echo "<td width='18%'>"._n('User', 'Users', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('User'), "_user", $this->fields["user"]);
-
-      echo "</td>";
-      echo "<td width='13%'>".__('Method for user authentication and synchronization')."</td>";
-      echo "<td colspan='2'>";
-      $tab = CommonDBTM::getRights();
-      unset($tab[DELETE], $tab[PURGE]);
-      self::dropdownRights($tab, "_user_authtype", $this->fields["user_authtype"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Entity', 'Entities', 2)."</td><td width='18%'>";
+      echo "<td>"._n('Entity', 'Entities', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Entity'), "_entity", $this->fields["entity"]);
-      echo "</td>";
-      echo "<td>"._n('Group', 'Groups', 2)."</td><td width='18%'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
+      echo "<td>"._n('Group', 'Groups', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Group'), "_group", $this->fields["group"]);
-      echo "</td>";
-      echo "<td>".self::getTypeName(2)."</td><td width='18%'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
+      echo "<td>".self::getTypeName(2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Profile'), "_profile",
                            $this->fields["profile"]);
       echo "</td></tr>\n";
@@ -1305,25 +1302,31 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Log', 'Logs', 2)."</td><td>";
       self::dropdownRight("logs", array('value'   => $this->fields["logs"],
                                         'nowrite' => true));
-      echo "</td>";
-      echo "<td>".__('Transfer')."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
+      echo "<td>".__('Transfer')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Transfer'), "_transfer",
                            $this->fields["transfer"]);
-      echo "</td>";
-      echo "</tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Rule', 'Rules', 2)."</th>";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Authorizations assignment rules')."</td><td>";
+      echo "<td>".__('Authorizations assignment rules')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Rule'), "_rule_ldap",
                            $this->fields["rule_ldap"]);
-      echo "</td>";
-      echo "<td>".__('Rules for assigning a computer to an entity')."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
+      echo "<td>".__('Rules for assigning a computer to an entity')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('RuleImportComputer'), "_rule_import",
                            $this->fields["rule_import"]);
-      echo "</td>";
-      echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td><td>";
+      echo "</td>></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
+      echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td>";
+      echo "<td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('RuleMailCollector'), "_rule_mailcollector",
                            $this->fields["rule_mailcollector"]);
       echo "</td></tr>\n";
@@ -1332,10 +1335,11 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Rules for assigning a category to a software')."</td><td>";
       self::dropdownRights(Profile::getRightsFor('RuleSoftwareCategory'),
                            "_rule_softwarecategories", $this->fields["rule_softwarecategories"]);
-      echo "</td>";
-      echo "</td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
       echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
-      echo "<td class='tab_bg_1' colspan='2'>";
+      echo "<td class='tab_bg_1' colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('RuleTicket'), "_entity_rule_ticket",
                            $this->fields["entity_rule_ticket"]);
       echo"</td></tr>\n";
@@ -1343,18 +1347,22 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Dictionary', 'Dictionaries', 2)."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Dropdowns dictionary')."</td><td>";
+      echo "<td>".__('Dropdowns dictionary')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('RuleDictionnaryDropdown'),
                            "_rule_dictionnary_dropdown",
                            $this->fields["rule_dictionnary_dropdown"]);
-      echo"</td>";
+      echo"</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
       //TRANS: software in plural
-      echo "<td>".__('Software dictionary')."</td><td>";
+      echo "<td>".__('Software dictionary')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('RuleDictionnarySoftware'),
                            "_rule_dictionnary_software",
                            $this->fields["rule_dictionnary_software"]);
-      echo "</td>";
-      echo "<td>".__('Printers dictionnary')."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
+      echo "<td>".__('Printers dictionnary')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('RuleDictionnaryPrinter'),
                            "_rule_dictionnary_printer",
                            $this->fields["rule_dictionnary_printer"]);
@@ -1834,14 +1842,14 @@ class Profile extends CommonDBTM {
       $tab[56]['datatype']       = 'right';
       $tab[56]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'user'");
-
+/*
       $tab[57]['table']          = 'glpi_profilerights';
       $tab[57]['field']          = 'right';
       $tab[57]['name']           = __('Method for user authentication and synchronization');
       $tab[57]['datatype']       = 'right';
       $tab[57]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'user_authtype'");
-/*
+
       $tab[104]['table']         = 'glpi_profilerights';
       $tab[104]['field']         = 'right';
       $tab[104]['name']          = __('Add users from an external source');
