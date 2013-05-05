@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DocumentType  extends CommonDropdown {
 
-   static $rightname = 'typdedoc';
+   static $rightname = '_typedoc';
 
 
 
