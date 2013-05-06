@@ -40,14 +40,14 @@ define("GLPI_CSRF_EXPIRES","7200");
 define("GLPI_CSRF_MAX_TOKENS","100");
 
 // rights
-define("READ", "1");
-define("UPDATE", "2");
-define("CREATE", "4");
-define("DELETE", "8");
-define("PURGE", "16");
-define("ALLSTANDARDRIGHT", "31");
-define("READNOTE", "32");
-DEFINE("UPDATENOTE", "64");
+define("READ",        1);
+define("UPDATE",      2);
+define("CREATE",      4);
+define("DELETE",      8);
+define("PURGE",      16);
+define("ALLSTANDARDRIGHT", 31);
+define("READNOTE",   32);
+define("UPDATENOTE", 64);
 
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
