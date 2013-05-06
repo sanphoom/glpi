@@ -1299,7 +1299,9 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Maintenance')."</td><td>";
       self::dropdownRight("backup", array('value'   => $this->fields["backup"],
                                           'noread'  => true));
-      echo "</td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
       echo "<td>"._n('Log', 'Logs', 2)."</td><td>";
       self::dropdownRight("logs", array('value'   => $this->fields["logs"],
                                         'nowrite' => true));

@@ -138,7 +138,7 @@ class Ticket extends CommonITILObject {
       $menu['create_ticket']['page']     = static::getFormURL(false);
       return $menu;
    }
-   
+
    /**
     * @see CommonGLPI::getAdditionalMenuLinks()
     *
@@ -3827,7 +3827,7 @@ class Ticket extends CommonITILObject {
       }
 
       $showuserlink              = 0;
-      if (Session::haveRight('user', ProfileRight::READ)) {
+      if (Session::haveRight('user', READ)) {
          $showuserlink = 1;
       }
 
@@ -3943,7 +3943,7 @@ class Ticket extends CommonITILObject {
                }
             }
             $slaoptions = array();
-            if (Session::haveRight('config', ProfileRight::READ)) {
+            if (Session::haveRight('config', READ)) {
                $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA').
                                           "?id=".$this->fields["slas_id"];
             }
@@ -4479,7 +4479,7 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-         
+
          echo "</td>";
 
       } else {
@@ -5644,7 +5644,7 @@ class Ticket extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $viewusers   = Session::haveRight("user", ProfileRight::READ);
+      $viewusers   = Session::haveRight("user", READ);
       $showprivate = Session::haveRight("show_full_ticket", 1);
 
       $job  = new self();
