@@ -893,7 +893,7 @@ class Session {
          $right = ALLSTANDARDRIGHT;
       }
       if (isset($_SESSION["glpiactiveprofile"][$module])) {
-         return $_SESSION["glpiactiveprofile"][$module] & $right;
+         return intval($_SESSION["glpiactiveprofile"][$module]) & $right;
       }
 
 //      $matches = array(""  => array("", "r", "w"), // ne doit pas arriver normalement

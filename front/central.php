@@ -75,5 +75,6 @@ if (isset($_GET["redirect"])) {
 $central = new Central();
 $central->display();
 
+echo "<pre>"; var_dump($_SESSION); echo"</pre>";
 Html::footer();
 ?>
