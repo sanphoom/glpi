@@ -33,7 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("reservation_helpdesk", READ);
+Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();
 
@@ -46,7 +46,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 if (isset($_POST["update"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST['resa']["begin"]);
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
-   if (Session::haveRight("reservation_central", UPDATE)
+   if (Session::haveRight("reservation", UPDATE)
        || (Session::getLoginUserID() === $_POST["users_id"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item']   = key($_POST["items"]);
@@ -108,7 +108,7 @@ if (isset($_POST["update"])) {
             $input['end']      = $end;
             $input['users_id'] = $_POST['users_id'];
 
-            if (Session::haveRight("reservation_central", UPDATE)
+            if (Session::haveRight("reservation", UPDATE)
                 || (Session::getLoginUserID() === $input["users_id"])) {
                unset($rr->fields["id"]);
                if ($newID = $rr->add($input)) {

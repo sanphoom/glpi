@@ -73,7 +73,7 @@ if (!Session::haveRight('create_ticket',1)) {
        || Session::haveRight('validate_incident',1)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/ticket.php");
 
-   } else if (Session::haveRight('reservation_helpdesk', READ)) {
+   } else if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/reservationitem.php");
 
    } else if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {

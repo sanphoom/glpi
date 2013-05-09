@@ -608,7 +608,6 @@ class Log extends CommonDBTM {
    }
 
 
-
    /**
     * @since version 0.85
     *
@@ -619,5 +618,6 @@ class Log extends CommonDBTM {
       $values = array( READ => __('Read'));
       return $values;
    }
+
 }
 ?>

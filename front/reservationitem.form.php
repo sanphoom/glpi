@@ -34,7 +34,7 @@
 include ('../inc/includes.php');
 
 Session::checkCentralAccess();
-Session::checkRight("reservation_central", (CREATE | UPDATE | DELETE | PURGE));
+Session::checkRight("reservation", (CREATE | UPDATE | DELETE | PURGE));
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = '';

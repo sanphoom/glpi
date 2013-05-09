@@ -48,7 +48,7 @@ class Profile extends CommonDBTM {
                                           'create_incident_validation',
                                           'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
                                           'observe_ticket', 'password_update', 'reminder_public',
-                                          'reservation_helpdesk', 'rssfeed_public',
+                                          'reservation', 'rssfeed_public',
                                           'show_group_hardware', 'show_group_ticket',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
                                           'update_own_followups', 'validate_incident', 'validate_request');
@@ -351,6 +351,10 @@ class Profile extends CommonDBTM {
    **/
    function cleanProfile() {
 
+      if ((self::$helpdesk_rights == 'reservation')
+         & !ReservationItem::RESERVEANITEM) {
+         return false;
+      }
       if ($this->fields["interface"] == "helpdesk") {
          foreach ($this->fields as $key=>$val) {
             if (!in_array($key,self::$common_fields)
@@ -396,6 +400,11 @@ class Profile extends CommonDBTM {
     * @return SQL restrict string
    **/
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
+
+      if ((self::$helpdesk_rights == 'reservation')
+            & !ReservationItem::RESERVEANITEM) {
+         return false;
+      }
 
       $query = $separator ." ";
 
@@ -681,7 +690,8 @@ class Profile extends CommonDBTM {
                            $this->fields["knowbase"]);
       echo "</td>";
       echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
-      Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
+      self::dropdownRights(Profile::getRightsFor('ReservationItem', 'helpdesk'), "_reservation",
+                           $this->fields["reservation"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -732,49 +742,61 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assets')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Computer', 'Computers', 2)."</td><td width='15%'>";
+      echo "<td width='18%'>"._n('Computer', 'Computers', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Computer'), "_computer",
                            $this->fields["computer"]);
-      echo "</td>";
-      echo "<td width='18%'>"._n('Monitor', 'Monitors', 2)."</td><td width='15%'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>"._n('Monitor', 'Monitors', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Monitor'), "_monitor",
                            $this->fields["monitor"]);
-      echo "</td>";
-      echo "<td width='18%'>"._n('Software', 'Software', 2)."</td><td width='15%'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>"._n('Software', 'Software', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Software'), "_software",
                            $this->fields["software"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Network', 'Networks', 2)."</td><td>";
+      echo "<td>"._n('Network', 'Networks', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('NetworkEquipment'), "_networking",
                            $this->fields["networking"]);
-      echo "</td>";
-      echo "<td>"._n('Printer', 'Printers', 2)."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Printer', 'Printers', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Printer'), "_printer",
                            $this->fields["printer"]);
-      echo "</td>";
-      echo "<td>"._n('Cartridge', 'Cartridges', 2)."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Cartridge', 'Cartridges', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Cartridge'), "_cartridge",
                            $this->fields["cartridge"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Consumable', 'Consumables', 2)."</td><td>";
+      echo "<td>"._n('Consumable', 'Consumables', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Consumable'), "_consumable",
                            $this->fields["consumable"]);
 
-      echo "</td>";
-      echo "<td>"._n('Phone', 'Phones', 2)."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Phone', 'Phones', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Phone'), "_phone", $this->fields["phone"]);
-      echo "</td>";
-      echo "<td>"._n('Device', 'Devices', 2)."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Device', 'Devices', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Peripheral'), "_peripheral",
                            $this->fields["peripheral"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Internet')."</td><td>";
+      echo "<td>".__('Internet')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('NetworkName'), "_internet",
                            $this->fields["internet"]);
       echo "</td>\n";
@@ -820,25 +842,31 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='18%'>"._n('Contacts', 'Contacts', 2)." / "._n('Supplier', 'Suppliers', 2).
-           "</td><td width='15%'>";
+           "</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Contact'), "_contact_enterprise",
                            $this->fields["contact_enterprise"]);
-      echo "</td>";
-      echo "<td width='18%'>"._n('Document', 'Documents', 2)."</td><td width='15%'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>"._n('Document', 'Documents', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Document'), "_document",
                            $this->fields["document"]);
-      echo "</td>";
-      echo "<td width='18%'>"._n('Contract', 'Contracts', 2)."</td><td width='15%'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>"._n('Contract', 'Contracts', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Contract'), "_contract",
                            $this->fields["contract"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".__('Financial and administratives information')."</td>".
-           "<td colspan='2'>";
+           "<td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Infocom'), "_infocom",
                            $this->fields["infocom"]);
-      echo "</td>";
-      echo "<td>".__('Budget')."</td><td colspan='3'>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Budget')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Budget'), "_budget", $this->fields["budget"]);
       echo "</td></tr>\n";
 
@@ -849,11 +877,15 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
       self::dropdownRights(Profile::getRightsFor('Reminder'), "_reminder_public",
                            $this->fields["reminder_public"]);
-      echo "</td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Public RSS feed', 'Public RSS feeds', 2)."</td><td>";
       self::dropdownRights(Profile::getRightsFor('RSSFeed'), "_rssfeed_public",
                            $this->fields["rssfeed_public"]);
-      echo "</td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Public bookmark', 'Public bookmarks', 2)."</td><td>";
       self::dropdownRights(Profile::getRightsFor('Bookmark'), "_bookmark_public",
                            $this->fields["bookmark_public"]);
@@ -861,21 +893,19 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
-      self::dropdownRight("reports", array('value'   => $this->fields["reports"],
-                                           'nowrite' => true));
+      self::dropdownRights(Profile::getRightsFor('Report'), "_reports", $this->fields["reports"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Knowledge base')."</td><td>";
       self::dropdownRights(Profile::getRightsFor('KnowbaseItem'), "_knowbase",
                            $this->fields["knowbase"]);
-      echo "</td>";
-      echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
-      Dropdown::showYesNo("reservation_helpdesk", $this->fields["reservation_helpdesk"]);
-      echo "</td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Administration of reservations')."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('Reservation'), "_reservation_central",
-                           $this->fields["reservation_central"]);
+      self::dropdownRights(Profile::getRightsFor('ReservationItem'), "_reservation",
+                           $this->fields["reservation"]);
       echo "</td></tr>\n";
 
       if ($canedit
@@ -1666,15 +1696,15 @@ class Profile extends CommonDBTM {
       $tab[36]['name']           = _n('Reservation', 'Reservations', 2);
       $tab[36]['datatype']       = 'bool';
       $tab[36]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'reservation_helpdesk'");
-
+                                         'condition' => "AND `NEWTABLE`.`name`= 'reservation'");
+/*
       $tab[37]['table']          = 'glpi_profilerights';
       $tab[37]['field']          = 'right';
       $tab[37]['name']           = __('Administration of reservations');
       $tab[37]['datatype']       = 'bool';
       $tab[37]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'reservation_central'");
-
+*/
       $tab[38]['table']          = 'glpi_profilerights';
       $tab[38]['field']          = 'right';
       $tab[38]['name']           = _n('Report', 'Reports', 2);

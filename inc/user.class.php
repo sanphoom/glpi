@@ -2877,6 +2877,11 @@ class User extends CommonDBTM {
             }
             $forcecentral = true;
             $where        = array();
+            if (($helpdesk_rights == 'reservation')
+                & !ReservationItem::RESERVEANITEM) {
+               return false;
+            }
+
             foreach ($right as $r) {
                // Check read or active for rights
                $where[]= " (`glpi_profilerights`.`name` = '".$r."'

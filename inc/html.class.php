@@ -1877,7 +1877,7 @@ class Html {
       }
 
       // Reservation
-      if (Session::haveRight("reservation_helpdesk", READ)) {
+      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
          echo "<li id='menu4'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
                 _sn('Reservation', 'Reservations', 2)."\" class='itemP'>".

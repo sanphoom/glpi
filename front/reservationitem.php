@@ -33,8 +33,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array("reservation_central"  => READ,
-                                    "reservation_helpdesk" => READ));
+Session::checkRight("reservation", (READ | ReservationItem::RESERVEANITEM));
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
@@ -42,7 +41,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
-if (!Session::haveRight("reservation_central", READ)) {
+if (!Session::haveRight("reservation", READ)) {
    ReservationItem::showListSimple();
 } else {
    Search::show('ReservationItem');

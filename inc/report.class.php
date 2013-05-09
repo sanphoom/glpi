@@ -90,7 +90,7 @@ class Report extends CommonGLPI{
          $report_list["Rapport prises reseau"]["name"] = __('Network report');
          $report_list["Rapport prises reseau"]["file"] = "report.networking.php";
       }
-      if (Session::haveRight("reservation_central", READ)) {
+      if (Session::haveRight("reservation", READ)) {
          $report_list["reservation"]["name"] = __('Loan');
          $report_list["reservation"]["file"] = "report.reservation.php";
       }
@@ -427,5 +427,18 @@ class Report extends CommonGLPI{
          echo "</table><br><hr><br>";
       }
    }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      $values = array( READ => __('Read'));
+      return $values;
+   }
+
 }
 ?>

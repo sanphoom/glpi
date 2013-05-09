@@ -350,6 +350,29 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete entity_helpdesk right");
 
 
+   // delete reservation_helpdesk
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'reservation_helpdesk' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . ReservationItem::RESERVEANITEM .",
+                      `name` = 'reservation'
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'reservation_central'";
+         $DB->queryOrDie($query, "0.85 update reservation_central with reservation_helpdesk right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'reservation_helpdesk'";
+   $DB->queryOrDie($query, "0.85 delete reservation_helpdesk right");
+
+   // rename reservation_central
+   $query  = "UPDATE `glpi_profilerights`
+              SET `name` = 'reservation'
+              WHERE `name` = 'reservation_central'";
+   $DB->queryOrDie($query, "0.85 delete reservation_central ");
+
+
    // don't drop column right  - be done later
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));

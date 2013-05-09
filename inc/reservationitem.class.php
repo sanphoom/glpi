@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Reservation item class
+/**
+ * ReservationItem Class
+**/
 class ReservationItem extends CommonDBChild {
 
    /// From CommonDBChild
@@ -44,7 +46,9 @@ class ReservationItem extends CommonDBChild {
 
    static public $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-   static $rightname                = 'reservation_central';
+   static $rightname                = 'reservation';
+
+   const RESERVEANITEM              = 1024;
 
 
 
@@ -90,9 +94,9 @@ class ReservationItem extends CommonDBChild {
    /**
     * @since 0.84
    **/
-   static function canView() {
-      return true;
-   }
+//   static function canView() {
+//      return true;
+//   }
 
 
    // From CommonDBTM
@@ -238,7 +242,7 @@ class ReservationItem extends CommonDBChild {
    **/
    static function showActivationFormForItem(CommonDBTM $item) {
 
-      if (!Session::haveRight("reservation_central", UPDATE)) {
+      if (!self::canUpdate()) {
          return false;
       }
       if ($item->getID()) {
@@ -295,7 +299,7 @@ class ReservationItem extends CommonDBChild {
 
    function showForm($ID, $options=array()) {
 
-      if (!Session::haveRight("reservation_central", READ)) {
+      if (!self::canView()) {
          return false;
       }
 
@@ -341,7 +345,7 @@ class ReservationItem extends CommonDBChild {
    static function showListSimple() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("reservation_helpdesk", READ)) {
+      if (!Session::haveRight(self::$rightname, self::RESERVEANITEM)) {
          return false;
       }
 
@@ -636,6 +640,21 @@ class ReservationItem extends CommonDBChild {
       NotificationEvent::debugEvent($resa);
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      if ($interface == 'central') {
+         $values = parent::getRights();
+      }
+      $values[self::RESERVEANITEM] = __('Make de reservation');
+
+      return $values;
+   }
 
 }
 ?>
