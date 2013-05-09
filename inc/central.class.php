@@ -118,7 +118,7 @@ class Central extends CommonGLPI {
       echo "</td></tr>";
       echo "</table></td>";
 
-      if (Session::haveRight("logs","r")) {
+      if (Session::haveRight("logs", READ)) {
          echo "<td class='top'>";
 
          //Show last add events

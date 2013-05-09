@@ -35,20 +35,17 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Event class
+/**
+ * Event Class
+**/
 class Event extends CommonDBTM {
+
+   static $rightname = 'logs';
+
 
 
    static function getTypeName($nb=0) {
       return _n('Log', 'Logs', $nb);
-   }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canView() {
-      return Session::haveRight('logs', 'r');
    }
 
 

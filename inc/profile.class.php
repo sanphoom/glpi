@@ -1297,14 +1297,12 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Maintenance')."</td><td>";
-      self::dropdownRight("backup", array('value'   => $this->fields["backup"],
-                                          'noread'  => true));
+      self::dropdownRights(Profile::getRightsFor('Backup'), "_backup", $this->fields["backup"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>"._n('Log', 'Logs', 2)."</td><td>";
-      self::dropdownRight("logs", array('value'   => $this->fields["logs"],
-                                        'nowrite' => true));
+      self::dropdownRights(Profile::getRightsFor('Log'), "_logs", $this->fields["logs"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";

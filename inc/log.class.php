@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Log class
+/**
+ * Log Class
+**/
 class Log extends CommonDBTM {
 
    const HISTORY_ADD_DEVICE         = 1;
@@ -69,6 +71,8 @@ class Log extends CommonDBTM {
    const HISTORY_PLUGIN             = 1000;
 
    static $rightname = 'logs';
+
+
 
    static function getTypeName($nb=0) {
       return __('Historical');
@@ -603,5 +607,17 @@ class Log extends CommonDBTM {
       $_SESSION['glpi_maxhistory'] = $this->fields['id'];
    }
 
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      $values = array( READ => __('Read'));
+      return $values;
+   }
 }
 ?>

@@ -49,5 +49,18 @@ class Backup extends CommonGLPI {
       return __('Maintenance');
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      $values = array(CREATE  => __('Create'),
+                      PURGE   => _x('button', 'Delete permanently'));
+      return $values;
+   }
+
 }
 ?>

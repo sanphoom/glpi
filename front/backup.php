@@ -607,29 +607,31 @@ if (count($files)) {
       $taille_fic = filesize($path."/".$file);
       echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
            "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
-           "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
-           "<td>&nbsp;";
-           //TRANS: %s is the filename
-           $string = sprintf(__('Delete the file %s?'), $file);
-           Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', _x('button', 'Delete permanently'),
-                                array('file' => $file),'','',$string);
+           "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>";
+      if (Session::haveRight('backup', PURGE)) {
+         echo "<td>&nbsp;";
+              //TRANS: %s is the filename
+              $string = sprintf(__('Delete the file %s?'), $file);
+              Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile',
+                                   _x('button', 'Delete permanently'),
+                                   array('file' => $file),'','',$string);
 
-           echo "</td>";
-           echo "<td>&nbsp;";
-           // Multiple confirmation
-           $string   = array();
-           //TRANS: %s is the filename
-           $string[] = array(sprintf(__('Replace the current database with the backup file %s?'),
-                                     $file));
-           $string[] = array(__('Warning, your actual database will be totaly overwriten by the database you want to restore !!!'));
+         echo "</td>";
+         echo "<td>&nbsp;";
+         // Multiple confirmation
+         $string   = array();
+         //TRANS: %s is the filename
+         $string[] = array(sprintf(__('Replace the current database with the backup file %s?'),
+                                   $file));
+         $string[] = array(__('Warning, your actual database will be totaly overwriten by the database you want to restore !!!'));
 
-           echo "<a class='vsubmit' href=\"#\" ".HTML::addConfirmationOnAction($string,
-                                          "window.location='".$CFG_GLPI["root_doc"].
-                                          "/front/backup.php?file=$file&amp;donotcheckversion=1'").
-                ">".__('Restore')."</a>&nbsp;</td>";
-
-           echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".
-                            __('Download')."</a>".
+         echo "<a class='vsubmit' href=\"#\" ".HTML::addConfirmationOnAction($string,
+                                        "window.location='".$CFG_GLPI["root_doc"].
+                                        "/front/backup.php?file=$file&amp;donotcheckversion=1'").
+              ">".__('Restore')."</a>&nbsp;</td>";
+      }
+      echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".
+                     __('Download')."</a>".
            "</td></tr>";
    }
 }
