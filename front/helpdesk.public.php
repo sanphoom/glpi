@@ -67,7 +67,7 @@ if (isset($_GET["redirect"])) {
 }
 
 // redirect if no create ticket right
-if (!Session::haveRight('create_ticket',1)) {
+if (!Session::haveRight('ticket', CREATE)) {
    if (Session::haveRight('observe_ticket',1)
        || Session::haveRight('validate_request',1)
        || Session::haveRight('validate_incident',1)) {
@@ -94,7 +94,7 @@ if (isset($_GET['create_ticket'])) {
    echo "<table class='tab_cadre_central'><tr>";
    echo "<td class='top'><br>";
    echo "<table>";
-   if (Session::haveRight('create_ticket',1)) {
+   if (Session::haveRight('ticket', CREATE)) {
       echo "<tr><td class='top' width='450px'>";
       Ticket::showCentralCount(true);
       echo "</td></tr>";

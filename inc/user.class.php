@@ -2881,6 +2881,10 @@ class User extends CommonDBTM {
                 & !ReservationItem::RESERVEANITEM) {
                return false;
             }
+            if ((self::$helpdesk_rights == 'ticket')
+                & !Ticket::canCreate()) {
+               return false;
+            }
 
             foreach ($right as $r) {
                // Check read or active for rights

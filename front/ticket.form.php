@@ -42,7 +42,7 @@ if (!isset($_GET['id'])) {
 }
 
 if (isset($_POST["add"])) {
-   $track->check(-1,'w',$_POST);
+   $track->check(-1, CREATE, $_POST);
 
    if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
       $splitter = explode("_",$_POST["_my_items"]);
@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST['update'])) {
-   $track->check($_POST['id'],'w');
+   $track->check($_POST['id'], UPDATE);
 
    if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
       $splitter = explode("_",$_POST["_my_items"]);
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
                      "/front/knowbaseitem.form.php?id=new&item_itemtype=Ticket&item_items_id=".
                      $_POST["id"]);
    } else {
-      if ($track->can($_POST["id"],'r')) {
+      if ($track->can($_POST["id"], READ)) {
          Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
       }
       Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'),
@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST['delete'])) {
-   $track->check($_POST['id'],'d');
+   $track->check($_POST['id'], DELETE);
    if ($track->delete($_POST)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
                  //TRANS: %s is the user login
@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    $track->redirectToList();
 
 } else if (isset($_POST['purge'])) {
-   $track->check($_POST['id'],'d');
+   $track->check($_POST['id'], PURGE);
    if ($track->delete($_POST, 1)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
                  //TRANS: %s is the user login
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
    $track->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $track->check($_POST['id'], 'd');
+   $track->check($_POST['id'], PURGE);
    if ($track->restore($_POST)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
                  //TRANS: %s is the user login
@@ -112,7 +112,7 @@ if (isset($_POST["add"])) {
    $track->redirectToList();
 
 } else if (isset($_POST['sla_delete'])) {
-   $track->check($_POST["id"],'w');
+   $track->check($_POST["id"], UPDATE);
 
    $track->deleteSLA($_POST["id"]);
    Event::log($_POST["id"], "ticket", 4, "tracking",

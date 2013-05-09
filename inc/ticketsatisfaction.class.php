@@ -60,7 +60,7 @@ class TicketSatisfaction extends CommonDBTM {
 
 
    static function canUpdate() {
-      return (Session::haveRight('create_ticket', 1));
+      return (Session::haveRight('ticket', CREATE));
    }
 
 

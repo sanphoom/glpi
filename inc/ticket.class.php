@@ -49,6 +49,8 @@ class Ticket extends CommonITILObject {
    public $grouplinkclass              = 'Group_Ticket';
    public $supplierlinkclass           = 'Supplier_Ticket';
 
+   static $rightname                   = 'ticket';
+
    protected $userentity_oncreate      = true;
 
    const MATRIX_FIELD                  = 'priority_matrix';
@@ -76,10 +78,10 @@ class Ticket extends CommonITILObject {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
 
-      if (!Session::haveRight('update_ticket', 1)) {
+      if (!self::canUpdate()) {
          $forbidden[] = 'update';
       }
-      if (!Session::haveRight('delete_ticket', 1)) {
+      if (!Session::haveRight(self::$rightname, (DELETE | PURGE))) {
          $forbidden[] = 'delete';
          $forbidden[] = 'purge';
          $forbidden[] = 'restore';
@@ -134,9 +136,12 @@ class Ticket extends CommonITILObject {
     * @since version 0.85
    **/
    static function getAdditionalMenuContent() {
-      $menu['create_ticket']['title']    = __('Create ticket');
-      $menu['create_ticket']['page']     = static::getFormURL(false);
-      return $menu;
+
+      if (self::canCreate()) {
+         $menu['create_ticket']['title']    = __('Create ticket');
+         $menu['create_ticket']['page']     = static::getFormURL(false);
+         return $menu;
+      }
    }
 
    /**
@@ -179,7 +184,7 @@ class Ticket extends CommonITILObject {
 
 
    function canAdminActors() {
-      return Session::haveRight('update_ticket', 1);
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
@@ -196,15 +201,11 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('create_ticket', 1);
-   }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('update_ticket', 1)
-              || Session::haveRight('create_ticket', 1)
+      return (Session::haveRight(self::$rightname, UPDATE)
               || Session::haveRight('assign_ticket', 1)
               || Session::haveRight('own_ticket', 1)
               || Session::haveRight('steal_ticket', 1));
@@ -212,14 +213,14 @@ class Ticket extends CommonITILObject {
 
 
    static function canView() {
-
+/*
       if (isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          return true;
-      }
+      }*/
       return (Session::haveRight("show_all_ticket","1")
-              || Session::haveRight('create_ticket','1')
-              || Session::haveRight('update_ticket','1')
+              || Session::haveRight(self::$rightname, READ)
+              || Session::haveRight(self::$rightname, UPDATE)
               || Session::haveRight('show_all_ticket','1')
               || Session::haveRight("show_assign_ticket",'1')
               || Session::haveRight("own_ticket",'1')
@@ -267,7 +268,7 @@ class Ticket extends CommonITILObject {
    **/
    function canSolve() {
 
-      return ((Session::haveRight("update_ticket","1")
+      return ((Session::haveRight(self::$rightname, UPDATE)
                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
@@ -376,7 +377,7 @@ class Ticket extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return Session::haveRight('create_ticket', '1');
+      return self::canCreate();
    }
 
 
@@ -422,7 +423,7 @@ class Ticket extends CommonITILObject {
          return true;
       }
 
-      return Session::haveRight('delete_ticket', '1');
+      return self::canDelete();
    }
 
 
@@ -734,7 +735,7 @@ class Ticket extends CommonITILObject {
       }
       $check_allowed_fields_for_template = false;
       if (!Session::isCron()
-          && !Session::haveRight("update_ticket","1")) {
+          && !Session::haveRight(self::$rightname, UPDATE)) {
 
          $allowed_fields                    = array('id');
          $check_allowed_fields_for_template = true;
@@ -1786,13 +1787,13 @@ class Ticket extends CommonITILObject {
          $actions['submit_validation'] = __('Approval request');
       }
 
-      if (Session::haveRight("update_ticket","1")) {
+      if (Session::haveRight(self::$rightname, UPDATE)) {
          $actions['add_actor']   = __('Add an actor');
          $actions['link_ticket'] = _x('button', 'Link tickets');
       }
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
-            && Session::haveRight("update_ticket","1")) {
+            && Session::haveRight(self::$rightname, UPDATE)) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
       return $actions;
@@ -3160,7 +3161,7 @@ class Ticket extends CommonITILObject {
    function showFormHelpdesk($ID, $ticket_template=false) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("create_ticket","1")) {
+      if (!self::canCreate()) {
          return false;
       }
 
@@ -3527,7 +3528,7 @@ class Ticket extends CommonITILObject {
          $users_id_requester = Session::getLoginUserID();
          // No default requester if own ticket right = tech and update_ticket right to update requester
          if (Session::haveRight('own_ticket',1)
-             && Session::haveRight('update_ticket',1)) {
+             && Session::haveRight(self::$rightname, UPDATE)) {
             $users_id_requester = 0;
          }
          $entity      = $_SESSION['glpiactive_entity'];
@@ -3730,10 +3731,10 @@ class Ticket extends CommonITILObject {
 
       // Default check
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
-         $this->check(-1,'w',$values);
+         $this->check(-1, CREATE, $values);
       }
 
       if (!$ID) {
@@ -3818,7 +3819,7 @@ class Ticket extends CommonITILObject {
       // Put ticket template on $values for actors
       $values['_tickettemplate'] = $tt;
 
-      $canupdate                 = Session::haveRight('update_ticket', '1');
+      $canupdate                 = Session::haveRight(self::$rightname, UPDATE);
       $canpriority               = Session::haveRight('update_priority', '1');
       $canstatus                 = $canupdate;
 
@@ -4537,29 +4538,39 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
 
          if ($ID) {
-            if (Session::haveRight('delete_ticket',1)) {
+            if (Session::haveRight(self::$rightname, (UPDATE | DELETE | PURGE))) {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
-                  echo "<input type='submit' class='submit' name='restore' value='".
-                         _sx('button', 'Restore')."'></td>";
+                  if (self::canPurge()) {
+                     echo "<input type='submit' class='submit' name='restore' value='".
+                            _sx('button', 'Restore')."'></td>";
+                  }
                } else {
-                  echo "<input type='submit' class='submit' name='update' value='".
-                         _sx('button', 'Save')."'></td>";
+                  if (Session::haveRight(self::$rightname, UPDATE)) {
+                     echo "<input type='submit' class='submit' name='update' value='".
+                            _sx('button', 'Save')."'></td>";
+                  }
                }
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
-                  echo "<input type='submit' class='submit' name='purge' value='".
-                         _sx('button', 'Delete permanently')."' ".
-                         Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
+                  if (self::canPurge()) {
+                     echo "<input type='submit' class='submit' name='purge' value='".
+                            _sx('button', 'Delete permanently')."' ".
+                            Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
+                  }
                } else {
-                  echo "<input type='submit' class='submit' name='delete' value='".
-                         _sx('button', 'Put in dustbin')."'></td>";
+                  if (self::canDelete()) {
+                     echo "<input type='submit' class='submit' name='delete' value='".
+                            _sx('button', 'Put in dustbin')."'></td>";
+                  }
                }
 
             } else {
-               echo "<td class='tab_bg_2 center' colspan='4'>";
-               echo "<input type='submit' class='submit' name='update' value='".
-                      _sx('button', 'Save')."'>";
+               if (Session::haveRight(self::$rightname, UPDATE)) {
+                  echo "<td class='tab_bg_2 center' colspan='4'>";
+                  echo "<input type='submit' class='submit' name='update' value='".
+                         _sx('button', 'Save')."'>";
+               }
             }
             echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
 
@@ -4617,7 +4628,7 @@ class Ticket extends CommonITILObject {
 
       if (!Session::haveRight("show_all_ticket","1")
           && !Session::haveRight("show_assign_ticket","1")
-          && !Session::haveRight("create_ticket","1")
+          && !self::canCreate()
           && !Session::haveRight("validate_incident","1")
           && !Session::haveRight("validate_request","1")) {
          return false;
@@ -4953,7 +4964,7 @@ class Ticket extends CommonITILObject {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
-      if (!Session::haveRight("show_all_ticket","1") && !Session::haveRight("create_ticket",1)) {
+      if (!Session::haveRight("show_all_ticket","1") && !self::canCreate()) {
          return false;
       }
       if (!Session::haveRight("show_all_ticket","1")) {
@@ -5265,7 +5276,7 @@ class Ticket extends CommonITILObject {
       // Link to open a new ticket
       if ($item->getID()
           && Ticket::isPossibleToAssignType($item->getType())
-          && Session::haveRight('create_ticket', 1)) {
+          && self::canCreate()) {
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
                               array('itemtype' => $item->getType(),
@@ -5294,7 +5305,7 @@ class Ticket extends CommonITILObject {
 
       if ($item->getID()
           && ($item->getType() == 'User')
-          && Session::haveRight('create_ticket', 1)) {
+          && self::canCreate()) {
          echo "<tr><td class='tab_bg_2 center b' colspan='11'>";
          Html::showSimpleForm($CFG_GLPI["root_doc"]."/front/ticket.form.php",
                               '_add_fromitem', __('New ticket for this item...'),
@@ -5369,8 +5380,8 @@ class Ticket extends CommonITILObject {
       // Make new job object and fill it from database, if success, print it
       $job         = new self();
 
-      $candelete   = Session::haveRight("delete_ticket", "1");
-      $canupdate   = Session::haveRight("update_ticket", "1");
+      $candelete   = self::canDelete();
+      $canupdate   = Session::haveRight(self::$rightname, UPDATE);
       $showprivate = Session::haveRight("show_full_ticket", "1");
       $align       = "class='center";
       $align_desc  = "class='left";
@@ -6015,5 +6026,19 @@ class Ticket extends CommonITILObject {
       NotificationEvent::debugEvent($this);
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      if ($interface == 'helpdesk') {
+         unset($values[UPDATE], $values[DELETE], $values[PURGE]);
+      }
+      return $values;
+   }
 }
 ?>

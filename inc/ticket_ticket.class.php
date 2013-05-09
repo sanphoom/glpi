@@ -99,7 +99,7 @@ class Ticket_Ticket extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $tickets   = self::getLinkedTicketsTo($ID);
-      $canupdate = Session::haveRight('update_ticket', '1');
+      $canupdate = Session::haveRight('ticket', UPDATE);
 
       $ticket    = new Ticket();
       if (is_array($tickets) && count($tickets)) {

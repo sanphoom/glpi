@@ -43,7 +43,7 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   static public $helpdesk_rights = array('add_followups', 'create_ticket',
+   static public $helpdesk_rights = array('add_followups', 'ticket',
                                           'create_ticket_on_login', 'create_request_validation',
                                           'create_incident_validation',
                                           'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
@@ -355,6 +355,11 @@ class Profile extends CommonDBTM {
          & !ReservationItem::RESERVEANITEM) {
          return false;
       }
+      if ((self::$helpdesk_rights == 'ticket')
+          & !Ticket::canCreate()) {
+         return false;
+      }
+
       if ($this->fields["interface"] == "helpdesk") {
          foreach ($this->fields as $key=>$val) {
             if (!in_array($key,self::$common_fields)
@@ -403,6 +408,10 @@ class Profile extends CommonDBTM {
 
       if ((self::$helpdesk_rights == 'reservation')
             & !ReservationItem::RESERVEANITEM) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'ticket')
+          & !Ticket::canCreate()) {
          return false;
       }
 
@@ -615,9 +624,12 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='25%'>".__('Create a ticket')."</td><td width='25%'>";
-      Dropdown::showYesNo("create_ticket", $this->fields["create_ticket"]);
-      echo "</td>";
+      echo "<td width='25%'>".__('Ticket')."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('Ticket', 'helpdesk'), "_ticket",
+                           $this->fields["ticket"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td width='25%'>".__('Add a followup to tickets (requester)')."</td><td width='25%'>";
       Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
       echo "</td></tr>\n";
@@ -947,13 +959,22 @@ class Profile extends CommonDBTM {
       // Assistance / Tracking-helpdesk
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assistance')."</th></tr>\n";
 
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Ticket')."</th>";
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>".__('Ticket')."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('Ticket'), "_ticket",
+                           $this->fields["ticket"]);
+      echo "</td>";
+
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Creation')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>".__('Create a ticket')."</td><td width='15%'>";
-      Dropdown::showYesNo("create_ticket", $this->fields["create_ticket"]);
-      echo "</td>";
+//      echo "<td width='18%'>".__('Create a ticket')."</td><td width='15%'>";
+//      Dropdown::showYesNo("create_ticket", $this->fields["create_ticket"]);
+//      echo "</td>";
       echo "<td width='18%'>".__('Add a followup to tickets (requester)')."</td><td width='15%'>";
       Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
       echo "</td>";
@@ -998,9 +1019,9 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Update a ticket')."</td><td>";
-      Dropdown::showYesNo("update_ticket", $this->fields["update_ticket"]);
-      echo "</td>";
+//      echo "<td>".__('Update a ticket')."</td><td>";
+//      Dropdown::showYesNo("update_ticket", $this->fields["update_ticket"]);
+//      echo "</td>";
       echo "<td>".__('Change the priority')."</td><td>";
       Dropdown::showYesNo("update_priority", $this->fields["update_priority"]);
       echo "</td>";
@@ -1021,9 +1042,9 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__("Ticket's deletion")."</td><td>";
-      Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
-      echo "</td>";
+//      echo "<td>".__("Ticket's deletion")."</td><td>";
+//      Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
+//      echo "</td>";
       echo "<td>".__('Delete all followups')."</td><td>";
       Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
       echo "</td>\n";
@@ -1929,7 +1950,7 @@ class Profile extends CommonDBTM {
       $tab[102]['name']          = __('Create a ticket');
       $tab[102]['datatype']      = 'bool';
       $tab[102]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'create_ticket'");
+                                         'condition' => "AND `NEWTABLE`.`name`= 'ticket'");
 
       $tab[108]['table']         = 'glpi_tickettemplates';
       $tab[108]['field']         = 'name';
@@ -1943,14 +1964,14 @@ class Profile extends CommonDBTM {
       $tab[103]['datatype']      = 'right';
       $tab[103]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'tickettemplate'");
-
+/*
       $tab[65]['table']          = 'glpi_profilerights';
       $tab[65]['field']          = 'right';
       $tab[65]['name']           = __("Ticket's deletion");
       $tab[65]['datatype']       = 'bool';
       $tab[65]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'delete_ticket'");
-
+*/
       $tab[66]['table']          = 'glpi_profilerights';
       $tab[66]['field']          = 'right';
       $tab[66]['name']           = __('Add a followup to tickets (requester)');
@@ -1964,14 +1985,14 @@ class Profile extends CommonDBTM {
       $tab[67]['datatype']       = 'bool';
       $tab[67]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'global_add_followups'");
-
+/*
       $tab[68]['table']          = 'glpi_profilerights';
       $tab[68]['field']          = 'right';
       $tab[68]['name']           = __('Update a ticket');
       $tab[68]['datatype']       = 'bool';
       $tab[68]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'update_ticket'");
-
+*/
       $tab[69]['table']          = 'glpi_profilerights';
       $tab[69]['field']          = 'right';
       $tab[69]['name']           = __('To be in charge of a ticket');

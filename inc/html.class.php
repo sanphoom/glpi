@@ -1861,7 +1861,7 @@ class Html {
       echo "</li>";
 
       //  Create ticket
-      if (Session::haveRight("create_ticket","1")) {
+      if (Session::haveRight("ticket", CREATE)) {
          echo "<li id='menu2'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' ".
                 "title=\"".__s('Create a ticket')."\" class='itemP'>".__('Create a ticket')."</a>";
@@ -1869,7 +1869,8 @@ class Html {
       }
 
       //  Suivi ticket
-      if (Session::haveRight("observe_ticket","1")) {
+      if (Session::haveRight("ticket", READ)) {
+ //     if (Session::haveRight("observe_ticket","1")) {
          echo "<li id='menu3'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
                 __s('Ticket followup')."\" class='itemP'>"._n('Ticket','Tickets',2)."</a>";
@@ -1972,7 +1973,7 @@ class Html {
       }
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
-      if (Session::haveRight('create_ticket',1)
+      if (Session::haveRight('ticket', CREATE)
           && strpos($_SERVER['PHP_SELF'],"ticket")) {
          echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".__s('Add').

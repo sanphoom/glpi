@@ -39,7 +39,7 @@ include ('../inc/includes.php');
 if (empty($_POST["_type"])
     || ($_POST["_type"] != "Helpdesk")
     || !$CFG_GLPI["use_anonymous_helpdesk"]) {
-   Session::checkRight("create_ticket", "1");
+   Session::checkRight("ticket", CREATE);
 }
 
 $track = new Ticket();

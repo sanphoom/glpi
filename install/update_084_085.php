@@ -355,8 +355,7 @@ function update084to085() {
                          "`name` = 'reservation_helpdesk' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . ReservationItem::RESERVEANITEM .",
-                      `name` = 'reservation'
+                 SET `rights` = `rights` | " . ReservationItem::RESERVEANITEM ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'reservation_central'";
          $DB->queryOrDie($query, "0.85 update reservation_central with reservation_helpdesk right");
@@ -370,7 +369,35 @@ function update084to085() {
    $query  = "UPDATE `glpi_profilerights`
               SET `name` = 'reservation'
               WHERE `name` = 'reservation_central'";
-   $DB->queryOrDie($query, "0.85 delete reservation_central ");
+   $DB->queryOrDie($query, "0.85 delete reservation_central");
+
+
+   // rename create_ticket
+   $query  = "UPDATE `glpi_profilerights`
+              SET `name` = 'ticket'
+              WHERE `name` = 'create_ticket'";
+   $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
+
+
+   // delete update_ticket
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'update_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . UPDATE ." | " . DELETE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'ticket'";
+         $DB->queryOrDie($query, "0.85 update ticket with update_ticket and delete_ticket right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'update_ticket'";
+   $DB->queryOrDie($query, "0.85 delete update_ticket right");
+
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'delete_ticket'";
+   $DB->queryOrDie($query, "0.85 delete delete_ticket right");
 
 
    // don't drop column right  - be done later
