@@ -242,7 +242,7 @@ class Central extends CommonGLPI {
       if ($showticket) {
          Ticket::showCentralList(0, "process", true);
       }
-      if (Session::haveRight('show_group_ticket','1')) {
+      if (Session::haveRight('ticket', Ticket::READGROUP)) {
          Ticket::showCentralList(0, "waiting", true);
       }
       if ($showproblem) {
@@ -253,7 +253,7 @@ class Central extends CommonGLPI {
       echo "</table></td>";
       echo "<td class='top'><table class='central'>";
       echo "<tr><td>";
-      if (Session::haveRight('show_group_ticket','1')) {
+      if (Session::haveRight('ticket', Ticket::READGROUP)) {
          Ticket::showCentralList(0, "toapprove", true);
          Ticket::showCentralList(0, "requestbyself", true);
       } else {

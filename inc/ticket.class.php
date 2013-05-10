@@ -73,8 +73,9 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
-   const READMY  = 1;
-   const READALL = 1024;
+   const READMY    =    1;
+   const READALL   = 1024;
+   const READGROUP = 2048;
 
 
 
@@ -229,7 +230,7 @@ class Ticket extends CommonITILObject {
               || Session::haveRight("own_ticket",'1')
               || Session::haveRight('validate_request','1')
               || Session::haveRight('validate_incident','1')
-              || Session::haveRight("show_group_ticket",'1'));
+              || Session::haveRight(self::$rightname, self::READGROUP));
    }
 
 
@@ -249,7 +250,7 @@ class Ticket extends CommonITILObject {
               || ($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-              || (Session::haveRight("show_group_ticket",'1')
+              || (Session::haveRight(self::$rightname, self::READGROUP)
                   && isset($_SESSION["glpigroups"])
                   && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
                       || $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION["glpigroups"])))
@@ -4654,7 +4655,7 @@ class Ticket extends CommonITILObject {
             $search_assign = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
                                 AND `glpi_groups_tickets`.`type` = '".CommonITILActor::ASSIGN."')";
 
-            if (Session::haveRight("show_group_ticket",1)) {
+            if (Session::haveRight(self::$rightname, self::READGROUP)) {
                $search_users_id = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
                                      AND `glpi_groups_tickets`.`type`
                                            = '".CommonITILActor::REQUESTER."') ";
@@ -4984,7 +4985,7 @@ class Ticket extends CommonITILObject {
                         ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
                             AND `glpi_tickets_users`.`type` = '".CommonITILActor::REQUESTER."')";
 
-         if (Session::haveRight("show_group_ticket",'1')
+         if (Session::haveRight(self::$rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
             $query .= " LEFT JOIN `glpi_groups_tickets`
@@ -4997,7 +4998,7 @@ class Ticket extends CommonITILObject {
       if ($foruser) {
          $query .= " AND (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."' ";
 
-         if (Session::haveRight("show_group_ticket",'1')
+         if (Session::haveRight(self::$rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
@@ -6040,9 +6041,10 @@ class Ticket extends CommonITILObject {
 
       $values = parent::getRights();
       unset($values[READ]);
-      $values[self::READMY] = __('Read my ticket');
+      $values[self::READMY]    = __('See my ticket');
+      $values[self::READGROUP] =  __('See tickets created by my groups');
       if ($interface == 'central') {
-         $values[self::READALL] = __('Read all tickets');
+         $values[self::READALL] = __('See all tickets');
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);

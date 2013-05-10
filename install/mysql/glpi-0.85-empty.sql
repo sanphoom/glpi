@@ -4313,7 +4313,6 @@ INSERT INTO `glpi_profilerights` VALUES ('65','1','show_group_planning','','0');
 INSERT INTO `glpi_profilerights` VALUES ('66','1','show_all_planning','','0');
 INSERT INTO `glpi_profilerights` VALUES ('67','1','statistic','','0');
 INSERT INTO `glpi_profilerights` VALUES ('68','1','password_update','1','1');
-INSERT INTO `glpi_profilerights` VALUES ('69','1','show_group_ticket','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('70','1','show_group_hardware','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('71','1','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('72','1','rule_dictionnary_dropdown','','0');
@@ -4395,7 +4394,6 @@ INSERT INTO `glpi_profilerights` VALUES ('158','2','show_group_planning','0','0'
 INSERT INTO `glpi_profilerights` VALUES ('159','2','show_all_planning','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('160','2','statistic','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('161','2','password_update','1','1');
-INSERT INTO `glpi_profilerights` VALUES ('162','2','show_group_ticket','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('163','2','show_group_hardware','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('164','2','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('165','2','rule_dictionnary_dropdown','','0');
@@ -4477,7 +4475,6 @@ INSERT INTO `glpi_profilerights` VALUES ('251','3','show_group_planning','1','1'
 INSERT INTO `glpi_profilerights` VALUES ('252','3','show_all_planning','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('253','3','statistic','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('254','3','password_update','1','1');
-INSERT INTO `glpi_profilerights` VALUES ('255','3','show_group_ticket','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('256','3','show_group_hardware','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('257','3','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('258','3','rule_dictionnary_dropdown','','0');
@@ -4559,7 +4556,6 @@ INSERT INTO `glpi_profilerights` VALUES ('344','4','show_group_planning','1','1'
 INSERT INTO `glpi_profilerights` VALUES ('345','4','show_all_planning','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('346','4','statistic','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('347','4','password_update','1','1');
-INSERT INTO `glpi_profilerights` VALUES ('348','4','show_group_ticket','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('349','4','show_group_hardware','0','0');
 INSERT INTO `glpi_profilerights` VALUES ('350','4','rule_dictionnary_software','w','31');
 INSERT INTO `glpi_profilerights` VALUES ('351','4','rule_dictionnary_dropdown','w','31');
@@ -4642,7 +4638,6 @@ INSERT INTO `glpi_profilerights` VALUES ('437','5','show_group_planning','','0')
 INSERT INTO `glpi_profilerights` VALUES ('438','5','show_all_planning','','0');
 INSERT INTO `glpi_profilerights` VALUES ('439','5','statistic','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('440','5','password_update','1','1');
-INSERT INTO `glpi_profilerights` VALUES ('441','5','show_group_ticket','','0');
 INSERT INTO `glpi_profilerights` VALUES ('442','5','show_group_hardware','','0');
 INSERT INTO `glpi_profilerights` VALUES ('443','5','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('444','5','rule_dictionnary_dropdown','','0');
@@ -4725,7 +4720,6 @@ INSERT INTO `glpi_profilerights` VALUES ('530','6','show_group_planning','','0')
 INSERT INTO `glpi_profilerights` VALUES ('531','6','show_all_planning','','0');
 INSERT INTO `glpi_profilerights` VALUES ('532','6','statistic','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('533','6','password_update','1','1');
-INSERT INTO `glpi_profilerights` VALUES ('534','6','show_group_ticket','','0');
 INSERT INTO `glpi_profilerights` VALUES ('535','6','show_group_hardware','','0');
 INSERT INTO `glpi_profilerights` VALUES ('536','6','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('537','6','rule_dictionnary_dropdown','','0');
@@ -4808,7 +4802,6 @@ INSERT INTO `glpi_profilerights` VALUES ('623','7','show_group_planning','','0')
 INSERT INTO `glpi_profilerights` VALUES ('624','7','show_all_planning','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('625','7','statistic','1','1');
 INSERT INTO `glpi_profilerights` VALUES ('626','7','password_update','1','1');
-INSERT INTO `glpi_profilerights` VALUES ('627','7','show_group_ticket','','0');
 INSERT INTO `glpi_profilerights` VALUES ('628','7','show_group_hardware','','0');
 INSERT INTO `glpi_profilerights` VALUES ('629','7','rule_dictionnary_software','','0');
 INSERT INTO `glpi_profilerights` VALUES ('630','7','rule_dictionnary_dropdown','','0');

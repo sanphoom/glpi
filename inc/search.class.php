@@ -2549,7 +2549,7 @@ class Search {
                               OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'";
 
 
-               if (Session::haveRight("show_group_ticket",1)) {
+               if (Session::haveRight("ticket", Ticket::READGROUP)) {
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $requestergroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
@@ -3233,7 +3233,7 @@ class Search {
                                          "glpi_tickets_users", "tickets_users_id", 0, 0,
                                          $searchopt[4]['joinparams']['beforejoin']['joinparams']);
 
-               if (Session::haveRight("show_group_ticket",1)) {
+               if (Session::haveRight("ticket", Ticket::READGROUP)) {
                   if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                                "glpi_groups_tickets", "groups_tickets_id", 0, 0,

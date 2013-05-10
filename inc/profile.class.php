@@ -649,9 +649,9 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See public followups and tasks')."</td><td>";
       Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
-      echo "</td>";
-      echo "<td>".__('See tickets created by my groups')."</td><td>";
-      Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
+//      echo "</td>";
+//      echo "<td>".__('See tickets created by my groups')."</td><td>";
+//      Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -1109,9 +1109,9 @@ class Profile extends CommonDBTM {
       echo "<td>".__('See assigned tickets (personnal + group associated)')."</td><td>";
       Dropdown::showYesNo("show_assign_ticket", $this->fields["show_assign_ticket"]);
       echo "</td>";
-      echo "<td>".__('See tickets created by my groups')."</td><td>";
-      Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
-      echo "</td>";
+//      echo "<td>".__('See tickets created by my groups')."</td><td>";
+//      Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
+//      echo "</td>";
 //      echo "<td>".__('See all tickets')."</td><td>";
 //      Dropdown::showYesNo("show_all_ticket", $this->fields["show_all_ticket"]);
 //      echo "</td></tr>\n";
@@ -2116,14 +2116,14 @@ class Profile extends CommonDBTM {
       $tab[87]['name']           = __('Associable items to a ticket');
       $tab[87]['massiveaction']  = false;
       $tab[87]['datatype']       = 'specific';
-
+/*
       $tab[88]['table']          = 'glpi_profilerights';
       $tab[88]['field']          = 'right';
       $tab[88]['name']           = __('See tickets created by my groups');
       $tab[88]['datatype']       = 'bool';
       $tab[88]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_group_ticket'");
-
+*/
       $tab[89]['table']          = 'glpi_profilerights';
       $tab[89]['field']          = 'right';
       $tab[89]['name']           = __('See hardware of my groups');

@@ -372,21 +372,24 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete reservation_central");
 
 
-   // rename create_ticket
-   $query  = "UPDATE `glpi_profilerights`
-              SET `name` = 'ticket'
-              WHERE `name` = 'create_ticket'";
-   $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
-
-   // change value
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = ticket' AND `right` = '1'") as $profrights) {
-
+   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   if (countElementsInTable("glpi_profilerights", "`name` = 'ticket'") == 0) {
+      // rename create_ticket
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". CREATE ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.85 update ticket with create_ticket right");
+                 SET `name` = 'ticket'
+            WHERE `name` = 'create_ticket'";
+      $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
+
+      // change value
+      foreach ($DB->request("glpi_profilerights",
+                            "`name` = ticket' AND `right` = '1'") as $profrights) {
+
+         $query  = "UPDATE `glpi_profilerights`
+                    SET `rights` = ". CREATE ."
+                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                         AND `name` = 'ticket'";
+         $DB->queryOrDie($query, "0.85 update ticket with create_ticket right");
+      }
    }
 
 
@@ -436,6 +439,22 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'show_all_ticket'";
    $DB->queryOrDie($query, "0.85 delete show_all_ticket right");
+
+
+   // delete show_group_ticket
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'show_group_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Ticket::READGROUP ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'ticket'";
+      $DB->queryOrDie($query, "0.85 update ticket with show_group_ticket right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_group_ticket'";
+   $DB->queryOrDie($query, "0.85 delete show_group_ticket right");
 
 
    // don't drop column right  - be done later
