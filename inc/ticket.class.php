@@ -6042,8 +6042,8 @@ class Ticket extends CommonITILObject {
       $values[self::READMY]    = __('See my ticket');
       $values[self::READGROUP] =  __('See tickets created by my groups');
       if ($interface == 'central') {
-         $values[self::READALL]   = __('See all tickets');
-         $values[self::READASSIGN = __('See assigned tickets (group associated)');
+         $values[self::READALL]    = __('See all tickets');
+         $values[self::READASSIGN] = __('See assigned tickets (group associated)');
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);
