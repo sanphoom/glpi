@@ -73,9 +73,10 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
-   const READMY    =    1;
-   const READALL   = 1024;
-   const READGROUP = 2048;
+   const READMY     =    1;
+   const READALL    = 1024;
+   const READGROUP  = 2048;
+   const READASSIGN = 4096;
 
 
 
@@ -226,7 +227,7 @@ class Ticket extends CommonITILObject {
       return (Session::haveRight(self::$rightname, self::READALL)
               || Session::haveRight(self::$rightname, self::READMY)
               || Session::haveRight(self::$rightname, UPDATE)
-              || Session::haveRight("show_assign_ticket",'1')
+              || Session::haveRight(self::$rightname, self::READASSIGN)
               || Session::haveRight("own_ticket",'1')
               || Session::haveRight('validate_request','1')
               || Session::haveRight('validate_incident','1')
@@ -254,7 +255,7 @@ class Ticket extends CommonITILObject {
                   && isset($_SESSION["glpigroups"])
                   && ($this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])
                       || $this->haveAGroup(CommonITILActor::OBSERVER, $_SESSION["glpigroups"])))
-              || (Session::haveRight("show_assign_ticket",'1')
+              || (Session::haveRight(self::$rightname, self::READASSIGN)
                   && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))
@@ -2311,8 +2312,7 @@ class Ticket extends CommonITILObject {
       $tab[150]['massiveaction']    = false;
 
 
-      if (Session::haveRight(self::$rightname, self::READALL)
-          || Session::haveRight("show_assign_ticket","1")
+      if (Session::haveRight(self::$rightname, (self::READALL | self::READASSIGN))
           || Session::haveRight("own_ticket","1")) {
 
          $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
@@ -4631,9 +4631,7 @@ class Ticket extends CommonITILObject {
    static function showCentralList($start, $status="process", $showgrouptickets=true) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight(self::$rightname, self::READALL)
-          && !Session::haveRight("show_assign_ticket","1")
-          && !self::canCreate()
+      if (!Session::haveRight(self::$rightname, (CREATE | self::READALL | self::READASSIGN))
           && !Session::haveRight("validate_incident","1")
           && !Session::haveRight("validate_request","1")) {
          return false;
@@ -6044,7 +6042,8 @@ class Ticket extends CommonITILObject {
       $values[self::READMY]    = __('See my ticket');
       $values[self::READGROUP] =  __('See tickets created by my groups');
       if ($interface == 'central') {
-         $values[self::READALL] = __('See all tickets');
+         $values[self::READALL]   = __('See all tickets');
+         $values[self::READASSIGN = __('See assigned tickets (group associated)');
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);

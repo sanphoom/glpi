@@ -457,6 +457,22 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete show_group_ticket right");
 
 
+   // delete show_assign_ticket
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'show_assign_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Ticket::READASSIGN ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'ticket'";
+         $DB->queryOrDie($query, "0.85 update ticket with show_assign_ticket right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_assign_ticket'";
+   $DB->queryOrDie($query, "0.85 delete show_assign_ticket right");
+
+
    // don't drop column right  - be done later
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));

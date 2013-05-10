@@ -2562,7 +2562,7 @@ class Search {
                   $condition .= " OR $assign_table.users_id = '".Session::getLoginUserID()."' ";
                }
 
-               if (Session::haveRight("show_assign_ticket","1")) { // show mine + assign to me
+               if (Session::haveRight("ticket", (Ticket::READMY | Ticket::READASSIGN))) { // show mine + assign to me
 
                   $condition .=" OR $assign_table.`users_id` = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
@@ -3258,7 +3258,7 @@ class Search {
                                             $searchopt[5]['joinparams']['beforejoin']['joinparams']);
                }
 
-               if (Session::haveRight("show_assign_ticket","1")) { // show mine + assign to me
+               if (Session::haveRight("ticket", (Ticket::READMY | Ticket::READASSIGN))) { // show mine + assign to me
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "tickets_users_id", 0, 0,
                                             $searchopt[5]['joinparams']['beforejoin']['joinparams']);

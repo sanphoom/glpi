@@ -1105,10 +1105,10 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Visibility')."</th>";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See assigned tickets (personnal + group associated)')."</td><td>";
-      Dropdown::showYesNo("show_assign_ticket", $this->fields["show_assign_ticket"]);
-      echo "</td>";
+//      echo "<tr class='tab_bg_2'>";
+//      echo "<td>".__('See assigned tickets (personnal + group associated)')."</td><td>";
+//      Dropdown::showYesNo("show_assign_ticket", $this->fields["show_assign_ticket"]);
+//      echo "</td>";
 //      echo "<td>".__('See tickets created by my groups')."</td><td>";
 //      Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
 //      echo "</td>";
@@ -2020,14 +2020,14 @@ class Profile extends CommonDBTM {
       $tab[72]['datatype']       = 'bool';
       $tab[72]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_all_ticket'");
-*/
+
       $tab[73]['table']          = 'glpi_profilerights';
       $tab[73]['field']          = 'right';
       $tab[73]['name']           = __('See assigned tickets (personnal + group associated)');
       $tab[73]['datatype']       = 'bool';
       $tab[73]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_assign_ticket'");
-
+*/
       $tab[74]['table']          = 'glpi_profilerights';
       $tab[74]['field']          = 'right';
       $tab[74]['name']           = __('See all followups and tasks (public and private)');

@@ -140,8 +140,8 @@ class Central extends CommonGLPI {
    static function showMyView() {
       global $DB, $CFG_GLPI;
 
-      $showticket = (Session::haveRight("ticket", (Ticket::READMY | Ticket::READALL))
-                     || Session::haveRight("show_assign_ticket", "1"));
+      $showticket = Session::haveRight("ticket",
+                                       (Ticket::READMY | Ticket::READALL | Ticket::READASSIGN));
 
       $showproblem = (Session::haveRight("show_all_problem", "1")
                       || Session::haveRight("show_my_problem", "1"));
@@ -230,8 +230,7 @@ class Central extends CommonGLPI {
    **/
    static function showGroupView() {
 
-      $showticket = (Session::haveRight("ticket", Ticket::READALL)
-                     || Session::haveRight("show_assign_ticket","1"));
+      $showticket = Session::haveRight("ticket", (Ticket::READALL | Ticket::READASSIGN));
 
       $showproblem = (Session::haveRight("show_all_problem", "1")
                       || Session::haveRight("show_my_problem", "1"));
