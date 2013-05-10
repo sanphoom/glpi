@@ -2877,11 +2877,11 @@ class User extends CommonDBTM {
             }
             $forcecentral = true;
             $where        = array();
-            if (($helpdesk_rights == 'reservation')
+            if ((Profile::$helpdesk_rights == 'reservation')
                 & !ReservationItem::RESERVEANITEM) {
                return false;
             }
-            if ((self::$helpdesk_rights == 'ticket')
+            if ((Profile::$helpdesk_rights == 'ticket')
                 & !Ticket::canCreate()) {
                return false;
             }
@@ -3025,7 +3025,7 @@ class User extends CommonDBTM {
    **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
-
+toolbox::logdebug("dans dropdownuser");
       // Default values
       $p['name']           = 'users_id';
       $p['value']          = '';
