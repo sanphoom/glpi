@@ -73,11 +73,12 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
-   const READMY     =    1;
-   const READALL    = 1024;
-   const READGROUP  = 2048;
-   const READASSIGN = 4096;
-   const ASSIGN     = 8192;
+   const READMY     =     1;
+   const READALL    =  1024;
+   const READGROUP  =  2048;
+   const READASSIGN =  4096;
+   const ASSIGN     =  8192;
+   const STEAL      = 16384;
 
 
 
@@ -202,7 +203,7 @@ class Ticket extends CommonITILObject {
 
    function canAssignToMe() {
 
-      return (Session::haveRight("steal_ticket","1")
+      return (Session::haveRight(self::$rightname, self::STEAL)
               || (Session::haveRight("own_ticket","1")
                   && ($this->countUsers(CommonITILActor::ASSIGN) == 0)));
    }
@@ -212,9 +213,8 @@ class Ticket extends CommonITILObject {
 
    static function canUpdate() {
 
-      return (Session::haveRight(self::$rightname, (UPDATE | self::ASSIGN))
-              || Session::haveRight('own_ticket', 1)
-              || Session::haveRight('steal_ticket', 1));
+      return (Session::haveRight(self::$rightname, (UPDATE | self::ASSIGN | self::STEAL))
+              || Session::haveRight('own_ticket', 1));
    }
 
 
@@ -707,7 +707,7 @@ class Ticket extends CommonITILObject {
 
             // must own_ticket to grab a non assign ticket
             if ($this->countUsers(CommonITILActor::ASSIGN) == 0) {
-               if ((!Session::haveRight("steal_ticket","1")
+               if ((!Session::haveRight(self::$rightname, self::STEAL)
                     && !Session::haveRight("own_ticket","1"))
                    || !isset($input["_itil_assign"]['users_id'])
                    || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
@@ -716,7 +716,7 @@ class Ticket extends CommonITILObject {
 
             } else {
                // Can not steal or can steal and not assign to me
-               if (!Session::haveRight("steal_ticket","1")
+               if (!Session::haveRight(self::$rightname, self::STEAL)
                    || !isset($input["_itil_assign"]['users_id'])
                    || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
@@ -756,8 +756,7 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'global_validation';
          }
          // Manage assign and steal right
-         if (Session::haveRight(self::$rightname, self::ASSIGN)
-             || Session::haveRight('steal_ticket',1)) {
+         if (Session::haveRight(self::$rightname, (self::ASSIGN | self::STEAL))) {
             $allowed_fields[] = '_itil_assign';
          }
 
@@ -4535,8 +4534,7 @@ class Ticket extends CommonITILObject {
       if ((!$ID
            || $canupdate
            || $canupdate_descr
-           || Session::haveRight(self::$rightname, self::ASSIGN)
-           || Session::haveRight("steal_ticket","1"))
+           || Session::haveRight(self::$rightname, (self::ASSIGN | self::STEAL)))
           && !$options['template_preview']) {
 
          echo "<tr class='tab_bg_1'>";
@@ -6044,6 +6042,7 @@ class Ticket extends CommonITILObject {
          $values[self::READALL]    = __('See all tickets');
          $values[self::READASSIGN] = __('See assigned tickets (group associated)');
          $values[self::ASSIGN]     = __('Assign a ticket');
+         $values[self::STEAL]      = __('Steal a ticket');
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);

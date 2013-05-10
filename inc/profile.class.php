@@ -1077,8 +1077,8 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('To be in charge of a ticket')."</td><td>";
       Dropdown::showYesNo("own_ticket", $this->fields["own_ticket"]);
-      echo "<td>".__('Steal a ticket')."</td><td>";
-      Dropdown::showYesNo("steal_ticket", $this->fields["steal_ticket"]);
+//      echo "<td>".__('Steal a ticket')."</td><td>";
+//      Dropdown::showYesNo("steal_ticket", $this->fields["steal_ticket"]);
 //      echo "</td>";
 //      echo "<td>".__('Assign a ticket')."</td><td>";
 //      Dropdown::showYesNo("assign_ticket", $this->fields["assign_ticket"]);
@@ -2000,14 +2000,14 @@ class Profile extends CommonDBTM {
       $tab[69]['datatype']       = 'bool';
       $tab[69]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'own_ticket'");
-
+/*
       $tab[70]['table']          = 'glpi_profilerights';
       $tab[70]['field']          = 'right';
       $tab[70]['name']           = __('Steal a ticket');
       $tab[70]['datatype']       = 'bool';
       $tab[70]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'steal_ticket'");
-/*
+
       $tab[71]['table']          = 'glpi_profilerights';
       $tab[71]['field']          = 'right';
       $tab[71]['name']           = __('Assign a ticket');
