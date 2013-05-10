@@ -2569,7 +2569,7 @@ class Search {
                      $condition .= " OR $assigngroup_table.`groups_id`
                                              IN ('".implode("','",$_SESSION['glpigroups'])."')";
                   }
-                  if (Session::haveRight('assign_ticket',1)) {
+                  if (Session::haveRight('ticket', Ticket::ASSIGN)) {
                      $condition .= " OR `glpi_tickets`.`status`='".CommonITILObject::INCOMING."'";
                   }
                }

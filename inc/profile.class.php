@@ -49,7 +49,7 @@ class Profile extends CommonDBTM {
                                           'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
                                           'observe_ticket', 'password_update', 'reminder_public',
                                           'reservation', 'rssfeed_public',
-                                          'show_group_hardware', 'show_group_ticket',
+                                          'show_group_hardware',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
                                           'update_own_followups', 'validate_incident', 'validate_request');
 
@@ -58,11 +58,12 @@ class Profile extends CommonDBTM {
    static public $common_fields = array('id', 'interface', 'is_default', 'name');
 
 
+   //TODO right never used ?
    /// Fields not related to a basic right
-   static public $noright_fields = array('comment', 'change_status', 'date_mod',
-                                         'helpdesk_hardware','helpdesk_item_type', 'own_ticket',
-                                         'problem_status', 'show_group_hardware',
-                                         'show_group_ticket', 'ticket_status');
+//   static public $noright_fields = array('comment', 'change_status', 'date_mod',
+//                                         'helpdesk_hardware','helpdesk_item_type', 'own_ticket',
+//                                         'problem_status', 'show_group_hardware',
+//                                         'show_group_ticket', 'ticket_status');
 
    var $dohistory = true;
 
@@ -356,7 +357,7 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
-          & !Ticket::canCreate()) {
+          & !Session::haveRight("ticket", READ | Ticket::READGROUP)) {
          return false;
       }
 
@@ -411,7 +412,7 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
-          & !Ticket::canCreate()) {
+          & !Session::haveRight("ticket", READ | Ticket::READGROUP)) {
          return false;
       }
 
@@ -1078,9 +1079,9 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("own_ticket", $this->fields["own_ticket"]);
       echo "<td>".__('Steal a ticket')."</td><td>";
       Dropdown::showYesNo("steal_ticket", $this->fields["steal_ticket"]);
-      echo "</td>";
-      echo "<td>".__('Assign a ticket')."</td><td>";
-      Dropdown::showYesNo("assign_ticket", $this->fields["assign_ticket"]);
+//      echo "</td>";
+//      echo "<td>".__('Assign a ticket')."</td><td>";
+//      Dropdown::showYesNo("assign_ticket", $this->fields["assign_ticket"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
@@ -2006,14 +2007,14 @@ class Profile extends CommonDBTM {
       $tab[70]['datatype']       = 'bool';
       $tab[70]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'steal_ticket'");
-
+/*
       $tab[71]['table']          = 'glpi_profilerights';
       $tab[71]['field']          = 'right';
       $tab[71]['name']           = __('Assign a ticket');
       $tab[71]['datatype']       = 'bool';
       $tab[71]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'assign_ticket'");
-/*
+
       $tab[72]['table']          = 'glpi_profilerights';
       $tab[72]['field']          = 'right';
       $tab[72]['name']           = __('See all tickets');

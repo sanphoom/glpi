@@ -77,6 +77,7 @@ class Ticket extends CommonITILObject {
    const READALL    = 1024;
    const READGROUP  = 2048;
    const READASSIGN = 4096;
+   const ASSIGN     = 8192;
 
 
 
@@ -195,7 +196,7 @@ class Ticket extends CommonITILObject {
 
 
    function canAssign() {
-      return Session::haveRight('assign_ticket', 1);
+      return Session::haveRight(self::$rightname, self::ASSIGN);
    }
 
 
@@ -211,8 +212,7 @@ class Ticket extends CommonITILObject {
 
    static function canUpdate() {
 
-      return (Session::haveRight(self::$rightname, UPDATE)
-              || Session::haveRight('assign_ticket', 1)
+      return (Session::haveRight(self::$rightname, (UPDATE | self::ASSIGN))
               || Session::haveRight('own_ticket', 1)
               || Session::haveRight('steal_ticket', 1));
    }
@@ -246,8 +246,7 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      return (Session::haveRight(self::$rightname, self::READMY)
-              ||Session::haveRight(self::$rightname, self::READALL)
+      return (Session::haveRight(self::$rightname, (self::READMY | self::READALL))
               || ($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
@@ -259,7 +258,7 @@ class Ticket extends CommonITILObject {
                   && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))
-                      || (Session::haveRight('assign_ticket',1)
+                      || (Session::haveRight(self::$rightname, self::ASSIGN)
                           && ($this->fields["status"] == self::INCOMING))))
               || ((Session::haveRight('validate_incident','1')
                   || Session::haveRight('validate_request','1'))
@@ -456,7 +455,7 @@ class Ticket extends CommonITILObject {
       $right = "all";
       if ($type == CommonITILActor::ASSIGN) {
          $right = "own_ticket";
-         if (!Session::haveRight("assign_ticket","1")) {
+         if (!Session::haveRight(self::$rightname, self::ASSIGN)) {
             $right = 'id';
          }
       }
@@ -701,7 +700,7 @@ class Ticket extends CommonITILObject {
       }
       // Security checks
       if (!Session::isCron()
-          && !Session::haveRight("assign_ticket","1")) {
+          && !Session::haveRight(self::$rightname, self::ASSIGN)) {
          if (isset($input["_itil_assign"])
              && isset($input['_itil_assign']['_type'])
              && ($input['_itil_assign']['_type'] == 'user')) {
@@ -757,7 +756,7 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'global_validation';
          }
          // Manage assign and steal right
-         if (Session::haveRight('assign_ticket',1)
+         if (Session::haveRight(self::$rightname, self::ASSIGN)
              || Session::haveRight('steal_ticket',1)) {
             $allowed_fields[] = '_itil_assign';
          }
@@ -4536,7 +4535,7 @@ class Ticket extends CommonITILObject {
       if ((!$ID
            || $canupdate
            || $canupdate_descr
-           || Session::haveRight("assign_ticket","1")
+           || Session::haveRight(self::$rightname, self::ASSIGN)
            || Session::haveRight("steal_ticket","1"))
           && !$options['template_preview']) {
 
@@ -6044,6 +6043,7 @@ class Ticket extends CommonITILObject {
       if ($interface == 'central') {
          $values[self::READALL]    = __('See all tickets');
          $values[self::READASSIGN] = __('See assigned tickets (group associated)');
+         $values[self::ASSIGN]     = __('Assign a ticket');
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);
