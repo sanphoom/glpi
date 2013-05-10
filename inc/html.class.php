@@ -1869,7 +1869,7 @@ class Html {
       }
 
       //  Suivi ticket
-      if (Session::haveRight("ticket", READ)) {
+      if (Session::haveRight("ticket", Ticket::READMY)) {
  //     if (Session::haveRight("observe_ticket","1")) {
          echo "<li id='menu3'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".

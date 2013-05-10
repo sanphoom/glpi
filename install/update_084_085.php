@@ -378,26 +378,64 @@ function update084to085() {
               WHERE `name` = 'create_ticket'";
    $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
 
+   // change value
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = ". CREATE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'ticket'";
+      $DB->queryOrDie($query, "0.85 update ticket with create_ticket right");
+   }
+
 
    // delete update_ticket
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'update_ticket' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . UPDATE ." | " . DELETE ."
+                 SET `rights` = `rights` | " . UPDATE  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'ticket'";
-         $DB->queryOrDie($query, "0.85 update ticket with update_ticket and delete_ticket right");
+      $DB->queryOrDie($query, "0.85 update ticket with update_ticket right");
    }
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'update_ticket'";
    $DB->queryOrDie($query, "0.85 delete update_ticket right");
 
+
+   // delete delete_ticket
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'delete_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . DELETE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'ticket'";
+      $DB->queryOrDie($query, "0.85 update ticket with delete_ticket right");
+   }
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'delete_ticket'";
    $DB->queryOrDie($query, "0.85 delete delete_ticket right");
+
+
+   // delete show_all_ticket
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'show_all_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Ticket::READALL ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'ticket'";
+      $DB->queryOrDie($query, "0.85 update ticket with show_all_ticket right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_all_ticket'";
+   $DB->queryOrDie($query, "0.85 delete show_all_ticket right");
 
 
    // don't drop column right  - be done later

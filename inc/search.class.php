@@ -1441,7 +1441,7 @@ class Search {
             break;
 
          case 'Ticket' :
-            if (Session::haveRight("show_all_ticket","1")) {
+            if (Session::haveRight("ticket", Ticket::READALL)) {
                $linked = array_keys(Ticket::getAllTypesForHelpdesk());
             }
             break;
@@ -2517,7 +2517,7 @@ class Search {
          case 'Ticket' :
             // Same structure in addDefaultJoin
             $condition = '';
-            if (!Session::haveRight("show_all_ticket","1")) {
+            if (!Session::haveRight("ticket", Ticket::READALL)) {
 
                $searchopt
                   = &self::getOptions($itemtype);
@@ -3218,7 +3218,7 @@ class Search {
          case 'Ticket' :
             // Same structure in addDefaultWhere
             $out = '';
-            if (!Session::haveRight("show_all_ticket","1")) {
+            if (!Session::haveRight("ticket", Ticket::READALL)) {
                $searchopt = &self::getOptions($itemtype);
 
 //                $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
@@ -4115,7 +4115,7 @@ class Search {
 
             case "glpi_tickets.count" :
                if (($data[$NAME.$num] > 0)
-                   && Session::haveRight("show_all_ticket","1")) {
+                   && Session::haveRight("ticket", Ticket::READALL)) {
 
                   if ($itemtype == 'User') {
                      $options['field'][0]      = 4;

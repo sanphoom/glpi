@@ -1112,9 +1112,9 @@ class Profile extends CommonDBTM {
       echo "<td>".__('See tickets created by my groups')."</td><td>";
       Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
       echo "</td>";
-      echo "<td>".__('See all tickets')."</td><td>";
-      Dropdown::showYesNo("show_all_ticket", $this->fields["show_all_ticket"]);
-      echo "</td></tr>\n";
+//      echo "<td>".__('See all tickets')."</td><td>";
+//      Dropdown::showYesNo("show_all_ticket", $this->fields["show_all_ticket"]);
+//      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See public followups and tasks')."</td><td>";
@@ -2013,14 +2013,14 @@ class Profile extends CommonDBTM {
       $tab[71]['datatype']       = 'bool';
       $tab[71]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'assign_ticket'");
-
+/*
       $tab[72]['table']          = 'glpi_profilerights';
       $tab[72]['field']          = 'right';
       $tab[72]['name']           = __('See all tickets');
       $tab[72]['datatype']       = 'bool';
       $tab[72]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_all_ticket'");
-
+*/
       $tab[73]['table']          = 'glpi_profilerights';
       $tab[73]['field']          = 'right';
       $tab[73]['name']           = __('See assigned tickets (personnal + group associated)');

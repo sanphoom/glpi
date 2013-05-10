@@ -73,6 +73,10 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
+   const READMY  = 1;
+   const READALL = 1024;
+
+
 
    function getForbiddenStandardMassiveAction() {
 
@@ -218,10 +222,9 @@ class Ticket extends CommonITILObject {
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          return true;
       }*/
-      return (Session::haveRight("show_all_ticket","1")
-              || Session::haveRight(self::$rightname, READ)
+      return (Session::haveRight(self::$rightname, self::READALL)
+              || Session::haveRight(self::$rightname, self::READMY)
               || Session::haveRight(self::$rightname, UPDATE)
-              || Session::haveRight('show_all_ticket','1')
               || Session::haveRight("show_assign_ticket",'1')
               || Session::haveRight("own_ticket",'1')
               || Session::haveRight('validate_request','1')
@@ -241,7 +244,8 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      return (Session::haveRight("show_all_ticket","1")
+      return (Session::haveRight(self::$rightname, self::READMY)
+              ||Session::haveRight(self::$rightname, self::READALL)
               || ($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
@@ -524,9 +528,9 @@ class Ticket extends CommonITILObject {
          if ($item->getType() != __CLASS__) {
             return self::createTabEntry($title, $nb);
          }
-      } // show_all_ticket right check
+      } // self::READALL right check
 
-      // Not check show_all_ticket for Ticket itself
+      // Not check self::READALL for Ticket itself
       switch ($item->getType()) {
          case __CLASS__ :
             $ong    = array();
@@ -1759,7 +1763,7 @@ class Ticket extends CommonITILObject {
                       'sort'       => 19,
                       'order'      => 'DESC');
 
-      if (Session::haveRight('show_all_ticket', 1)) {
+      if (Session::haveRight(self::$rightname, self::READALL)) {
          $search['contains'] = array(0 => 'notold');
       }
      return $search;
@@ -2306,7 +2310,7 @@ class Ticket extends CommonITILObject {
       $tab[150]['massiveaction']    = false;
 
 
-      if (Session::haveRight("show_all_ticket","1")
+      if (Session::haveRight(self::$rightname, self::READALL)
           || Session::haveRight("show_assign_ticket","1")
           || Session::haveRight("own_ticket","1")) {
 
@@ -4626,7 +4630,7 @@ class Ticket extends CommonITILObject {
    static function showCentralList($start, $status="process", $showgrouptickets=true) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("show_all_ticket","1")
+      if (!Session::haveRight(self::$rightname, self::READALL)
           && !Session::haveRight("show_assign_ticket","1")
           && !self::canCreate()
           && !Session::haveRight("validate_incident","1")
@@ -4964,10 +4968,10 @@ class Ticket extends CommonITILObject {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
-      if (!Session::haveRight("show_all_ticket","1") && !self::canCreate()) {
+      if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
          return false;
       }
-      if (!Session::haveRight("show_all_ticket","1")) {
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
          $foruser = true;
       }
 
@@ -5070,7 +5074,7 @@ class Ticket extends CommonITILObject {
    static function showCentralNewList() {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("show_all_ticket","1")) {
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
          return false;
       }
 
@@ -5171,7 +5175,7 @@ class Ticket extends CommonITILObject {
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("show_all_ticket","1")) {
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
          return false;
       }
 
@@ -6035,6 +6039,11 @@ class Ticket extends CommonITILObject {
    function getRights($interface='central') {
 
       $values = parent::getRights();
+      unset($values[READ]);
+      $values[self::READMY] = __('Read my ticket');
+      if ($interface == 'central') {
+         $values[self::READALL] = __('Read all tickets');
+      }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);
       }

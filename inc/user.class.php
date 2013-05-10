@@ -3000,7 +3000,7 @@ class User extends CommonDBTM {
     *                         id -> only current user (default case);
     *                         interface -> central ;
     *                         all -> all users ;
-    *                         specific right like show_all_ticket, create_ticket.... (is array passed one of all passed right is needed)
+    *                         specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
     *    - comments     : boolean / is the comments displayed near the dropdown (default true)
     *    - entity       : integer or array / restrict to a defined entity or array of entities
     *                      (default -1 : no restriction)
