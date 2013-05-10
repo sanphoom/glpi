@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -49,7 +49,7 @@ class TicketTask  extends CommonITILTask {
    static function canCreate() {
 
       return (Session::haveRight('global_add_tasks', 1)
-              || Session::haveRight('own_ticket', 1));
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
@@ -57,14 +57,14 @@ class TicketTask  extends CommonITILTask {
 
       return (Session::haveRight('observe_ticket', 1)
               || Session::haveRight('show_full_ticket', 1)
-              || Session::haveRight('own_ticket', 1));
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
    static function canUpdate() {
 
       return (Session::haveRight('global_add_tasks', 1)
-              || Session::haveRight('own_ticket', 1)
+              || Session::haveRight('ticket', Ticket::OWN)
               || Session::haveRight('update_tasks', 1) );
    }
 

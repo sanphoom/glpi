@@ -910,7 +910,7 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket').
               "</td><td>";
-         if (!$userpref || Session::haveRight('own_ticket', 1)) {
+         if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
             Dropdown::showYesNo("set_default_tech", $data["set_default_tech"]);
          } else {
             echo Dropdown::getYesNo(0);

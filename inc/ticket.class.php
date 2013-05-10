@@ -79,7 +79,7 @@ class Ticket extends CommonITILObject {
    const READASSIGN =  4096;
    const ASSIGN     =  8192;
    const STEAL      = 16384;
-
+   const OWN        = 32768;
 
 
    function getForbiddenStandardMassiveAction() {
@@ -204,7 +204,7 @@ class Ticket extends CommonITILObject {
    function canAssignToMe() {
 
       return (Session::haveRight(self::$rightname, self::STEAL)
-              || (Session::haveRight("own_ticket","1")
+              || (Session::haveRight(self::$rightname, self::OWN)
                   && ($this->countUsers(CommonITILActor::ASSIGN) == 0)));
    }
 
@@ -213,8 +213,7 @@ class Ticket extends CommonITILObject {
 
    static function canUpdate() {
 
-      return (Session::haveRight(self::$rightname, (UPDATE | self::ASSIGN | self::STEAL))
-              || Session::haveRight('own_ticket', 1));
+      return Session::haveRight(self::$rightname, (UPDATE | self::ASSIGN | self::STEAL | self::OWN));
    }
 
 
@@ -224,14 +223,11 @@ class Ticket extends CommonITILObject {
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          return true;
       }*/
-      return (Session::haveRight(self::$rightname, self::READALL)
-              || Session::haveRight(self::$rightname, self::READMY)
-              || Session::haveRight(self::$rightname, UPDATE)
-              || Session::haveRight(self::$rightname, self::READASSIGN)
-              || Session::haveRight("own_ticket",'1')
+      return (Session::haveRight(self::$rightname,
+                                 (self::READALL | self::READMY | UPDATE | self::READASSIGN
+                                  | self::READGROUP | self::OWN))
               || Session::haveRight('validate_request','1')
-              || Session::haveRight('validate_incident','1')
-              || Session::haveRight(self::$rightname, self::READGROUP));
+              || Session::haveRight('validate_incident','1'));
    }
 
 
@@ -438,7 +434,7 @@ class Ticket extends CommonITILObject {
    function getDefaultActor($type) {
 
       if ($type == CommonITILActor::ASSIGN) {
-         if (Session::haveRight("own_ticket","1")
+         if (Session::haveRight(self::$rightname, self::OWN)
              && $_SESSION['glpiset_default_tech']) {
             return Session::getLoginUserID();
          }
@@ -707,8 +703,7 @@ class Ticket extends CommonITILObject {
 
             // must own_ticket to grab a non assign ticket
             if ($this->countUsers(CommonITILActor::ASSIGN) == 0) {
-               if ((!Session::haveRight(self::$rightname, self::STEAL)
-                    && !Session::haveRight("own_ticket","1"))
+               if ((!Session::haveRight(self::$rightname, (self::STEAL | self::OWN)))
                    || !isset($input["_itil_assign"]['users_id'])
                    || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
@@ -2310,8 +2305,7 @@ class Ticket extends CommonITILObject {
       $tab[150]['massiveaction']    = false;
 
 
-      if (Session::haveRight(self::$rightname, (self::READALL | self::READASSIGN))
-          || Session::haveRight("own_ticket","1")) {
+      if (Session::haveRight(self::$rightname, (self::READALL | self::READASSIGN | self::OWN))) {
 
          $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
 
@@ -3530,8 +3524,7 @@ class Ticket extends CommonITILObject {
       if (is_numeric(Session::getLoginUserID(false))) {
          $users_id_requester = Session::getLoginUserID();
          // No default requester if own ticket right = tech and update_ticket right to update requester
-         if (Session::haveRight('own_ticket',1)
-             && Session::haveRight(self::$rightname, UPDATE)) {
+         if (Session::haveRight(self::$rightname, (UPDATE | self::OWN))) {
             $users_id_requester = 0;
          }
          $entity      = $_SESSION['glpiactive_entity'];
@@ -6043,6 +6036,7 @@ class Ticket extends CommonITILObject {
          $values[self::READASSIGN] = __('See assigned tickets (group associated)');
          $values[self::ASSIGN]     = __('Assign a ticket');
          $values[self::STEAL]      = __('Steal a ticket');
+         $values[self::OWN]        = __('To be in charge of a ticket');
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);

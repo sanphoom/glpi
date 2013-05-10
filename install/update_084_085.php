@@ -505,6 +505,21 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete steal_ticket right");
 
 
+   // delete own_ticket
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'own_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Ticket::OWN ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'ticket'";
+      $DB->queryOrDie($query, "0.85 update ticket with own_ticket right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'own_ticket'";
+   $DB->queryOrDie($query, "0.85 delete own_ticket right");
+
 
    // don't drop column right  - be done later
 

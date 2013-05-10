@@ -58,7 +58,7 @@ class TicketFollowup  extends CommonDBTM {
 
       return (Session::haveRight('global_add_followups', 1)
               || Session::haveRight('add_followups', 1)
-              || Session::haveRight('own_ticket', 1));
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 
@@ -66,7 +66,7 @@ class TicketFollowup  extends CommonDBTM {
 
       return (Session::haveRight('observe_ticket', 1)
               || Session::haveRight('show_full_ticket', 1)
-              || Session::haveRight('own_ticket', 1));
+              || Session::haveRight('ticket', Ticket::OWN));
    }
 
 

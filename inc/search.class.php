@@ -2558,7 +2558,7 @@ class Search {
                   }
                }
 
-               if (Session::haveRight("own_ticket","1")) {// Can own ticket : show assign to me
+               if (Session::haveRight("ticket", Ticket::OWN)) {// Can own ticket : show assign to me
                   $condition .= " OR $assign_table.users_id = '".Session::getLoginUserID()."' ";
                }
 
@@ -3252,7 +3252,7 @@ class Search {
                                             $searchopt[65]['joinparams']['beforejoin']['joinparams']);
                }
 
-               if (Session::haveRight("own_ticket","1")) { // Can own ticket : show assign to me
+               if (Session::haveRight("ticket", Ticket::OWN)) { // Can own ticket : show assign to me
                   $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                             "glpi_tickets_users", "tickets_users_id", 0, 0,
                                             $searchopt[5]['joinparams']['beforejoin']['joinparams']);

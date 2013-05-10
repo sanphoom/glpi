@@ -373,7 +373,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       /// TODO own_ticket -> own_itilobject
       if ($type == CommonITILActor::ASSIGN) {
-         if (Session::haveRight("own_ticket","1")) {
+         if (Session::haveRight("ticket", Ticket::OWN)) {
             return Session::getLoginUserID();
          }
       }
@@ -4169,8 +4169,8 @@ abstract class CommonITILObject extends CommonDBTM {
                           OR ".getDateRequest("`".$this->getTable()."`.`closedate`",
                                               $date1, $date2).") ";
       }
-      $query .="     AND `glpi_profilerights`.`name` = 'own_ticket'
-                     AND `glpi_profilerights`.`right` = 1
+      $query .="     AND `glpi_profilerights`.`name` = 'ticket'
+                     AND (`glpi_profilerights`.`rights` & ". Ticket::OWN.")
                      AND `$tasktable`.`users_id` <> '0'
                      AND `$tasktable`.`users_id` IS NOT NULL
                ORDER BY realname, firstname, name";

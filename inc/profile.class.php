@@ -357,7 +357,7 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
-          & !Session::haveRight("ticket", READ | Ticket::READGROUP)) {
+          & !Session::haveRight("ticket", CREATE | Ticket::READGROUP)) {
          return false;
       }
 
@@ -412,7 +412,7 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
-          & !Session::haveRight("ticket", READ | Ticket::READGROUP)) {
+          & !Session::haveRight("ticket", CREATE | Ticket::READGROUP)) {
          return false;
       }
 
@@ -1071,18 +1071,18 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
       echo "<td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Assignment')."</th>";
-      echo "</tr>\n";
+//      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Assignment')."</th>";
+//      echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('To be in charge of a ticket')."</td><td>";
-      Dropdown::showYesNo("own_ticket", $this->fields["own_ticket"]);
+//      echo "<tr class='tab_bg_2'>";
+//      echo "<td>".__('To be in charge of a ticket')."</td><td>";
+//      Dropdown::showYesNo("own_ticket", $this->fields["own_ticket"]);
 //      echo "<td>".__('Steal a ticket')."</td><td>";
 //      Dropdown::showYesNo("steal_ticket", $this->fields["steal_ticket"]);
 //      echo "</td>";
 //      echo "<td>".__('Assign a ticket')."</td><td>";
 //      Dropdown::showYesNo("assign_ticket", $this->fields["assign_ticket"]);
-      echo "</td></tr>\n";
+//      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
       echo "</tr>\n";
@@ -1993,14 +1993,14 @@ class Profile extends CommonDBTM {
       $tab[68]['datatype']       = 'bool';
       $tab[68]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'update_ticket'");
-*/
+
       $tab[69]['table']          = 'glpi_profilerights';
       $tab[69]['field']          = 'right';
       $tab[69]['name']           = __('To be in charge of a ticket');
       $tab[69]['datatype']       = 'bool';
       $tab[69]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'own_ticket'");
-/*
+
       $tab[70]['table']          = 'glpi_profilerights';
       $tab[70]['field']          = 'right';
       $tab[70]['name']           = __('Steal a ticket');

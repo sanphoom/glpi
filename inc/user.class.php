@@ -2822,6 +2822,7 @@ class User extends CommonDBTM {
 
       $joinprofile      = false;
       $joinprofileright = false;
+      toolbox::logdebug($right);
       switch ($right) {
          case "interface" :
             $joinprofile = true;
@@ -2870,6 +2871,7 @@ class User extends CommonDBTM {
             break;
 
          default :
+            toolbox::logdebug("dans default");
             $joinprofile = true;
             $joinprofileright = true;
             if (!is_array($right)) {
@@ -2887,12 +2889,19 @@ class User extends CommonDBTM {
             }
 
             foreach ($right as $r) {
-               // Check read or active for rights
-               $where[]= " (`glpi_profilerights`.`name` = '".$r."'
-                        AND `glpi_profilerights`.`right` IN ('1', 'r', 'w') ".
-                           getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
-                                                      $entity_restrict, 1).") ";
-
+               if ($r == 'own_ticket') {
+                  $where[]= " (`glpi_profilerights`.`name` = 'ticket'
+                               AND (`glpi_profilerights`.`rights` & ".Ticket::OWN.") ".
+                               getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                          $entity_restrict, 1).") ";
+               } else {
+                  // Check read or active for rights
+                  $where[]= " (`glpi_profilerights`.`name` = '".$r."'
+                               AND `glpi_profilerights`.`right` IN ('1', 'r', 'w', $r) ".
+                               getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                          $entity_restrict, 1).") ";
+               }
+               toolbox::logdebug("where", $where);
                if (in_array($right, Profile::$helpdesk_rights)) {
                   $forcecentral = false;
                }
@@ -3025,7 +3034,7 @@ class User extends CommonDBTM {
    **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
-toolbox::logdebug("dans dropdownuser");
+toolbox::logdebug("dans dropdownuser", $options);
       // Default values
       $p['name']           = 'users_id';
       $p['value']          = '';
