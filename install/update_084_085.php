@@ -226,7 +226,7 @@ function update084to085() {
                          "`name` = 'knowbase_admin' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Knowbase::KNOWBASEADMIN ."
+                 SET `rights` = `rights` | " . KnowbaseItem::KNOWBASEADMIN ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'knowbase'";
       $DB->queryOrDie($query, "0.85 update knowbase with knowbase_admin right");
