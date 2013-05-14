@@ -380,16 +380,12 @@ function update084to085() {
             WHERE `name` = 'create_ticket'";
       $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
 
-      // change value
-      foreach ($DB->request("glpi_profilerights",
-                            "`name` = ticket' AND `right` = '1'") as $profrights) {
-
-         $query  = "UPDATE `glpi_profilerights`
-                    SET `rights` = ". CREATE ."
-                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                         AND `name` = 'ticket'";
-         $DB->queryOrDie($query, "0.85 update ticket with create_ticket right");
-      }
+      $query  = "UPDATE `glpi_profilerights`
+                  SET `rights` = ". CREATE ."
+                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                        AND `name` = 'ticket'
+                        AND `right` = '1'";
+      $DB->queryOrDie($query, "0.85 update ticket with create_ticket right");
    }
 
 

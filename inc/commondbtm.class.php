@@ -1500,8 +1500,7 @@ class CommonDBTM extends CommonGLPI {
     * @return booleen
    **/
    static function canCreate() {
-
-      If (static::$rightname) {
+      if (static::$rightname) {
          return Session::haveRight(static::$rightname, CREATE);
       }
       return false;
