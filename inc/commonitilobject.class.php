@@ -2000,11 +2000,6 @@ abstract class CommonITILObject extends CommonDBTM {
    function showGroupsAssociated($type, $canedit) {
       global $CFG_GLPI;
 
-      $showgrouplink = 0;
-      if (Group::canView()) {
-         $showgrouplink = 1;
-      }
-
       $groupicon = self::getActorIcon('group',$type);
       $group     = new Group();
 
@@ -2013,7 +2008,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $k = $d['groups_id'];
             echo "$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
-               echo $group->getLink(array('comments' => $showgrouplink));
+               echo $group->getLink(array('comments' => true));
             }
             if ($canedit) {
                echo "&nbsp;";
@@ -2581,23 +2576,24 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $d) {
-            $k                 = $d['users_id'];
-            $save_showuserlink = $showuserlink;
+            $k = $d['users_id'];
 
             echo "$usericon&nbsp;";
 
             if ($k) {
-               $userdata = getUserName($k, $showuserlink);
+               $userdata = getUserName($k, 2);
             } else {
                $email         = $d['alternative_email'];
                $userdata      = "<a href='mailto:$email'>$email</a>";
-               $showuserlink  = false;
             }
 
-            if ($showuserlink) {
+            if ($k) {
+               $param = array('display' => false);
+               if ($showuserlink) {
+                  $param['link'] = $userdata["link"];
+               }
                echo $userdata['name']."&nbsp;".Html::showToolTip($userdata["comment"],
-                                                                 array('link'    => $userdata["link"],
-                                                                       'display' => false));
+                                                                 $param);
             } else {
                echo $userdata;
             }
@@ -2636,8 +2632,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo "<br>";
-
-            $showuserlink = $save_showuserlink;
          }
       }
    }
