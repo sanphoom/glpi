@@ -222,9 +222,6 @@ class Entity extends CommonTreeDropdown {
          return false;
       }
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
-      print_r($input);echo '<br><br>';
-      $input = $this->checkRightDatas($input);
-      print_r($input);exit();
       return $this->checkRightDatas($input);
    }
 
