@@ -596,7 +596,11 @@ class CommonGLPI {
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
       } else {
-         $ID = 0;
+         if (isset($options['id'])) {
+            $ID = $options['id'];
+         } else {
+            $ID = 0;
+         }
       }
       $target         = $_SERVER['PHP_SELF'];
       $extraparamhtml = "";
@@ -664,7 +668,11 @@ class CommonGLPI {
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
       } else {
-         $ID = 0;
+         if (isset($options['id'])) {
+            $ID = $options['id'];
+         } else {
+            $ID = 0;
+         }
       }
       $target         = $_SERVER['PHP_SELF'];
       $extraparamhtml = "";
@@ -975,7 +983,8 @@ class CommonGLPI {
    **/
    function display($options=array()) {
 
-      if (isset($options['id'])) {
+      if (isset($options['id'])
+         && !$this->isNewID($options['id'])) {
          $this->getFromDB($options['id']);
       }
 
