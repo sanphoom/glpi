@@ -4618,7 +4618,7 @@ class Search {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($split2[0])),$unit);
+                        $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($split2[0]),$unit);
                      }
                   }
                   return $out;
