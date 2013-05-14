@@ -131,7 +131,7 @@ class Notification extends CommonDBTM {
          $menu['options']['notification']['links']['add']    = '/front/notification.form.php';
          $menu['options']['notification']['links']['search'] = '/front/notification.php';
 
-         $menu['options']['config']['title'] = __('Email');
+         $menu['options']['config']['title'] = __('Setup');
          $menu['options']['config']['page']  = '/front/notificationmailsetting.form.php';
 
          $menu['options']['notificationtemplate']['title']

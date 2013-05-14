@@ -492,10 +492,12 @@ class MailCollector  extends CommonDBTM {
                //Indicates that the mail must be deleted from the mailbox
                $delete_mail = false;
 
-               //If entity assigned, or email refused by rule, or no user associated with the email
+               //If entity assigned, or email refused by rule, or no user and no supplier associated with the email
                $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"]
                                   ||(isset($tkt['_users_id_requester'])
-                                     && ($tkt['_users_id_requester'] > 0)));
+                                     && ($tkt['_users_id_requester'] > 0))
+                                  || (isset($tkt['_supplier_email'])
+                                     && $tkt['_supplier_email']));
 
                $rejinput                      = array();
                $rejinput['mailcollectors_id'] = $mailgateID;
@@ -729,11 +731,13 @@ class MailCollector  extends CommonDBTM {
 
       $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
 
+      $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
          // it's a reply to a previous ticket
          $job = new Ticket();
          $tu  = new Ticket_User();
+         $st  = new Supplier_Ticket();
 
          // Check if ticket  exists and users_id exists in GLPI
          /// TODO check if users_id have right to add a followup to the ticket
@@ -741,7 +745,13 @@ class MailCollector  extends CommonDBTM {
              && ($job->fields['status'] != CommonITILObject::CLOSED)
              && ($CFG_GLPI['use_anonymous_followups']
                  || ($tkt['_users_id_requester'] > 0)
-                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from']))) {
+                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from'])
+                 || ($tkt['_supplier_email'] = $st->isSupplierEmail($tkt['tickets_id'], $head['from']))
+                )) {
+
+            if ($tkt['_supplier_email']) {
+               $tkt['content'] = sprintf(__('From %s'), $head['from'])."\n\n".$tkt['content'];
+            }
 
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
@@ -1257,7 +1267,7 @@ class MailCollector  extends CommonDBTM {
          $filename = $this->decodeMimeString($filename);
 
          if ($structure->bytes > $maxsize) {
-            $this->addtobody .= "<br>".sprintf(__('%1$s: %2$s'), __('Too large attached file'),
+            $this->addtobody .= "\n\n".sprintf(__('%1$s: %2$s'), __('Too large attached file'),
                                                sprintf(__('%1$s (%2$s)'), $filename,
                                                        Toolbox::getSize($structure->bytes)));
             return false;
@@ -1265,7 +1275,7 @@ class MailCollector  extends CommonDBTM {
 
          if (!Document::isValidDoc($filename)) {
             //TRANS: %1$s is the filename and %2$s its mime type
-            $this->addtobody .= "<br>".sprintf(__('%1$s: %2$s'), __('Invalid attached file'),
+            $this->addtobody .= "\n\n".sprintf(__('%1$s: %2$s'), __('Invalid attached file'),
                                                sprintf(__('%1$s (%2$s)'), $filename,
                                                        $this->get_mime_type($structure)));
             return false;
