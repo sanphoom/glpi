@@ -91,7 +91,7 @@ class Entity extends CommonTreeDropdown {
                                                    'send_infocoms_alert_before_delay',
                                                    'notification_subject_tag'),
                                        // Helpdesk
-                                       'entity'
+                                       'entity_helpdesk'
                                           => array('calendars_id', 'tickettype', 'auto_assign_mode',
                                                    'autoclose_delay', 'inquest_config',
                                                    'inquest_rate', 'inquest_delay', 'inquest_URL',
@@ -176,15 +176,21 @@ class Entity extends CommonTreeDropdown {
       }
 
       foreach (self::$field_right as $right => $fields) {
-
-         if (($right == 'Entity')
-             && !Session::haveRight(self::$rightname, self::UPDATEHELPDESK )) {
-            return false ;
-         }
-         if (Session::haveRight($right, UPDATE)) {
-            foreach ($fields as $field) {
-               if (isset($input[$field])) {
-                  $tmp[$field] = $input[$field];
+         
+         if (($right == 'entity_helpdesk')) {
+            if(Session::haveRight(self::$rightname, self::UPDATEHELPDESK )) {
+               foreach ($fields as $field) {
+                  if (isset($input[$field])) {
+                     $tmp[$field] = $input[$field];
+                  }
+               }
+            }
+         } else {
+            if (Session::haveRight($right, UPDATE)) {
+               foreach ($fields as $field) {
+                  if (isset($input[$field])) {
+                     $tmp[$field] = $input[$field];
+                  }
                }
             }
          }
@@ -216,6 +222,9 @@ class Entity extends CommonTreeDropdown {
          return false;
       }
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+      print_r($input);echo '<br><br>';
+      $input = $this->checkRightDatas($input);
+      print_r($input);exit();
       return $this->checkRightDatas($input);
    }
 
