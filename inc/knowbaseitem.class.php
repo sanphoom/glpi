@@ -776,9 +776,8 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function searchForm($options) {
       global $CFG_GLPI;
-
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRight(self::$rightname, (READ | READFAQ))) {
+          && !Session::haveRight(self::$rightname, (READ | self::READFAQ))) {
          return false;
       }
 
