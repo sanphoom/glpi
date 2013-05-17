@@ -83,7 +83,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
-          && Session::haveRight("tickettemplate","r")) {
+          && Session::haveRight("tickettemplate", READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
@@ -175,14 +175,14 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
       $ID = $tt->fields['id'];
 
-      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+      if (!$tt->getFromDB($ID) || !$tt->can($ID, READ)) {
          return false;
       }
 
       $ttm     = new self();
       $used    = $ttm->getHiddenFields($ID);
 
-      $canedit = $tt->can($ID, "w");
+      $canedit = $tt->canEdit($ID);
       $fields  = $tt->getAllowedFieldsNames(false, isset($used['itemtype']));
       $rand    = mt_rand();
 

@@ -52,6 +52,7 @@ class TicketTemplate extends CommonDropdown {
 
    public $display_dropdowntitle       = false;
 
+   static $rightname                   = 'tickettemplate';
 
    // Specific fields
    /// Mandatory Fields
@@ -117,16 +118,6 @@ class TicketTemplate extends CommonDropdown {
 
    static function getTypeName($nb=0) {
       return _n('Ticket template', 'Ticket templates', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('tickettemplate', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('tickettemplate', 'r');
    }
 
 
@@ -213,7 +204,7 @@ class TicketTemplate extends CommonDropdown {
          }
          // Add validation request
          $allowed_fields[$withtypeandcategory][$with_items_id][-2] = '_add_validation';
-         
+
          // Add document
          $allowed_fields[$withtypeandcategory][$with_items_id]
                [$ticket->getSearchOptionIDByField('field', 'name',
@@ -308,7 +299,7 @@ class TicketTemplate extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("tickettemplate","r")) {
+      if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
             case 'TicketTemplate' :
                $ong[1] = __('Standard interface');

@@ -82,7 +82,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
-          && Session::haveRight("tickettemplate","r")) {
+          && Session::haveRight("tickettemplate", READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
@@ -175,10 +175,10 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       $ID = $tt->fields['id'];
 
-      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+      if (!$tt->getFromDB($ID) || !$tt->can($ID, READ)) {
          return false;
       }
-      $canedit           = $tt->can($ID, "w");
+      $canedit           = $tt->canEdit($ID);
       $ttm               = new self();
       $used              = $ttm->getMandatoryFields($ID);
       $fields            = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));

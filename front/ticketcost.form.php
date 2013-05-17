@@ -38,7 +38,7 @@ Session::checkCentralAccess();
 
 $cost = new TicketCost();
 if (isset($_POST["add"])) {
-   $cost->check(-1,'w',$_POST);
+   $cost->check(-1, CREATE, $_POST);
 
    if ($newID = $cost->add($_POST)) {
       Event::log($_POST['tickets_id'], "tickets", 4, "tracking",
@@ -48,8 +48,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["delete"])) {
-   $cost->check($_POST["id"],'d');
-
+   $cost->check($_POST["id"], PURGE);
+   // TODO PURGE instead of delete
    if ($cost->delete($_POST)) {
       Event::log($cost->fields['tickets_id'], "tickets", 4, "tracking",
                  //TRANS: %s is the user login
@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket').'?id='.$cost->fields['tickets_id']);
 
 } else if (isset($_POST["update"])) {
-   $cost->check($_POST["id"],'w');
+   $cost->check($_POST["id"], UPDATE);
 
    if ($cost->update($_POST)) {
       Event::log($cost->fields['tickets_id'], "tickets", 4, "tracking",

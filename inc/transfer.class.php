@@ -2939,7 +2939,7 @@ class Transfer extends CommonDBTM {
       $this->initForm($ID, $options);
 
       $params = array();
-      if (!Session::haveRight("transfer","w")) {
+      if (!Session::haveRightsOr("transfer", array(CREATE, UPDATE, PURGE))) {
          $params['readonly'] = true;
       }
 

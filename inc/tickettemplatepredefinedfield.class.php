@@ -123,7 +123,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
-          && Session::haveRight("tickettemplate","r")) {
+          && Session::haveRight("tickettemplate", READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
@@ -182,7 +182,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $ticket = new Ticket();
       $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'));
 
-      return $fields;   
+      return $fields;
    }
 
    /**
@@ -200,11 +200,11 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       $ID = $tt->fields['id'];
 
-      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+      if (!$tt->getFromDB($ID) || !$tt->can($ID, READ)) {
          return false;
       }
 
-      $canedit       = $tt->can($ID, "w");
+      $canedit       = $tt->canEdit($ID);
 
       $ttp           = new self();
       $used_fields   = $ttp->getPredefinedFields($ID, true);
@@ -259,7 +259,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                   unset($used[$val]);
                }
             }
-            
+
             $rand_dp  = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
                                                                               'toadd'));
             echo "</td><td class='top'>";

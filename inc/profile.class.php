@@ -968,15 +968,39 @@ class Profile extends CommonDBTM {
       echo "<td width='18%'>".__('Ticket')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Ticket'), "_ticket",
                            $this->fields["ticket"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Ticket cost', 'Ticket costs', 2)."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('TicketCost'), "_ticketcost",
+                           $this->fields["ticketcost"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Recurrent tickets')."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('TicketRecurrent'), "_ticketrecurrent",
+                           $this->fields["ticketrecurrent"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Ticket template', 'Ticket templates', 2)."</td><td colspan='3'>";
+      self::dropdownRights(Profile::getRightsFor('TicketTemplate'), "_tickettemplate",
+                           $this->fields["tickettemplate"]);
       echo "</td>";
+      echo "<td>".__('Default ticket template')."</td><td>";
+      // Only root entity ones and recursive
+      $options = array('value'     => $this->fields["tickettemplates_id"],
+                       'entity'    => 0,
+                       'condition' => '`is_recursive` = 1');
+      TicketTemplate::dropdown($options);
+      echo "</td></tr>\n";
+
+
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Creation')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-//      echo "<td width='18%'>".__('Create a ticket')."</td><td width='15%'>";
-//      Dropdown::showYesNo("create_ticket", $this->fields["create_ticket"]);
-//      echo "</td>";
       echo "<td width='18%'>".__('Add a followup to tickets (requester)')."</td><td width='15%'>";
       Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
       echo "</td>";
@@ -991,29 +1015,10 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Add a task to all tickets')."</td><td>";
       Dropdown::showYesNo("global_add_tasks", $this->fields["global_add_tasks"]);
       echo "</td>";
-      echo "<td>".__('Default ticket template')."</td><td>";
-      // Only root entity ones and recursive
-      $options = array('value'     => $this->fields["tickettemplates_id"],
-                       'entity'    => 0,
-                       'condition' => '`is_recursive` = 1');
-
-      TicketTemplate::dropdown($options);
-      echo "</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Ticket cost', 'Ticket costs', 2)."</td><td>";
-      self::dropdownRight("ticketcost",
-                          array('value'   => $this->fields["ticketcost"]));
 
-      echo "</td>";
-      echo "<td>"._n('Ticket template', 'Ticket templates', 2)."</td><td>";
-      self::dropdownRight("tickettemplate",
-                          array('value'   => $this->fields["tickettemplate"]));
-      echo "</td>";
-      echo "<td>".__('Recurrent tickets')."</td><td>";
-      self::dropdownRight("ticketrecurrent",
-                          array('value'   => $this->fields["ticketrecurrent"]));
       echo "</td>";
       echo "</tr>\n";
 
@@ -1021,9 +1026,6 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__('Update a ticket')."</td><td>";
-//      Dropdown::showYesNo("update_ticket", $this->fields["update_ticket"]);
-//      echo "</td>";
       echo "<td>".__('Change the priority')."</td><td>";
       Dropdown::showYesNo("update_priority", $this->fields["update_priority"]);
       echo "</td>";
@@ -1044,9 +1046,6 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__("Ticket's deletion")."</td><td>";
-//      Dropdown::showYesNo("delete_ticket", $this->fields["delete_ticket"]);
-//      echo "</td>";
       echo "<td>".__('Delete all followups')."</td><td>";
       Dropdown::showYesNo("delete_followups", $this->fields["delete_followups"]);
       echo "</td>\n";
@@ -1072,19 +1071,6 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
       echo "<td colspan='2'></td></tr>\n";
 
-//      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Assignment')."</th>";
-//      echo "</tr>\n";
-
-//      echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__('To be in charge of a ticket')."</td><td>";
-//      Dropdown::showYesNo("own_ticket", $this->fields["own_ticket"]);
-//      echo "<td>".__('Steal a ticket')."</td><td>";
-//      Dropdown::showYesNo("steal_ticket", $this->fields["steal_ticket"]);
-//      echo "</td>";
-//      echo "<td>".__('Assign a ticket')."</td><td>";
-//      Dropdown::showYesNo("assign_ticket", $this->fields["assign_ticket"]);
-//      echo "</td></tr>\n";
-
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
       echo "</tr>\n";
 
@@ -1106,17 +1092,6 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Visibility')."</th>";
       echo "</tr>\n";
-
-//      echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__('See assigned tickets (personnal + group associated)')."</td><td>";
-//      Dropdown::showYesNo("show_assign_ticket", $this->fields["show_assign_ticket"]);
-//      echo "</td>";
-//      echo "<td>".__('See tickets created by my groups')."</td><td>";
-//      Dropdown::showYesNo("show_group_ticket", $this->fields["show_group_ticket"]);
-//      echo "</td>";
-//      echo "<td>".__('See all tickets')."</td><td>";
-//      Dropdown::showYesNo("show_all_ticket", $this->fields["show_all_ticket"]);
-//      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See public followups and tasks')."</td><td>";

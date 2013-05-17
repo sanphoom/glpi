@@ -51,19 +51,12 @@ class TicketRecurrent extends CommonDropdown {
 
    public $display_dropdowntitle  = false;
 
+   static $rightname              = 'ticketrecurrent';
+
+
 
    static function getTypeName($nb=0) {
       return __('Recurrent tickets');
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('ticketrecurrent', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('ticketrecurrent', 'r');
    }
 
 
@@ -84,7 +77,7 @@ class TicketRecurrent extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("tickettemplate","r")) {
+      if (Session::haveRight('tickettemplate', READ)) {
          switch ($item->getType()) {
             case 'TicketRecurrent' :
                $ong[1] = _n('Information', 'Information', 2);

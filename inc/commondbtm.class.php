@@ -1979,9 +1979,11 @@ class CommonDBTM extends CommonGLPI {
             }
 
          } else {
-            echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-            echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
-                   class='submit'>";
+            if ($this->can($ID, UPDATE)) {
+               echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
+               echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
+                      class='submit'>";
+            }
          }
          if ($this->isField('date_mod')) {
             echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
