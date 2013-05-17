@@ -43,16 +43,16 @@ if (!defined('GLPI_ROOT')) {
 class TicketTemplate extends CommonDropdown {
 
    // From CommonDBTM
-   public $dohistory                   = true;
+   public $dohistory                 = true;
 
    // From CommonDropdown
-   public $first_level_menu            = "maintain";
-   public $second_level_menu           = "ticket";
-   public $third_level_menu            = "TicketTemplate";
+   public $first_level_menu          = "helpdesk";
+   public $second_level_menu         = "ticket";
+   public $third_level_menu          = "TicketTemplate";
 
-   public $display_dropdowntitle       = false;
+   public $display_dropdowntitle     = false;
 
-   static $rightname                   = 'tickettemplate';
+   static $rightname                 = 'tickettemplate';
 
    // Specific fields
    /// Mandatory Fields
