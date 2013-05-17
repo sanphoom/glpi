@@ -230,7 +230,7 @@ class ComputerDisk extends CommonDBChild {
           || !$comp->can($ID, READ)) {
          return false;
       }
-      $canedit = $comp->can($ID, (CREATE | UPDATE | DELETE | PURGE));
+      $canedit = $comp->canEdit($ID);
 
       echo "<div class='center'>";
 

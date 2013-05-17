@@ -34,7 +34,10 @@
 include ('../inc/includes.php');
 
 Session::checkCentralAccess();
-Session::checkRight("reservation", (CREATE | UPDATE | DELETE | PURGE));
+Session::checkSeveralRightsOr(array("reservation" => CREATE,
+                                    "reservation" => UPDATE,
+                                    "reservation" => DELETE,
+                                    "reservation" => PURGE));
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = '';

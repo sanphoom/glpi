@@ -413,7 +413,7 @@ class Computer_Item extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID      = $comp->fields['id'];
-      $canedit = $comp->can($ID, (UPDATE | CREATE | DELETE | PURGE));
+      $canedit = $comp->canEdit($ID);
       $rand    = mt_rand();
 
       $datas = array();
@@ -560,7 +560,7 @@ class Computer_Item extends CommonDBRelation{
       if (!$item->can($ID, READ)) {
          return false;
       }
-      $canedit = $item->can($ID, (CREATE | UPDATE | DELETE | PURGE));
+      $canedit = $item->canEdit($ID);
       $rand    = mt_rand();
 
       // Is global connection ?

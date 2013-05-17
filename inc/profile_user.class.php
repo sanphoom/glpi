@@ -102,7 +102,7 @@ class Profile_User extends CommonDBRelation {
          return false;
       }
 
-      $canedit = $user->can($ID, (CREATE | UPDATE | DELETE | PURGE));
+      $canedit = $user->canEdit($ID);
 
       $strict_entities = self::getUserEntities($ID,false);
       if (!Session::haveAccessToOneOfEntities($strict_entities)
@@ -253,7 +253,7 @@ class Profile_User extends CommonDBRelation {
          return false;
       }
 
-      $canedit     = $entity->can($ID, (CREATE | UPDATE | DELETE | PURGE));
+      $canedit     = $entity->canEdit($ID);
       $canshowuser = User::canView();
       $nb_per_line = 3;
       $rand        = mt_rand();

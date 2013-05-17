@@ -230,7 +230,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
          return false;
       }
-      $canedit = $comp->can($ID, (CREATE | UPDATE | DELETE | PURGE));
+      $canedit = $comp->canEdit($ID);
 
       echo "<div class='center'>";
 
@@ -298,7 +298,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
          return false;
       }
-      $canedit = $comp->can($ID, (CREATE | UPDATE | DELETE | PURGE));
+      $canedit = $comp->canEdit($ID);
 
       echo "<div class='spaced center'>";
 

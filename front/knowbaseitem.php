@@ -33,7 +33,8 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array('knowbase' => (READ | KnowbaseItem::READFAQ)));
+Session::checkSeveralRightsOr(array('knowbase' => READ,
+                                    'knowbase' => KnowbaseItem::READFAQ));
 
 if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);

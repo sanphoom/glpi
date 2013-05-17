@@ -1695,6 +1695,28 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Have i right to see action button
+    *
+    * @param $ID   integer   ID to check
+    *
+    * @return booleen
+    **/
+   function canEdit($ID) {
+
+      if ($this->maybeDeleted()) {
+         return ($this->can($ID, CREATE)
+                 || $this->can($ID, UPDATE)
+                 || $this->can($ID, DELETE)
+                 || $this->can($ID, PURGE));
+      } else {
+         return ($this->can($ID, CREATE)
+                 || $this->can($ID, UPDATE)
+                 || $this->can($ID, PURGE));
+      }
+   }
+
+
+   /**
     * Can I change recursive flag to false
     * check if there is "linked" object in another entity
     *
@@ -1921,7 +1943,8 @@ class CommonDBTM extends CommonGLPI {
 
       } else {
          if ($params['candel']
-             && !$this->can($ID, (DELETE | PURGE))) {
+             && !$this->can($ID, DELETE)
+             && !$this->can($ID, PURGE)) {
             $params['candel'] = false;
          }
 
