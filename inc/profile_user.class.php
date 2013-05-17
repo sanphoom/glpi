@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Profile_User class
+/**
+ * Profile_User Class
+**/
 class Profile_User extends CommonDBRelation {
 
    // From CommonDBTM
@@ -420,7 +422,7 @@ class Profile_User extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID      = $prof->fields['id'];
-      $canedit = Session::haveRight("user", (CREATE | UPDATE | DELETE | PURGE));
+      $canedit = Session::haveRightsOr("user", array(CREATE, UPDATE, DELETE, PURGE));
       $rand = mt_rand();
       if (!$prof->can($ID, READ)) {
          return false;

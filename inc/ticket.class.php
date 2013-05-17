@@ -89,7 +89,7 @@ class Ticket extends CommonITILObject {
       if (!self::canUpdate()) {
          $forbidden[] = 'update';
       }
-      if (!Session::haveRight(self::$rightname, (DELETE | PURGE))) {
+      if (!Session::haveRightsOr(self::$rightname, array(DELETE, PURGE))) {
          $forbidden[] = 'delete';
          $forbidden[] = 'purge';
          $forbidden[] = 'restore';
@@ -213,7 +213,8 @@ class Ticket extends CommonITILObject {
 
    static function canUpdate() {
 
-      return Session::haveRight(self::$rightname, (UPDATE | self::ASSIGN | self::STEAL | self::OWN));
+      return Session::haveRightsOr(self::$rightname,
+                                   array(UPDATE, self::ASSIGN, self::STEAL, self::OWN));
    }
 
 
@@ -223,9 +224,9 @@ class Ticket extends CommonITILObject {
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          return true;
       }*/
-      return (Session::haveRight(self::$rightname,
-                                 (self::READALL | self::READMY | UPDATE | self::READASSIGN
-                                  | self::READGROUP | self::OWN))
+      return (Session::haveRightsOr(self::$rightname,
+                                    array(self::READALL, self::READMY, UPDATE, self::READASSIGN,
+                                          self::READGROUP, self::OWN))
               || Session::haveRight('validate_request','1')
               || Session::haveRight('validate_incident','1'));
    }
@@ -242,7 +243,7 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      return (Session::haveRight(self::$rightname, (self::READMY | self::READALL))
+      return (Session::haveRightsOr(self::$rightname, array(self::READMY, self::READALL))
               || ($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
@@ -703,7 +704,7 @@ class Ticket extends CommonITILObject {
 
             // must own_ticket to grab a non assign ticket
             if ($this->countUsers(CommonITILActor::ASSIGN) == 0) {
-               if ((!Session::haveRight(self::$rightname, (self::STEAL | self::OWN)))
+               if ((!Session::haveRightsOr(self::$rightname, array(self::STEAL, self::OWN)))
                    || !isset($input["_itil_assign"]['users_id'])
                    || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
@@ -751,7 +752,7 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'global_validation';
          }
          // Manage assign and steal right
-         if (Session::haveRight(self::$rightname, (self::ASSIGN | self::STEAL))) {
+         if (Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL))) {
             $allowed_fields[] = '_itil_assign';
          }
 
@@ -2305,7 +2306,8 @@ class Ticket extends CommonITILObject {
       $tab[150]['massiveaction']    = false;
 
 
-      if (Session::haveRight(self::$rightname, (self::READALL | self::READASSIGN | self::OWN))) {
+      if (Session::haveRightsOr(self::$rightname,
+                                array(self::READALL, self::READASSIGN, self::OWN))) {
 
          $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
 
@@ -3524,7 +3526,7 @@ class Ticket extends CommonITILObject {
       if (is_numeric(Session::getLoginUserID(false))) {
          $users_id_requester = Session::getLoginUserID();
          // No default requester if own ticket right = tech and update_ticket right to update requester
-         if (Session::haveRight(self::$rightname, (UPDATE | self::OWN))) {
+         if (Session::haveRightsOr(self::$rightname, array(UPDATE, self::OWN))) {
             $users_id_requester = 0;
          }
          $entity      = $_SESSION['glpiactive_entity'];
@@ -4527,13 +4529,13 @@ class Ticket extends CommonITILObject {
       if ((!$ID
            || $canupdate
            || $canupdate_descr
-           || Session::haveRight(self::$rightname, (self::ASSIGN | self::STEAL)))
+           || Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL)))
           && !$options['template_preview']) {
 
          echo "<tr class='tab_bg_1'>";
 
          if ($ID) {
-            if (Session::haveRight(self::$rightname, (UPDATE | DELETE | PURGE))) {
+            if (Session::haveRightsOr(self::$rightname, array(UPDATE, DELETE, PURGE))) {
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   if (self::canPurge()) {
@@ -4621,7 +4623,7 @@ class Ticket extends CommonITILObject {
    static function showCentralList($start, $status="process", $showgrouptickets=true) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight(self::$rightname, (CREATE | self::READALL | self::READASSIGN))
+      if (!Session::haveRightsOr(self::$rightname, array(CREATE, self::READALL, self::READASSIGN))
           && !Session::haveRight("validate_incident","1")
           && !Session::haveRight("validate_request","1")) {
          return false;

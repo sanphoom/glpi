@@ -912,6 +912,44 @@ class Session {
 
 
    /**
+    * Have I all rights of array $rights to module $module (conpare to session variable)
+    *
+    * @param $module           Module to check
+    * @param $rights   array   Rights to check
+    *
+    * @return Boolean : session variable have more than the right specified for the module
+    **/
+   static function haveRightsAnd($module, $rights=array()) {
+
+      foreach ($rights as $right) {
+         if (!Session::haveRight($module, $right)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+
+   /**
+    * Have I one right of array $rights to module $module (conpare to session variable)
+    *
+    * @param $module           Module to check
+    * @param $rights   array   Rights to check
+    *
+    * @return Boolean : session variable have more than the right specified for the module
+    **/
+   static function haveRightsOr($module, $rights=array()) {
+
+      foreach ($rights as $right) {
+         if (Session::haveRight($module, $right)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+
+   /**
     *  Get active Tab for an itemtype
     *
     * @param $itemtype item type

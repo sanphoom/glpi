@@ -176,7 +176,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       foreach (self::$field_right as $right => $fields) {
-         
+
          if (($right == 'entity_helpdesk')) {
             if(Session::haveRight(self::$rightname, self::UPDATEHELPDESK )) {
                foreach ($fields as $field) {
@@ -292,7 +292,8 @@ class Entity extends CommonTreeDropdown {
                if (Notification::canView()) {
                   $ong[4] = _n('Notification', 'Notifications',2);
                }
-               if (Session::haveRight(self::$rightname, (self::READHELPDESK | self::UPDATEHELPDESK))) {
+               if (Session::haveRightsOr(self::$rightname,
+                                         array(self::READHELPDESK, self::UPDATEHELPDESK))) {
                   $ong[5] = __('Assistance');
                }
                $ong[6] = __('Assets');
@@ -1656,7 +1657,8 @@ class Entity extends CommonTreeDropdown {
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)
-          || !Session::haveRight(self::$rightname, (self::READHELPDESK | self::UPDATEHELPDESK))) {
+          || !Session::haveRightsOr(self::$rightname,
+                                    array(self::READHELPDESK, self::UPDATEHELPDESK))) {
          return false;
       }
       $canedit = (Session::haveRight(self::$rightname, self::UPDATEHELPDESK)

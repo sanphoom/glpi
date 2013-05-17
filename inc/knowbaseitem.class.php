@@ -70,14 +70,14 @@ class KnowbaseItem extends CommonDBTM {
 
    static function canCreate() {
 
-      return (Session::haveRight(self::$rightname, (CREATE | self::PUBLISHFAQ)));
+      return Session::haveRightsOr(self::$rightname, array(CREATE, self::PUBLISHFAQ));
    }
 
 
    static function canView() {
       global $CFG_GLPI;
 
-      return (Session::haveRight(self::$rightname, (READ | self::READFAQ))
+      return (Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))
               || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
    }
 
@@ -93,7 +93,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       if ($this->fields["is_faq"]) {
-         return ((Session::haveRight(self::$rightname, (READ | self::READFAQ))
+         return ((Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))
                   && $this->haveVisibilityAccess())
                  || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
       }
@@ -326,7 +326,7 @@ class KnowbaseItem extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public knowbaseitem right : no visibility check
-      if (!Session::haveRight(self::$rightname, (self::READFAQ | READ))) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::READFAQ, READ))) {
          return false;
       }
 
@@ -560,7 +560,7 @@ class KnowbaseItem extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       // show kb item form
-      if (!Session::haveRight(self::$rightname, (UPDATE | self::PUBLISHFAQ))) {
+      if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
          return false;
       }
 
@@ -777,7 +777,7 @@ class KnowbaseItem extends CommonDBTM {
    function searchForm($options) {
       global $CFG_GLPI;
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRight(self::$rightname, (READ | self::READFAQ))) {
+          && !Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))) {
          return false;
       }
 
@@ -825,7 +825,7 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRight(self::$rightname, (READ | self::READFAQ))) {
+          && !Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))) {
          return false;
       }
 
@@ -873,7 +873,7 @@ class KnowbaseItem extends CommonDBTM {
    function showManageForm($options) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight(self::$rightname, (UPDATE | self::PUBLISHFAQ))) {
+      if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
          return false;
       }
       $params['unpublished'] = 'my';
@@ -1059,7 +1059,7 @@ class KnowbaseItem extends CommonDBTM {
       $ki = new self();
       switch ($type) {
          case 'myunpublished' :
-            if (!Session::haveRight(self::$rightname, (UPDATE | self::PUBLISHFAQ))) {
+            if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
                return false;
             }
             break;

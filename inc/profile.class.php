@@ -357,7 +357,7 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
-          & !Session::haveRight("ticket", CREATE | Ticket::READGROUP)) {
+          & !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
          return false;
       }
 
@@ -412,7 +412,7 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
-          & !Session::haveRight("ticket", CREATE | Ticket::READGROUP)) {
+          & !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
          return false;
       }
 
@@ -617,7 +617,7 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
-      if ($canedit = Session::haveRight(self::$rightname, (CREATE | UPDATE | PURGE))) {
+      if ($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE))) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -744,7 +744,8 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
-      if (($canedit = Session::haveRight(self::$rightname, (UPDATE | CREATE | PURGE))) && $openform) {
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(UPDATE, CREATE, PURGE)))
+          && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -842,7 +843,7 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
-      if (($canedit = Session::haveRight(self::$rightname, (UPDATE | CREATE | PURGE)))
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(UPDATE, CREATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
@@ -949,7 +950,7 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
-      if (($canedit = Session::haveRight(self::$rightname, (CREATE | UPDATE | PURGE)))
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
@@ -1194,7 +1195,7 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      if (($canedit = Session::haveRight(self::$rightname, (CREATE | UPDATE | PURGE)))
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
@@ -1316,7 +1317,7 @@ class Profile extends CommonDBTM {
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRight(self::$rightname, (CREATE | UPDATE | PURGE)))
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
@@ -1452,7 +1453,7 @@ class Profile extends CommonDBTM {
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRight(self::$rightname, (CREATE | UPDATE | PURGE)))
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }

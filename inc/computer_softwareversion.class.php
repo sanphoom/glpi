@@ -292,7 +292,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          return false;
       }
 
-      $canedit         = Session::haveRight("software", (CREATE | UPDATE | DELETE | PURGE));
+      $canedit         = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
       $canshowcomputer = Computer::canView();
 
       if (isset($_GET["start"])) {
@@ -640,7 +640,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $computers_id = $comp->getField('id');
       $rand         = mt_rand();
-      $canedit      = Session::haveRight("software", (CREATE | UPDATE | DELETE | PURGE));
+      $canedit      = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
       $entities_id  = $comp->fields["entities_id"];
 
       $crit         = Session::getSavedOption(__CLASS__, 'criterion', -1);
