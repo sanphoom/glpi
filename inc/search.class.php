@@ -4908,8 +4908,8 @@ class Search {
 
       // do not show priority if you don't have right in profile
       If (($itemtype == 'Ticket')
-          && ($action == 'w')
-          && !Session::haveRight('update_priority', 1)) {
+          && ($action == UPDATE)
+          && !Session::haveRight('ticket', Ticket::CHANGEPRIORITY)) {
          $todel[] = 3;
       }
 

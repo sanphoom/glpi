@@ -1026,9 +1026,6 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Change the priority')."</td><td>";
-      Dropdown::showYesNo("update_priority", $this->fields["update_priority"]);
-      echo "</td>";
       echo "<td>".__('Edit all tasks')."</td><td>";
       Dropdown::showYesNo("update_tasks", $this->fields["update_tasks"]);
       echo "</td></tr>\n";
@@ -2121,14 +2118,14 @@ class Profile extends CommonDBTM {
       $tab[95]['datatype']       = 'bool';
       $tab[95]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'global_add_tasks'");
-
+/*
       $tab[96]['table']          = 'glpi_profilerights';
       $tab[96]['field']          = 'right';
       $tab[96]['name']           = __('Change the priority');
       $tab[96]['datatype']       = 'bool';
       $tab[96]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'update_priority'");
-
+*/
       $tab[97]['table']          = 'glpi_profilerights';
       $tab[97]['field']          = 'right';
       $tab[97]['name']           = __('Edit all tasks');

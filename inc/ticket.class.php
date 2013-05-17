@@ -73,13 +73,14 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
-   const READMY     =     1;
-   const READALL    =  1024;
-   const READGROUP  =  2048;
-   const READASSIGN =  4096;
-   const ASSIGN     =  8192;
-   const STEAL      = 16384;
-   const OWN        = 32768;
+   const READMY           =     1;
+   const READALL          =  1024;
+   const READGROUP        =  2048;
+   const READASSIGN       =  4096;
+   const ASSIGN           =  8192;
+   const STEAL            = 16384;
+   const OWN              = 32768;
+   const CHANGEPRIORITY   = 65536;
 
 
    function getForbiddenStandardMassiveAction() {
@@ -3818,7 +3819,7 @@ class Ticket extends CommonITILObject {
       $values['_tickettemplate'] = $tt;
 
       $canupdate                 = Session::haveRight(self::$rightname, UPDATE);
-      $canpriority               = Session::haveRight('update_priority', '1');
+      $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
       $canstatus                 = $canupdate;
 
       if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
@@ -6031,11 +6032,12 @@ class Ticket extends CommonITILObject {
       $values[self::READMY]    = __('See my ticket');
       $values[self::READGROUP] =  __('See tickets created by my groups');
       if ($interface == 'central') {
-         $values[self::READALL]    = __('See all tickets');
-         $values[self::READASSIGN] = __('See assigned tickets (group associated)');
-         $values[self::ASSIGN]     = __('Assign a ticket');
-         $values[self::STEAL]      = __('Steal a ticket');
-         $values[self::OWN]        = __('To be in charge of a ticket');
+         $values[self::READALL]        = __('See all tickets');
+         $values[self::READASSIGN]     = __('See assigned tickets (group associated)');
+         $values[self::ASSIGN]         = __('Assign a ticket');
+         $values[self::STEAL]          = __('Steal a ticket');
+         $values[self::OWN]            = __('To be in charge of a ticket');
+         $values[self::CHANGEPRIORITY] = __('Change the priority');
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);

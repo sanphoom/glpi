@@ -343,7 +343,6 @@ function update084to085() {
                        AND `name` = 'entity'";
          $DB->queryOrDie($query, "0.85 update user with write entity_helpdesk right");
    }
-
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'entity_helpdesk'";
@@ -364,6 +363,7 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'reservation_helpdesk'";
    $DB->queryOrDie($query, "0.85 delete reservation_helpdesk right");
+
 
    // rename reservation_central
    $query  = "UPDATE `glpi_profilerights`
@@ -514,6 +514,22 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'own_ticket'";
    $DB->queryOrDie($query, "0.85 delete own_ticket right");
+
+
+   // delete update_priority
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'update_priority' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Ticket::CHANGEPRIORITY ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'ticket'";
+         $DB->queryOrDie($query, "0.85 update ticket with update_priority right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'update_priority'";
+   $DB->queryOrDie($query, "0.85 delete update_priority right");
 
 
    // don't drop column right  - be done later
