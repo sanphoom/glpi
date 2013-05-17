@@ -39,7 +39,7 @@ Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "confi
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>&nbsp;" . __('External authentications') . "</th></tr>";
-if (Session::haveRight("config","w")) {
+if (Session::haveRight("config", UPDATE)) {
    echo "<tr class='tab_bg_1'><td class='center b'>".
         "<a href='auth.settings.php'>" .__('Setup')."</a></td></tr>";
 }

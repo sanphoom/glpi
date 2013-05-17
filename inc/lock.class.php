@@ -392,7 +392,9 @@ class Lock {
    **/
    static function getUnlockMassiveActions($itemtype) {
 
-      if (Session::haveRight('computer',UPDATE) && ($itemtype == 'Computer')) {
+      if (Session::haveRight('computer', UPDATE)
+          && ($itemtype == 'Computer')) {
+
          return array("unlock_Monitor"                => __('Unlock monitors'),
                       "unlock_Peripheral"             => __('Unlock peripherals'),
                       "unlock_Printer"                => __('Unlock printers'),
@@ -402,8 +404,7 @@ class Lock {
                       "unlock_IPAddress"              => __('Unlock IP addresses'),
                       "unlock_ComputerDisk"           => __('Unlock volumes'),
                       "unlock_Device"                 => __('Unlock devices'),
-                      "unlock_ComputerVirtualMachine" => __('Unlock virtual machines')
-                     );
+                      "unlock_ComputerVirtualMachine" => __('Unlock virtual machines'));
       }
       return array();
    }

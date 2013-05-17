@@ -34,10 +34,10 @@
 include ('../inc/includes.php');
 
 Session::checkCentralAccess();
-Session::checkSeveralRightsOr(array("reservation" => CREATE,
-                                    "reservation" => UPDATE,
-                                    "reservation" => DELETE,
-                                    "reservation" => PURGE));
+if (!Session::haveRightsOr('reservation', array(CREATE, UPDATE, DELETE, PURGE))) {
+   self::redirectIfNotLoggedIn();
+   Html::displayRightError();
+}
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = '';

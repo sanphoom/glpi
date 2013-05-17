@@ -664,7 +664,7 @@ class Document extends CommonDBTM {
          $actions['add_document_item']    = _x('button', 'Add an item');
          $actions['remove_document_item'] = _x('button', 'Remove an item');
       }
-      if (Session::haveRight('transfer','r')
+      if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()
           && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
@@ -1106,7 +1106,7 @@ class Document extends CommonDBTM {
       if (empty($dir)) {
          $message = __('Unauthorized file type');
 
-         if (Session::haveRight('dropdown','r')) {
+         if (Session::haveRight('dropdown', READ)) {
             $dt       = new DocumentType();
             $message .= " <a target='_blank' href='".$dt->getSearchURL()."'>
                          <img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\"></a>";

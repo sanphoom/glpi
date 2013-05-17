@@ -737,6 +737,8 @@ class Session {
    /**
     * Check if I have one of the right specified
     *
+    * You can't use this function if several rights for same module name
+    *
     * @param $modules array of modules where keys are modules and value are right
     *
     * @return Nothing : display error if not permit

@@ -348,7 +348,7 @@ class Peripheral extends CommonDBTM {
          $actions['connect']    = _x('button', 'Connect');
          $actions['disconnect'] = _x('button', 'Disconnect');
       }
-      if (Session::haveRight('transfer','r')
+      if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()
           && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');

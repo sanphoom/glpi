@@ -33,8 +33,8 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array('rule_dictionnary_dropdown' => 'r',
-                                    'rule_dictionnary_software' => 'r'));
+Session::checkSeveralRightsOr(array('rule_dictionnary_dropdown' => READ,
+                                    'rule_dictionnary_software' => READ));
 
 Html::header(__('Administration'), $_SERVER['PHP_SELF'], "admin", "dictionnary", -1);
 
@@ -45,16 +45,16 @@ echo "<tr><th colspan='4'>" . __('Dictionaries') . "</th></tr>";
 echo "<tr class='tab_bg_1'><td class='top'><table class='tab_cadre'>";
 echo "<tr><th>".__('Global dictionary')."</th></tr>";
 
-if (Session::haveRight("rule_dictionnary_software","r")) {
+if (Session::haveRight("rule_dictionnary_software", READ)) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href=\"ruledictionnarysoftware.php\">" . _n('Software','Software',2) ."</a></td></tr>";
 }
-if (Session::haveRight("rule_dictionnary_dropdown","r")) {
+if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href=\"ruledictionnarymanufacturer.php\">" . _n('Manufacturer','Manufacturers',2) .
         "</a></td></tr>";
 }
-if (Session::haveRight("rule_dictionnary_printer","r")) {
+if (Session::haveRight("rule_dictionnary_printer", READ)) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href=\"ruledictionnaryprinter.php\">" . _n('Printer','Printers',2) ."</a></td></tr>";
 }
@@ -62,7 +62,7 @@ if (Session::haveRight("rule_dictionnary_printer","r")) {
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
-if (Session::haveRight("rule_dictionnary_dropdown","r")) {
+if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
    echo "<tr><th>"._n('Model','Models',2)."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnarycomputermodel.php'>" . _n('Computer model','Computer models',2) .
@@ -87,7 +87,7 @@ if (Session::haveRight("rule_dictionnary_dropdown","r")) {
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
-if (Session::haveRight("rule_dictionnary_dropdown","r")) {
+if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
    echo "<tr><th>"._n('Type','Types',2)."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnarycomputertype.php'>" . _n('Computer type','Computer types',2) .
@@ -112,7 +112,7 @@ if (Session::haveRight("rule_dictionnary_dropdown","r")) {
 echo "</table></td>";
 
 echo "<td class='top'><table class='tab_cadre'>";
-if (Session::haveRight("rule_dictionnary_dropdown","r")) {
+if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
    echo "<tr><th>"._n('Operating system','Operating systems',2)."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnaryoperatingsystem.php'>".

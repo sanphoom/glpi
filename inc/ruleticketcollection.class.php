@@ -74,7 +74,7 @@ class RuleTicketCollection extends RuleCollection {
     * @see RuleCollection::showInheritedTab()
    **/
    function showInheritedTab() {
-      return (Session::haveRight('rule_ticket','r') && ($this->entity));
+      return (Session::haveRight('rule_ticket', READ) && ($this->entity));
    }
 
 
@@ -82,7 +82,7 @@ class RuleTicketCollection extends RuleCollection {
     * @see RuleCollection::showChildrensTab()
    **/
    function showChildrensTab() {
-      return (Session::haveRight('rule_ticket','r')
+      return (Session::haveRight('rule_ticket', READ)
               && (count($_SESSION['glpiactiveentities']) > 1));
    }
 

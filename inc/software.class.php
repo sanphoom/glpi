@@ -316,12 +316,12 @@ class Software extends CommonDBTM {
          $actions['compute_software_category'] = __('Recalculate the category');
       }
 
-      if (Session::haveRight("rule_dictionnary_software","w")
+      if (Session::haveRightsOr("rule_dictionnary_software", array(CREATE, UPDATE))
            && (countElementsInTable("glpi_rules", "sub_type='RuleDictionnarySoftware'") > 0)) {
          $actions['replay_dictionnary'] = __('Replay the dictionary rules');
       }
 
-      if (Session::haveRight('transfer','r')
+      if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()
           && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');

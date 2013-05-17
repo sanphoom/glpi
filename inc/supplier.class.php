@@ -186,7 +186,7 @@ class Supplier extends CommonDBTM {
       if ($isadmin) {
          $actions['add_contact_supplier'] = _x('button', 'Add a contact');
       }
-      if (Session::haveRight('transfer','r')
+      if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()
           && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');

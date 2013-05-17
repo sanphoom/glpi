@@ -33,8 +33,10 @@
 
 include ('../inc/includes.php');
 
-Session::checkSeveralRightsOr(array("reservation" => READ,
-                                    "reservation" => ReservationItem::RESERVEANITEM));
+if (!Session::haveRightsOr('reservation', array(READ, ReservationItem::RESERVEANITEM))) {
+   self::redirectIfNotLoggedIn();
+   Html::displayRightError();
+}
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);

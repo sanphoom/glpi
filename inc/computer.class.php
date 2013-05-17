@@ -633,7 +633,7 @@ class Computer extends CommonDBTM {
          $actions['install'] = _x('button', 'Install');
       }
 
-      if (Session::haveRight('transfer','r')
+      if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()
           && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');

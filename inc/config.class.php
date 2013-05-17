@@ -413,7 +413,8 @@ class Config extends CommonDBTM {
 
       echo "</table>";
 
-      if (Session::haveRight("transfer","w") && Session::isMultiEntitiesMode()) {
+      if (Session::haveRightsOr("transfer", array(CREATE, UPDATE))
+          && Session::isMultiEntitiesMode()) {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . __('Automatic transfer of computers') . "</th></tr>";
          echo "<tr class='tab_bg_2'>";
