@@ -51,9 +51,9 @@ if (isset($_POST['value']) && ($_POST['value'] > 0)) {
       echo $template->getField('content');
       echo "</textarea>\n";
       echo "<script type='text/javascript'>".
-                  Html::jsSetDropdownValue($_POST["type_id"],
-                                          $template->getField('solutiontypes_id'))
-                     ."</script>";
+               Html::jsSetDropdownValue($_POST["type_id"],
+                                        $template->getField('solutiontypes_id')).
+           "</script>";
    }
 
 } else {

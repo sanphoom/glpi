@@ -569,8 +569,8 @@ class KnowbaseItem extends CommonDBTM {
 
       // Load ticket solution
       if (empty($ID)
-            && isset($options['item_itemtype']) && !empty($options['item_itemtype'])
-            && isset($options['item_items_id']) && !empty($options['item_items_id'])) {
+          && isset($options['item_itemtype']) && !empty($options['item_itemtype'])
+          && isset($options['item_items_id']) && !empty($options['item_items_id'])) {
 
          if ($item = getItemForItemtype($options['item_itemtype'])) {
             if ($item->getFromDB($options['item_items_id'])) {
@@ -753,7 +753,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<span class='red'>".__('Unpublished')."</span><br>";
       }
 
-      echo sprintf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
+      printf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
       echo "<br>";
       if ($this->fields["is_faq"]) {
          _e('This item is part of the FAQ');

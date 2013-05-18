@@ -146,6 +146,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                $res['ko']++;
             }
             break;
+
          case "install" :
             $csl = new self();
             $csv = new Computer_SoftwareVersion();
@@ -163,8 +164,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                         }
 
                         if ($version > 0) {
-                           $params = array('computers_id'       => $csl->fields['computers_id'],
-                                          'softwareversions_id' => $version);
+                           $params = array('computers_id'        => $csl->fields['computers_id'],
+                                           'softwareversions_id' => $version);
                            //Get software name and manufacturer
                            if ($csv->can(-1,'w', $params)) {
                               //Process rules

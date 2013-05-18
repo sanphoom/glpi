@@ -734,11 +734,14 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * Print the Asset right form for the current profile
+    * Print the Asset rights form for the current profile
+    *
+    * @since version 0.85
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)
-    **/
+    *
+   **/
    function showFormAsset($openform=true, $closeform=true) {
 
       if (!self::canView()) {
@@ -833,7 +836,7 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * Print the Inventory/Management/Toolsd right form for the current profile
+    * Print the Management/Tools rights form for the current profile
     *
     * @param $openform  boolean open the form (true by default)
     * @param $closeform boolean close the form (true by default)

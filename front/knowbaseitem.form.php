@@ -77,6 +77,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $kb->redirectToList();
+
 } else if (isset($_POST["addvisibility"])) {
    if (isset($_POST["_type"]) && !empty($_POST["_type"])
        && isset($_POST["knowbaseitems_id"]) && $_POST["knowbaseitems_id"]) {
@@ -124,7 +125,7 @@ if (isset($_POST["add"])) {
       Html::popFooter();
    } else {
       // modifier un item dans la base de connaissance
-      $kb->check($_GET["id"], READ);
+      $kb->check($_GET["id"], UPDATE);
 
       Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
       $available_options = array('item_itemtype', 'item_items_id', 'id');

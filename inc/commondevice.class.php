@@ -36,7 +36,10 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-// CommonDevice Class for Device*class
+/**
+ * CommonDevice Class
+ * for Device*class
+*/
 abstract class CommonDevice extends CommonDropdown {
 
 
@@ -272,6 +275,7 @@ abstract class CommonDevice extends CommonDropdown {
                case 'equal':
                   $where[] = "`".$field."`='".$input[$field]."'";
                   break;
+
                case 'delta':
                   $where[] = "`".$field."`>'".($input[$field] - $compare[1])."'";
                   $where[] = "`".$field."`<'".($input[$field] + $compare[1])."'";
@@ -299,6 +303,7 @@ abstract class CommonDevice extends CommonDropdown {
     * @since version 0.84
    **/
    function getImportCriteria() {
+
       return array('designation'      => 'equal',
                    'manufacturers_id' => 'equal');
    }

@@ -624,10 +624,8 @@ class RSSFeed extends CommonDBTM {
       // Test _rss cache directory. I permission trouble : unable to edit
       if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
          echo "<div class='center'>";
-         echo sprintf(__('Check permissions to the directory: %s'), GLPI_RSS_DIR);
-         echo "<p class='red b'>";
-         _e('Error');
-         echo "</p>";
+         printf(__('Check permissions to the directory: %s'), GLPI_RSS_DIR);
+         echo "<p class='red b'>".__('Error')."</p>";
          echo "</div>";
          return false;
       }

@@ -143,7 +143,8 @@ if ($item instanceof CommonTreeDropdown) {
    $add_order = "";
 
    // No multi if get one item
-   if ($item->isEntityAssign() && $one_item < 0) {
+   if ($item->isEntityAssign()
+       && ($one_item < 0)) {
       $recur = $item->maybeRecursive();
 
        // Entities are not really recursive : do not display parents
@@ -253,7 +254,8 @@ if ($item instanceof CommonTreeDropdown) {
 
             } else { // Need to check if parent is the good one
                      // Do not do if only get one item
-               if ($level > 1 && $one_item < 0) {
+               if (($level > 1)
+                   && ($one_item < 0)) {
                   // Last parent is not the good one need to display arbo
                   if (!isset($last_level_displayed[$level-1])
                       || ($last_level_displayed[$level-1] != $data[$item->getForeignKeyField()])) {
@@ -336,7 +338,8 @@ if ($item instanceof CommonTreeDropdown) {
    $multi = false;
 
    // No multi if get one item
-   if ($item->isEntityAssign() && $one_item < 0) {
+   if ($item->isEntityAssign()
+       && ($one_item < 0)) {
       $multi = $item->maybeRecursive();
 
       if (isset($_GET["entity_restrict"]) && !($_GET["entity_restrict"] < 0)) {

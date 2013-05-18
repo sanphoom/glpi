@@ -1596,10 +1596,13 @@ class Dropdown {
       if ($param["multiple"]) {
          $select   = __('All');
          $deselect = __('None');
-         $output .= "<div class='invisible' id='selectall_$field_id'>";
-         $output .= "<a class='vsubmit floatleft' onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select</a> ";
-         $output .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect</a></div>";
-         $output .= "<script type='text/javascript'>\n";
+         $output  .= "<div class='invisible' id='selectall_$field_id'>";
+         $output  .= "<a class='vsubmit floatleft' ".
+                      "onclick=\"selectAll('$field_id');$('#$field_id').select2('close');\">$select".
+                     "</a> ";
+         $output  .= "<a class='vsubmit floatright' onclick=\"deselectAll('$field_id');\">$deselect".
+                     "</a></div>";
+         $output  .= "<script type='text/javascript'>\n";
 
          /// TODO : try to find a cleaner solution : remove / add each time is not so good
          $output .= "$('#$field_id').on('open', function() {
@@ -1616,6 +1619,7 @@ class Dropdown {
       }
       return $output;
    }
+
 
    /**
     * Dropdown for global item management

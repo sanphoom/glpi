@@ -2806,7 +2806,7 @@ class User extends CommonDBTM {
     * @param $value                    default value (default 0)
     * @param $used             array   Already used items ID: not to display in dropdown
     * @param $search                   pattern (default '')
-    * @param $start                    start LIMIT value
+    * @param $start                    start LIMIT value (default 0)
     * @param $limit                    limit LIMIT value (default -1 no limit)
     *
     * @return mysql result set.

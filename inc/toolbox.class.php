@@ -409,9 +409,9 @@ class Toolbox {
 
       $msg = "";
       if (function_exists('debug_backtrace')) {
-         $bt=debug_backtrace();
+         $bt  = debug_backtrace();
          $msg = '  From ';
-         if (count($bt)>1) {
+         if (count($bt) > 1) {
             if (isset($bt[1]['class'])) {
                $msg .= $bt[1]['class'].'::';
             }
@@ -422,7 +422,7 @@ class Toolbox {
 
       if ($tps && function_exists('memory_get_usage')) {
          $msg .= ' ('.number_format(microtime(true)-$tps,3).'", '.
-                 number_format(memory_get_usage()/1024/1024,2).'Mio)';
+                      number_format(memory_get_usage()/1024/1024,2).'Mio)';
       }
       $msg .= "\n  ";
 
@@ -446,10 +446,10 @@ class Toolbox {
    /**
     * Generate a Backtrace
     *
-    * @param $log    String log file name (default php-errors)
-    *                       if false, return the strung
-    * @param $hide   String call to hide (but display script/line)
-    * @param $skip   Array  of call to not display at all
+    * @param $log    String    log file name (default php-errors)
+    *                          if false, return the strung
+    * @param $hide   String    call to hide (but display script/line) (default '')
+    * @param $skip   Array     of call to not display at all
     *
     * @since 0.85
     *
@@ -492,6 +492,7 @@ class Toolbox {
          return $message;
       }
    }
+
 
    /**
     * Log a message in log file
