@@ -64,6 +64,10 @@ if (!isset($_GET['value'])) {
    $_GET['value'] = '';
 }
 
+if (!isset($_GET['permit_select_parent'])) {
+   $_GET['permit_select_parent'] = false;
+}
+
 if (isset($_GET['condition']) && !empty($_GET['condition'])) {
    $_GET['condition'] = rawurldecode(stripslashes($_GET['condition']));
 }
@@ -181,17 +185,13 @@ if ($item instanceof CommonTreeDropdown) {
       if ($multi) {
          $add_order = '`entities_id`, ';
       }
-
    }
-
-
 
    $query = "SELECT *
              FROM `$table`
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
-
    if ($result = $DB->query($query)) {
 
       if ($_GET['page'] == 1) {
@@ -277,10 +277,14 @@ if ($item instanceof CommonTreeDropdown) {
                               }
                               $output2 = $item->getName();
 
-                              array_push($datastoadd, array ('id'      => $ID,
-                                                            'text'     => $output2,
-                                                            'level'    => $work_level,
-                                                            'disabled' => true));
+                              $temp = array ('id'      => $ID,
+                                             'text'     => $output2,
+                                             'level'    => $work_level,
+                                             'disabled' => true);
+                              if ($_GET['permit_select_parent']) {
+                                 unset($temp['disabled']);
+                              }
+                              array_push($datastoadd, $temp);
                            }
                            $last_level_displayed[$work_level] = $item->fields['id'];
                            $work_level--;

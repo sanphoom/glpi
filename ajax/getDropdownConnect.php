@@ -47,7 +47,6 @@ if (!isset($_GET['fromtype']) || !($fromitem = getItemForItemtype($_GET['fromtyp
 }
 
 $fromitem->checkGlobal('w');
-Toolbox::logDebug($_GET);
 $used = array();
 if (isset( $_GET["used"])) {
    $used = $_GET["used"];

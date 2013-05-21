@@ -80,25 +80,26 @@ class Dropdown {
 
       $table = $item->getTable();
 
-      $params['name']        = $item->getForeignKeyField();
-      $params['value']       = (($itemtype == 'Entity') ? $_SESSION['glpiactive_entity'] : '');
-      $params['comments']    = true;
-      $params['entity']      = -1;
-      $params['entity_sons'] = false;
-      $params['toupdate']    = '';
-      $params['width']       = '80%';
-      $params['used']        = array();
-      $params['toadd']       = array();
-      $params['on_change']   = '';
-      $params['condition']   = '';
-      $params['rand']        = mt_rand();
-      $params['displaywith'] = array();
+      $params['name']                 = $item->getForeignKeyField();
+      $params['value']                = (($itemtype == 'Entity') ? $_SESSION['glpiactive_entity'] : '');
+      $params['comments']             = true;
+      $params['entity']               = -1;
+      $params['entity_sons']          = false;
+      $params['toupdate']             = '';
+      $params['width']                = '80%';
+      $params['used']                 = array();
+      $params['toadd']                = array();
+      $params['on_change']            = '';
+      $params['condition']            = '';
+      $params['rand']                 = mt_rand();
+      $params['displaywith']          = array();
       //Parameters about choice 0
       //Empty choice's label
-      $params['emptylabel'] = self::EMPTY_VALUE;
+      $params['emptylabel']           = self::EMPTY_VALUE;
       //Display emptychoice ?
-      $params['display_emptychoice'] = ($itemtype != 'Entity');
-      $params['display']        = true;
+      $params['display_emptychoice']  = ($itemtype != 'Entity');
+      $params['display']              = true;
+      $params['permit_select_parent'] = false;
 
 
       if (is_array($options) && count($options)) {
@@ -161,19 +162,20 @@ class Dropdown {
 
       $field_id = Html::cleanId("dropdown_".$params['name'].$params['rand']);
 
-      $p = array('value'               => $params['value'],
-                 'valuename'           => $name,
-                 'width'               => $params['width'],
-                 'itemtype'            => $itemtype,
-                 'display_emptychoice' => $params['display_emptychoice'],
-                 'displaywith'         => $params['displaywith'],
-                 'emptylabel'          => $params['emptylabel'],
-                 'condition'           => $params['condition'],
-                 'used'                => $params['used'],
-                 'toadd'               => $params['toadd'],
-                 'entity_restrict'     => $params['entity'],
-                 'limit'               => $limit_length,
-                 'on_change'           => $params['on_change'],
+      $p = array('value'                => $params['value'],
+                 'valuename'            => $name,
+                 'width'                => $params['width'],
+                 'itemtype'             => $itemtype,
+                 'display_emptychoice'  => $params['display_emptychoice'],
+                 'displaywith'          => $params['displaywith'],
+                 'emptylabel'           => $params['emptylabel'],
+                 'condition'            => $params['condition'],
+                 'used'                 => $params['used'],
+                 'toadd'                => $params['toadd'],
+                 'entity_restrict'      => $params['entity'],
+                 'limit'                => $limit_length,
+                 'on_change'            => $params['on_change'],
+                 'permit_select_parent' => $params['permit_select_parent'],
                 );
       $output = Html::jsAjaxDropdown($params['name'], $field_id,
                                      $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",

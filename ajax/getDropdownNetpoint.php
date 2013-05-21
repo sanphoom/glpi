@@ -96,7 +96,6 @@ $query = "SELECT `glpi_netpoints`.`comment` AS comment,
           FROM `glpi_netpoints`
           LEFT JOIN `glpi_locations` ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`) ";
 
-          Toolbox::logDebug($_GET);
 if (isset($_GET["devtype"]) && !empty($_GET["devtype"])) {
    $query .= "LEFT JOIN `glpi_networkportethernets`
                   ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)
