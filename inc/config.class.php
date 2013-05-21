@@ -277,10 +277,10 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __("translate dropdowns") . "&nbsp;:</td><td>";
+      echo "<td>" . __("Dropdown translation") . "&nbsp;:</td><td>";
       Dropdown::showYesNo("translate_dropdowns", $CFG_GLPI["translate_dropdowns"]);
       echo "</td>";
-      echo "<td>" . __("translate Knowledge base") . "&nbsp;:</td><td>";
+      echo "<td>" . __("Knowledge base translation") . "&nbsp;:</td><td>";
       Dropdown::showYesNo("translate_kb", $CFG_GLPI["translate_kb"]);
       echo "</td>";
       echo "</tr>";
