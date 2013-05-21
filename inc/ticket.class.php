@@ -2038,8 +2038,8 @@ class Ticket extends CommonITILObject {
       $tab[7]['name']               = __('Category');
       $tab[7]['datatype']           = 'dropdown';
       if (!Session::isCron() // no filter for cron
-          && (!isset($_SESSION['glpiactiveprofile']['interface'])
-              || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
+          && isset($_SESSION['glpiactiveprofile']['interface'])
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tab[7]['condition']       = "`is_helpdeskvisible`='1'";
       }
 
@@ -2527,7 +2527,7 @@ class Ticket extends CommonITILObject {
       if (!Session::isCron() // no filter for cron
           && (!isset($_SESSION['glpiactiveprofile']['interface'])
               || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
-         $tokeep = array('common');
+         $tokeep = array('common', 'requester');
          if (Session::haveRight('validate_request',1)
              || Session::haveRight('validate_incident',1)
              || Session::haveRight('create_incident_validation',1)
