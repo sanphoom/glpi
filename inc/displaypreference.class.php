@@ -316,7 +316,8 @@ class DisplayPreference extends CommonDBTM {
                $group = $val;
 
             } else if (($key != 1)
-                       && !in_array($key,$already_added)) {
+                       && !in_array($key,$already_added)
+                       && (!isset($val['nodisplay']) || !$val['nodisplay'])) {
                $values[$group][$key] = $val["name"];
             }
          }
@@ -462,7 +463,8 @@ class DisplayPreference extends CommonDBTM {
             if (!is_array($val)) {
                $group = $val;
             } else if (($key != 1)
-                       && !in_array($key,$already_added)) {
+                       && !in_array($key,$already_added)
+                       && (!isset($val['nodisplay']) || !$val['nodisplay'])) {
                $values[$group][$key] = $val["name"];
             }
          }

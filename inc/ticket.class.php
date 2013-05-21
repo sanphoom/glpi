@@ -146,7 +146,7 @@ class Ticket extends CommonITILObject {
    **/
    static function getAdditionalMenuContent() {
 
-      if (self::canCreate()) {
+      if (static::canCreate()) {
          $menu['create_ticket']['title']    = __('Create ticket');
          $menu['create_ticket']['page']     = static::getFormURL(false);
          return $menu;
@@ -2095,6 +2095,7 @@ class Ticket extends CommonITILObject {
       $tab[142]['forcegroupby']  = true;
       $tab[142]['usehaving']     = true;
       $tab[142]['nosearch']      = true;
+      $tab[142]['nodisplay']     = true;
       $tab[142]['datatype']      = 'dropdown';
       $tab[142]['massiveaction'] = false;
       $tab[142]['joinparams']    = array('jointype' => 'items_id',
