@@ -92,9 +92,9 @@ if (isset($_POST["add"])) {
       Html::back();
    }
 
-} else if (isset($_POST["delete"])) {
-   $np->check($_POST['id'], DELETE);
-   $np->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $np->check($_POST['id'], PURGE);
+   $np->delete($_POST, 1);
    Event::log($_POST['id'], "networkport", 5, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

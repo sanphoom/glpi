@@ -377,7 +377,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($event=='satisfaction') {
          $this->addTarget(Notification::AUTHOR, __('Requester'));
          $this->addTarget(Notification::RECIPIENT, __('Writer'));
-
       } else if ($event!='alertnotclosed') {
          $this->addTarget(Notification::RECIPIENT, __('Writer'));
          $this->addTarget(Notification::SUPPLIER, __('Supplier'));

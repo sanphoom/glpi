@@ -48,10 +48,9 @@ if (isset($_POST["add"])) {
    // We need to redirect to form to enter rights
    Html::redirect($CFG_GLPI["root_doc"]."/front/profile.form.php?id=$ID");
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $prof->check($_POST['id'], PURGE);
-   //TODO purge
-   if ($prof->delete($_POST)) {
+   if ($prof->delete($_POST, 1)) {
       $prof->redirectToList();
    } else {
       Html::back();

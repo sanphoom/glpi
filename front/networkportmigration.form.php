@@ -43,10 +43,9 @@ if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
 
-if (isset($_POST["delete"])) {
+if (isset($_POST["purge"])) {
    $np->check($_POST['id'], PURGE);
-   //TODO no field is_deleted => purge
-   $np->delete($_POST);
+   $np->delete($_POST, 1);
    Event::log($_POST['id'], "networkport", 5, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

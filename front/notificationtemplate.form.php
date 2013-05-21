@@ -52,10 +52,9 @@ if (isset($_POST["add"])) {
    $url     .="?notificationtemplates_id=$newID";
    Html::redirect($url);
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $notificationtemplate->check($_POST["id"], PURGE);
-   // TODO no dustbin => purge
-   $notificationtemplate->delete($_POST);
+   $notificationtemplate->delete($_POST, 1);
 
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
               //TRANS: %s is the user login

@@ -54,10 +54,10 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $disk->check($_POST["id"], DELETE);
+} else if (isset($_POST["purge"])) {
+   $disk->check($_POST["id"], PURGE);
 
-   if ($disk->delete($_POST)) {
+   if ($disk->delete($_POST, 1)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s deletes a volume'), $_SESSION["glpiname"]));

@@ -1141,7 +1141,7 @@ class Infocom extends CommonDBChild {
                       class='submit'>";
                echo "</td>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
-               echo "<input type='submit' name='delete' value=\""._sx('button',
+               echo "<input type='submit' name='purge' value=\""._sx('button',
                                                                       'Delete permanently')."\"
                       class='submit'>";
                echo "</td></tr>";

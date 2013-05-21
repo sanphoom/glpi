@@ -49,10 +49,9 @@ if (isset($_POST["add"])) {
                       $rssfeed->fields["name"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/rssfeed.form.php?id=".$newID);
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $rssfeed->check($_POST["id"],PURGE);
-   // TODO no dustbin => purge
-   $rssfeed->delete($_POST);
+   $rssfeed->delete($_POST, 1);
    Event::log($_POST["id"], "rssfeed", 4, "tools",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

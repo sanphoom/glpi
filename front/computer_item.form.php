@@ -39,8 +39,8 @@ Session::checkCentralAccess();
 $conn = new Computer_Item();
 
 if (isset($_POST["disconnect"])) {
-   $conn->check($_POST["id"], DELETE);
-   $conn->delete($_POST);
+   $conn->check($_POST["id"], PURGE);
+   $conn->delete($_POST, 1);
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s disconnects an item'), $_SESSION["glpiname"]));

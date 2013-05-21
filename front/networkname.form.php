@@ -43,9 +43,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $nn->check($_POST['id'], 'd');
-   $nn->delete($_POST);
+   $nn->delete($_POST, 1);
    Event::log($_POST["id"], "networkname", 5, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

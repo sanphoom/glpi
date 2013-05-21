@@ -46,7 +46,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["updateall"])) {
    Item_Devices::updateAll($_POST, false);
    Html::back();
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    Item_Devices::updateAll($_POST, true);
    Html::back();
 }

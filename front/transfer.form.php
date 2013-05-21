@@ -48,11 +48,10 @@ if (isset($_POST["add"])) {
    Event::log($newID, "transfers", 4, "setup",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
-   // TODO Review after showFormButton => purge not delete
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $transfer->check($_POST["id"], PURGE);
 
-   $transfer->delete($_POST);
+   $transfer->delete($_POST, 1);
    Event::log($_POST["id"], "transfers", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

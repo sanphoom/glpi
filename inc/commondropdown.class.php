@@ -595,8 +595,8 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<form action='$target' method='post'>";
          echo "<table class='tab_cadre'><tr>";
          echo "<td><input type='hidden' name='id' value='$ID'>";
-         echo "<input type='hidden' name='forcedelete' value='1'>";
-         echo "<input class='submit' type='submit' name='delete'
+         echo "<input type='hidden' name='forcepurge' value='1'>";
+         echo "<input class='submit' type='submit' name='purge'
                 value=\""._sx('button','Confirm')."\">";
          echo "</td>";
          echo "<td><input class='submit' type='submit' name='annuler'

@@ -48,10 +48,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["language"]));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $language->check($_POST["id"], PURGE);
-   //TODO no dustbin => purge
-   $language->delete($_POST);
+   $language->delete($_POST, 1);
 
    Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",
               //TRANS: %s is the user login

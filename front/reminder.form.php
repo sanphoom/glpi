@@ -47,10 +47,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $remind->check($_POST["id"], PURGE);
-   //TODO no dustbin => purge
-   $remind->delete($_POST);
+   $remind->delete($_POST, 1);
    Event::log($_POST["id"], "reminder", 4, "tools",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

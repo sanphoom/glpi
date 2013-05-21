@@ -56,9 +56,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds a task'), $_SESSION["glpiname"]));
    Html::redirect(Toolbox::getItemTypeFormURL($itemtype)."?id=".$task->getField($fk));
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $task->check($_POST['id'], 'd');
-   $task->delete($_POST);
+   $task->delete($_POST, 1);
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",
               //TRANS: %s is the user login

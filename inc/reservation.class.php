@@ -756,7 +756,7 @@ class Reservation extends CommonDBChild {
       } else {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='top center'>";
-         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\"
+         echo "<input type='submit' name='purge' value=\""._sx('button', 'Delete permanently')."\"
                 class='submit'>";
          if ($resa->fields["group"] > 0) {
             echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".

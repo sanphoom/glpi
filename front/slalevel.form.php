@@ -57,13 +57,11 @@ if (isset($_POST["update"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
 
    if (isset($_POST['id'])) {
       $item->check($_POST['id'], PURGE);
-      //TODO no dustbin => purge
-      $ok = $item->delete($_POST);
-      if ($ok) {
+      if ($item->delete($_POST, 1)) {
          Event::log($_POST["id"], "slas", 4, "setup",
                     //TRANS: %s is the user login
                     sprintf(__('%s deletes a sla level'), $_SESSION["glpiname"]));

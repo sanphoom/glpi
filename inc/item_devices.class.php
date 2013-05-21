@@ -178,7 +178,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($canedit) {
-         $content       = "<input type='submit' class='submit' name='delete' value='".
+         $content       = "<input type='submit' class='submit' name='purge' value='".
                             _sx('button', 'Delete permanently')."'>";
          $delete_column = $table->addHeader('delete one', $content);
          $delete_column->setHTMLClass('center');

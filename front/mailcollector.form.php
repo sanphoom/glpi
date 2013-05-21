@@ -49,9 +49,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $mailgate->check($_POST['id'],'d');
-   $mailgate->delete($_POST);
+   $mailgate->delete($_POST, 1);
 
    Event::log($_POST["id"], "mailcollector", 4, "setup",
               //TRANS: %s is the user login

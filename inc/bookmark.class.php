@@ -284,7 +284,7 @@ class Bookmark extends CommonDBTM {
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr><tr><td class='tab_bg_2 right' colspan='2'>";
-         echo "<input type='submit' name='delete' value=\""._sx('button', 'Delete permanently')."\"
+         echo "<input type='submit' name='purge' value=\""._sx('button', 'Delete permanently')."\"
                 class='submit'>";
          echo "</td></tr>";
       }
@@ -678,7 +678,7 @@ class Bookmark extends CommonDBTM {
       echo "</a>";
       Ajax::createIframeModalWindow('bookmarksave',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?type=$type".
-                                    "&amp;action=edit&amp;itemtype=$itemtype&amp;".
+                                    "&action=edit&itemtype=$itemtype&".
                                     "url=".rawurlencode($_SERVER["REQUEST_URI"]),
                                     array('title' => __('Save as bookmark'),
                                           'reloadonclose' => true));

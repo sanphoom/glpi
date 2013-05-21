@@ -49,8 +49,8 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["add"])) {
    $setupdisplay->add($_POST);
 
-} else if (isset($_POST["delete"]) || isset($_POST["delete_x"])) {
-   $setupdisplay->delete($_POST);
+} else if (isset($_POST["purge"]) || isset($_POST["purge_x"])) {
+   $setupdisplay->delete($_POST, 1);
 
 } else if (isset($_POST["up"]) || isset($_POST["up_x"])) {
    $setupdisplay->orderItem($_POST,'up');

@@ -49,10 +49,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $sla->check($_POST["id"], PURGE);
-   //TODO => purge
-   $sla->delete($_POST);
+   $sla->delete($_POST, 1);
 
    Event::log($_POST["id"], "slas", 4, "setup",
               //TRANS: %s is the user login

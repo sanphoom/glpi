@@ -43,10 +43,9 @@ if (isset($_POST['add'])) {
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $ic->check($_POST["id"], PURGE);
-   //TODO no is_deleted => purge
-   $ic->delete($_POST);
+   $ic->delete($_POST, 1);
    Event::log($_POST["id"], "infocom", 4, "financial",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

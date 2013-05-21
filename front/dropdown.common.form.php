@@ -48,7 +48,6 @@ if (isset($_POST["id"])) {
    $_GET["id"] = -1;
 }
 
-
 if (isset($_POST["add"])) {
    $dropdown->check(-1, CREATE, $_POST);
 
@@ -63,11 +62,10 @@ if (isset($_POST["add"])) {
       }
    }
    Html::back();
-   // TODO Review after showFormButton => purge not delete
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $dropdown->check($_POST["id"], PURGE);
    if ($dropdown->isUsed()
-       && empty($_POST["forcedelete"])) {
+       && empty($_POST["forcepurge"])) {
       Html::header($dropdown->getTypeName(1), $_SERVER['PHP_SELF'], "config",
                    $dropdown->second_level_menu, str_replace('glpi_','',$dropdown->getTable()));
       $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
@@ -82,7 +80,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_POST["replace"])) {
-   $dropdown->check($_POST["id"], DELETE);
+   $dropdown->check($_POST["id"], PURGE);
    $dropdown->delete($_POST, 1);
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",

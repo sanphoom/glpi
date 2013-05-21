@@ -47,10 +47,9 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $cost->check($_POST["id"], PURGE);
-   // TODO PURGE instead of delete
-   if ($cost->delete($_POST)) {
+   if ($cost->delete($_POST, 1)) {
       Event::log($cost->fields['tickets_id'], "tickets", 4, "tracking",
                  //TRANS: %s is the user login
                  sprintf(__('%s deletes a cost'), $_SESSION["glpiname"]));

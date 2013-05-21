@@ -60,8 +60,8 @@ if (isset($_POST["update"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $config_ldap->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $config_ldap->delete($_POST, 1);
    $_SESSION['glpi_authconfig'] = 1;
    $config_ldap->redirectToList();
 

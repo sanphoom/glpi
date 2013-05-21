@@ -68,11 +68,10 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    // effacer un item dans la base de connaissances
    $kb->check($_POST["id"], PURGE);
-   //TODO no dustbin => purge
-   $kb->delete($_POST);
+   $kb->delete($_POST, 1);
    Event::log($_POST["id"], "knowbaseitem", 5, "tools",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

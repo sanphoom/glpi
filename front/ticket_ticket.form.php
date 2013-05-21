@@ -38,10 +38,10 @@ $ticket_ticket = new Ticket_Ticket();
 
 Session ::checkCentralAccess();
 
-if (isset($_POST['delete'])) {
+if (isset($_POST['purge'])) {
    $ticket_ticket->check($_POST['id'],'d');
 
-   $ticket_ticket->delete($_POST);
+   $ticket_ticket->delete($_POST, 1);
 
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               //TRANS: %s is the user login

@@ -1948,6 +1948,7 @@ class CommonDBTM extends CommonGLPI {
             $params['candel'] = false;
          }
 
+         // TODO : MoYo : think trouble if DELETE and not PURGE or PURGE and not DELETE
          if ($params['candel']) {
             if ($params['canedit']
                 && $this->can($ID, UPDATE)) {
@@ -1968,7 +1969,7 @@ class CommonDBTM extends CommonGLPI {
                // If maybe dynamic : do not take into account  is_deleted  field
                if (!$this->maybeDeleted()
                    || $this->useDeletedToLockIfDynamic()) {
-                  echo "<input type='submit' name='delete' value=\""._sx('button',
+                  echo "<input type='submit' name='purge' value=\""._sx('button',
                                                                          'Delete permanently')."\"
                          class='submit' ".
                          Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";

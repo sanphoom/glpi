@@ -53,8 +53,8 @@ if (isset($_POST["update"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $config_mail->delete($_POST);
+} else if (isset($_POST["purge"])) {
+   $config_mail->delete($_POST, 1);
    $_SESSION['glpi_authconfig'] = 2;
    $config_mail->redirectToList();
 

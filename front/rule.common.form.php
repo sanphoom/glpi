@@ -72,11 +72,10 @@ if (isset($_POST["add_criteria"])) {
    Event::log($newID, "rules", 4, "setup",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
    Html::redirect($_SERVER['HTTP_REFERER']."?id=$newID");
-//TODO review delete => purge
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $rulecollection->checkGlobal(PURGE);
    $rulecollection->deleteRuleOrder($_POST["ranking"]);
-   $rule->delete($_POST);
+   $rule->delete($_POST, 1);
 
    Event::log($_POST["id"], "rules", 4, "setup",
               //TRANS: %s is the user login

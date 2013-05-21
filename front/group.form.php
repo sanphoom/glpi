@@ -49,10 +49,9 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-   // TODO Review after showFormButton => purge not delete
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $group->check($_POST["id"], PURGE);
-   $group->delete($_POST);
+   $group->delete($_POST, 1);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

@@ -50,10 +50,10 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds cartridges'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $cartype->check($_POST["cartridgeitems_id"], DELETE);
+} else if (isset($_POST["purge"])) {
+   $cartype->check($_POST["cartridgeitems_id"], UPDATE);
 
-   if ($cart->delete($_POST)) {
+   if ($cart->delete($_POST, 1)) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s deletes a cartridge'), $_SESSION["glpiname"]));

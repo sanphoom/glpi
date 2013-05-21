@@ -67,9 +67,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates a followup'), $_SESSION["glpiname"]));
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $fup->check($_POST['id'], 'd');
-   $fup->delete($_POST);
+   $fup->delete($_POST, 1);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
               //TRANS: %s is the user login

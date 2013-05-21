@@ -54,10 +54,10 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST["delete"])) {
-   $cost->check($_POST["id"], DELETE);
+} else if (isset($_POST["purge"])) {
+   $cost->check($_POST["id"], PURGE);
 
-   if ($cost->delete($_POST)) {
+   if ($cost->delete($_POST, 1)) {
       Event::log($cost->fields['contracts_id'], "contracts", 4, "financial",
                  //TRANS: %s is the user login
                  sprintf(__('%s deletes a cost'), $_SESSION["glpiname"]));

@@ -58,9 +58,9 @@ if (isset($_POST["update"])) {
       }
    }
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $reservationitems_id = key($_POST["items"]);
-   if ($rr->delete($_POST)) {
+   if ($rr->delete($_POST, 1)) {
       Event::log($_POST["id"], "reservation", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

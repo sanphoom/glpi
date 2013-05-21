@@ -49,10 +49,9 @@ if (isset($_POST["add"])) {
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::redirect(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
 
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    $link->check($_POST["id"], PURGE);
-   //TODO delete => purge
-   $link->delete($_POST);
+   $link->delete($_POST, 1);
    Event::log($_POST["id"], "links", 4, "setup",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
