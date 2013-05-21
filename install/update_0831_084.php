@@ -377,7 +377,6 @@ function update0831to084() {
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'create validation_answer notification'));
 
-   /// TODO : create a new template ?
    // Check if notifications already exists
    if (countElementsInTable('glpi_notifications',
                             "`itemtype` = 'Ticket'
@@ -694,7 +693,6 @@ function update0831to084() {
          $DB->queryOrDie($query, "0.84 add planning recall notification");
          $notid = $DB->insert_id();
 
-         ///TODO complete template
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
                           (`notificationtemplates_id`, `language`, `subject`,
                            `content_text`,
@@ -1577,7 +1575,6 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
    //   But each gethostbyaddr() may reach several milliseconds. With very large number of
    //   Networkports or NetworkeEquipment, the migration may take several minutes or hours ...
    //$computerName = gethostbyaddr($IP);
-   /// TODO moyo : with several private networks gethostbyaddr may get wrong information
    $computerName = $IP;
    if ($computerName != $IP) {
       $position = strpos($computerName, ".");
@@ -2131,7 +2128,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
             break;
 
        }
-      /// TODO : in case of unknown Interface Type, we should have to set instantiation_type to ''
+      /// In case of unknown Interface Type, we should have to set instantiation_type to ''
       /// Thus we should be able to convert it later to correct type (ethernet, wifi, loopback ...)
       if (!empty($instantiation_type)) {
          $query = "UPDATE `glpi_networkports`
@@ -2196,7 +2193,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
       $DB->queryOrDie($query, "0.84 create glpi_networkportethernets");
 
       $port = new NetworkPortEthernet();
-      ///TODO add type T SX LX
       updateNetworkPortInstantiation($port, array('`netpoints_id`' => 'netpoints_id'), true);
    }
 
@@ -2332,7 +2328,6 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                                       $equipment['ip']);
 
 
-            // TODO : we may remove the informations attached to the NetworkPorts
             foreach ($both as $aggregated_networkports_id) {
                $query = "DELETE
                          FROM `glpi_networknames`
