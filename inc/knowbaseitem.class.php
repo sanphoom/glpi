@@ -730,7 +730,7 @@ class KnowbaseItem extends CommonDBTM {
       if (KnowbaseItemTranslation::canBeTranslated($this)) {
          $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
       } else {
-         echo $answer = $this->fields["answer"];
+         $answer = $this->fields["answer"];
       }
       echo Toolbox::unclean_html_cross_side_scripting_deep($answer);
       echo "</div>";

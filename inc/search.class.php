@@ -4659,6 +4659,7 @@ class Search {
                $count_display++;
                //$out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
                if (getTableNameForForeignKeyField($searchopt[$ID]['linkfield']) != '') {
+                  /// TODO : Try to do it on SQL to avoid mass SQL requests
                   $out.= DropdownTranslation::getTranslationByName(getItemTypeForTable($searchopt[$ID]['table']), 
                                                                    $searchopt[$ID]['field'],
                                                                    $split[$k]).$unit;
@@ -4714,6 +4715,7 @@ class Search {
             $fk = getForeignKeyFieldForTable($table);
             if (isset($source->fields[$fk])) {
                //Return the translated value
+               /// TODO : Try to do it on SQL to avoid mass SQL requests
                return DropdownTranslation::getTranslatedValue($source->fields[$fk], $itemtype, 
                                                               $field, $_SESSION['glpilanguage'],
                                                               $data[$NAME.$num]).$unit;

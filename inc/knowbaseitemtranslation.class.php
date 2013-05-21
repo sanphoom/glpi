@@ -42,6 +42,8 @@ class KnowbaseItemTranslation extends CommonDBChild {
    static public $items_id = 'knowbaseitems_id';
    public $dohistory       = true;
 
+/// TODO : use new right system
+   
    static function getTypeName($nb = 0) {
       return _n('Translation', 'Translations', $nb);
    }
@@ -85,6 +87,11 @@ class KnowbaseItemTranslation extends CommonDBChild {
    static function showTranslations(KnowbaseItem $item) {
       global $DB, $CFG_GLPI;
 
+      ///TODO : unable to edit translations : permit to do it !
+      ///TODO : show content in tooltip
+      ///TODO : add several translations for the same language is possible ! do not permit it
+      
+      
       $obj = new self;
       $found = $obj->find("`knowbaseitems_id`='".$item->getID()."'", "`language` ASC");
       if (count($found) > 0) {
@@ -188,7 +195,9 @@ class KnowbaseItemTranslation extends CommonDBChild {
       $rand = Dropdown::showLanguages("language",
                                       array('display_none' => false,
                                             'value'        => $_SESSION['glpilanguage']));
-      
+
+
+      /// TODO : Do not understand that it do here
       $params = array('language' => '__VALUE__', 'itemtype' => get_class($item),
                       'knowbaseitems_id' => $item->getID());
       Ajax::updateItemOnSelectEvent("dropdown_language$rand", "span_fields",

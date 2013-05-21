@@ -277,6 +277,7 @@ class Dropdown {
                $data = $DB->fetch_assoc($result);
                //$name = $data["name"];
                if ($translate) {
+                  /// TODO : Try to do it on SQL to avoid mass SQL requests
                   $name = DropdownTranslation::getTranslatedValue($data['id'],
                                                                   getItemTypeForTable($table),
                                                                   'name', $_SESSION['glpilanguage'],
@@ -288,6 +289,7 @@ class Dropdown {
                if (isset($data["comment"])) {
                   //$comment = $data["comment"];
                   if ($translate) {
+                     /// TODO : Try to do it on SQL to avoid mass SQL requests
                      $comment = DropdownTranslation::getTranslatedValue($data['id'],
                                                                         getItemTypeForTable($table),
                                                                         'comment',
@@ -350,7 +352,7 @@ class Dropdown {
                   case "glpi_netpoints" :
                      $name = sprintf(__('%1$s (%2$s)'), $name,
                                      self::getDropdownName("glpi_locations",
-                                                           $data["locations_id"]));
+                                                           $data["locations_id"], false, $translate));
                      break;
                }
             }

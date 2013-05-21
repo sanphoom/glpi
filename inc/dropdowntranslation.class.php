@@ -36,10 +36,12 @@ class DropdownTranslation extends CommonDBChild {
    static public $items_id = 'items_id';
    public $dohistory       = true;
 
+   /// TODO : use new right system
+
    static function getTypeName($nb = 0) {
       return _n('Translation', 'Translations', $nb);
    }
-
+   
    static function canCreate() {
       return Session::haveRight('dropdown', 'w');
    }
@@ -228,6 +230,8 @@ class DropdownTranslation extends CommonDBChild {
    static function showTranslations(CommonDropdown $item) {
       global $DB, $CFG_GLPI;
 
+      /// TODO : permit to edit translations
+      
       $query = "SELECT * FROM `".getTableForItemType(__CLASS__)."` " .
                "WHERE `itemtype`='".get_class($item)."'
                    AND `items_id`='".$item->getID()."' AND `field`<>'completename'
@@ -339,6 +343,9 @@ class DropdownTranslation extends CommonDBChild {
    static function dropdownFields(CommonDBTM $item, $language = '', $value = '') {
       global $DB;
 
+      /// TODO : is it interesting to translate all fields ?
+      /// DB scheme not appropriate to efficient DB request
+      
       $options = array();
       foreach (Search::getOptions(get_class($item)) as $id => $field) {
          //Can only translate name, and fields whose datatype is text or string
@@ -484,8 +491,7 @@ class DropdownTranslation extends CommonDBChild {
     */
    static function canBeTranslated(CommonGLPI $item) {
       return self::isDropdownTranslationActive()
-         && (($item instanceof CommonDropdown
-            || $item instanceof CommonTreeDropdown) && $item->maybeTranslated());
+         && (($item instanceof CommonDropdown) && $item->maybeTranslated());
    }
 
    /**

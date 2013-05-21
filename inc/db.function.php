@@ -447,12 +447,14 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
       if ($DB->numrows($result) == 1) {
          /*$name    = $DB->result($result, 0, "name");
          $comment = $DB->result($result, 0, "comment");*/
+         /// TODO : Try to do it on SQL to avoid mass SQL requests
          $name = DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
                                                          getItemTypeForTable($table),
                                                          'name', 
                                                          $_SESSION['glpilanguage'],
                                                          $DB->result($result, 0, "name"));
          $comment  = $name." :<br>";
+         /// TODO : Try to do it on SQL to avoid mass SQL requests
          $comment .= DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
                                                              getItemTypeForTable($table),
                                                              'comment', 
@@ -493,6 +495,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate = 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result) == 1) {
          if ($translate) {
+            /// TODO : Try to do it on SQL to avoid mass SQL requests
             $name = DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
                                                            getItemTypeForTable($table),
                                                            'completename', 
@@ -506,6 +509,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate = 
                              "</span>".$name);
          $comment .= "<span class='b'>".__('Comments')."&nbsp;</span>";
          if ($translate) {
+            /// TODO : Try to do it on SQL to avoid mass SQL requests
             $comment .= nl2br(DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"),
                                                                getItemTypeForTable($table),
                                                                'comment', 

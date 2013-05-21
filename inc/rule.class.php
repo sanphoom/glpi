@@ -2205,12 +2205,6 @@ class Rule extends CommonDBTM {
 
             switch ($crit['type']) {
                case "dropdown" :
-                  $itemtype = getItemTypeForTable($crit["table"]);
-                  if ($itemtype instanceof CommonTreeDropdown) {
-                     $search = 'completename';
-                  } else {
-                     $search = 'name';
-                  }
                   $tmp = Dropdown::getDropdownName($crit["table"], $value, false, false);
                   //$tmp = Dropdown::getDropdownName($crit["table"], $value);
                   // return empty string to be able to check if set

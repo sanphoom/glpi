@@ -222,6 +222,7 @@ if ($item instanceof CommonTreeDropdown) {
          while ($data = $DB->fetch_assoc($result)) {
             $ID        = $data['id'];
             $level     = $data['level'];
+            /// TODO : Try to do it on SQL to avoid mass SQL requests
             $outputval = DropdownTranslation::getTranslatedValue($ID, $_REQUEST['itemtype'], 'name',
                                         $_SESSION['glpilanguage'], $data['name']);
 
@@ -248,6 +249,7 @@ if ($item instanceof CommonTreeDropdown) {
 
 
             if ($_SESSION['glpiuse_flat_dropdowntree']) {
+               /// TODO : Try to do it on SQL to avoid mass SQL requests
                $output = DropdownTranslation::getTranslatedValue($ID, $_POST['itemtype'],
                                                   'completename',
                                                    $_SESSION['glpilanguage'],
@@ -276,6 +278,7 @@ if ($item instanceof CommonTreeDropdown) {
                               $title = $item->fields['completename'];
 
                               if (isset($item->fields["comment"])) {
+                                 /// TODO : Try to do it on SQL to avoid mass SQL requests
                                  $addcomment = DropdownTranslation::getTranslatedValue($ID,
                                                       get_class($item),
                                                       'comment',
@@ -319,12 +322,14 @@ if ($item instanceof CommonTreeDropdown) {
                }
 
                //$title = $data['completename'];
+               /// TODO : Try to do it on SQL to avoid mass SQL requests
                $title = DropdownTranslation::getTranslatedValue($ID,
                                                                 get_class($item),
                                                                 'completename',
                                                                 $_SESSION['glpilanguage'],
                                                                 $data['completename']);
                if (isset($data["comment"])) {
+                  /// TODO : Try to do it on SQL to avoid mass SQL requests
                   $addcomment = DropdownTranslation::getTranslatedValue($ID,
                                                                         get_class($item),
                                                                         'comment',
@@ -475,6 +480,7 @@ if ($item instanceof CommonTreeDropdown) {
             }
 
             //$outputval = $data[$field];
+            /// TODO : Try to do it on SQL to avoid mass SQL requests
             $outputval = DropdownTranslation::getTranslatedValue($data['id'], get_class($item),
                                                   $field, $_SESSION['glpilanguage'],
                                                   $data[$field]);
@@ -497,6 +503,7 @@ if ($item instanceof CommonTreeDropdown) {
             $addcomment = "";
             $title      = $outputval;
             if (isset($data["comment"])) {
+               /// TODO : Try to do it on SQL to avoid mass SQL requests
                $addcomment.= DropdownTranslation::getTranslatedValue($data['id'],
                                                       get_class($item),
                                                       'comment',

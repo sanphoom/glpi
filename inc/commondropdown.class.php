@@ -772,14 +772,5 @@ abstract class CommonDropdown extends CommonDBTM {
       return ($add ? $this->import($input) : $this->findID($input));
    }
 
-
-   function refreshParentInfos() {
-
-      if (!$this->refresh_page) {
-         Ajax::refreshDropdownPopupInMainWindow();
-      } else {
-         Ajax::refreshPopupMainWindow();
-      }
-   }
 }
 ?>

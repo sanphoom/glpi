@@ -702,20 +702,6 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changetasks");
    }
 
-   if (!TableExists('glpi_entities_knowbaseitems')) {
-      $query = "CREATE TABLE `glpi_entities_knowbaseitems` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-                 `entities_id` int(11) NOT NULL DEFAULT '0',
-                 `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                 PRIMARY KEY (`id`),
-                 KEY `knowbaseitems_id` (`knowbaseitems_id`),
-                 KEY `entities_id` (`entities_id`),
-                 KEY `is_recursive` (`is_recursive`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, "0.85 add table glpi_entities_knowbaseitems");
-   }
-
    /// TODO add changetasktypes table as dropdown
    /// TODO review users linked to changetask
    /// TODO add display prefs
@@ -782,6 +768,10 @@ function update084to085() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_dropdowntranslations'));
    Config::setConfigurationValues('core', array('translate_dropdowns' => 0));
    if (!TableExists("glpi_dropdowntranslations")) {
+      /// TODO : think it will easier to do if name / comment / completename is on the table.
+      /// Permit to manage getting infos in SQL using just one join
+      /// Is it really intereting to translate others fields ?
+      /// Maybe use this scheme of table for other fields ? Manage name / completename /comment on one line ?
       $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdowntranslations` (
            `id` int(11) NOT NULL AUTO_INCREMENT,
            `items_id` int(11) NOT NULL DEFAULT '0',

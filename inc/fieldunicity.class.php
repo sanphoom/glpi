@@ -53,16 +53,6 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
-   }
-
-
    function getAdditionalFields() {
 
       return array(array('name'  => 'is_active',

@@ -37,8 +37,10 @@ if (isset($_POST['add'])) {
    
 } elseif(isset($_POST['update'])) {
    $translation->update($_POST);
+   ///TODO : do it on post_update
    $translation->generateCompletename($_POST, false);
 
+   /// TODO use standard massive action
 } elseif(isset($_POST['delete_translation'])) {
    if (isset($_POST['item'])) {
       foreach ($_POST['item'] as $id => $value) {
