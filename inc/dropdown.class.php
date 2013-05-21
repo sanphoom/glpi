@@ -68,6 +68,7 @@ class Dropdown {
     *    - display_emptychoice : Display emptychoice ? (default true)
     *    - display             : boolean / display or get string (default true)
     *    - width               : specific width needed (default 80%)
+    *    - permit_select_parent : boolean / for tree dropdown permit to see parent items not available by default (default false)    
     *
     * @return boolean : false if error and random id if OK
    **/
