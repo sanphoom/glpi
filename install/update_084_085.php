@@ -849,6 +849,48 @@ function update084to085() {
    $migration->addField('glpi_users', 'begin_date', 'datetime');
    $migration->addField('glpi_users', 'end_date', 'datetime');
 
+   // Create notification for reply to satisfaction survey based on satisfaction notif
+   // Check if notifications already exists
+   if (countElementsInTable('glpi_notifications',
+                            "`itemtype` = 'Ticket'
+                              AND `event` = 'replysatisfaction'")==0) {
+   // No notifications duplicate all
+
+      $query = "SELECT *
+                FROM `glpi_notifications`
+                WHERE `itemtype` = 'Ticket'
+                      AND `event` = 'satisfaction'";
+      foreach ($DB->request($query) as $notif) {
+         $query = "INSERT INTO `glpi_notifications`
+                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                          `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                          `date_mod`)
+                   VALUES ('".addslashes($notif['name'])." Answer',
+                           '".$notif['entities_id']."', 'Ticket',
+                           'replysatisfaction', '".$notif['mode']."',
+                           '".$notif['notificationtemplates_id']."',
+                           '".addslashes($notif['comment'])."', '".$notif['is_recursive']."',
+                           '".$notif['is_active']."', NOW());";
+         $DB->queryOrDie($query, "0.85 insert replysatisfaction notification");
+         $newID  = $DB->insert_id();
+         $query2 = "SELECT *
+                    FROM `glpi_notificationtargets`
+                    WHERE `notifications_id` = '".$notif['id']."'";
+         // Add same recipent of satisfaction
+         foreach ($DB->request($query2) as $target) {
+            $query = "INSERT INTO `glpi_notificationtargets`
+                             (`notifications_id`, `type`, `items_id`)
+                      VALUES ($newID, '".$target['type']."', '".$target['items_id']."')";
+            $DB->queryOrDie($query, "0.85 insert targets for replysatisfaction notification");
+         }
+         // Add Tech in charge
+            $query = "INSERT INTO `glpi_notificationtargets`
+                             (`notifications_id`, `type`, `items_id`)
+                      VALUES ($newID, '".Notification::USER_TYPE."', '".Notification::ITEM_TECH_IN_CHARGE."')";
+            $DB->queryOrDie($query, "0.85 insert tech in charge target for replysatisfaction notification");
+      }
+   }
+
    // Convert html fields from numeric encoding to raw encoding
    /// TODO : report it to 0.84.1 see #4331
    $fields_to_clean = array('glpi_knowbaseitems'     => 'answer',
