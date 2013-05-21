@@ -48,9 +48,18 @@ class FieldUnicity extends CommonDropdown {
    static $rightname       = 'config';
 
 
-
    static function getTypeName($nb=0) {
       return __('Fields unicity');
+   }
+
+
+   static function canCreate() {
+      return Session::haveRight('config', 'w');
+   }
+
+
+   static function canView() {
+      return Session::haveRight('config', 'r');
    }
 
 

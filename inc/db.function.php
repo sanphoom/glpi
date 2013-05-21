@@ -445,8 +445,19 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result) == 1) {
-         $name    = $DB->result($result, 0, "name");
-         $comment = $DB->result($result, 0, "comment");
+         /*$name    = $DB->result($result, 0, "name");
+         $comment = $DB->result($result, 0, "comment");*/
+         $name = DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
+                                                         getItemTypeForTable($table),
+                                                         'name', 
+                                                         $_SESSION['glpilanguage'],
+                                                         $DB->result($result, 0, "name"));
+         $comment  = $name." :<br>";
+         $comment .= DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
+                                                             getItemTypeForTable($table),
+                                                             'comment', 
+                                                             $_SESSION['glpilanguage'],
+                                                             $DB->result($result, 0, "comment"));
       }
    }
 
@@ -469,7 +480,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
  *
  * @see getTreeLeafValueName
 **/
-function getTreeValueCompleteName($table, $ID, $withcomment=false) {
+function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate = true) {
    global $DB;
 
    $name    = "";
@@ -481,12 +492,28 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result) == 1) {
-         $name     = $DB->result($result,0,"completename");
+         if ($translate) {
+            $name = DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
+                                                           getItemTypeForTable($table),
+                                                           'completename', 
+                                                           $_SESSION['glpilanguage'],
+                                                           $DB->result($result, 0, "completename"));
+         } else {
+            $name    = $DB->result($result,0,"completename");
+         }
          $comment  = sprintf(__('%1$s: %2$s')."<br>",
                              "<span class='b'>".__('Complete name'),
                              "</span>".$name);
-         $comment .= "<span class='b'>".__('Comments')."&nbsp;</span>".
-                      nl2br($DB->result($result, 0, "comment"));
+         $comment .= "<span class='b'>".__('Comments')."&nbsp;</span>";
+         if ($translate) {
+            $comment .= nl2br(DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"),
+                                                               getItemTypeForTable($table),
+                                                               'comment', 
+                                                               $_SESSION['glpilanguage'],
+                                                               $DB->result($result, 0, "comment")));
+         } else {
+            $comment.= nl2br($DB->result($result ,0, "comment"));
+         }             
       }
    }
 

@@ -40,6 +40,7 @@ class ITILCategory extends CommonTreeDropdown {
 
    // From CommonDBTM
    public $dohistory = true;
+   var $can_be_translated = true;
 
 
    static function canCreate() {

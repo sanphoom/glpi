@@ -133,11 +133,15 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
-  function defineTabs($options=array()) {
+   function defineTabs($options=array()) {
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
+
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         $this->addStandardTab('KnowbaseItemTranslation',$ong, $options);
+      }
 
       return $ong;
    }
@@ -713,13 +717,22 @@ class KnowbaseItem extends CommonDBTM {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
-      echo $this->fields["name"];
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         echo KnowbaseItemTranslation::getTranslatedValue($this, 'name');
+      } else {
+         echo $this->fields["name"];
+      }
 
       echo "</td></tr>";
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
       echo "<div id='kbanswer'>";
-      echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["answer"]);
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
+      } else {
+         echo $answer = $this->fields["answer"];
+      }
+      echo Toolbox::unclean_html_cross_side_scripting_deep($answer);
       echo "</div>";
       echo "</td></tr>";
 
@@ -1167,6 +1180,16 @@ class KnowbaseItem extends CommonDBTM {
                $row_num++;
                echo Search::showNewLine($output_type, $i%2);
 
+               $item = new self;
+               $item->getFromDB($data["id"]);
+               if (KnowbaseItemTranslation::canBeTranslated($item)) {
+                  $name   = KnowbaseItemTranslation::getTranslatedValue($item, 'name');
+                  $answer = KnowbaseItemTranslation::getTranslatedValue($item, 'answer');
+               } else {
+                  $name   = $data["name"];
+                  $answer = $data["answer"];
+               }
+
                if ($output_type == Search::HTML_OUTPUT) {
                   $toadd = '';
                   if (isset($options['item_itemtype'])
@@ -1183,15 +1206,15 @@ class KnowbaseItem extends CommonDBTM {
                   echo Search::showItem($output_type,
                                         "<div class='kb'>$toadd<a ".
                                           ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
-                                          " $href>".Html::resume_text($data["name"], 80)."</a></div>
+                                          " $href>".Html::resume_text($name, 80)."</a></div>
                                           <div class='kb_resume'>".
-                                          Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["answer"])),
+                                          Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($answer)),
                                                             600)."</div>",
                                         $item_num, $row_num);
                } else {
-                  echo Search::showItem($output_type, $data["name"], $item_num, $row_num);
+                  echo Search::showItem($output_type, $name, $item_num, $row_num);
                   echo Search::showItem($output_type,
-                     Html::clean(Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
+                     Html::clean(Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($answer,
                                                                                                ENT_QUOTES,
                                                                                                "UTF-8"))),
                                 $item_num, $row_num);
@@ -1313,10 +1336,15 @@ class KnowbaseItem extends CommonDBTM {
          echo "<table class='tab_cadrehov'>";
          echo "<tr><th>".$title."</th></tr>";
          while ($data = $DB->fetch_assoc($result)) {
+            $item = new self;
+            $item->getFromDB($data["id"]);
+            if (KnowbaseItemTranslation::canBeTranslated($item)) {
+               $name   = KnowbaseItemTranslation::getTranslatedValue($item, 'name');
+            }
             echo "<tr class='tab_bg_2'><td class='left'>";
             echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
                   $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"]."\">".
-                  Html::resume_text($data["name"],80)."</a></td></tr>";
+                  Html::resume_text($name,80)."</a></td></tr>";
          }
          echo "</table>";
       }

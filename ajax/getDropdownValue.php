@@ -222,7 +222,8 @@ if ($item instanceof CommonTreeDropdown) {
          while ($data = $DB->fetch_assoc($result)) {
             $ID        = $data['id'];
             $level     = $data['level'];
-            $outputval = $data['name'];
+            $outputval = DropdownTranslation::getTranslatedValue($ID, $_REQUEST['itemtype'], 'name',
+                                        $_SESSION['glpilanguage'], $data['name']);
 
             if ($multi
                 && ($data["entities_id"] != $prev)) {
@@ -247,7 +248,10 @@ if ($item instanceof CommonTreeDropdown) {
 
 
             if ($_SESSION['glpiuse_flat_dropdowntree']) {
-               $outputval = $data['completename'];
+               $output = DropdownTranslation::getTranslatedValue($ID, $_POST['itemtype'],
+                                                  'completename',
+                                                   $_SESSION['glpilanguage'],
+                                                   $data['completename']);
                if ($level > 1) {
                   $level = 0;
                }
@@ -272,8 +276,12 @@ if ($item instanceof CommonTreeDropdown) {
                               $title = $item->fields['completename'];
 
                               if (isset($item->fields["comment"])) {
-                                 $title = sprintf(__('%1$s - %2$s'), $title,
-                                                  $item->fields["comment"]);
+                                 $addcomment = DropdownTranslation::getTranslatedValue($ID,
+                                                      get_class($item),
+                                                      'comment',
+                                                       $_SESSION['glpilanguage'],
+                                                       $item->fields['comment']);
+                                 $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                               }
                               $output2 = $item->getName();
 
@@ -310,9 +318,19 @@ if ($item instanceof CommonTreeDropdown) {
                   $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
                }
 
-               $title = $data['completename'];
+               //$title = $data['completename'];
+               $title = DropdownTranslation::getTranslatedValue($ID,
+                                                                get_class($item),
+                                                                'completename',
+                                                                $_SESSION['glpilanguage'],
+                                                                $data['completename']);
                if (isset($data["comment"])) {
-                  $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
+                  $addcomment = DropdownTranslation::getTranslatedValue($ID,
+                                                                        get_class($item),
+                                                                        'comment',
+                                                                        $_SESSION['glpilanguage'],
+                                                                        $data['comment']);
+                  $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                }
                array_push($datastoadd, array ('id'    => $ID,
                                              'text'  => $outputval,
@@ -456,7 +474,10 @@ if ($item instanceof CommonTreeDropdown) {
                $datastoadd = array();
             }
 
-            $outputval = $data[$field];
+            //$outputval = $data[$field];
+            $outputval = DropdownTranslation::getTranslatedValue($data['id'], get_class($item),
+                                                  $field, $_SESSION['glpilanguage'],
+                                                  $data[$field]);
 
             if ($displaywith) {
                foreach ($_GET['displaywith'] as $key) {
@@ -476,7 +497,12 @@ if ($item instanceof CommonTreeDropdown) {
             $addcomment = "";
             $title      = $outputval;
             if (isset($data["comment"])) {
-               $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
+               $addcomment.= DropdownTranslation::getTranslatedValue($data['id'],
+                                                      get_class($item),
+                                                      'comment',
+                                                      $_SESSION['glpilanguage'],
+                                                      $data['comment']);
+               $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
             }
             if ($_SESSION["glpiis_ids_visible"]
                 || (strlen($outputval) == 0)) {

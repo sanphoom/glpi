@@ -27,23 +27,24 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief 
-*/
+include ('../inc/includes.php');
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
 
-/// Class PhoneModel
-class PhoneModel extends CommonDropdown {
+$translation = new KnowbaseItemTranslation();
+if (isset($_POST['add'])) {
+   $translation->add($_POST);
+   
+} elseif(isset($_POST['update'])) {
+   $translation->update($_POST);
 
-   var $additional_fields_for_dictionnary = array('manufacturer');
-   var $can_be_translated = true;
-
-   static function getTypeName($nb=0) {
-      return _n('Phone model', 'Phone models', $nb);
+} elseif(isset($_POST['delete_translation'])) {
+   if (isset($_POST['item'])) {
+      foreach ($_POST['item'] as $id => $value) {
+         if ($value == 1) {
+            $translation->delete(array('id' => $id));
+         }
+      }
    }
-
 }
+Html::back();
 ?>

@@ -45,7 +45,7 @@ class State extends CommonTreeDropdown {
                                         'Peripheral'       => 'is_visible_peripheral',
                                         'Phone'            => 'is_visible_phone',
                                         'NetworkEquipment' => 'is_visible_networkequipment');
-
+   var $can_be_translated = true;
 
    static function getTypeName($nb=0) {
       return _n('Status of items', 'Statuses of items', $nb);

@@ -468,6 +468,9 @@ class CommonDBTM extends CommonGLPI {
           || ($this->useDeletedToLockIfDynamic()
               && !$this->isDynamic())) {
          $this->cleanDBonPurge();
+         if ($this instanceof CommonDropdown) {
+            $this->cleanTranslations();
+         }
          $this->cleanHistory();
          $this->cleanRelationData();
          $this->cleanRelationTable();
@@ -610,6 +613,19 @@ class CommonDBTM extends CommonGLPI {
    function cleanDBonPurge() {
    }
 
+   /**
+    *
+    * Clean translations associated to a dropdown
+    * @since 0.85
+    */
+   function cleanTranslations() {
+      //Do not try to clean is dropdown translation is globally off
+      if (DropdownTranslation::isDropdownTranslationActive()) {
+         $translation = new DropdownTranslation();
+         $translation->deleteByCriteria(array('itemtype' => get_class($this),
+                                              'items_id' => $this->getID()));
+      }
+   }
 
    /**
     * Clean the date in the relation tables for the deleted item

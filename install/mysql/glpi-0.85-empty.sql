@@ -859,6 +859,8 @@ INSERT INTO `glpi_configs` VALUES ('141','core','language_ssofield','');
 INSERT INTO `glpi_configs` VALUES ('142','core','entity_ssofield','');
 INSERT INTO `glpi_configs` VALUES ('143','core','registration_number_ssofield','');
 INSERT INTO `glpi_configs` VALUES ('144','core','ssovariables_id','0');
+INSERT INTO `glpi_configs` VALUES ('146','core','translate_dropdowns','0');
+INSERT INTO `glpi_configs` VALUES ('147','core','translate_kb','0');
 
 ### Dump table glpi_consumableitems
 
@@ -1758,6 +1760,19 @@ CREATE TABLE `glpi_domains` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_dropdowntranslations
+CREATE TABLE IF NOT EXISTS `glpi_dropdowntranslations` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `items_id` int(11) NOT NULL DEFAULT '0',
+   `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `value` text COLLATE utf8_unicode_ci,
+   PRIMARY KEY (`id`),
+   KEY `typeid` (`itemtype`,`items_id`),
+   KEY `language` (`language`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 ### Dump table glpi_entities
 
 DROP TABLE IF EXISTS `glpi_entities`;
@@ -1841,7 +1856,6 @@ CREATE TABLE `glpi_entities_knowbaseitems` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 ### Dump table glpi_entities_reminders
 
@@ -2614,6 +2628,19 @@ CREATE TABLE `glpi_knowbaseitems` (
   KEY `date_mod` (`date_mod`),
   FULLTEXT KEY `fulltext` (`name`,`answer`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_knowbaseitemtranslations
+CREATE TABLE IF NOT EXISTS `glpi_knowbaseitemtranslations` (
+   `id`               int(11) NOT NULL AUTO_INCREMENT,
+   `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
+   `language`         varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `name`             varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `answer`           longtext COLLATE utf8_unicode_ci,
+   PRIMARY            KEY (`id`),
+   KEY                `knowbaseitems_id` (`knowbaseitems_id`),
+   KEY                `language` (`language`)
+)  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_knowbaseitems_profiles

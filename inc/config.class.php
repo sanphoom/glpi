@@ -276,6 +276,18 @@ class Config extends CommonDBTM {
                               array('value' => $CFG_GLPI["default_graphtype"]));
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __("translate dropdowns") . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("translate_dropdowns", $CFG_GLPI["translate_dropdowns"]);
+      echo "</td>";
+      echo "<td>" . __("translate Knowledge base") . "&nbsp;:</td><td>";
+      Dropdown::showYesNo("translate_kb", $CFG_GLPI["translate_kb"]);
+      echo "</td>";
+      echo "</tr>";
+      echo "<tr class='tab_bg_2'>";
+
+
+
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display').
            "</td></tr>";
 

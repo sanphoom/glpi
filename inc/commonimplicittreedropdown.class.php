@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
+   var $can_be_translated = true;
 
    function getForbiddenStandardMassiveAction() {
 

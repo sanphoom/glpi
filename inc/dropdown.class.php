@@ -249,13 +249,13 @@ class Dropdown {
     *
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
-   static function getDropdownName($table, $id, $withcomment=0) {
+   static function getDropdownName($table, $id, $withcomment=0, $translate = true) {
       global $DB, $CFG_GLPI;
 
       $item = getItemForItemtype(getItemTypeForTable($table));
 
       if ($item instanceof CommonTreeDropdown) {
-         return getTreeValueCompleteName($table,$id,$withcomment);
+         return getTreeValueCompleteName($table,$id,$withcomment, $translate);
       }
 
       $name    = "";
@@ -275,10 +275,27 @@ class Dropdown {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) != 0) {
                $data = $DB->fetch_assoc($result);
-               $name = $data["name"];
+               //$name = $data["name"];
+               if ($translate) {
+                  $name = DropdownTranslation::getTranslatedValue($data['id'],
+                                                                  getItemTypeForTable($table),
+                                                                  'name', $_SESSION['glpilanguage'],
+                                                                  $data['name']);
+               } else {
+                  $name = $data["name"];
+               }
 
                if (isset($data["comment"])) {
-                  $comment = $data["comment"];
+                  //$comment = $data["comment"];
+                  if ($translate) {
+                     $comment = DropdownTranslation::getTranslatedValue($data['id'],
+                                                                        getItemTypeForTable($table),
+                                                                        'comment',
+                                                                        $_SESSION['glpilanguage'],
+                                                                        $data['comment']);
+                  } else {
+                     $comment = $data["comment"];
+                  }
                }
 
                switch ($table) {

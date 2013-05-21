@@ -48,6 +48,9 @@ abstract class CommonDropdown extends CommonDBTM {
 
    public $display_dropdowntitle  = true;
 
+   //This dropdown can be translated
+   public $can_be_translated = false;
+
    static $rightname = 'dropdown';
 
 
@@ -60,6 +63,16 @@ abstract class CommonDropdown extends CommonDBTM {
       return _n('Dropdown', 'Dropdowns', $nb);
    }
 
+
+   /**
+    *
+    * Is translation enabled for this itemtype
+    * @since 0.85
+    * @return true if translation is available, false otherwise
+    */
+   function maybeTranslated () {
+      return $this->can_be_translated;
+   }
 
    /**
     * @see CommonGLPI::getMenuShorcut()
@@ -128,6 +141,10 @@ abstract class CommonDropdown extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       if ($this->dohistory) {
          $this->addStandardTab('Log',$ong, $options);
+      }
+
+      if (DropdownTranslation::canBeTranslated($this)) {
+         $this->addStandardTab('DropdownTranslation',$ong, $options);
       }
 
       return $ong;
@@ -756,5 +773,13 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
+   function refreshParentInfos() {
+
+      if (!$this->refresh_page) {
+         Ajax::refreshDropdownPopupInMainWindow();
+      } else {
+         Ajax::refreshPopupMainWindow();
+      }
+   }
 }
 ?>

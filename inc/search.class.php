@@ -4657,7 +4657,14 @@ class Search {
                }
                $withoutid = self::explodeWithID("$$", $split[$k]);
                $count_display++;
-               $out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
+               //$out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
+               if (getTableNameForForeignKeyField($searchopt[$ID]['linkfield']) != '') {
+                  $out.= DropdownTranslation::getTranslationByName(getItemTypeForTable($searchopt[$ID]['table']), 
+                                                                   $searchopt[$ID]['field'],
+                                                                   $split[$k]).$unit;
+               } else {
+                  $out .= Dropdown::getValueWithUnit($withoutid[0], $unit);
+               }
             }
          }
          return $out;
@@ -4691,6 +4698,31 @@ class Search {
       if (empty($split[0])&& isset($searchopt[$ID]['emptylabel'])) {
          return $searchopt[$ID]['emptylabel'];
       }
+
+      //Is this item a dropdown, and can it be translated ?
+      if (DropdownTranslation::canBeTranslated(new $itemtype())) {
+         //Get the source object
+         $source = false;
+         if (isset($_POST['itemtype']) && $_POST['itemtype'] != 'States') {
+            $source = new $_POST['itemtype'];
+         } elseif(isset($_GET['item_type'])) {
+            $source = new $_GET['item_type'];
+         }
+         if ($source) {
+            //Get in the source object the dropdown's item id
+            $source->getFromDB($data['id']);
+            $fk = getForeignKeyFieldForTable($table);
+            if (isset($source->fields[$fk])) {
+               //Return the translated value
+               return DropdownTranslation::getTranslatedValue($source->fields[$fk], $itemtype, 
+                                                              $field, $_SESSION['glpilanguage'],
+                                                              $data[$NAME.$num]).$unit;
+            }
+         } else {
+            return Dropdown::getValueWithUnit($split[0], $unit);
+         }
+      }
+
       return Dropdown::getValueWithUnit($split[0], $unit);
    }
 

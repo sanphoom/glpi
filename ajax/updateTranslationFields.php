@@ -27,23 +27,16 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief 
-*/
+$AJAX_INCLUDE = 1;
+include ('../inc/includes.php');
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
-}
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
-/// Class PhoneModel
-class PhoneModel extends CommonDropdown {
-
-   var $additional_fields_for_dictionnary = array('manufacturer');
-   var $can_be_translated = true;
-
-   static function getTypeName($nb=0) {
-      return _n('Phone model', 'Phone models', $nb);
-   }
-
+Session::checkRight("dropdown", "w");
+if (isset($_POST['itemtype']) && isset($_POST['language'])) {
+   $item = new $_POST['itemtype'];
+   $item->getFromDB($_POST['items_id']);
+   DropdownTranslation::dropdownFields($item, $_POST['language']);
 }
 ?>
