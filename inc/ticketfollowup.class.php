@@ -45,6 +45,12 @@ class TicketFollowup  extends CommonDBTM {
 
    static $rightname              = 'followup';
 
+   const UPDATEMY        =    2;
+   const ADDMYTICKET     =    4;
+   const UPDATEALL       = 1024;
+   const ADDGROUPTICKET  = 2048;
+   const ADDALLTICKET    = 4096;
+
 
 
    /**
@@ -59,8 +65,9 @@ class TicketFollowup  extends CommonDBTM {
 
    static function canCreate() {
 
-      return (Session::haveRight(self::$rightname, CREATE)
-              || Session::haveRight('add_followups', 1)
+      return (Session::haveRightOr(self::$rightname,
+                                   array(self::ADDALLTICKET, self::ADDMYTICKET,
+                                         self::ADDGROUPTICKET))
               || Session::haveRight('ticket', Ticket::OWN));
    }
 
@@ -73,24 +80,19 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   static function canDelete() {
-      return (Session::haveRight('delete_followups', 1));
-   }
-
-
    /**
     * Is the current user have right to delete the current followup ?
     *
     * @return boolean
    **/
-   function canDeleteItem() {
+   function canPurgeItem() {
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
 
-      if (Session::haveRight('delete_followups',1)) {
+      if (Session::haveRight(self::$rightname, PURGE)) {
          return true;
       }
 
@@ -131,7 +133,7 @@ class TicketFollowup  extends CommonDBTM {
    function canCreateItem() {
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
       return $ticket->canAddFollowups();
@@ -146,22 +148,22 @@ class TicketFollowup  extends CommonDBTM {
    function canUpdateItem() {
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('update_followups',1)) {
+          && !Session::haveRight(self::$rightname, self::UPDATEALL)) {
          return false;
       }
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
 
       if (($this->fields["users_id"] === Session::getLoginUserID())
-          && Session::haveRight('update_own_followups',1)) {
-            return true;
+          && Session::haveRight(self::$rightname, self::UPDATEMY)) {
+         return true;
 
       }
       // Only the technician
-      return (Session::haveRight("update_followups","1")
+      return (Session::haveRight(self::$rightname, self::UPDATEALL)
               || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -520,7 +522,9 @@ class TicketFollowup  extends CommonDBTM {
          $options['tickets_id'] = $ticket->getField('id');
          $this->check(-1, CREATE, $options);
       }
-      $tech = (Session::haveRight(self::$rightname, CREATE)
+      $tech = (Session::haveRightOr(self::$rightname,
+                                    array(self::ADDALLTICKET, self::ADDMYTICKET,
+                                          self::ADDGROUPTICKET))
                || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -589,7 +593,7 @@ class TicketFollowup  extends CommonDBTM {
 
       // Display existing Followups
       $showprivate   = Session::haveRight("show_full_ticket", "1");
-      $caneditall    = Session::haveRight("update_followups", "1");
+      $caneditall    = Session::haveRight(self::$rightname, self::UPDATEALL);
       $tmp           = array('tickets_id' => $tID);
       $canadd        = $this->can(-1, 'w', $tmp);
 
@@ -781,10 +785,19 @@ class TicketFollowup  extends CommonDBTM {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      unset($values[UPDATE], $values[PURGE]);
+      unset($values[UPDATE], $values[CREATE]);
+
+      if ($interface == 'central') {
+         $values[self::UPDATEALL]      = __('Update all followups');
+         $values[self::ADDALLTICKET]   = __('Add followups to all tickets');
+         $values[self::ADDGROUPTICKET] = __('Add a followup to tickets of associated groups');
+      }
+
+      $values[self::UPDATEMY]    = __('Update followups (author)');
+      $values[self::ADDMYTICKET] = __('Add a followup to tickets (requester)');
 
       if ($interface == 'helpdesk') {
-         unset($values[CREATE]);
+         unset($values[PURGE]);
       }
 
       return $values;

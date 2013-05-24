@@ -956,7 +956,10 @@ class Ticket extends CommonITILObject {
       //       see also updatedatemod used by ticketfollowup updates
       if (($this->fields['takeintoaccount_delay_stat'] == 0)
           && (Session::haveRight("global_add_tasks", "1")
-              || Session::haveRight('followup', CREATE)
+              || Session::haveRightOr('followup',
+                                      array(TicketFollowup::ADDALLTICKET,
+                                            TicketFollowup::ADDMYTICKET,
+                                            TicketFollowup::ADDGROUPTICKET))
               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])))) {
@@ -1698,7 +1701,10 @@ class Ticket extends CommonITILObject {
       if ($this->getFromDB($ID)) {
          if (!$no_stat_computation
              && (Session::haveRight("global_add_tasks", "1")
-                 || Session::haveRight('followup', CREATE)
+                 || Session::haveRightOr('followup',
+                                         array(TicketFollowup::ADDALLTICKET,
+                                               TicketFollowup::ADDMYTICKET,
+                                               TicketFollowup::ADDGROUPTICKET))
                  || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
                      && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])))) {
@@ -1742,11 +1748,11 @@ class Ticket extends CommonITILObject {
    **/
    function canAddFollowups() {
 
-      return ((Session::haveRight("add_followups","1")
+      return ((Session::haveRight("followup", TicketFollowup::ADDMYTICKET)
                && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                    || ($this->fields["users_id_recipient"] === Session::getLoginUserID())))
-              || Session::haveRight('followup', CREATE)
-              || (Session::haveRight("group_add_followups","1")
+              || Session::haveRight('followup', TicketFollowup::ADDALLTICKET)
+              || (Session::haveRight('followup', TicketFollowup::ADDGROUPTICKET)
                   && isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups']))
               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -4374,7 +4380,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       // Need comment right to add a followup with the actiontime
       if (!$ID
-          && Session::haveRight('followup', CREATE)) {
+          && Session::haveRight('followup', TicketFollowup::ADDALLTICKET)) {
          echo "<th>".$tt->getBeginHiddenFieldText('actiontime');
          printf(__('%1$s%2$s'), __('Total duration'), $tt->getMandatoryMark('actiontime'));
          echo $tt->getEndHiddenFieldText('actiontime')."</th>";

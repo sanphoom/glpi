@@ -67,7 +67,7 @@ class Document extends CommonDBTM {
 
       // Have right to add document OR ticket followup
       return (Session::haveRight('document', CREATE)
-              || Session::haveRight('add_followups', '1'));
+              || Session::haveRight('followup', TicketFollowup::ADDMYTICKET));
    }
 
 

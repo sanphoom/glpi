@@ -2888,7 +2888,8 @@ class User extends CommonDBTM {
                return false;
             }
             if ((Profile::$helpdesk_rights == 'followup')
-                & !TicketFollowup::canView()) {
+                & !Session::haveRightOr('followup', array(TicketFollowup::ADDMYTICKET,
+                                                          TicketFollowup::UPDATEMY))) {
                return false;
             }
 

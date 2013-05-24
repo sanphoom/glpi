@@ -183,10 +183,14 @@ function update084to085() {
                   '1' => 1);
 
    foreach ($right as $old => $new) {
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = $new
-                 WHERE `right` = '$old'";
-      $DB->queryOrDie($query, "0.85 right in profile $old to $new");
+      if (($new != '1') || ($new != '31')) {
+         // profile already migrated and values changed in the profile with new rights
+      } else {
+         $query  = "UPDATE `glpi_profilerights`
+                    SET `rights` = $new
+                    WHERE `right` = '$old'";
+         $DB->queryOrDie($query, "0.85 right in profile $old to $new");
+      }
    }
 
 // delete import_externalauth_users
@@ -541,27 +545,109 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 rename global_add_followups to followup");
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". CREATE ."
+                 SET `rights` = ". TicketFollowup::ADDALLTICKET ."
                  WHERE `name` = 'followup'
                        AND `right` = '1'";
       $DB->queryOrDie($query, "0.85 update followup with global_add_followups right");
    }
 
+
+   // delete add_followups
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'add_followups' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . TicketFollowup::ADDMYTICKET  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'followup'";
+         $DB->queryOrDie($query, "0.85 update followup with add_followups right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'add_followups'";
+   $DB->queryOrDie($query, "0.85 delete add_followups right");
+
+
+   // delete group_add_followups
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'group_add_followups' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . TicketFollowup::ADDGROUPTICKET  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'followup'";
+      $DB->queryOrDie($query, "0.85 update followup with group_add_followups right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'group_add_followups'";
+   $DB->queryOrDie($query, "0.85 delete group_add_followups right");
+
+
    // delete observe_ticket
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = followup' AND `right` = '1'") as $profrights) {
+                         "`name` = 'observe_ticket' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . READ  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'observe_ticket'";
+                      AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with observe_ticket right");
    }
     // don't delete observe_ticket because already use for task
 
 
+   // delete update_followups
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'update_followups' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . READ  ." | ". TicketFollowup::UPDATEALL  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'followup'";
+      $DB->queryOrDie($query, "0.85 update followup with update_followups right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'update_followups'";
+   $DB->queryOrDie($query, "0.85 delete update_followups right");
+
+
+   // delete update_own_followups
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'update_own_followups' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . READ  ." | ". TicketFollowup::UPDATEMY  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'followup'";
+      $DB->queryOrDie($query, "0.85 update followup with update_own_followups right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'update_own_followups'";
+   $DB->queryOrDie($query, "0.85 delete update_own_followups right");
+
+
+   // delete delete_followups
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'delete_followups' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . PURGE  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'followup'";
+      $DB->queryOrDie($query, "0.85 update followup with delete_followups right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'delete_followups'";
+   $DB->queryOrDie($query, "0.85 delete delete_followups right");
 
    // don't drop column right  - be done later
+
+
+
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
 
