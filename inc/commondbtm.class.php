@@ -1964,7 +1964,6 @@ class CommonDBTM extends CommonGLPI {
             $params['candel'] = false;
          }
 
-         // TODO : MoYo : think trouble if DELETE and not PURGE or PURGE and not DELETE
          if ($params['candel']) {
             if ($params['canedit']
                 && $this->can($ID, UPDATE)) {
@@ -1973,7 +1972,8 @@ class CommonDBTM extends CommonGLPI {
                       class='submit'>";
                echo "</td></tr><tr class='tab_bg_2'>\n";
             }
-            if ($this->isDeleted()) {
+            if ($this->isDeleted()
+                && $this->can($ID, PURGE)) {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
                echo "<input type='submit' name='restore' value=\""._sx('button','Restore')."\"
                       class='submit'>";
@@ -1985,13 +1985,17 @@ class CommonDBTM extends CommonGLPI {
                // If maybe dynamic : do not take into account  is_deleted  field
                if (!$this->maybeDeleted()
                    || $this->useDeletedToLockIfDynamic()) {
-                  echo "<input type='submit' name='purge' value=\""._sx('button',
-                                                                         'Delete permanently')."\"
-                         class='submit' ".
-                         Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
-               } else {
-                  echo "<input type='submit' name='delete' value='"._sx('button', 'Put in dustbin')."'
-                         class='submit'>";
+                  if ($this->can($ID, PURGE)) {
+                     echo "<input type='submit' name='purge' value=\""._sx('button',
+                                                                           'Delete permanently')."\"
+                            class='submit' ".
+                            Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
+                  }
+               } else if (!$this->isDeleted()
+                          && $this->can($ID, DELETE)) {
+                     echo "<input type='submit' name='delete' value='"._sx('button',
+                                                                           'Put in dustbin')."'
+                            class='submit'>";
                }
             }
 
@@ -3449,7 +3453,7 @@ class CommonDBTM extends CommonGLPI {
             $actions['purge']   = _x('button', 'Delete permanently');
          }
 
-         if ($candelete || $canpurge) {
+         if ( $canpurge) {
             $actions['restore'] = _x('button', 'Restore');
          }
 
