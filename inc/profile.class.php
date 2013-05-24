@@ -1999,14 +1999,14 @@ class Profile extends CommonDBTM {
       $tab[74]['datatype']       = 'bool';
       $tab[74]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_full_ticket'");
-/*
+
       $tab[75]['table']          = 'glpi_profilerights';
       $tab[75]['field']          = 'right';
-      $tab[75]['name']           = __('See public followups and tasks');
+      $tab[75]['name']           = __('See public tasks');
       $tab[75]['datatype']       = 'bool';
       $tab[75]['joinparams']     = array('jointype' => 'child',
                                         'condition' => "AND `NEWTABLE`.`name`= 'observe_ticket'");
-
+/*
       $tab[76]['table']          = 'glpi_profilerights';
       $tab[76]['field']          = 'right';
       $tab[76]['name']           = __('Update all followups');

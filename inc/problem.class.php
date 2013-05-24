@@ -187,7 +187,7 @@ class Problem extends CommonITILObject {
                $ong = array (1 => __('Analysis'),
                              2 => _n('Solution', 'Solutions', 1));
                if (Session::haveRight('observe_ticket','1')
-                   || Session::haveRight('followup', READ)) {
+                   || Session::haveRight('followup', TicketFollowup::SEEPUBLIC)) {
                   $ong[4] = __('Statistics');
                }
                return $ong;

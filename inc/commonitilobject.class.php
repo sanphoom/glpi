@@ -3654,7 +3654,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function showStats() {
 
-      if (!Session::haveRight('followup', READ)
+      if (!Session::haveRight('followup', TicketFollowup::SEEPUBLIC)
           || !Session::haveRight('observe_ticket',1)
           || !isset($this->fields['id'])) {
          return false;

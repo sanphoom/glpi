@@ -545,7 +545,7 @@ class Ticket extends CommonITILObject {
                }
             }
             if (Session::haveRight('observe_ticket','1')
-                || Session::haveRight('followup', READ)) {
+                || Session::haveRight('followup', TicketFollowup::SEEPUBLIC)) {
                $ong[4] = __('Statistics');
             }
             return $ong;

@@ -45,11 +45,13 @@ class TicketFollowup  extends CommonDBTM {
 
    static $rightname              = 'followup';
 
+   const SEEPUBLIC       =    1;
    const UPDATEMY        =    2;
    const ADDMYTICKET     =    4;
    const UPDATEALL       = 1024;
    const ADDGROUPTICKET  = 2048;
    const ADDALLTICKET    = 4096;
+   const SEEPRIVATE      = 8192;
 
 
 
@@ -74,7 +76,7 @@ class TicketFollowup  extends CommonDBTM {
 
    static function canView() {
 
-      return (Session::haveRight(self::$rightname, READ)
+      return (Session::haveRight(self::$rightname, self::SEEPUBLIC)
               || Session::haveRight('show_full_ticket', 1)
               || Session::haveRight('ticket', Ticket::OWN));
    }
@@ -108,14 +110,14 @@ class TicketFollowup  extends CommonDBTM {
    function canViewItem() {
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'),'r')) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
       if (Session::haveRight('show_full_ticket', 1)) {
          return true;
       }
       if (!$this->fields['is_private']
-          && Session::haveRight(self::$rightname, READ)) {
+          && Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
          return true;
       }
       if ($this->fields["users_id"] === Session::getLoginUserID()) {
@@ -173,7 +175,7 @@ class TicketFollowup  extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType() == 'Ticket') {
-         if (Session::haveRight(self::$rightname, READ)) {
+         if (Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(self::getTypeName(2),
                                            countElementsInTable('glpi_ticketfollowups',
@@ -584,7 +586,7 @@ class TicketFollowup  extends CommonDBTM {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight(self::$rightname, READ)
+      if (!Session::haveRight(self::$rightname, self::SEEPUBLIC)
           && !Session::haveRight("show_full_ticket", "1")) {
          return false;
       }
@@ -785,7 +787,7 @@ class TicketFollowup  extends CommonDBTM {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      unset($values[UPDATE], $values[CREATE]);
+      unset($values[UPDATE], $values[CREATE], $values[READ]);
 
       if ($interface == 'central') {
          $values[self::UPDATEALL]      = __('Update all followups');
@@ -795,6 +797,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $values[self::UPDATEMY]    = __('Update followups (author)');
       $values[self::ADDMYTICKET] = __('Add a followup to tickets (requester)');
+      $values[self::SEEPUBLIC]   = __('See public followups');
 
       if ($interface == 'helpdesk') {
          unset($values[PURGE]);

@@ -589,7 +589,7 @@ function update084to085() {
                          "`name` = 'observe_ticket' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  ."
+                 SET `rights` = `rights` | " . TicketFollowup::SEEPUBLIC  ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'followup'";
       $DB->queryOrDie($query, "0.85 update followup with observe_ticket right");
