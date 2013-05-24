@@ -43,7 +43,7 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   static public $helpdesk_rights = array('add_followups', 'ticket',
+   static public $helpdesk_rights = array('add_followups', 'ticket', 'followup',
                                           'create_ticket_on_login', 'create_request_validation',
                                           'create_incident_validation',
                                           'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
@@ -353,11 +353,15 @@ class Profile extends CommonDBTM {
    function cleanProfile() {
 
       if ((self::$helpdesk_rights == 'reservation')
-         & !ReservationItem::RESERVEANITEM) {
+         && !ReservationItem::RESERVEANITEM) {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
-          & !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
+          && !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'followup')
+          && !Session::haveRight('followup', READ)) {
          return false;
       }
 
@@ -413,6 +417,10 @@ class Profile extends CommonDBTM {
       }
       if ((self::$helpdesk_rights == 'ticket')
           & !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'followup')
+          && !Session::haveRight('followup', READ)) {
          return false;
       }
 
@@ -631,21 +639,26 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='25%'>".__('Add a followup to tickets (requester)')."</td><td width='25%'>";
-      Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Default ticket template')."</td><td>";
       // Only root entity ones and recursive
       $options = array('value'     => $this->fields["tickettemplates_id"],
                        'entity'    => 0,
                        'condition' => '`is_recursive` = 1');
-
       TicketTemplate::dropdown($options);
       echo "</td>";
       echo "<td colspan='2'>&nbsp;";
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>".__('Ticket followup')."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('TicketFollowup', 'helpdesk'), "_followup",
+                           $this->fields["followup"]);
+      echo "</td></tr>\n";
+
+      echo "<td width='25%'>".__('Add a followup to tickets (requester)')."</td><td width='25%'>";
+      Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
+      echo "</td></tr>\n";
+
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See public followups and tasks')."</td><td>";
@@ -964,8 +977,7 @@ class Profile extends CommonDBTM {
       // Assistance / Tracking-helpdesk
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assistance')."</th></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Ticket')."</th>";
-      echo "</tr>\n";
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Ticket')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='18%'>".__('Ticket')."</td><td colspan='5'>";
@@ -999,6 +1011,17 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
 
+      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Ticket followup')."</th></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>".__('Ticket followup')."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('TicketFollowup'), "_followup",
+                           $this->fields["followup"]);
+      echo "</td></tr>\n";
+
+
+
+
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Creation')."</th>";
       echo "</tr>\n";
@@ -1006,9 +1029,9 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td width='18%'>".__('Add a followup to tickets (requester)')."</td><td width='15%'>";
       Dropdown::showYesNo("add_followups", $this->fields["add_followups"]);
-      echo "</td>";
-      echo "<td width='18%'>".__('Add a followup to all tickets')."</td><td width='15%'>";
-      Dropdown::showYesNo("global_add_followups", $this->fields["global_add_followups"]);
+//      echo "</td>";
+//      echo "<td width='18%'>".__('Add a followup to all tickets')."</td><td width='15%'>";
+//      Dropdown::showYesNo("global_add_followups", $this->fields["global_add_followups"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -1094,9 +1117,9 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See public followups and tasks')."</td><td>";
-      Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
-      echo "</td>";
+//      echo "<td>".__('See public followups and tasks')."</td><td>";
+//      Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
+//      echo "</td>";
       echo "<td>".__('See all followups and tasks (public and private)')."</td><td>";
       Dropdown::showYesNo("show_full_ticket", $this->fields["show_full_ticket"]);
       echo "</td>";
@@ -2011,14 +2034,14 @@ class Profile extends CommonDBTM {
       $tab[74]['datatype']       = 'bool';
       $tab[74]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_full_ticket'");
-
+/*
       $tab[75]['table']          = 'glpi_profilerights';
       $tab[75]['field']          = 'right';
       $tab[75]['name']           = __('See public followups and tasks');
       $tab[75]['datatype']       = 'bool';
       $tab[75]['joinparams']     = array('jointype' => 'child',
                                         'condition' => "AND `NEWTABLE`.`name`= 'observe_ticket'");
-
+*/
       $tab[76]['table']          = 'glpi_profilerights';
       $tab[76]['field']          = 'right';
       $tab[76]['name']           = __('Update all followups');

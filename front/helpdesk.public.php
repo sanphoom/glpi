@@ -68,7 +68,8 @@ if (isset($_GET["redirect"])) {
 
 // redirect if no create ticket right
 if (!Session::haveRight('ticket', CREATE)) {
-   if (Session::haveRight('observe_ticket',1)
+   if (Session::haveRight('followup', READ)
+       || Session::haveRight('observe_ticket',1)
        || Session::haveRight('validate_request',1)
        || Session::haveRight('validate_incident',1)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/ticket.php");

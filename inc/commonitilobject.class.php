@@ -2340,13 +2340,13 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[22]['right']         = 'all';
       $tab[22]['linkfield']     = 'users_id_recipient';
       $tab[22]['name']          = __('Writer');
-      
+
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          $tab[22]['right']       = 'id';
       }
-      
+
       $tab['observer']          = __('Watcher');
 
       $tab[66]['table']         = 'glpi_users';
@@ -3654,7 +3654,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function showStats() {
 
-      if (!Session::haveRight('observe_ticket',1)
+      if (!Session::haveRight('followup', READ)
+          || !Session::haveRight('observe_ticket',1)
           || !isset($this->fields['id'])) {
          return false;
       }

@@ -377,13 +377,13 @@ function update084to085() {
       // rename create_ticket
       $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'ticket'
-            WHERE `name` = 'create_ticket'";
+                 WHERE `name` = 'create_ticket'";
       $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
 
       $query  = "UPDATE `glpi_profilerights`
-                  SET `rights` = ". CREATE ."
-                  WHERE `name` = 'ticket'
-                        AND `right` = '1'";
+                 SET `rights` = ". CREATE ."
+                 WHERE `name` = 'ticket'
+                       AND `right` = '1'";
       $DB->queryOrDie($query, "0.85 update ticket with create_ticket right");
    }
 
@@ -530,6 +530,35 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'update_priority'";
    $DB->queryOrDie($query, "0.85 delete update_priority right");
+
+
+   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   if (countElementsInTable("glpi_profilerights", "`name` = 'followup'") == 0) {
+      // rename create_ticket
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `name` = 'followup'
+                 WHERE `name` = 'global_add_followups'";
+      $DB->queryOrDie($query, "0.85 rename global_add_followups to followup");
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = ". CREATE ."
+                 WHERE `name` = 'followup'
+                       AND `right` = '1'";
+      $DB->queryOrDie($query, "0.85 update followup with global_add_followups right");
+   }
+
+   // delete observe_ticket
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = followup' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . READ  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'observe_ticket'";
+      $DB->queryOrDie($query, "0.85 update followup with observe_ticket right");
+   }
+    // don't delete observe_ticket because already use for task
+
 
 
    // don't drop column right  - be done later
@@ -952,7 +981,7 @@ function update084to085() {
          $DB->queryOrDie($query, "0.85 fix encoding of html field : $table.$field");
       }
    }
-    
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

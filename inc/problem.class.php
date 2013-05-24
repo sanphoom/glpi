@@ -186,7 +186,8 @@ class Problem extends CommonITILObject {
             case __CLASS__ :
                $ong = array (1 => __('Analysis'),
                              2 => _n('Solution', 'Solutions', 1));
-               if (Session::haveRight('observe_ticket','1')) {
+               if (Session::haveRight('observe_ticket','1')
+                   || Session::haveRight('followup', READ)) {
                   $ong[4] = __('Statistics');
                }
                return $ong;

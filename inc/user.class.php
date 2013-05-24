@@ -2887,6 +2887,10 @@ class User extends CommonDBTM {
                 & !Ticket::canCreate()) {
                return false;
             }
+            if ((Profile::$helpdesk_rights == 'followup')
+                & !TicketFollowup::canView()) {
+               return false;
+            }
 
             foreach ($right as $r) {
                if ($r == 'own_ticket') {
@@ -2901,7 +2905,6 @@ class User extends CommonDBTM {
                                getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                           $entity_restrict, 1).") ";
                }
-               toolbox::logdebug("where", $where);
                if (in_array($right, Profile::$helpdesk_rights)) {
                   $forcecentral = false;
                }
