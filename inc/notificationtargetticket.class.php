@@ -135,8 +135,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       $query = "SELECT `profiles_id` as id
                 FROM `glpi_profilerights`
-                WHERE `glpi_profilerights`.`name` = 'show_full_ticket'
-                  AND `glpi_profilerights`.`right` = '1'";
+                WHERE `glpi_profilerights`.`name` = 'followup'
+                  AND `glpi_profilerights`.`rights` & ".
+                     (TicketFollowup::SEEPRIVATE | TicketFollowup::SEEPUBLIC);
 
       foreach ($DB->request($query) as $data) {
          $this->private_profiles[$data['id']] = $data['id'];
@@ -234,8 +235,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                          AND `glpi_profiles`.`interface` = 'central')
                      INNER JOIN `glpi_profilerights`
                      ON (`glpi_profiles`.`id` = `glpi_profilerights`.`profiles_id`
-                         AND `glpi_profilerights`.`name` = 'show_full_ticket'
-                         AND `glpi_profilerights`.`right` = '1') ";
+                         AND `glpi_profilerights`.`name` = 'followup'
+                         AND `glpi_profilerights`.`rights` & ".
+                            (TicketFollowup::SEEPRIVATE | TicketFollowup::SEEPUBLIC).") ";
 
       }
       return $query;

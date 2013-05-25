@@ -1085,7 +1085,7 @@ class Profile extends CommonDBTM {
       echo "<td>".__('See public tasks')."</td><td>";
       Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
       echo "</td>";
-      echo "<td>".__('See all followups and tasks (public and private)')."</td><td>";
+      echo "<td>".__('See all tasks (public and private)')."</td><td>";
       Dropdown::showYesNo("show_full_ticket", $this->fields["show_full_ticket"]);
       echo "</td>";
       echo "<td>".__('Statistics')."</td><td>";
@@ -1995,7 +1995,7 @@ class Profile extends CommonDBTM {
 */
       $tab[74]['table']          = 'glpi_profilerights';
       $tab[74]['field']          = 'right';
-      $tab[74]['name']           = __('See all followups and tasks (public and private)');
+      $tab[74]['name']           = __('See all tasks (public and private)');
       $tab[74]['datatype']       = 'bool';
       $tab[74]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_full_ticket'");

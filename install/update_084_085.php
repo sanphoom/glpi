@@ -584,7 +584,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete group_add_followups right");
 
 
-   // delete observe_ticket
+   // delete observe_ticket for followup
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'observe_ticket' AND `right` = '1'") as $profrights) {
 
@@ -595,6 +595,19 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 update followup with observe_ticket right");
    }
     // don't delete observe_ticket because already use for task
+
+
+   // delete show_full_ticket for followup
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'show_full_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " .TicketFollowup::SEEPUBLIC ." | ".TicketFollowup::SEEPRIVATE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'followup'";
+         $DB->queryOrDie($query, "0.85 update followup with show_full_ticket right");
+   }
+   // don't delete show_full_ticket because already use for task
 
 
    // delete update_followups
@@ -643,6 +656,8 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'delete_followups'";
    $DB->queryOrDie($query, "0.85 delete delete_followups right");
+
+
 
    // don't drop column right  - be done later
 

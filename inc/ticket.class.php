@@ -2251,7 +2251,7 @@ class Ticket extends CommonITILObject {
       $tab['followup']              = _n('Followup', 'Followups', 2);
 
       $followup_condition = '';
-      if (!Session::haveRight('show_full_ticket', 1)) {
+      if (!Session::haveRight('followup', TicketFollowup::SEEPRIVATE)) {
          $followup_condition = "AND (`NEWTABLE`.`is_private` = '0'
                                      OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
       }
@@ -5396,7 +5396,7 @@ class Ticket extends CommonITILObject {
 
       $candelete   = self::canDelete();
       $canupdate   = Session::haveRight(self::$rightname, UPDATE);
-      $showprivate = Session::haveRight("show_full_ticket", "1");
+      $showprivate = Session::haveRight('followup', TicketFollowup::SEEPRIVATE);
       $align       = "class='center";
       $align_desc  = "class='left";
 
@@ -5669,7 +5669,7 @@ class Ticket extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $showprivate = Session::haveRight("show_full_ticket", 1);
+      $showprivate = Session::haveRight('followup', TicketFollowup::SEEPRIVATE);
 
       $job  = new self();
       $rand = mt_rand();

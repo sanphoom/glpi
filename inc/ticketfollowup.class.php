@@ -35,8 +35,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// TicketFollowup class
 /// TODO extends it from CommonDBChild
+/**
+ * TicketFollowup Class
+**/
 class TicketFollowup  extends CommonDBTM {
 
 
@@ -76,8 +78,7 @@ class TicketFollowup  extends CommonDBTM {
 
    static function canView() {
 
-      return (Session::haveRight(self::$rightname, self::SEEPUBLIC)
-              || Session::haveRight('show_full_ticket', 1)
+      return (Session::haveRightOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))
               || Session::haveRight('ticket', Ticket::OWN));
    }
 
@@ -113,7 +114,7 @@ class TicketFollowup  extends CommonDBTM {
       if (!$ticket->can($this->getField('tickets_id'), READ)) {
          return false;
       }
-      if (Session::haveRight('show_full_ticket', 1)) {
+      if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
          return true;
       }
       if (!$this->fields['is_private']
@@ -586,15 +587,14 @@ class TicketFollowup  extends CommonDBTM {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight(self::$rightname, self::SEEPUBLIC)
-          && !Session::haveRight("show_full_ticket", "1")) {
+      if (!Session::haveRightOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))) {
          return false;
       }
 
       $tID = $ticket->fields['id'];
 
       // Display existing Followups
-      $showprivate   = Session::haveRight("show_full_ticket", "1");
+      $showprivate   = Session::haveRight(self::$rightname, self::SEEPRIVATE);
       $caneditall    = Session::haveRight(self::$rightname, self::UPDATEALL);
       $tmp           = array('tickets_id' => $tID);
       $canadd        = $this->can(-1, 'w', $tmp);
@@ -666,7 +666,7 @@ class TicketFollowup  extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       // Print Followups for a job
-      $showprivate = Session::haveRight("show_full_ticket", "1");
+      $showprivate = Session::haveRight(self::$rightname, self::SEEPRIVATE);
 
       $RESTRICT = "";
       if (!$showprivate) {
@@ -793,6 +793,7 @@ class TicketFollowup  extends CommonDBTM {
          $values[self::UPDATEALL]      = __('Update all followups');
          $values[self::ADDALLTICKET]   = __('Add followups to all tickets');
          $values[self::ADDGROUPTICKET] = __('Add a followup to tickets of associated groups');
+         $values[self::SEEPRIVATE]     = __('See private followups');
       }
 
       $values[self::UPDATEMY]    = __('Update followups (author)');
