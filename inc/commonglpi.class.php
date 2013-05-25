@@ -288,8 +288,8 @@ class CommonGLPI {
          $menu['options'] = $data;
       }
       if ($data = static::getAdditionalMenuContent()) {
-         $newmenu[strtolower($type)] = $menu;
-         $newmenu += $data;
+         $newmenu[strtolower($type)]  = $menu;
+         $newmenu                    += $data;
          $newmenu['is_multi_entries'] = true;
          $menu = $newmenu;
       }
@@ -298,6 +298,7 @@ class CommonGLPI {
       }
       return false;
    }
+
 
    /**
     * get additional menu content
@@ -309,6 +310,7 @@ class CommonGLPI {
    static function getAdditionalMenuContent() {
       return false;
    }
+
 
    /**
     * Get forbidden actions for menu : may be add / template
@@ -1076,11 +1078,12 @@ class CommonGLPI {
     *
     * @since version 0.84
     *
-    * @param $sub_itemtype  string   sub itemtype if needed
+    * @param $sub_itemtype  string   sub itemtype if needed (default '')
     *
     * @return nothing
    **/
    static function getDisplayOptions($sub_itemtype='') {
+
       if (!isset($_SESSION['glpi_display_options'])) {
          // Load display_options from user table
          $_SESSION['glpi_display_options'] = array();
@@ -1180,7 +1183,6 @@ class CommonGLPI {
     * @return all the options
    **/
    static function getAvailableDisplayOptions() {
-
       return array();
    }
 
@@ -1202,13 +1204,13 @@ class CommonGLPI {
       $link .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
       $link .= " class='pointer' onClick=\"".Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');\">";
       $link .= Ajax::createIframeModalWindow("displayoptions".$rand,
-                              $CFG_GLPI['root_doc']."/front/display.options.php?itemtype=".
-                                 static::getType()."&sub_itemtype=$sub_itemtype",
-                              array('display'       => false,
-                                    'width'         => 600,
-                                    'height'        => 500,
-                                    'reloadonclose' => true));
-
+                                             $CFG_GLPI['root_doc'].
+                                                "/front/display.options.php?itemtype=".
+                                                static::getType()."&sub_itemtype=$sub_itemtype",
+                                             array('display'       => false,
+                                                   'width'         => 600,
+                                                   'height'        => 500,
+                                                   'reloadonclose' => true));
 
       return $link;
    }

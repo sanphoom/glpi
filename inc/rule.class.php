@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
- * Rule class store all information about a GLPI rule :
+ * Rule Class store all information about a GLPI rule :
  *   - description
  *   - criterias
  *   - actions
@@ -797,9 +797,8 @@ class Rule extends CommonDBTM {
                   Html::jsGetElementbyID('ruletest'.$rand).".dialog('open');\">".
                   __('Test')."</a>";
             Ajax::createIframeModalWindow('ruletest'.$rand,
-                                          $url."/front/rule.test.php?".
-                                          "sub_type=".$this->getType().
-                                          "&rules_id=".$this->fields["id"],
+                                          $url."/front/rule.test.php?". "sub_type=".$this->getType().
+                                             "&rules_id=".$this->fields["id"],
                                           array('title' => __('Test')));
             echo "</td></tr>\n";
          }

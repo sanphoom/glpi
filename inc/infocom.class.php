@@ -680,12 +680,13 @@ class Infocom extends CommonDBChild {
       }
 
       if ($item->canView()) {
-         echo "<span onClick=\"".Html::jsGetElementbyID('infocom'.$itemtype.$device_id).".dialog('open');\" style='cursor:pointer'>
+         echo "<span onClick=\"".Html::jsGetElementbyID('infocom'.$itemtype.$device_id).".dialog('open');\"
+                style='cursor:pointer'>
                <img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
          Ajax::createIframeModalWindow('infocom'.$itemtype.$device_id,
                                        $CFG_GLPI["root_doc"]."/front/infocom.form.php".
-                                       "?itemtype=$itemtype&items_id=$device_id",
+                                          "?itemtype=$itemtype&items_id=$device_id",
                                        array('height' => 600));
       }
    }

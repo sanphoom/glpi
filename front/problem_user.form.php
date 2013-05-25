@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.83
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -41,9 +42,9 @@ Session ::checkLoginUser();
 Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
 if (isset($_POST["update"])) {
-   $ticket_user->check($_POST["id"], 'w');
-
+   $ticket_user->check($_POST["id"], UPDATE);
    $ticket_user->update($_POST);
+
 } else if (isset($_GET["id"])) {
    $ticket_user->showUserNotificationForm($_GET["id"]);
 } else {

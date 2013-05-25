@@ -99,7 +99,6 @@ if (isset($_POST["add"])) {
       Html::popFooter();
 
 } else {
-
    Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "management", "budget");
    $budget->display(array('id'           => $_GET["id"],
                           'withtemplate' => $_GET["withtemplate"]));

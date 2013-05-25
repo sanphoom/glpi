@@ -1585,7 +1585,7 @@ class Html {
       echo "<li>";
       Ajax::createIframeModalWindow('loadbookmark',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
-                                    array('title' => __('Load a bookmark'),
+                                    array('title'         => __('Load a bookmark'),
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\"\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
@@ -1986,11 +1986,11 @@ class Html {
       echo "<li>";
       Ajax::createIframeModalWindow('loadbookmark',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
-                                    array('title' => __('Load a bookmark'),
+                                    array('title'         => __('Load a bookmark'),
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\"\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\"  alt=\"".__s('Load a bookmark')."\">";
+             "\" alt=\"".__s('Load a bookmark')."\">";
       echo "</a></li>";
 
       // check user id : header used for display messages when session logout
@@ -2112,7 +2112,7 @@ class Html {
 
 
    /**
-    * Print a nice HTML head for popup window (nothing to display)
+    * Print a nice HTML head for modal window (nothing to display)
     *
     * @param $title  title of the page
     * @param $url    not used anymore (default '')
@@ -2133,7 +2133,7 @@ class Html {
 
 
    /**
-    * Print footer for a popup window
+    * Print footer for a modal window
    **/
    static function popFooter() {
       global $FOOTER_LOADED;
@@ -3208,10 +3208,10 @@ class Html {
       $out .= "<div id='".$param['contentid']."' class='invisible'>$content</div>";
       if (!empty($param['popup'])) {
          $out .= Ajax::createIframeModalWindow('tooltippopup'.$rand,
-                                          $param['popup'],
-                                          array('display' => false,
-                                                'width'   => 600,
-                                                'height'  => 300));
+                                               $param['popup'],
+                                               array('display' => false,
+                                                     'width'   => 600,
+                                                     'height'  => 300));
       }
       $out .= "<script type='text/javascript' >\n";
       $out .= Html::jsGetElementbyID($param['applyto']).".tooltip({

@@ -119,12 +119,12 @@ if (isset($_POST["add"])) {
 
       Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
       $kb = new KnowbaseItem();
-      $kb->check($_GET["id"],'r');
+      $kb->check($_GET["id"], READ);
       $kb->showFull();
       Html::popFooter();
    } else {
       // modifier un item dans la base de connaissance
-      $kb->check($_GET["id"], UPDATE);
+      $kb->check($_GET["id"], READ);
 
       Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
       $available_options = array('item_itemtype', 'item_items_id', 'id');

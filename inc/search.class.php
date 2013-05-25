@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Generic class for Search Engine
+/**
+ * Search Class
+ *
+ * Generic class for Search Engine
+**/
 class Search {
 
    // Default number of items displayed in global search
@@ -870,15 +874,22 @@ class Search {
 
                   $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".dialog('open');\"";
 
-                  $search_config  = "<img alt=\"".__s('Select default items to show')."\" title=\"".
-                                      __s('Select default items to show')."\" src='".
-                                      $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
-                  $search_config .= $tmp.">";
-                  $search_config .= Ajax::createIframeModalWindow('search_config',
-                                                   $CFG_GLPI["root_doc"]."/front/displaypreference.form.php?itemtype=$itemtype",
-                                                   array('title' => __('Select default items to show'),
-                                                         'reloadonclose' => true,
-                                                         'display' => false));
+                  $search_config
+                     = "<img alt=\"".__s('Select default items to show')."\" title=\"".
+                         __s('Select default items to show')."\" src='".
+                         $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+                  $search_config
+                    .= $tmp.">";
+                  $search_config
+                    .= Ajax::createIframeModalWindow('search_config',
+                                                     $CFG_GLPI["root_doc"].
+                                                       "/front/displaypreference.form.php?itemtype=$itemtype",
+                                                     array('title'
+                                                             => __('Select default items to show'),
+                                                           'reloadonclose'
+                                                             => true,
+                                                           'display'
+                                                             => false));
                }
 
                Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype, 0,
@@ -4660,7 +4671,7 @@ class Search {
                //$out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
                if (getTableNameForForeignKeyField($searchopt[$ID]['linkfield']) != '') {
                   /// TODO : Try to do it on SQL to avoid mass SQL requests
-                  $out.= DropdownTranslation::getTranslationByName(getItemTypeForTable($searchopt[$ID]['table']), 
+                  $out.= DropdownTranslation::getTranslationByName(getItemTypeForTable($searchopt[$ID]['table']),
                                                                    $searchopt[$ID]['field'],
                                                                    $split[$k]).$unit;
                } else {
@@ -4716,7 +4727,7 @@ class Search {
             if (isset($source->fields[$fk])) {
                //Return the translated value
                /// TODO : Try to do it on SQL to avoid mass SQL requests
-               return DropdownTranslation::getTranslatedValue($source->fields[$fk], $itemtype, 
+               return DropdownTranslation::getTranslatedValue($source->fields[$fk], $itemtype,
                                                               $field, $_SESSION['glpilanguage'],
                                                               $data[$NAME.$num]).$unit;
             }

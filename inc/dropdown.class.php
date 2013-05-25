@@ -68,7 +68,7 @@ class Dropdown {
     *    - display_emptychoice : Display emptychoice ? (default true)
     *    - display             : boolean / display or get string (default true)
     *    - width               : specific width needed (default 80%)
-    *    - permit_select_parent : boolean / for tree dropdown permit to see parent items not available by default (default false)    
+    *    - permit_select_parent : boolean / for tree dropdown permit to see parent items not available by default (default false)
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -205,8 +205,8 @@ class Dropdown {
                             "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                             onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['rand']).".dialog('open');\">";
                $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['rand'],
-                                                $item->getFormURL(),
-                                                array('display' => false));
+                                                        $item->getFormURL(),
+                                                        array('display' => false));
          }
          // Display specific Links
          if ($itemtype == "Supplier") {

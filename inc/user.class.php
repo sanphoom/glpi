@@ -3090,18 +3090,17 @@ toolbox::logdebug("dans dropdownuser", $options);
          }
       }
       $field_id = Html::cleanId("dropdown_".$p['name'].$p['rand']);
-      $param = array('value'               => $p['value'],
-                     'valuename'           => $default,
-                     'width'               => $p['width'],
-                     'all'                 => $p['all'],
-                     'right'               => $p['right'],
-                     'on_change'           => $p['on_change'],
-                     'used'                => $p['used'],
-                     'entity_restrict'     => $p['entity'],
-                );
-      $output = Html::jsAjaxDropdown($p['name'], $field_id,
-                                     $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php",
-                                     $param);
+      $param    = array('value'               => $p['value'],
+                        'valuename'           => $default,
+                        'width'               => $p['width'],
+                        'all'                 => $p['all'],
+                        'right'               => $p['right'],
+                        'on_change'           => $p['on_change'],
+                        'used'                => $p['used'],
+                        'entity_restrict'     => $p['entity']);
+      $output   = Html::jsAjaxDropdown($p['name'], $field_id,
+                                       $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php",
+                                       $param);
 
       // Display comment
       if ($p['comments']) {
@@ -3137,10 +3136,11 @@ toolbox::logdebug("dans dropdownuser", $options);
                       "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                       onClick=\"".Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');\">";
          $output .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
-                                          $CFG_GLPI["root_doc"]."/front/ldap.import.php?entity=".$_SESSION['glpiactive_entity'],
-                                          array('title' => __('Import a user'),
-                                                'display' => false));
-
+                                                  $CFG_GLPI["root_doc"].
+                                                      "/front/ldap.import.php?entity=".
+                                                      $_SESSION['glpiactive_entity'],
+                                                  array('title'   => __('Import a user'),
+                                                        'display' => false));
       }
 
       if ($p['display']) {

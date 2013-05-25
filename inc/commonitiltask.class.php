@@ -170,8 +170,8 @@ abstract class CommonITILTask  extends CommonDBTM {
           && ($uid = Session::getLoginUserID())) { // Change from task form
          $input["users_id"] = $uid;
       }
-      
-      $itemtype    = $this->getItilObjectItemType();
+
+      $itemtype      = $this->getItilObjectItemType();
       $input["_job"] = new $itemtype();
 
       if (!$input["_job"]->getFromDB($input[$input["_job"]->getForeignKeyField()])) {
@@ -211,7 +211,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                Session::addMessageAfterRedirect(__('End of the selected timeframe is not a working hour.'),
                                                 false, ERROR);
             }
-         }                                       
+         }
       }
 
       return $input;

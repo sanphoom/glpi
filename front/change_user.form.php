@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -46,7 +47,8 @@ if (isset($_POST["update"])) {
    $link->update($_POST);
    echo "<script type='text/javascript' >\n";
    echo "window.parent.location.reload();";
-   echo "</script>";   
+   echo "</script>";
+
 } else if (isset($_GET["id"])) {
    $link->showUserNotificationForm($_GET["id"]);
 } else {

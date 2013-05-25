@@ -1134,8 +1134,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Add default document if set in template
       if (isset($this->input['_documents_id'])
-            && is_array($this->input['_documents_id'])
-            && count($this->input['_documents_id'])) {
+          && is_array($this->input['_documents_id'])
+          && count($this->input['_documents_id'])) {
          $docitem = new Document_Item();
          foreach ($this->input['_documents_id'] as $docID) {
             if ($docitem->add(array('documents_id' => $docID,
@@ -2634,8 +2634,8 @@ abstract class CommonITILObject extends CommonDBTM {
                if ($canedit
                    || ($d['users_id'] == Session::getLoginUserID())) {
                   $linkuser = new $this->userlinkclass();
-                  $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
-                               'popup' => $linkuser->getFormURL()."?id=".$d['id']);
+                  $opt      = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                                    'popup' => $linkuser->getFormURL()."?id=".$d['id']);
                   Html::showToolTip($text, $opt);
                }
             }

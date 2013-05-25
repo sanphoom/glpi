@@ -277,8 +277,9 @@ class CalendarSegment extends CommonDBChild {
       return false;
    }
 
+
    /**
-    * Is the hour passed is a workign hour ?
+    * Is the hour passed is a working hour ?
     *
     * @param $calendars_id    id of the calendar
     * @param $day             day number
@@ -297,7 +298,7 @@ class CalendarSegment extends CommonDBChild {
                       AND `day` = '$day'
                       AND `begin` <= '$hour'
                       AND `end` >= '$hour'";
-      Toolbox::logDebug($query);
+ //     Toolbox::logDebug($query);
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             return true;

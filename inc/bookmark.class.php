@@ -678,9 +678,9 @@ class Bookmark extends CommonDBTM {
       echo "</a>";
       Ajax::createIframeModalWindow('bookmarksave',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?type=$type".
-                                    "&action=edit&itemtype=$itemtype&".
-                                    "url=".rawurlencode($_SERVER["REQUEST_URI"]),
-                                    array('title' => __('Save as bookmark'),
+                                          "&action=edit&itemtype=$itemtype&".
+                                          "url=".rawurlencode($_SERVER["REQUEST_URI"]),
+                                    array('title'         => __('Save as bookmark'),
                                           'reloadonclose' => true));
    }
 

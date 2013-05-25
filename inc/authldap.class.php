@@ -355,7 +355,7 @@ class AuthLDAP extends CommonDBTM {
          default :
             return parent::doSpecificMassiveActions($input);
       }
-      print_r($res);
+   //   print_r($res);
       return $res;
    }
 
@@ -2540,7 +2540,8 @@ class AuthLDAP extends CommonDBTM {
 
       //If form accessed via modal, do not show expert mode link
       // Manage new value is set : entity or mode
-      if (isset($options['entity']) || isset($options['mode'])) {
+      if (isset($options['entity'])
+          || isset($options['mode'])) {
          if (isset($options['_in_modal']) && $options['_in_modal']) {
             //If coming form the helpdesk form : reset all criterias
             $_SESSION['ldap_import']['_in_modal']      = 1;

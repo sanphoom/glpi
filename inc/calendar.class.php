@@ -326,6 +326,7 @@ class Calendar extends CommonDropdown {
       return (($cache_duration[$dayofweek] > 0) && !$this->isHoliday($date));
    }
 
+
    /**
     * Is the time passed is in a working hour
     *
@@ -338,14 +339,12 @@ class Calendar extends CommonDropdown {
    function isAWorkingHour($time) {
 
       if ($this->isAWorkingDay($time)) {
-         $dayofweek        = self::getDayNumberInWeek($time);
+         $dayofweek = self::getDayNumberInWeek($time);
          return CalendarSegment::isAWorkingHour($this->fields['id'], $dayofweek,
                                                 date('H:i:s', $time));
       }
-
       return false;
    }
-
 
 
    /**
@@ -356,12 +355,12 @@ class Calendar extends CommonDropdown {
     *
     * @param $start            datetime    begin
     * @param $delay            timestamp   delay to add (negative : next working day)
-    * @param $additional_delay timestamp   delay to add
+    * @param $additional_delay timestamp   delay to add (default 0)
     * @param $work_in_days     boolean     force working in days (false by default)
     *
     * @return end date
    **/
-   function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days=false) {
+   function computeEndDate($start, $delay, $additional_delay=0, $work_in_days=false) {
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -370,24 +369,24 @@ class Calendar extends CommonDropdown {
       $actualtime = strtotime($start);
       $timestart  = strtotime($start);
       $datestart  = date('Y-m-d', $timestart);
-      
+
       // End of working day
       if ($delay < 0) {
          $numberofdays = abs($delay);
          // Add $additional_delay to start time.
          // If start + delay is next day : +1 day
          $actualtime += $additional_delay;
-         
+
          // Begin next day
-         $actualtime += DAY_TIMESTAMP;
+         $actualtime    += DAY_TIMESTAMP;
          $numberofdays--;
          $cache_duration = $this->getDurationsCache();
-         $dayofweek  = self::getDayNumberInWeek($actualtime);
-         $actualdate = date('Y-m-d',$actualtime);
-         
+         $dayofweek      = self::getDayNumberInWeek($actualtime);
+         $actualdate     = date('Y-m-d',$actualtime);
+
          while ($numberofdays > 0) {
             if (!$this->isHoliday($actualdate)
-                  && ($cache_duration[$dayofweek] > 0)) {
+                && ($cache_duration[$dayofweek] > 0)) {
                $numberofdays --;
             }
             $actualtime += DAY_TIMESTAMP;
@@ -395,11 +394,11 @@ class Calendar extends CommonDropdown {
             $dayofweek   = self::getDayNumberInWeek($actualtime);
          }
          $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
-         $actualtime   = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
+         $actualtime      = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
 
          return date('Y-m-d H:i:s', $actualtime);
       }
-      
+
       // Add additional delay to initial delay
       $delay += $additional_delay;
 

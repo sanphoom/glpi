@@ -2112,10 +2112,12 @@ class Ticket extends CommonITILObject {
       $tab[142]['nodisplay']     = true;
       $tab[142]['datatype']      = 'dropdown';
       $tab[142]['massiveaction'] = false;
-      $tab[142]['joinparams']    = array('jointype' => 'items_id',
-                                         'beforejoin' => array('table' => 'glpi_documents_items',
+      $tab[142]['joinparams']    = array('jointype'   => 'items_id',
+                                         'beforejoin' => array('table'
+                                                                 => 'glpi_documents_items',
                                                                'joinparams'
-                                                                  => array('jointype' => 'itemtype_item')));
+                                                                 => array('jointype'
+                                                                            => 'itemtype_item')));
 
       $tab += $this->getSearchOptionsActors();
 
@@ -3936,7 +3938,7 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize4%' class='nopadding'>";
       if ($ID) {
          if ($this->fields["slas_id"] > 0) {
-            echo "<table width='100%' ><tr><td class='nopadding'>";
+            echo "<table width='100%'><tr><td class='nopadding'>";
             echo Html::convDateTime($this->fields["due_date"]);
             echo "</td><td class='b'>".__('SLA')."</td>";
             echo "<td class='nopadding'>";
@@ -3953,7 +3955,8 @@ class Ticket extends CommonITILObject {
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
                $commentsla .= '<span class="b spaced">'.
                                 sprintf(__('Next escalation: %s'),
-                                        Html::convDateTime($nextaction->fields['date'])).'</span><br>';
+                                        Html::convDateTime($nextaction->fields['date'])).
+                                           '</span><br>';
                if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
                   $commentsla .= '<span class="b spaced">'.
                                    sprintf(__('%1$s: %2$s'), __('Escalation level'),
@@ -4477,15 +4480,15 @@ class Ticket extends CommonITILObject {
          }
          echo $tt->getEndHiddenFieldText('_documents_id');
          echo "</th>";
-         echo "<td width='$colsize2%'>";
+         echo "<tr><td width='$colsize2%'>";
          echo $tt->getBeginHiddenFieldValue('_documents_id');
          echo "<div id='uploadfiles'><input type='file' name='filename[]' size='20'></div>";
          // Do not set values
          echo $tt->getEndHiddenFieldValue('_documents_id');
          if ($tt->isPredefinedField('_documents_id')) {
             if (isset($values['_documents_id'])
-                  && is_array($values['_documents_id'])
-                  && count($values['_documents_id'])) {
+                && is_array($values['_documents_id'])
+                && count($values['_documents_id'])) {
                echo "<span class='b'>".__('Default documents:').'</span>';
                echo "<br>";
                $doc = new Document();
@@ -4498,7 +4501,7 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         echo "</td>";
+         echo "</tr></td>";
 
       } else {
          echo "<th colspan='2'>";

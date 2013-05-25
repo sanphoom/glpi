@@ -50,12 +50,12 @@ class Ajax {
     * @param $name            name of the js object
     * @param $url             URL to display in modal
     * @param $options array   of possible options:
-    *          - width (default 800)
-    *          - height (default 400)
-    *          - modal : is a modal window ? (default true)
-    *          - container : specify a html element to render (default empty to html.body)
-    *          - title : window title (default empty)
-    *          - display : display or get string ? (default true)
+    *     - width      (default 800)
+    *     - height     (default 400)
+    *     - modal      is a modal window ? (default true)
+    *     - container  specify a html element to render (default empty to html.body)
+    *     - title      window title (default empty)
+    *     - display    display or get string ? (default true)
    **/
    static function createModalWindow($name, $url, $options=array() ) {
 
@@ -74,7 +74,7 @@ class Ajax {
             }
          }
       }
-      $out = "<script type='text/javascript'>\n";
+      $out  = "<script type='text/javascript'>\n";
       $out .= "var $name=";
       if (!empty($param['container'])) {
          $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
@@ -100,8 +100,9 @@ class Ajax {
          echo $out;
       } else {
          return $out;
-      }      
+      }
    }
+
 
    /**
     * Create fixed modal window
@@ -111,12 +112,12 @@ class Ajax {
     *
     * @param $name            name of the js object
     * @param $options array   of possible options:
-    *          - width (default 800)
-    *          - height (default 400)
-    *          - modal : is a modal window ? (default true)
-    *          - container : specify a html element to render (default empty to html.body)
-    *          - title : window title (default empty)
-    *          - display : display or get string ? (default true)
+    *          - width       (default 800)
+    *          - height      (default 400)
+    *          - modal       is a modal window ? (default true)
+    *          - container   specify a html element to render (default empty to html.body)
+    *          - title       window title (default empty)
+    *          - display     display or get string ? (default true)
    **/
    static function createFixedModalWindow($name, $options=array() ) {
 
@@ -134,8 +135,8 @@ class Ajax {
             }
          }
       }
-      
-      $out =  "<script type='text/javascript'>\n";
+
+      $out  =  "<script type='text/javascript'>\n";
       $out .= "var $name=";
       if (!empty($param['container'])) {
          $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
@@ -150,15 +151,16 @@ class Ajax {
          title: \"".addslashes($param['title'])."\"\n
          });\n";
       $out .= "</script>";
-     
+
       if ($param['display']) {
          echo $out;
       } else {
          return $out;
       }
-      
+
    }
-   
+
+
    /**
     * Create modal window in Iframe
     * After display it using Html::jsGetElementbyID($domid).dialog("open");
@@ -168,12 +170,12 @@ class Ajax {
     * @param $domid           DOM ID of the js object
     * @param $url             URL to display in modal
     * @param $options array   of possible options:
-    *          - width (default 800)
-    *          - height (default 400)
-    *          - modal : is a modal window ? (default true)
-    *          - title : window title (default empty)
-    *          - display : display or get string ? (default true)
-    *          - reloadonclose : reload main page on close ? (default false)
+    *          - width          (default 800)
+    *          - height         (default 400)
+    *          - modal          is a modal window ? (default true)
+    *          - title          window title (default empty)
+    *          - display        display or get string ? (default true)
+    *          - reloadonclose  reload main page on close ? (default false)
    **/
    static function createIframeModalWindow($domid, $url, $options=array() ) {
 
@@ -192,10 +194,10 @@ class Ajax {
          }
       }
       $url .= (strstr($url,'?') ?'&' :  '?').'_in_modal=1';
-      
-      $out = "<div id=\"$domid\">";
+
+      $out  = "<div id=\"$domid\">";
       $out .= "<iframe id='Iframe$domid' width='100%' height='100%' marginWidth='0' marginHeight='0'
-                     frameBorder='0' scrolling='auto'></iframe></div>";
+                frameBorder='0' scrolling='auto'></iframe></div>";
 
       $out .= "<script type='text/javascript'>
             $('#$domid').dialog({
@@ -210,10 +212,10 @@ class Ajax {
       if ($param['reloadonclose']) {
          $out .= "close: function(ev, ui) { window.location.reload() },";
       }
-               
+
       $out.= "title: \"".addslashes($param['title'])."\"});
             </script>";
-        
+
       if ($param['display']) {
          echo $out;
       } else {
@@ -278,7 +280,7 @@ class Ajax {
       $active_tabs = Session::getActiveTab($type);
 
       $rand = mt_rand();
-      if (count($tabs)>0) {
+      if (count($tabs) > 0) {
 
          echo "<div id='tabs$rand' class='center'>";
          echo "<ul>";

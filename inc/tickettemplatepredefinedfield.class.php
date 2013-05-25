@@ -35,8 +35,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Predefined fields for ticket template class
-/// since version 0.83
+
+/**
+ * TicketTemplatePredefinedField Class
+ *
+ * Predefined fields for ticket template class
+ *
+ * @since version 0.83
+**/
 class TicketTemplatePredefinedField extends CommonDBChild {
 
    // From CommonDBChild
@@ -165,7 +171,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $tt             = new TicketTemplate();
       $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
       $fields         = array();
-      $multiple = self::getMultiplePredefinedValues();
+      $multiple       = self::getMultiplePredefinedValues();
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
             if (in_array($rule['num'], $multiple)) {
@@ -178,12 +184,18 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return $fields;
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function getMultiplePredefinedValues() {
+
       $ticket = new Ticket();
       $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'));
 
       return $fields;
    }
+
 
    /**
     * Print the predefined fields

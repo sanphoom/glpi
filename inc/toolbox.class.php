@@ -563,7 +563,7 @@ class Toolbox {
 
       $skip = array('Toolbox::backtrace()');
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         $hide = "Toolbox::userErrorHandlerDebug()";
+         $hide   = "Toolbox::userErrorHandlerDebug()";
          $skip[] = "Toolbox::userErrorHandlerNormal()";
       } else {
          $hide = "Toolbox::userErrorHandlerNormal()";

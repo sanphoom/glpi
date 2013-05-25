@@ -475,7 +475,7 @@ class RuleCollection extends CommonDBTM {
                   __('Test rules engine')."</a>";
       Ajax::createIframeModalWindow('allruletest'.$rand,
                                     $url."/front/rulesengine.test.php?".
-                                    "sub_type=".$this->getRuleClassName(),
+                                          "sub_type=".$this->getRuleClassName(),
                                     array('title' => __('Test rules engine')));
       echo "</div>";
 

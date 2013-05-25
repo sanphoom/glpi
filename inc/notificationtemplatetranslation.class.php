@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class Notification
+/**
+ * NotificationTemplateTranslation Class
+**/
 class NotificationTemplateTranslation extends CommonDBChild {
 
    // From CommonDBChild
@@ -117,8 +119,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td><td>";
       $rand = mt_rand();
       Ajax::createIframeModalWindow("tags".$rand,
-                              $CFG_GLPI['root_doc']."/front/notification.tags.php?sub_type=".
-                                 $template->getField('itemtype'));
+                                    $CFG_GLPI['root_doc']."/front/notification.tags.php?sub_type=".
+                                       $template->getField('itemtype'));
       echo "<a class='vsubmit' href='#' onClick=\"".Html::jsGetElementbyID("tags".$rand).".dialog('open');\">".__('Show list of available tags')."</a>";
       echo "</td></tr>";
 

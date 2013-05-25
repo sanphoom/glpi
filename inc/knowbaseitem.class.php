@@ -1194,10 +1194,11 @@ class KnowbaseItem extends CommonDBTM {
                   $toadd = '';
                   if (isset($options['item_itemtype'])
                       && isset($options['item_items_id'])) {
-                     $href = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"" ;
+                     $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"" ;
                      $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
-                                                   $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"],
-                                                   array('display' => false));
+                                                            $CFG_GLPI["root_doc"].
+                                                               "/front/knowbaseitem.form.php?id=".$data["id"],
+                                                            array('display' => false));
                   } else {
                      $href = " href=\"".$CFG_GLPI['root_doc']."/front/knowbaseitem.form.php?id=".
                                     $data["id"]."\" ";

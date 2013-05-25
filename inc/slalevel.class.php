@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class SLA
+/**
+ * SlaLevel class
+**/
 class SlaLevel extends RuleTicket {
 
    protected $rules_id_field    = 'slalevels_id';
@@ -52,6 +54,7 @@ class SlaLevel extends RuleTicket {
    function __construct() {
       // Override in order not to use glpi_rules table.
    }
+
    // Temporary hack for this class in 0.84
    static function getTable() {
       return 'glpi_slalevels';
