@@ -2486,6 +2486,7 @@ class Ticket extends CommonITILObject {
          $tab[48]['name']           = __('Total cost');
          $tab[48]['datatype']       = 'decimal';
          $tab[48]['forcegroupby']   = true;
+         $tab[48]['usehaving']      = true;
          $tab[48]['massiveaction']  = false;
          $tab[48]['joinparams']     = array('jointype'  => 'child');
 

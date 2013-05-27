@@ -537,6 +537,7 @@ class Contract extends CommonDBTM {
       $tab[136]['field']         = 'totalcost';
       $tab[136]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Cost'));
       $tab[136]['forcegroupby']  = true;
+      $tab[136]['usehaving']     = true;
       $tab[136]['datatype']      = 'decimal';
       $tab[136]['massiveaction'] = false;
       $tab[136]['joinparams']    = $joinparamscost;
@@ -817,6 +818,7 @@ class Contract extends CommonDBTM {
       $tab[11]['name']           = __('Total cost');
       $tab[11]['datatype']       = 'decimal';
       $tab[11]['forcegroupby']   = true;
+      $tab[11]['usehaving']      = true;
       $tab[11]['massiveaction']  = false;
       $tab[11]['joinparams']     = array('jointype' => 'child');
 
