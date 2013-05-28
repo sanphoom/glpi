@@ -116,6 +116,7 @@ class DropdownTranslation extends CommonDBChild {
                }
             }
          }
+         // Then update all sons records
          if (!isset($this->input['_no_completename'])) {
             $translation->generateCompletename($this->fields, false);
          }
