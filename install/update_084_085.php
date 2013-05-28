@@ -183,14 +183,15 @@ function update084to085() {
                   '1' => 1);
 
    foreach ($right as $old => $new) {
-      if (($new != '1') || ($new != '31')) {
-         // profile already migrated and values changed in the profile with new rights
-      } else {
+//       if (($new != '1') || ($new != '31')) {
+//          // profile already migrated and values changed in the profile with new rights
+//       } else {
          $query  = "UPDATE `glpi_profilerights`
                     SET `rights` = $new
                     WHERE `right` = '$old'";
+         echo $query.'<br>';
          $DB->queryOrDie($query, "0.85 right in profile $old to $new");
-      }
+//       }
    }
 
 // delete import_externalauth_users
