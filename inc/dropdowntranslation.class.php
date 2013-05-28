@@ -472,7 +472,6 @@ class DropdownTranslation extends CommonDBChild {
       if (!$ID || !self::isDropdownTranslationActive() || !self::canBeTranslated($item)) {
          return $value;
       }
-      
       //ID > 0 : dropdown item might be translated !
       if ($ID > 0) {
          //There's at least one translation for this itemtype
@@ -482,7 +481,6 @@ class DropdownTranslation extends CommonDBChild {
                       AND `items_id`='".$ID."'
                       AND `field`='$field'
                       AND `language`='$language'";
-
             $result_translations = $DB->query($query);
             //The field is already translated in this language
             if ($DB->numrows($result_translations)) {
@@ -542,6 +540,19 @@ class DropdownTranslation extends CommonDBChild {
          && (($item instanceof CommonDropdown) && $item->maybeTranslated());
    }
 
+   /**
+    *
+    * Is field having translations ?
+    * @since 0.85
+    * @param $itemtype itemtype
+    * @param $field field
+    * @return boolean
+    */
+   static function haveTranslations($itemtype, $field) {
+      return (isset($_SESSION['glpi_dropdowntranslations'][$itemtype])
+              && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
+   }
+   
    /**
     * Is dropdown item translation functionnality active
     * since 0.85

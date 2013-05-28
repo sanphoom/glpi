@@ -439,27 +439,52 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
    $name    = "";
    $comment = "";
 
-   $query = "SELECT *
+
+   $SELECTNAME    = "`$table`.`name`, '' AS transname";
+   $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
+   $JOIN          = '';
+   if  ($translate) {
+      if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'name')) {
+         $SELECTNAME = "`$table`.`name`, `namet`.`value` AS transname";
+         $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
+                           ON (`namet`.`itemtype` = '".getItemTypeForTable($table)."'
+                              AND `namet`.`items_id` = `$table`.`id`
+                              AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
+                              AND `namet`.`field` = 'name')";
+      }
+      if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'comment')) {
+         $SELECTCOMMENT = "`$table`.`name`, `namec`.`value` AS transcomment";
+         $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
+                           ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
+                              AND `namec`.`items_id` = `$table`.`id`
+                              AND `namec`.`language` = '".$_SESSION['glpilanguage']."'
+                              AND `namec`.`field` = 'comment')";
+      }
+
+   }
+   
+   $query = "SELECT $SELECTNAME, $SELECTCOMMENT
              FROM `$table`
-             WHERE `id` = '$ID'";
+             $JOIN
+             WHERE `$table`.`id` = '$ID'";
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result) == 1) {
-         /*$name    = $DB->result($result, 0, "name");
-         $comment = $DB->result($result, 0, "comment");*/
-         /// TODO : Try to do it on SQL to avoid mass SQL requests
-         $name = DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
-                                                         getItemTypeForTable($table),
-                                                         'name', 
-                                                         $_SESSION['glpilanguage'],
-                                                         $DB->result($result, 0, "name"));
+         $transname = $DB->result($result,0,"transname");
+         if ($translate && !empty($transname)) {
+            $name    = $transname;
+         } else {
+            $name    = $DB->result($result,0,"completename");
+         }
+
          $comment  = $name." :<br>";
-         /// TODO : Try to do it on SQL to avoid mass SQL requests
-         $comment .= DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
-                                                             getItemTypeForTable($table),
-                                                             'comment', 
-                                                             $_SESSION['glpilanguage'],
-                                                             $DB->result($result, 0, "comment"));
+         
+         $transcomment = $DB->result($result,0,"transcomment");
+         if ($translate && !empty($transcomment)) {
+            $comment    .= nl2br($transcomment);
+         } else {
+            $comment    .= nl2br($DB->result($result,0,"comment"));
+         }
       }
    }
 
@@ -488,19 +513,40 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate = 
    $name    = "";
    $comment = "";
 
-   $query = "SELECT *
+   $SELECTNAME    = "`$table`.`completename`, '' AS transname";
+   $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
+   $JOIN          = '';
+   if  ($translate) {
+      if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'completename')) {
+         $SELECTNAME = "`$table`.`completename`, `namet`.`value` AS transname";
+         $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
+                           ON (`namet`.`itemtype` = '".getItemTypeForTable($table)."'
+                              AND `namet`.`items_id` = `$table`.`id`
+                              AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
+                              AND `namet`.`field` = 'completename')";
+      }
+      if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'comment')) {
+         $SELECTCOMMENT = "`$table`.`completename`, `namec`.`value` AS transcomment";
+         $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namec
+                           ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
+                              AND `namec`.`items_id` = `$table`.`id`
+                              AND `namec`.`language` = '".$_SESSION['glpilanguage']."'
+                              AND `namec`.`field` = 'comment')";
+      }
+
+   }
+
+   
+   $query = "SELECT $SELECTNAME, $SELECTCOMMENT
              FROM `$table`
-             WHERE `id` = '$ID'";
+             $JOIN
+             WHERE `$table`.`id` = '$ID'";
 
    if ($result = $DB->query($query)) {
       if ($DB->numrows($result) == 1) {
-         if ($translate) {
-            /// TODO : Try to do it on SQL to avoid mass SQL requests
-            $name = DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"), 
-                                                           getItemTypeForTable($table),
-                                                           'completename', 
-                                                           $_SESSION['glpilanguage'],
-                                                           $DB->result($result, 0, "completename"));
+         $transname = $DB->result($result,0,"transname");
+         if ($translate && !empty($transname)) {
+            $name    = $transname;
          } else {
             $name    = $DB->result($result,0,"completename");
          }
@@ -508,16 +554,13 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate = 
                              "<span class='b'>".__('Complete name'),
                              "</span>".$name);
          $comment .= "<span class='b'>".__('Comments')."&nbsp;</span>";
-         if ($translate) {
-            /// TODO : Try to do it on SQL to avoid mass SQL requests
-            $comment .= nl2br(DropdownTranslation::getTranslatedValue($DB->result($result, 0, "id"),
-                                                               getItemTypeForTable($table),
-                                                               'comment', 
-                                                               $_SESSION['glpilanguage'],
-                                                               $DB->result($result, 0, "comment")));
+         
+         $transcomment = $DB->result($result,0,"transcomment");
+         if ($translate && !empty($transcomment)) {
+            $comment    .= nl2br($transcomment);
          } else {
-            $comment.= nl2br($DB->result($result ,0, "comment"));
-         }             
+            $comment    .= nl2br($DB->result($result,0,"comment"));
+         }
       }
    }
 
