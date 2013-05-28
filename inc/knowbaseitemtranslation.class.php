@@ -42,18 +42,10 @@ class KnowbaseItemTranslation extends CommonDBChild {
    static public $items_id = 'knowbaseitems_id';
    public $dohistory       = true;
 
-/// TODO : use new right system
+   static $rightname   = 'knowbase';
    
    static function getTypeName($nb = 0) {
       return _n('Translation', 'Translations', $nb);
-   }
-
-   static function canCreate() {
-      return KnowbaseItem::canCreate();
-   }
-
-   static function canView() {
-      return KnowbaseItem::canView();
    }
 
    /**

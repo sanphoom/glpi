@@ -189,7 +189,7 @@ function update084to085() {
          $query  = "UPDATE `glpi_profilerights`
                     SET `rights` = $new
                     WHERE `right` = '$old'";
-         echo $query.'<br>';
+//          echo $query.'<br>';
          $DB->queryOrDie($query, "0.85 right in profile $old to $new");
 //       }
    }

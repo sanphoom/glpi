@@ -35,19 +35,11 @@ class DropdownTranslation extends CommonDBChild {
    static public $itemtype = 'itemtype';
    static public $items_id = 'items_id';
    public $dohistory       = true;
+   static $rightname = 'dropdown';
 
-   /// TODO : use new right system
 
    static function getTypeName($nb = 0) {
       return _n('Translation', 'Translations', $nb);
-   }
-   
-   static function canCreate() {
-      return Session::haveRight('dropdown', 'w');
-   }
-
-   static function canView() {
-      return Session::haveRight('dropdown', 'r');
    }
 
    /**
