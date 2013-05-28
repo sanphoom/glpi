@@ -97,15 +97,31 @@ class KnowbaseItemTranslation extends CommonDBChild {
       ///TODO : show content in tooltip
       ///TODO : add several translations for the same language is possible ! do not permit it
 
-      self::showAddTranslationLink($item);
-      
-      $canedit = $item->canUpdateItem();
+      $canedit = $item->can($item->getID(), UPDATE);
+      $rand = mt_rand();
+      if ($canedit) {
+         echo "<div id='viewtranslation" . $item->getID() . "$rand'></div>\n";
+         echo "<script type='text/javascript' >\n";
+         echo "function addTranslation" . $item->getID() . "$rand() {\n";
+         $params = array('type'       => __CLASS__,
+                         'parenttype' => 'KnowbaseItem',
+                         'knowbaseitems_id' => $item->fields['id'],
+                         'id'         => -1);
+         Ajax::updateItemJsCode("viewtranslation" . $item->getID() . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";
+
+         echo "<div class='center'>".
+              "<a class='vsubmit' href='javascript:addTranslation".$item->getID()."$rand();'>".
+              __('Add a new translation')."</a></div><br>";
+      }
       
       $obj = new self;
       $found = $obj->find("`knowbaseitems_id`='".$item->getID()."'", "`language` ASC");
+      
       if (count($found) > 0) {
          if ($canedit) {
-            $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('container' => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions(__CLASS__, $paramsma);
@@ -121,18 +137,34 @@ class KnowbaseItemTranslation extends CommonDBChild {
          echo "<th>".__("Language")."</th>";
          echo "<th>".__("Subject")."</th>";
          foreach($found as $data) {
-            echo "<tr class='tab_bg_1'>";
+            echo "<tr class='tab_bg_1' " .($canedit ? "style='cursor:pointer'
+                     onClick=\"viewEditTranslation".$data['id']."$rand();\"" : '') .
+             " id='viewtranslation_" . $data['knowbaseitems_id'] . $data["id"] . "$rand'>";
             if ($canedit) {
                echo "<td class='center'>";
                Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
                echo "</td>";
             }
             echo "<td>";
-            if (isset($CFG_GLPI['languages'][$data['language']])) {
-               echo $CFG_GLPI['languages'][$data['language']][0];
+            if ($canedit) {
+               echo "\n<script type='text/javascript' >\n";
+               echo "function viewEditTranslation". $data["id"]."$rand() {\n";
+               $params = array('type'            => __CLASS__,
+                              'parenttype'       => 'KnowbaseItem',
+                              'knowbaseitems_id' => $item->getID(),
+                              'id'               => $data["id"]);
+               Ajax::updateItemJsCode("viewtranslation" . $item->getID() . "$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+               echo "};";
+               echo "</script>\n";
             }
+            echo Dropdown::getLanguageName($data['language']);
             echo "</td><td>";
             echo  $data["name"];
+            if (isset($data['answer']) && !empty($data['answer'])) {
+               echo "&nbsp;";
+               Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data['answer']));
+            }
             echo "</td></tr>";
          }
          echo "</table>";
@@ -149,36 +181,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
       return true;
    }
 
-   /**
-    * Display link to add a new translation
-    *
-    * since 0.85
-    * @param item a KnowbaseItem item
-    * @return nothing
-    */
-   static function showAddTranslationLink(KnowbaseItem $item) {
-      global $CFG_GLPI;
 
-      $rand = mt_rand();
-      if ($item->can($item->getID(), 'w')) {
-
-         echo "<script type='text/javascript' >\n";
-         echo "function addTranslation" . $item->getID() . "$rand() {\n";
-         $params = array('type'           => __CLASS__,
-                         'parenttype'     => get_class($item),
-                         'foreignkey'     => 'items_id',
-                         $item->getForeignKeyField() => $item->getID(),
-                         'id'             => -1);
-         Ajax::updateItemJsCode("viewtranslation" . $item->getID() . "$rand",
-                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
-         echo "};";
-         echo "</script>\n";
-         echo "<div class='center'>".
-              "<a class='vsubmit' href='javascript:addTranslation".$item->getID()."$rand();'>".
-              __('Add a new translation')."</a></div><br>";
-         echo "<div id='viewtranslation" . $item->getID() . "$rand'></div>\n";
-      }
-   }
 
    /**
     *
@@ -203,35 +206,36 @@ class KnowbaseItemTranslation extends CommonDBChild {
          $item->check(-1 , 'w');
       }
       $this->showFormHeader($options);
-      echo "<input type='hidden' name='knowbaseitems_id' value='".$item->getID()."'>";
+      Html::initEditorSystem('answer');      
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Language')."&nbsp;:</td>";
-      echo "</tr>";
-      echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3'>";
-      $rand = Dropdown::showLanguages("language",
-                                      array('display_none' => false,
-                                            'value'        => $_SESSION['glpilanguage']));
+      echo "<input type='hidden' name='knowbaseitems_id' value='".$item->getID()."'>";
+      if ($ID > 0) {
+         echo Dropdown::getLanguageName($this->fields['language']);
+      } else {
+         Dropdown::showLanguages("language",
+                                       array('display_none' => false,
+                                             'value'        => $_SESSION['glpilanguage'],
+                                             'used'         => self::getAlreadyTranslatedForItem($item)));
+      }
+
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Subject')."</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='100' rows='1' name='name'>".$this->fields["name"]."</textarea>";
+      echo "</td>";
+      echo "</tr>\n";
 
-      echo "<div id='contenukb'>";
-      echo "<fieldset>";
-      echo "<legend>".__('Subject')."</legend>";
-      echo "<div class='center'>";
-      echo "<textarea cols='80' rows='2' name='name'></textarea>";
-      echo "</div></fieldset>";
-
-      Html::initEditorSystem('answer');
-      echo "<fieldset>";
-      echo "<legend>".__('Content')."</legend>";
-      echo "<div class='center spaced'>";
-      echo "<textarea cols='80' rows='30' id='answer' name='answer'></textarea>";
-      echo "</div></fieldset>";
-
-      echo "</td></tr>\n";
-
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Content')."</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='100' rows='30' id='answer' name='answer'>".$this->fields["answer"];
+      echo "</textarea>";
+      echo "</td>";
+      echo "</tr>\n";
 
       $this->showFormButtons($options);
       return true;
@@ -297,5 +301,21 @@ class KnowbaseItemTranslation extends CommonDBChild {
       return countElementsInTable(getTableForItemType(__CLASS__),
                                   "`knowbaseitems_id`='".$item->getID()."'");
 
-   }   
+   }
+   /**
+    * Get already translated languages for item
+    *
+    * @param item
+    *
+    * @return array of already translated languages
+    */
+   static function getAlreadyTranslatedForItem($item) {
+      global $DB;
+      $tab = array();
+      foreach ($DB->request(getTableForItemType(__CLASS__),
+                           "`knowbaseitems_id`='".$item->getID()."'") as $data) {
+         $tab[$data['language']] = $data['language'];
+      }
+      return $tab;
+   }      
 }
