@@ -433,7 +433,6 @@ class DropdownTranslation extends CommonDBChild {
 
       $rand = mt_rand();
       if ($item->can($item->getID(), 'w')) {
-         echo "<div id='viewtranslation" . $item->getID() . "$rand'></div>\n";
 
          echo "<script type='text/javascript' >\n";
          echo "function addTranslation" . $item->getID() . "$rand() {\n";
@@ -449,6 +448,7 @@ class DropdownTranslation extends CommonDBChild {
          echo "<div class='center'>".
               "<a class='vsubmit' href='javascript:addTranslation".$item->getID()."$rand();'>".
                __('Add a new translation')."</a></div><br>";
+         echo "<div id='viewtranslation" . $item->getID() . "$rand'></div>\n";
       }
    }
 
