@@ -94,19 +94,49 @@ class DropdownTranslation extends CommonDBChild {
       }
    }
 
-   function post_deleteItem() {
-      //If last translated field is deleted, then delete also completename record
-      if ($this->getNumberOfTranslations($this->fields['itemtype'], $this->fields['items_id'],
-                                         $this->fields['field'], $this->fields['language']) == 1) {
+   function post_purgeItem() {
+      if ($this->fields['field'] == 'name') {
          $translation      = new DropdownTranslation();
-         $completenames_id = self::getTranslationID($this->fields['itemtype'],
-                                                    $this->fields['items_id'],
-                                                    'completename', $this->fields['language']);
-         $translation->delete(array('id' => $completenames_id));
+         //If last translated field is deleted, then delete also completename record
+         if ($this->getNumberOfTranslations($this->fields['itemtype'], $this->fields['items_id'],
+                                          $this->fields['field'], $this->fields['language']) == 1) {
+            if ($completenames_id = self::getTranslationID($this->fields['itemtype'],
+                                                      $this->fields['items_id'],
+                                                      'completename', $this->fields['language'])) {
+               $translation->delete(array('id' => $completenames_id));
+            }
+         }
+         // If only completename for sons : drop
+         foreach (getSonsOf(getTableForItemType($this->fields['itemtype']), $this->fields['items_id']) as $son) {
+            if ($this->getNumberOfTranslations($this->fields['itemtype'], $son,
+                                             'name', $this->fields['language']) == 0) {
+               if ($completenames_id = self::getTranslationID($son, $this->fields['itemtype'],
+                                                         'completename', $this->fields['language'])) {
+                  $translation->delete(array('id' => $completenames_id));
+               }
+            }
+         }
+         if (!isset($this->input['_no_completename'])) {
+            $translation->generateCompletename($this->fields, false);
+         }
       }
       return true;
    }
-    
+
+   function post_updateItem($history=1) {
+      if (!isset($this->input['_no_completename'])) {
+         $translation = new DropdownTranslation();
+         $translation->generateCompletename($this->fields, false);
+      }
+   }
+
+   function post_addItem() {
+      if (!isset($this->input['_no_completename'])) {
+         $translation = new DropdownTranslation();
+         $translation->generateCompletename($this->fields, true);
+      }
+   }
+   
    /**
     * Return the number of translations for a field in a language
     *
@@ -159,7 +189,6 @@ class DropdownTranslation extends CommonDBChild {
       $completenames_id = self::getTranslationID($input['items_id'], $input['itemtype'],
                                                  'completename',  $input['language']);
       $item = new $input['itemtype']();
-      
       //Completename is used only for tree dropdowns !
       if ($item instanceof CommonTreeDropdown && isset($input['language'])) {
          $item->getFromDB($input['items_id']);
@@ -188,11 +217,13 @@ class DropdownTranslation extends CommonDBChild {
 
          //Add or update completename for this language
          $translation     = new self();
+         $tmp = array();
          $tmp['items_id'] = $input['items_id'];
          $tmp['itemtype'] = $input['itemtype'];
          $tmp['field']    = 'completename';
-         $tmp['value']    = $completename;
+         $tmp['value']    = addslashes($completename);
          $tmp['language'] = $input['language'];
+         $tmp['_no_completename'] = true;
          if ($completenames_id) {
             $tmp['id']    = $completenames_id;
             $translation->update($tmp);
@@ -210,9 +241,13 @@ class DropdownTranslation extends CommonDBChild {
             $completename .= " > ".self::getTranslatedValue($son, $input['itemtype'], 'name',
                                                             $input['language']);
             unset($tmp['id']);
+            $tmp = array();
             $tmp['items_id'] = $son;
+            $tmp['itemtype'] = $input['itemtype'];
             $tmp['field']    = 'completename';
-            $tmp['value']    = $completename;
+            $tmp['value']    = addslashes($completename);
+            $tmp['language'] = $input['language'];
+            $tmp['_no_completename'] = true;
             if ($completenames_id) {
                $tmp['id']    = $completenames_id;
                $translation->update($tmp);

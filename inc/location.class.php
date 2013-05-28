@@ -157,7 +157,10 @@ class Location extends CommonTreeDropdown {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               return _n('Item', 'Items', 2);
+               $ong    = array();
+               $ong[1] = $this->getTypeName(2);
+               $ong[2] = _n('Item', 'Items', 2);
+               return $ong;
          }
       }
       return '';
@@ -170,7 +173,14 @@ class Location extends CommonTreeDropdown {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType() == __CLASS__) {
-         $item->showItems();
+         switch ($tabnum) {
+            case 1 :
+               $item->showChildren();
+               break;
+            case 2 :
+               $item->showItems();
+               break;
+         }
       }
       return true;
    }

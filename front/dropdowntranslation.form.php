@@ -32,23 +32,9 @@ include ('../inc/includes.php');
 
 $translation = new DropdownTranslation();
 if (isset($_POST['add'])) {
-   $translation->add($_POST);
-   $translation->generateCompletename($_POST, true);
-   
+   $translation->add($_POST);   
 } elseif(isset($_POST['update'])) {
    $translation->update($_POST);
-   ///TODO : do it on post_update
-   $translation->generateCompletename($_POST, false);
-
-   /// TODO use standard massive action
-} elseif(isset($_POST['delete_translation'])) {
-   if (isset($_POST['item'])) {
-      foreach ($_POST['item'] as $id => $value) {
-         if ($value == 1) {
-            $translation->delete(array('id' => $id));
-         }
-      }
-   }
 }
 Html::back();
 ?>
