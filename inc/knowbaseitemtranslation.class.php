@@ -63,7 +63,11 @@ class KnowbaseItemTranslation extends CommonDBChild {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if (self::canBeTranslated($item)) {
-         return self::getTypeName();
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(self::getTypeName(2),
+                                        self::getNumberOfTranslationsForItem($item));
+         }
+         return self::getTypeName(2);
       }
       return '';
    }
@@ -281,4 +285,17 @@ class KnowbaseItemTranslation extends CommonDBChild {
       return self::isKbTranslationActive()
          && $item instanceof KnowbaseItem;
    }
+
+   /**
+    * Return the number of translations for an item
+    *
+    * @param item
+    *
+    * @return the number of translations for this item
+    */
+   static function getNumberOfTranslationsForItem($item) {
+      return countElementsInTable(getTableForItemType(__CLASS__),
+                                  "`knowbaseitems_id`='".$item->getID()."'");
+
+   }   
 }

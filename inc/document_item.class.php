@@ -175,7 +175,7 @@ class Document_Item extends CommonDBRelation{
             $ong[1] = _n('Associated item', 'Associated items', 2);
 
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $ong[2] = Document::createTabEntry(Document::getTypeName(2),
+               $ong[2] = self::createTabEntry(Document::getTypeName(2),
                                                   self::countForItem($item));
             }
             $ong[2] = Document::getTypeName(2);
@@ -188,7 +188,7 @@ class Document_Item extends CommonDBRelation{
                 || ($item->getType() == 'KnowbaseItem')) {
 
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return Document::createTabEntry(Document::getTypeName(2),
+                  return self::createTabEntry(Document::getTypeName(2),
                                                   self::countForItem($item));
                }
                return Document::getTypeName(2);

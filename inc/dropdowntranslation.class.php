@@ -57,7 +57,11 @@ class DropdownTranslation extends CommonDBChild {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if (self::canBeTranslated($item)) {
-         return DropdownTranslation::getTypeName();
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(self::getTypeName(2),
+                                        self::getNumberOfTranslationsForItem($item));
+         }
+         return self::getTypeName(2);
       }
       return '';
    }
@@ -148,7 +152,7 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @return the number of translations for this field
     */
-   function getNumberOfTranslations($itemtype, $items_id, $field, $language) {
+   static function getNumberOfTranslations($itemtype, $items_id, $field, $language) {
       return countElementsInTable(getTableForItemType(__CLASS__),
                                   "`itemtype`='".$itemtype."'
                                      AND `items_id`='".$items_id."'
@@ -157,6 +161,22 @@ class DropdownTranslation extends CommonDBChild {
 
    }
 
+   /**
+    * Return the number of translations for an item
+    *
+    * @param item
+    *
+    * @return the number of translations for this item
+    */
+   static function getNumberOfTranslationsForItem($item) {
+      return countElementsInTable(getTableForItemType(__CLASS__),
+                                  "`itemtype`='".$item->getType()."'
+                                     AND `items_id`='".$item->getID()."'
+                                     AND `field` <> 'completename'");
+
+   }
+
+   
    /**
     * Check if a field's translation can be added or updated
     *

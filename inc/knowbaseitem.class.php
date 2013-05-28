@@ -139,9 +139,7 @@ class KnowbaseItem extends CommonDBTM {
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
 
-      if (KnowbaseItemTranslation::canBeTranslated($this)) {
-         $this->addStandardTab('KnowbaseItemTranslation',$ong, $options);
-      }
+      $this->addStandardTab('KnowbaseItemTranslation',$ong, $options);
 
       return $ong;
    }
