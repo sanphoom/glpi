@@ -93,10 +93,6 @@ class KnowbaseItemTranslation extends CommonDBChild {
    static function showTranslations(KnowbaseItem $item) {
       global $DB, $CFG_GLPI;
 
-      ///TODO : unable to edit translations : permit to do it !
-      ///TODO : show content in tooltip
-      ///TODO : add several translations for the same language is possible ! do not permit it
-
       $canedit = $item->can($item->getID(), UPDATE);
       $rand = mt_rand();
       if ($canedit) {
@@ -104,7 +100,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
          echo "<script type='text/javascript' >\n";
          echo "function addTranslation" . $item->getID() . "$rand() {\n";
          $params = array('type'       => __CLASS__,
-                         'parenttype' => 'KnowbaseItem',
+                         'parenttype' => get_class($item),
                          'knowbaseitems_id' => $item->fields['id'],
                          'id'         => -1);
          Ajax::updateItemJsCode("viewtranslation" . $item->getID() . "$rand",
@@ -127,7 +123,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
          echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
+         echo "<table class='tab_cadre_fixehov'><tr class='tab_bg_2'>";
          echo "<th colspan='4'>".__("List of translations")."</th></tr>";
          if ($canedit) {
             echo "<th width='10'>";
@@ -137,9 +133,9 @@ class KnowbaseItemTranslation extends CommonDBChild {
          echo "<th>".__("Language")."</th>";
          echo "<th>".__("Subject")."</th>";
          foreach($found as $data) {
-            echo "<tr class='tab_bg_1' " .($canedit ? "style='cursor:pointer'
+            echo "<tr class='tab_bg_1' ".($canedit ? "style='cursor:pointer'
                      onClick=\"viewEditTranslation".$data['id']."$rand();\"" : '') .
-             " id='viewtranslation_" . $data['knowbaseitems_id'] . $data["id"] . "$rand'>";
+             ">";
             if ($canedit) {
                echo "<td class='center'>";
                Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
@@ -150,7 +146,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditTranslation". $data["id"]."$rand() {\n";
                $params = array('type'            => __CLASS__,
-                              'parenttype'       => 'KnowbaseItem',
+                              'parenttype'       => get_class($item),
                               'knowbaseitems_id' => $item->getID(),
                               'id'               => $data["id"]);
                Ajax::updateItemJsCode("viewtranslation" . $item->getID() . "$rand",
@@ -199,17 +195,17 @@ class KnowbaseItemTranslation extends CommonDBChild {
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
-         $this->fields['id']       = -1;
-         $this->fields['itemtype'] = get_class($item);
-         $this->fields['knowbaseitems_id'] = $item->getID();
          // Create item
-         $item->check(-1 , 'w');
+         $options['itemtype'] = get_class($item);
+         $options['knowbaseitems_id'] = $item->getID();
+         $this->check(-1 , 'w', $options);
+
       }
+      Html::initEditorSystem('answer');
       $this->showFormHeader($options);
-      Html::initEditorSystem('answer');      
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Language')."&nbsp;:</td>";
-      echo "<td colspan='3'>";
+      echo "<td>";
       echo "<input type='hidden' name='knowbaseitems_id' value='".$item->getID()."'>";
       if ($ID > 0) {
          echo Dropdown::getLanguageName($this->fields['language']);
@@ -220,7 +216,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
                                              'used'         => self::getAlreadyTranslatedForItem($item)));
       }
 
-      echo "</td></tr>";
+      echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";
