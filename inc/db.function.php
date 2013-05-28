@@ -444,7 +444,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
    $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
    $JOIN          = '';
    if  ($translate) {
-      if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'name')) {
+      if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
          $SELECTNAME = "`$table`.`name`, `namet`.`value` AS transname";
          $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
                            ON (`namet`.`itemtype` = '".getItemTypeForTable($table)."'
@@ -452,7 +452,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
                               AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
                               AND `namet`.`field` = 'name')";
       }
-      if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'comment')) {
+      if (Session::haveTranslations(getItemTypeForTable($table), 'comment')) {
          $SELECTCOMMENT = "`$table`.`comment`, `namec`.`value` AS transcomment";
          $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
                            ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
@@ -517,7 +517,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate = 
    $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
    $JOIN          = '';
    if  ($translate) {
-      if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'completename')) {
+      if (Session::haveTranslations(getItemTypeForTable($table), 'completename')) {
          $SELECTNAME = "`$table`.`completename`, `namet`.`value` AS transname";
          $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
                            ON (`namet`.`itemtype` = '".getItemTypeForTable($table)."'
@@ -525,7 +525,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate = 
                               AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
                               AND `namet`.`field` = 'completename')";
       }
-      if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'comment')) {
+      if (Session::haveTranslations(getItemTypeForTable($table), 'comment')) {
          $SELECTCOMMENT = "`$table`.`comment`, `namec`.`value` AS transcomment";
          $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namec
                            ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'

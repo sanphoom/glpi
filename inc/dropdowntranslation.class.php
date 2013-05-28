@@ -268,6 +268,8 @@ class DropdownTranslation extends CommonDBChild {
    static function showTranslations(CommonDropdown $item) {
       global $DB, $CFG_GLPI;
 
+      self::showAddTranslationLink($item);
+      
       /// TODO : permit to edit translations
       $canedit = $item->canUpdateItem();
       $query = "SELECT * FROM `".getTableForItemType(__CLASS__)."` " .
@@ -322,7 +324,6 @@ class DropdownTranslation extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th class='b'>" . __("No translation found")."</th></tr></table>";
       }
-      self::showAddTranslationLink($item);
       return true;
    }
 
@@ -540,19 +541,7 @@ class DropdownTranslation extends CommonDBChild {
          && (($item instanceof CommonDropdown) && $item->maybeTranslated());
    }
 
-   /**
-    *
-    * Is field having translations ?
-    * @since 0.85
-    * @param $itemtype itemtype
-    * @param $field field
-    * @return boolean
-    */
-   static function haveTranslations($itemtype, $field) {
-      return (isset($_SESSION['glpi_dropdowntranslations'][$itemtype])
-              && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
-   }
-   
+  
    /**
     * Is dropdown item translation functionnality active
     * since 0.85

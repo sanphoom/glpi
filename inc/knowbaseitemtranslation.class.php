@@ -92,6 +92,8 @@ class KnowbaseItemTranslation extends CommonDBChild {
       ///TODO : unable to edit translations : permit to do it !
       ///TODO : show content in tooltip
       ///TODO : add several translations for the same language is possible ! do not permit it
+
+      self::showAddTranslationLink($item);
       
       $canedit = $item->canUpdateItem();
       
@@ -140,7 +142,6 @@ class KnowbaseItemTranslation extends CommonDBChild {
          echo "<th class='b'>" . __("No translation found")."</th></tr></table>";
       }
 
-      self::showAddTranslationLink($item);
       return true;
    }
 

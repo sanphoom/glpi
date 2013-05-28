@@ -244,7 +244,8 @@ class Search {
             $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                        $searchopt[$itemtype][$val]["table"],
                                        $searchopt[$itemtype][$val]["linkfield"], 0, 0,
-                                       $searchopt[$itemtype][$val]["joinparams"]);
+                                       $searchopt[$itemtype][$val]["joinparams"],
+                                       $searchopt[$itemtype][$val]["field"]);
          }
       }
 
@@ -257,7 +258,8 @@ class Search {
                   $FROM .= self::addLeftJoin($itemtype, $itemtable, $already_link_tables,
                                              $searchopt[$itemtype][$key]["table"],
                                              $searchopt[$itemtype][$key]["linkfield"], 0, 0,
-                                             $searchopt[$itemtype][$key]["joinparams"]);
+                                             $searchopt[$itemtype][$key]["joinparams"],
+                                             $searchopt[$itemtype][$key]["field"]);
                }
             }
          }
@@ -489,7 +491,8 @@ class Search {
                                              $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["table"],
                                              $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["linkfield"],
                                              1, $p['itemtype2'][$i],
-                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["joinparams"]);
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["joinparams"],
+                                             $searchopt[$p['itemtype2'][$i]][$p['field2'][$i]]["field"]);
                }
             }
          }
@@ -2435,9 +2438,10 @@ class Search {
          }
       }
 
-      $tocompute   = "`$table$addtable`.`$field`";
-      $tocomputeid = "`$table$addtable`.`id`";
-
+      $tocompute      = "`$table$addtable`.`$field`";
+      $tocomputeid    = "`$table$addtable`.`id`";
+      $tocomputetrans = "`$table".$addtable."_trans`.`value`";
+      
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
@@ -2487,12 +2491,21 @@ class Search {
       // Default case
       if ($meta
          || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-         return " GROUP_CONCAT(DISTINCT CONCAT($tocompute,'$$',$tocomputeid) SEPARATOR '$$$$')
+         $TRANS = '';
+         if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+            $TRANS = ", '$$', $tocomputetrans";
+
+         }
+         return " GROUP_CONCAT(DISTINCT CONCAT($tocompute $TRANS,'$$',$tocomputeid) SEPARATOR '$$$$')
                               AS ".$NAME."_$num,
                   $ADDITONALFIELDS";
       }
-      return "$tocompute AS ".$NAME."_$num,
-              $ADDITONALFIELDS";
+      $TRANS = '';
+      if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+         $TRANS = $tocomputetrans." AS ".$NAME."_".$num."_trans, ";
+
+      }
+      return "$tocompute AS ".$NAME."_$num, $TRANS $ADDITONALFIELDS";
    }
 
 
@@ -3022,6 +3035,7 @@ class Search {
       }
 
       $tocompute = "`$table`.`$field`";
+      $tocomputetrans = "`".$table."_trans`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace("TABLE", "`$table`", $tocompute);
@@ -3186,6 +3200,12 @@ class Search {
          $out .= ')';
          return $out;
       }
+      $transitemtype = getItemTypeForTable($inittable);
+      if (Session::haveTranslations($transitemtype, $field)) {
+         return " $link (".self::makeTextCriteria($tocompute,$val,$nott,'')."
+                          OR ".self::makeTextCriteria($tocomputetrans,$val,$nott,'').")";
+      }
+         
       return self::makeTextCriteria($tocompute,$val,$nott,$link);
    }
 
@@ -3318,11 +3338,12 @@ class Search {
     * @param $meta                        is it a meta item ? (default 0)
     * @param $meta_type                   meta type table (default 0)
     * @param $joinparams            array join parameters (condition / joinbefore...)
+    * @param $field                string field to display (needed for translation join)
     *
     * @return Left join string
    **/
    static function addLeftJoin($itemtype, $ref_table, array &$already_link_tables, $new_table,
-                                $linkfield, $meta=0, $meta_type=0, $joinparams=array()) {
+                                $linkfield, $meta=0, $meta_type=0, $joinparams=array(), $field = '') {
       global $CFG_GLPI;
 
       // Rename table for meta left join
@@ -3334,7 +3355,6 @@ class Search {
 //       if ($new_table=="glpi_users"
 //           || $new_table=="glpi_groups"
 //           || $new_table=="glpi_users_validation") {
-
       if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
          $nt .= "_".$linkfield;
          $AS  = " AS ".$nt;
@@ -3520,6 +3540,15 @@ class Search {
                   $specific_leftjoin = "LEFT JOIN `$new_table` $AS
                                           ON (`$rt`.`$linkfield` = `$nt`.`id`
                                               $addcondition)";
+                  $transitemtype = getItemTypeForTable($new_table);
+                  if (Session::haveTranslations($transitemtype, $field)) {
+                     $transAS = $nt.'_trans';
+                     $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS $transAS
+                                          ON (`$transAS`.`itemtype` = '$transitemtype'
+                                             AND `$transAS`.`items_id` = `$nt`.`id`
+                                             AND `$transAS`.`language` = '".$_SESSION['glpilanguage']."'
+                                             AND `$transAS`.`field` = '$field')";
+                  }
                   break;
             }
          }
@@ -4437,7 +4466,6 @@ class Search {
       if (isset($searchopt[$ID]['unit'])) {
          $unit = $searchopt[$ID]['unit'];
       }
-
       /// TODO try to use getvalueToDisplay instead of redefine display system
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
@@ -4668,15 +4696,7 @@ class Search {
                }
                $withoutid = self::explodeWithID("$$", $split[$k]);
                $count_display++;
-               //$out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
-               if (getTableNameForForeignKeyField($searchopt[$ID]['linkfield']) != '') {
-                  /// TODO : Try to do it on SQL to avoid mass SQL requests
-                  $out.= DropdownTranslation::getTranslationByName(getItemTypeForTable($searchopt[$ID]['table']),
-                                                                   $searchopt[$ID]['field'],
-                                                                   $split[$k]).$unit;
-               } else {
-                  $out .= Dropdown::getValueWithUnit($withoutid[0], $unit);
-               }
+               $out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
             }
          }
          return $out;
@@ -4710,30 +4730,13 @@ class Search {
       if (empty($split[0])&& isset($searchopt[$ID]['emptylabel'])) {
          return $searchopt[$ID]['emptylabel'];
       }
-
-      //Is this item a dropdown, and can it be translated ?
-      if (DropdownTranslation::canBeTranslated(new $itemtype())) {
-         //Get the source object
-         $source = false;
-         if (isset($_POST['itemtype']) && $_POST['itemtype'] != 'States') {
-            $source = new $_POST['itemtype'];
-         } elseif(isset($_GET['item_type'])) {
-            $source = new $_GET['item_type'];
-         }
-         if ($source) {
-            //Get in the source object the dropdown's item id
-            $source->getFromDB($data['id']);
-            $fk = getForeignKeyFieldForTable($table);
-            if (isset($source->fields[$fk])) {
-               //Return the translated value
-               /// TODO : Try to do it on SQL to avoid mass SQL requests
-               return DropdownTranslation::getTranslatedValue($source->fields[$fk], $itemtype,
-                                                              $field, $_SESSION['glpilanguage'],
-                                                              $data[$NAME.$num]).$unit;
-            }
-         } else {
-            return Dropdown::getValueWithUnit($split[0], $unit);
-         }
+      // Trans field exists
+      if (isset($data[$NAME.$num.'_trans']) && !empty($data[$NAME.$num.'_trans'])) {
+         return Dropdown::getValueWithUnit($data[$NAME.$num.'_trans'], $unit);
+      }
+      // Trans in group concat
+      if (count($split) == 3 && !empty($split[1])) {
+         return Dropdown::getValueWithUnit($split[1], $unit);
       }
 
       return Dropdown::getValueWithUnit($split[0], $unit);

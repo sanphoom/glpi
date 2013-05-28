@@ -1151,5 +1151,18 @@ class Session {
       Session::cleanCSRFTokens();
       return false;
    }
+
+   /**
+    *
+    * Is field having translations ?
+    * @since 0.85
+    * @param $itemtype itemtype
+    * @param $field field
+    * @return boolean
+    */
+   static function haveTranslations($itemtype, $field) {
+      return (isset($_SESSION['glpi_dropdowntranslations'][$itemtype])
+              && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
+   }   
 }
 ?>
