@@ -361,7 +361,7 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'followup')
-          && !Session::haveRightOr('followup',
+          && !Session::haveRightsOr('followup',
                                    array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY))) {
          return false;
       }
@@ -421,7 +421,7 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'followup')
-          && !Session::haveRightOr('followup',
+          && !Session::haveRightsOr('followup',
                                    array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY))) {
          return false;
       }

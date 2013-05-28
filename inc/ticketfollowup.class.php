@@ -69,7 +69,7 @@ class TicketFollowup  extends CommonDBTM {
 
    static function canCreate() {
 
-      return (Session::haveRightOr(self::$rightname,
+      return (Session::haveRightsOr(self::$rightname,
                                    array(self::ADDALLTICKET, self::ADDMYTICKET,
                                          self::ADDGROUPTICKET))
               || Session::haveRight('ticket', Ticket::OWN));
@@ -78,7 +78,7 @@ class TicketFollowup  extends CommonDBTM {
 
    static function canView() {
 
-      return (Session::haveRightOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))
+      return (Session::haveRightsOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))
               || Session::haveRight('ticket', Ticket::OWN));
    }
 
@@ -525,7 +525,7 @@ class TicketFollowup  extends CommonDBTM {
          $options['tickets_id'] = $ticket->getField('id');
          $this->check(-1, CREATE, $options);
       }
-      $tech = (Session::haveRightOr(self::$rightname,
+      $tech = (Session::haveRightsOr(self::$rightname,
                                     array(self::ADDALLTICKET, self::ADDMYTICKET,
                                           self::ADDGROUPTICKET))
                || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
@@ -587,7 +587,7 @@ class TicketFollowup  extends CommonDBTM {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRightOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))) {
          return false;
       }
 
