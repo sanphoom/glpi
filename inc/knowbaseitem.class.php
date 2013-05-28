@@ -1329,7 +1329,6 @@ class KnowbaseItem extends CommonDBTM {
                 $faq_limit
                 $orderby
                 LIMIT 10";
-
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
@@ -1337,6 +1336,8 @@ class KnowbaseItem extends CommonDBTM {
          echo "<table class='tab_cadrehov'>";
          echo "<tr><th>".$title."</th></tr>";
          while ($data = $DB->fetch_assoc($result)) {
+            $name = $data['name'];
+
             $item = new self;
             $item->getFromDB($data["id"]);
             if (KnowbaseItemTranslation::canBeTranslated($item)) {

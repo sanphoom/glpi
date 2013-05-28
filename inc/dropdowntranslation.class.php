@@ -392,8 +392,8 @@ class DropdownTranslation extends CommonDBChild {
          echo "};";
          echo "</script>\n";
          echo "<div class='center'>".
-              "<a href='javascript:addTranslation".$item->getID()."$rand();'>";
-         echo __("Add a new translation")."</a></div><br>\n";
+              "<a class='vsubmit' href='javascript:addTranslation".$item->getID()."$rand();'>".
+               __('Add a new translation')."</a></div><br>";
       }
    }
 
