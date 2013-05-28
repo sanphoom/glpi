@@ -1678,8 +1678,9 @@ class Entity extends CommonTreeDropdown {
          $toadd = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
       }
 
-      $options = array('value' => $entity->fields["tickettemplates_id"],
-                       'toadd' => $toadd);
+      $options = array('value'  => $entity->fields["tickettemplates_id"],
+                       'entity' => $ID,
+                       'toadd'  => $toadd);
 
       TicketTemplate::dropdown($options);
 
