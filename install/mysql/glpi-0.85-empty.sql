@@ -2675,11 +2675,11 @@ CREATE TABLE `glpi_knowbaseitemtranslations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
   `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` text COLLATE utf8_unicode_ci,
   `answer` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  KEY `knowbaseitems_id` (`knowbaseitems_id`),
-  KEY `language` (`language`)
+  KEY `item` (`knowbaseitems_id`, `language`),
+  FULLTEXT KEY `fulltext` (`name`,`answer`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

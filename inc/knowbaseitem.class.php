@@ -928,11 +928,11 @@ class KnowbaseItem extends CommonDBTM {
    **/
    static function getListRequest(array $params, $type='search') {
       global $DB;
-
       // Lists kb Items
-      $where = "";
-      $order = "";
-      $score = "";
+      $where     = "";
+      $order     = "";
+      $score     = "";
+      $addselect = "";
       $join  = self::addVisibilityJoins(true);
 
       switch ($type) {
@@ -991,10 +991,15 @@ class KnowbaseItem extends CommonDBTM {
             if (strlen($params["contains"]) > 0) {
                $search  = Toolbox::unclean_cross_side_scripting_deep($params["contains"]);
 
-               $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
+               $addscore = '';
+               if (KnowbaseItemTranslation::isKbTranslationActive()) {
+                  $addscore = ",`glpi_knowbaseitemtranslations`.`name`,
+                                 `glpi_knowbaseitemtranslations`.`answer`";
+               }
+               $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer` $addscore)
                            AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
 
-               $where_1 = $where." MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
+               $where_1 = $where." MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer` $addscore)
                           AGAINST('$search' IN BOOLEAN MODE) ";
 
                $order   = "ORDER BY `SCORE` DESC";
@@ -1018,8 +1023,14 @@ class KnowbaseItem extends CommonDBTM {
                                    /* 8 */   "/\)/",
                                    /* 9 */   "/\-/");
                   $contains = preg_replace($search1,"", $params["contains"]);
+                  $addwhere = '';
+                  if (KnowbaseItemTranslation::isKbTranslationActive()) {
+                     $addwhere = " OR `glpi_knowbaseitemtranslations`.`name` ".Search::makeTextSearch($contains)."
+                                    OR `glpi_knowbaseitemtranslations`.`answer` ".Search::makeTextSearch($contains);
+                  }
                   $where   .= " (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
-                                 OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains).")";
+                                 OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains)."
+                                 $addwhere)";
                } else {
                   $where = $where_1;
                }
@@ -1033,8 +1044,17 @@ class KnowbaseItem extends CommonDBTM {
             break;
       }
 
+      if (KnowbaseItemTranslation::isKbTranslationActive()) {
+         $join .= "LEFT JOIN `glpi_knowbaseitemtranslations`
+                     ON (`glpi_knowbaseitems`.`id` = `glpi_knowbaseitemtranslations`.`knowbaseitems_id`
+                           AND `glpi_knowbaseitemtranslations`.`language` = '".$_SESSION['glpilanguage']."')";
+         $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
+                          `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
+      }
+      
       $query = "SELECT DISTINCT `glpi_knowbaseitems`.*,
                        `glpi_knowbaseitemcategories`.`completename` AS category
+                       $addselect
                        $score
                 FROM `glpi_knowbaseitems`
                 $join
@@ -1092,7 +1112,6 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $query = self::getListRequest($params, $type);
-
       // Get it from database
       if ($result = $DB->query($query)) {
          $KbCategory = new KnowbaseItemCategory();
@@ -1182,12 +1201,14 @@ class KnowbaseItem extends CommonDBTM {
 
                $item = new self;
                $item->getFromDB($data["id"]);
-               if (KnowbaseItemTranslation::canBeTranslated($item)) {
-                  $name   = KnowbaseItemTranslation::getTranslatedValue($item, 'name');
-                  $answer = KnowbaseItemTranslation::getTranslatedValue($item, 'answer');
-               } else {
-                  $name   = $data["name"];
-                  $answer = $data["answer"];
+               $name   = $data["name"];
+               $answer = $data["answer"];
+               // Manage translations
+               if (isset($data['transname']) && !empty($data['transname'])) {
+                  $name   = $data["transname"];
+               }
+               if (isset($data['transanswer']) && !empty($data['transanswer'])) {
+                  $answer = $data["transanswer"];
                }
 
                if ($output_type == Search::HTML_OUTPUT) {
@@ -1297,6 +1318,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $faq_limit = "";
+      $addselect = "";
       // Force all joins for not published to verify no visibility set
       $join = self::addVisibilityJoins(true);
 
@@ -1323,7 +1345,17 @@ class KnowbaseItem extends CommonDBTM {
          $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
 
-      $query = "SELECT DISTINCT `glpi_knowbaseitems`.*
+
+      if (KnowbaseItemTranslation::isKbTranslationActive()) {
+         $join .= "LEFT JOIN `glpi_knowbaseitemtranslations`
+                     ON (`glpi_knowbaseitems`.`id` = `glpi_knowbaseitemtranslations`.`knowbaseitems_id`
+                           AND `glpi_knowbaseitemtranslations`.`language` = '".$_SESSION['glpilanguage']."')";
+         $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
+                          `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
+      }
+
+      
+      $query = "SELECT DISTINCT `glpi_knowbaseitems`.* $addselect
                 FROM `glpi_knowbaseitems`
                 $join
                 $faq_limit
@@ -1338,10 +1370,8 @@ class KnowbaseItem extends CommonDBTM {
          while ($data = $DB->fetch_assoc($result)) {
             $name = $data['name'];
 
-            $item = new self;
-            $item->getFromDB($data["id"]);
-            if (KnowbaseItemTranslation::canBeTranslated($item)) {
-               $name   = KnowbaseItemTranslation::getTranslatedValue($item, 'name');
+            if (isset($data['transname']) && !empty($data['transname'])) {
+               $name = $data['transname'];
             }
             echo "<tr class='tab_bg_2'><td class='left'>";
             echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".

@@ -208,14 +208,6 @@ class KnowbaseItemTranslation extends CommonDBChild {
       $rand = Dropdown::showLanguages("language",
                                       array('display_none' => false,
                                             'value'        => $_SESSION['glpilanguage']));
-
-
-      /// TODO : Do not understand that it do here
-      $params = array('language' => '__VALUE__', 'itemtype' => get_class($item),
-                      'knowbaseitems_id' => $item->getID());
-      Ajax::updateItemOnSelectEvent("dropdown_language$rand", "span_fields",
-                                    $CFG_GLPI["root_doc"]."/ajax/updateTranslationFields.php",
-                                    $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>";
