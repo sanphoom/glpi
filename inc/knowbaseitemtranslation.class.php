@@ -49,6 +49,16 @@ class KnowbaseItemTranslation extends CommonDBChild {
    }
 
    /**
+    * @since version 0.85
+   **/
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
+   /**
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
@@ -83,27 +93,35 @@ class KnowbaseItemTranslation extends CommonDBChild {
       ///TODO : show content in tooltip
       ///TODO : add several translations for the same language is possible ! do not permit it
       
+      $canedit = $item->canUpdateItem();
       
       $obj = new self;
       $found = $obj->find("`knowbaseitems_id`='".$item->getID()."'", "`language` ASC");
       if (count($found) > 0) {
-          echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__).
-            "' method='post' name='translation_form'
-                id='translation_form'>";
+         if ($canedit) {
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $paramsma = array('container' => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions(__CLASS__, $paramsma);
+         }
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th colspan='4'>".__("List of translations")."</th></tr>";
-         echo "<th>&nbsp;</th>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
          echo "<th>".__("Language")."</th>";
          echo "<th>".__("Subject")."</th>";
          foreach($found as $data) {
-            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-            if (isset ($_GET["select"]) && $_GET["select"] == "all") {
-               $sel = "checked";
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td class='center'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               echo "</td>";
             }
-            $sel ="";
-            echo "<input type='checkbox' name='item[" . $data["id"] . "]' value='1' $sel>";
-            echo "</td><td>";
+            echo "<td>";
             if (isset($CFG_GLPI['languages'][$data['language']])) {
                echo $CFG_GLPI['languages'][$data['language']][0];
             }
@@ -112,9 +130,11 @@ class KnowbaseItemTranslation extends CommonDBChild {
             echo "</td></tr>";
          }
          echo "</table>";
-         Html::openArrowMassives("translation_form", true);
-         Html::closeArrowMassives(array('delete_translation' => _sx('button', 'Delete')));
-         Html::closeForm();
+         if ($canedit) {
+            $paramsma['ontop'] = false;
+            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::closeForm();
+         }
       } else {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th class='b'>" . __("No translation found")."</th></tr></table>";

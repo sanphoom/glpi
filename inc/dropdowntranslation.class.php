@@ -43,6 +43,16 @@ class DropdownTranslation extends CommonDBChild {
    }
 
    /**
+    * @since version 0.85
+   **/
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
+   /**
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
@@ -223,31 +233,39 @@ class DropdownTranslation extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       /// TODO : permit to edit translations
-      
+      $canedit = $item->canUpdateItem();
       $query = "SELECT * FROM `".getTableForItemType(__CLASS__)."` " .
                "WHERE `itemtype`='".get_class($item)."'
                    AND `items_id`='".$item->getID()."' AND `field`<>'completename'
                       ORDER BY `language` ASC";
       $results = $DB->query($query);
       if ($DB->numrows($results)) {
-         echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__).
-            "' method='post' name='translation_form'
-                id='translation_form'>";
+         if ($canedit) {
+            $rand = mt_rand();
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $paramsma = array('container' => 'mass'.__CLASS__.$rand);
+            Html::showMassiveActions(__CLASS__, $paramsma);
+         }
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th colspan='4'>".__("List of translations")."</th></tr>";
-         echo "<th>&nbsp;</th>";
+         if ($canedit) {
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
+         }
          echo "<th>".__("Language")."</th>";
          echo "<th>".__("Field")."</th>";
          echo "<th>".__("Value")."</th></tr>";
          while ($data = $DB->fetch_array($results)) {
-            echo "<tr class='tab_bg_1'><td class='center' width='10'>";
-            if (isset ($_GET["select"]) && $_GET["select"] == "all") {
-               $sel = "checked";
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td class='center'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               echo "</td>";
             }
-            $sel ="";
-            echo "<input type='checkbox' name='item[" . $data["id"] . "]' value='1' $sel>";
-            echo "</td><td>";
+            
+            echo "<td>";
             if (isset($CFG_GLPI['languages'][$data['language']])) {
                echo $CFG_GLPI['languages'][$data['language']][0];
             }
@@ -259,8 +277,11 @@ class DropdownTranslation extends CommonDBChild {
             echo "</td></tr>";
          }
          echo "</table>";
-         Html::openArrowMassives("translation_form", true);
-         Html::closeArrowMassives(array('delete_translation' => _sx('button', 'Delete')));
+         if ($canedit) {
+            $paramsma['ontop'] = false;
+            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::closeForm();
+         }
       } else {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th class='b'>" . __("No translation found")."</th></tr></table>";
@@ -428,6 +449,7 @@ class DropdownTranslation extends CommonDBChild {
                       AND `items_id`='".$ID."'
                       AND `field`='$field'
                       AND `language`='$language'";
+
             $result_translations = $DB->query($query);
             //The field is already translated in this language
             if ($DB->numrows($result_translations)) {
