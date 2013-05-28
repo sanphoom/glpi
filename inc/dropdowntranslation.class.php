@@ -525,6 +525,7 @@ class DropdownTranslation extends CommonDBChild {
       } else {
          return 0;
       }
+
    }
 
    /**
@@ -584,6 +585,27 @@ class DropdownTranslation extends CommonDBChild {
     */
    static function hasItemtypeATranslation($itemtype) {
       return countElementsInTable(self::getTable(), "`itemtype`='$itemtype'");
+   }
+
+   /**
+    *
+    * Get available translations for a language
+    * @param $language language
+    * @since 0.85
+    * @return array of table / field translated item
+    */
+   static function getAvailableTranslations($language) {
+      global $DB;
+      $tab = array();
+      if (self::isDropdownTranslationActive()) {
+         $query   = "SELECT DISTINCT `itemtype`, `field`
+                     FROM `".self::getTable()."`
+                     WHERE `language`='$language'";
+         foreach ($DB->request($query) as $data) {
+            $tab[$data['itemtype']][$data['field']] = $data['field'];
+         }
+      }
+      return $tab;
    }
 }
 ?>

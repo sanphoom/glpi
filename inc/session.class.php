@@ -128,6 +128,8 @@ class Session {
                if (empty($_SESSION["glpilanguage"])) {
                   $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
                }
+               $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+
                self::loadLanguage();
 
                // glpiprofiles -> other available profile with link to the associated entities
@@ -552,7 +554,7 @@ class Session {
       if (empty($trytoload)) {
          $trytoload = $CFG_GLPI["language"];
       }
-
+      
       if (isset($CFG_GLPI["languages"][$trytoload])) {
          $newfile = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
       }

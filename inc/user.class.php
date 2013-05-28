@@ -744,6 +744,10 @@ class User extends CommonDBTM {
             if (Session::getLoginUserID() === $input['id']) {
                if ($_SESSION["glpi$f"] != $input[$f]) {
                   $_SESSION["glpi$f"] = $input[$f];
+                  // reinit translations
+                  if ($f == 'language') {
+                     $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+                  }
                }
             }
             if ($input[$f] == $CFG_GLPI[$f]) {
