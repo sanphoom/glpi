@@ -262,9 +262,34 @@ class Dropdown {
       $comment = "";
 
       if ($id) {
-         $query = "SELECT *
-                   FROM `". $table ."`
-                   WHERE `id` = '". $id ."'";
+         $SELECTNAME    = "`$table`.`name`, '' AS transname";
+         $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
+         $JOIN          = '';
+         if  ($translate) {
+            if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'name')) {
+               $SELECTNAME = "`$table`.`name`, `namet`.`value` AS transname";
+               $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
+                                 ON (`namet`.`itemtype` = '".getItemTypeForTable($table)."'
+                                    AND `namet`.`items_id` = `$table`.`id`
+                                    AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
+                                    AND `namet`.`field` = 'name')";
+            }
+            if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'comment')) {
+               $SELECTCOMMENT = "`$table`.`comment`, `namec`.`value` AS transcomment";
+               $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namec
+                                 ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
+                                    AND `namec`.`items_id` = `$table`.`id`
+                                    AND `namec`.`language` = '".$_SESSION['glpilanguage']."'
+                                    AND `namec`.`field` = 'comment')";
+            }
+
+         }
+
+         $query = "SELECT $SELECTNAME, $SELECTCOMMENT
+                  FROM `$table`
+                  $JOIN
+                  WHERE `$table`.`id` = '$id'";
+         
          /// TODO review comment management...
          /// TODO getDropdownName need to return only name
          /// When needed to use comment use class instead : getComments function
@@ -275,26 +300,14 @@ class Dropdown {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) != 0) {
                $data = $DB->fetch_assoc($result);
-               //$name = $data["name"];
-               if ($translate) {
-                  /// TODO : Try to do it on SQL to avoid mass SQL requests
-                  $name = DropdownTranslation::getTranslatedValue($data['id'],
-                                                                  getItemTypeForTable($table),
-                                                                  'name', $_SESSION['glpilanguage'],
-                                                                  $data['name']);
+               if ($translate && !empty($data['transname'])) {
+                  $name    = $data['transname'];
                } else {
-                  $name = $data["name"];
+                  $name    = $data["name"];
                }
-
                if (isset($data["comment"])) {
-                  //$comment = $data["comment"];
-                  if ($translate) {
-                     /// TODO : Try to do it on SQL to avoid mass SQL requests
-                     $comment = DropdownTranslation::getTranslatedValue($data['id'],
-                                                                        getItemTypeForTable($table),
-                                                                        'comment',
-                                                                        $_SESSION['glpilanguage'],
-                                                                        $data['comment']);
+                  if ($translate && !empty($data['transcomment'])) {
+                     $comment = $data['transcomment'];
                   } else {
                      $comment = $data["comment"];
                   }

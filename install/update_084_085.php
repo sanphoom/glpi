@@ -890,7 +890,7 @@ function update084to085() {
             PRIMARY            KEY (`id`),
             KEY                `knowbaseitems_id` (`knowbaseitems_id`),
             KEY                `language` (`language`)
-         )  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         )  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";         
       $DB->query($query)
          or die("0.85 add table glpi_knowbaseitemtranslations");
    }
@@ -899,22 +899,20 @@ function update084to085() {
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_dropdowntranslations'));
    Config::setConfigurationValues('core', array('translate_dropdowns' => 0));
    if (!TableExists("glpi_dropdowntranslations")) {
-      /// TODO : think it will easier to do if name / comment / completename is on the table.
-      /// Permit to manage getting infos in SQL using just one join
-      /// Is it really intereting to translate others fields ?
-      /// Maybe use this scheme of table for other fields ? Manage name / completename /comment on one line ?
       $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdowntranslations` (
            `id` int(11) NOT NULL AUTO_INCREMENT,
            `items_id` int(11) NOT NULL DEFAULT '0',
            `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-           `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-           `field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+           `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+           `field` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
            `value` text COLLATE utf8_unicode_ci,
            PRIMARY KEY (`id`),
+           UNIQUE KEY `unicity` (`itemtype`,`items_id`,`language`,`field`),
            KEY `typeid` (`itemtype`,`items_id`),
            KEY `language` (`language`),
            KEY `field` (`field`)
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
       $DB->query($query)
          or die("0.85 add table glpi_dropdowntranslations");
    }

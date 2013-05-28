@@ -453,7 +453,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
                               AND `namet`.`field` = 'name')";
       }
       if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'comment')) {
-         $SELECTCOMMENT = "`$table`.`name`, `namec`.`value` AS transcomment";
+         $SELECTCOMMENT = "`$table`.`comment`, `namec`.`value` AS transcomment";
          $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
                            ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
                               AND `namec`.`items_id` = `$table`.`id`
@@ -474,7 +474,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
          if ($translate && !empty($transname)) {
             $name    = $transname;
          } else {
-            $name    = $DB->result($result,0,"completename");
+            $name    = $DB->result($result,0,"name");
          }
 
          $comment  = $name." :<br>";
@@ -526,7 +526,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate = 
                               AND `namet`.`field` = 'completename')";
       }
       if (DropdownTranslation::haveTranslations(getItemTypeForTable($table), 'comment')) {
-         $SELECTCOMMENT = "`$table`.`completename`, `namec`.`value` AS transcomment";
+         $SELECTCOMMENT = "`$table`.`comment`, `namec`.`value` AS transcomment";
          $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namec
                            ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
                               AND `namec`.`items_id` = `$table`.`id`
