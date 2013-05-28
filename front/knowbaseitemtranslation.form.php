@@ -36,16 +36,6 @@ if (isset($_POST['add'])) {
    
 } elseif(isset($_POST['update'])) {
    $translation->update($_POST);
-
-   /// TODO use standard massive action
-} elseif(isset($_POST['delete_translation'])) {
-   if (isset($_POST['item'])) {
-      foreach ($_POST['item'] as $id => $value) {
-         if ($value == 1) {
-            $translation->delete(array('id' => $id));
-         }
-      }
-   }
 }
 Html::back();
 ?>

@@ -392,9 +392,6 @@ class DropdownTranslation extends CommonDBChild {
    static function dropdownFields(CommonDBTM $item, $language = '', $value = '') {
       global $DB;
 
-      /// TODO : is it interesting to translate all fields ?
-      /// DB scheme not appropriate to efficient DB request
-      
       $options = array();
       foreach (Search::getOptions(get_class($item)) as $id => $field) {
          //Can only translate name, and fields whose datatype is text or string
