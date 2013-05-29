@@ -138,7 +138,7 @@ if ($item instanceof CommonTreeDropdown) {
    } else {
       if (isset($_GET['searchText'])) {
          
-         if (Session::haveTranslations(getItemTypeForTable($table), 'completename')) {
+         if (Session::haveTranslations($_GET['itemtype'], 'completename')) {
             $where .= " AND (`$table`.`completename` ".Search::makeTextSearch($_GET['searchText']).
                              "OR `namet`.`value` ".Search::makeTextSearch($_GET['searchText']).")" ;
          } else {
@@ -189,13 +189,13 @@ if ($item instanceof CommonTreeDropdown) {
       }
 
       if ($multi) {
-         $add_order = '`entities_id`, ';
+         $add_order = "`$table`.`entities_id`, ";
       }
    }
 
    $addselect = '';
    $addjoin = '';
-   if (Session::haveTranslations(getItemTypeForTable($table), 'completename')) {
+   if (Session::haveTranslations($_GET['itemtype'], 'completename')) {
       $addselect = ", `namet`.`value` AS transcompletename";
       $addjoin   = " LEFT JOIN `glpi_dropdowntranslations` AS namet
                         ON (`namet`.`itemtype` = '".$_GET['itemtype']."'
@@ -203,7 +203,7 @@ if ($item instanceof CommonTreeDropdown) {
                            AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
                            AND `namet`.`field` = 'completename')";
    }
-   if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
+   if (Session::haveTranslations($_GET['itemtype'], 'name')) {
       $addselect .= ", `namet2`.`value` AS transname";
       $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet2
                         ON (`namet2`.`itemtype` = '".$_GET['itemtype']."'
@@ -211,7 +211,7 @@ if ($item instanceof CommonTreeDropdown) {
                            AND `namet2`.`language` = '".$_SESSION['glpilanguage']."'
                            AND `namet2`.`field` = 'name')";
    }
-   if (Session::haveTranslations(getItemTypeForTable($table), 'comment')) {
+   if (Session::haveTranslations($_GET['itemtype'], 'comment')) {
       $addselect .= ", `commentt`.`value` AS transcomment";
       $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS commentt
                         ON (`commentt`.`itemtype` = '".$_GET['itemtype']."'
@@ -224,7 +224,7 @@ if ($item instanceof CommonTreeDropdown) {
              FROM `$table`
              $addjoin
              $where
-             ORDER BY $add_order `completename`
+             ORDER BY $add_order `$table`.`completename`
              $LIMIT";
    
    if ($result = $DB->query($query)) {
@@ -318,7 +318,7 @@ if ($item instanceof CommonTreeDropdown) {
 
                               if (isset($item->fields["comment"])) {
                                  $addcomment = DropdownTranslation::getTranslatedValue($ID,
-                                                      get_class($item),
+                                                      $_GET['itemtype'],
                                                       'comment',
                                                        $_SESSION['glpilanguage'],
                                                        $item->fields['comment']);
@@ -434,11 +434,32 @@ if ($item instanceof CommonTreeDropdown) {
          $search = Search::makeTextSearch($_GET['searchText']);
          $where .=" AND  (`$table`.`$field` ".$search;
 
+         if (Session::haveTranslations($_GET['itemtype'], $field)) {
+            $where .= " OR `namet`.`value` ".$search;
+         }
          if ($_GET['itemtype'] == "SoftwareLicense") {
             $where .= " OR `glpi_softwares`.`name` ".$search;
          }
          $where .= ')';
       }
+   }
+   $addselect = '';
+   $addjoin = '';
+   if (Session::haveTranslations($_GET['itemtype'], $field)) {
+      $addselect .= ", `namet`.`value` AS transname";
+      $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
+                        ON (`namet`.`itemtype` = '".$_GET['itemtype']."'
+                           AND `namet`.`items_id` = `$table`.`id`
+                           AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
+                           AND `namet`.`field` = '$field')";
+   }
+   if (Session::haveTranslations($_GET['itemtype'], 'comment')) {
+      $addselect .= ", `commentt`.`value` AS transcomment";
+      $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS commentt
+                        ON (`commentt`.`itemtype` = '".$_GET['itemtype']."'
+                           AND `commentt`.`items_id` = `$table`.`id`
+                           AND `commentt`.`language` = '".$_SESSION['glpilanguage']."'
+                           AND `commentt`.`field` = 'comment')";
    }
 
    switch ($_GET['itemtype']) {
@@ -461,18 +482,20 @@ if ($item instanceof CommonTreeDropdown) {
          break;
 
       default :
-         $query = "SELECT *
+         $query = "SELECT `$table`.* $addselect
                    FROM `$table`
+                   $addjoin
                    $where";
    }
 
    if ($multi) {
-      $query .= " ORDER BY `entities_id`, $field
+      $query .= " ORDER BY `$table`.`entities_id`, `$table`.`$field`
                  $LIMIT";
    } else {
-      $query .= " ORDER BY $field
+      $query .= " ORDER BY `$table`.`$field`
                  $LIMIT";
    }
+   Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
 
       if ($_GET['page'] == 1) {
@@ -493,7 +516,7 @@ if ($item instanceof CommonTreeDropdown) {
          }
       }
 
-      $outputval = Dropdown::getDropdownName($table, $_GET['value']);
+//       $outputval = Dropdown::getDropdownName($table, $_GET['value']);
 
       $datastoadd = array();
 
@@ -515,11 +538,11 @@ if ($item instanceof CommonTreeDropdown) {
                $datastoadd = array();
             }
 
-            //$outputval = $data[$field];
-            /// TODO : Try to do it on SQL to avoid mass SQL requests
-            $outputval = DropdownTranslation::getTranslatedValue($data['id'], get_class($item),
-                                                  $field, $_SESSION['glpilanguage'],
-                                                  $data[$field]);
+            if (isset($data['transname']) && !empty($data['transname'])) {
+               $outputval = $data['transname'];
+            } else {
+               $outputval = $data[$field];
+            }
 
             if ($displaywith) {
                foreach ($_GET['displaywith'] as $key) {
@@ -539,12 +562,12 @@ if ($item instanceof CommonTreeDropdown) {
             $addcomment = "";
             $title      = $outputval;
             if (isset($data["comment"])) {
-               /// TODO : Try to do it on SQL to avoid mass SQL requests
-               $addcomment.= DropdownTranslation::getTranslatedValue($data['id'],
-                                                      get_class($item),
-                                                      'comment',
-                                                      $_SESSION['glpilanguage'],
-                                                      $data['comment']);
+               if (isset($data['transcomment']) && !empty($data['transcomment'])) {
+                  $addcomment .= $data['transcomment'];
+               } else {
+                  $addcomment .= $data["comment"];
+               }
+
                $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
             }
             if ($_SESSION["glpiis_ids_visible"]
