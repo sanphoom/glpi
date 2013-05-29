@@ -3042,7 +3042,7 @@ class User extends CommonDBTM {
    **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
-toolbox::logdebug("dans dropdownuser", $options);
+
       // Default values
       $p['name']           = 'users_id';
       $p['value']          = '';

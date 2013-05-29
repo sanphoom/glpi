@@ -140,6 +140,8 @@ class DropdownTranslation extends CommonDBChild {
          $translation = new DropdownTranslation();
          $translation->generateCompletename($this->fields, true);
       }
+      // Add to session
+      $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']][$this->fields['field']] = $this->fields['field'];
    }
    
    /**
@@ -504,7 +506,7 @@ class DropdownTranslation extends CommonDBChild {
       //If dropdown translation is globally off, or if this itemtype cannot be translated,
       //then original value should be returned
       $item = new $itemtype();
-      if (!$ID || !self::isDropdownTranslationActive() || !self::canBeTranslated($item)) {
+      if (!$ID || !Session::haveTranslations($itemtype, $field)) {
          return $value;
       }
       //ID > 0 : dropdown item might be translated !
