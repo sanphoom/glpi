@@ -708,28 +708,6 @@ td.nopadding {
 }
 
 
-/* ################--------------- Autocompletion  ---------------#################### */
-
-ul.autocomp {
-   list-style-type: none;
-   margin:0;
-   margin-left:3px;
-   padding:3px;
-   text-align:left;
-}
-
-ul.autocomp li.selected { 
-   background-color: #FFF6CF; 
-}
-
-li.auto_comp {
-   list-style-type: none;
-   display:block;
-   margin:0;
-   padding:2px;
-   height:16px;
-}
-
 
 
 /* ################--------------- Tracking  / Reminder ---------------#################### */

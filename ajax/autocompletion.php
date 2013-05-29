@@ -87,8 +87,6 @@ $query = "SELECT DISTINCT `".$_GET['field']."` AS VAL
                 AND `".$_GET['field']."` <> '".$_GET['term']."'
                 $entity
           ORDER BY `".$_GET['field']."`";
-          /// TODO no more paging system
-          //LIMIT ".intval($_GET['start']).",".intval($_GET['limit']);
 
 $values = array();
 if ($result=$DB->query($query)) {
