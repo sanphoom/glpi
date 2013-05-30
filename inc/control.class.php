@@ -40,7 +40,6 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since version 0.85
 **/
-/// TODO move function to class
 class Control extends CommonGLPI {
 
 
