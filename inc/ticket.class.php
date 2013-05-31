@@ -544,7 +544,7 @@ class Ticket extends CommonITILObject {
                   $ong[3] = __('Satisfaction');
                }
             }
-            if (Session::haveRight('observe_ticket','1')
+            if (Session::haveRight('task', TicketTask::SEEPUBLIC)
                 || Session::haveRight('followup', TicketFollowup::SEEPUBLIC)) {
                $ong[4] = __('Statistics');
             }
@@ -955,7 +955,7 @@ class Ticket extends CommonITILObject {
       //     - update done by someone who have update right
       //       see also updatedatemod used by ticketfollowup updates
       if (($this->fields['takeintoaccount_delay_stat'] == 0)
-          && (Session::haveRight("global_add_tasks", "1")
+          && (Session::haveRight("task", TicketTask::ADDALLTICKET)
               || Session::haveRightsOr('followup',
                                       array(TicketFollowup::ADDALLTICKET,
                                             TicketFollowup::ADDMYTICKET,
@@ -1700,7 +1700,7 @@ class Ticket extends CommonITILObject {
 
       if ($this->getFromDB($ID)) {
          if (!$no_stat_computation
-             && (Session::haveRight("global_add_tasks", "1")
+             && (Session::haveRight('task', TicketTask::ADDALLTICKET)
                  || Session::haveRightsOr('followup',
                                          array(TicketFollowup::ADDALLTICKET,
                                                TicketFollowup::ADDMYTICKET,

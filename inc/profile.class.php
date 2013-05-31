@@ -43,13 +43,12 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   static public $helpdesk_rights = array('ticket', 'followup',
-                                          'create_ticket_on_login', 'create_request_validation',
-                                          'create_incident_validation',
+   static public $helpdesk_rights = array('create_ticket_on_login', 'create_request_validation',
+                                          'create_incident_validation', 'followup',
                                           'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
-                                          'observe_ticket', 'password_update', 'reminder_public',
+                                          'password_update', 'reminder_public',
                                           'reservation', 'rssfeed_public',
-                                          'show_group_hardware',
+                                          'show_group_hardware', 'task', 'ticket',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
                                           'validate_incident', 'validate_request');
 
@@ -362,7 +361,12 @@ class Profile extends CommonDBTM {
       }
       if ((self::$helpdesk_rights == 'followup')
           && !Session::haveRightsOr('followup',
-                                   array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY))) {
+                                   array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
+                                         TicketFollowup::SEEPUBLIC))) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'task')
+         && !Session::haveRightsOr('followup', TicketTask::SEEPUBLIC)) {
          return false;
       }
 
@@ -422,7 +426,12 @@ class Profile extends CommonDBTM {
       }
       if ((self::$helpdesk_rights == 'followup')
           && !Session::haveRightsOr('followup',
-                                   array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY))) {
+                                   array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
+                                         TicketFollowup::SEEPUBLIC))) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'task')
+         && !Session::haveRightsOr('task', TicketTask::SEEPUBLIC)) {
          return false;
       }
 
@@ -648,23 +657,26 @@ class Profile extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive` = 1';
       }
-      
+
       TicketTemplate::dropdown($options);
       echo "</td>";
       echo "<td colspan='2'>&nbsp;";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>".__('Ticket followup')."</td><td colspan='5'>";
+      echo "<td width='18%'>"._n('Followup', 'Followups', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('TicketFollowup', 'helpdesk'), "_followup",
                            $this->fields["followup"]);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>"._n('Task', 'Tasks', 2)."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('TicketTask', 'helpdesk'), "_task",
+                           $this->fields["task"]);
+      echo "</td></tr>\n";
 
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See public tasks')."</td><td>";
-      Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
       echo "<td>".__('See hardware of my group(s)')."</td><td>";
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
       echo "</td></tr>\n";
@@ -970,10 +982,10 @@ class Profile extends CommonDBTM {
       // Assistance / Tracking-helpdesk
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assistance')."</th></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Ticket')."</th></tr>\n";
+      echo "<tr class='tab_bg_5'><th colspan='6'>"._n('Ticket', 'Tickets', 2)."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>".__('Ticket')."</td><td colspan='5'>";
+      echo "<td width='18%'>"._n('Ticket', 'Tickets', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Ticket'), "_ticket",
                            $this->fields["ticket"]);
       echo "</td></tr>\n";
@@ -1002,41 +1014,28 @@ class Profile extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive` = 1';
       }
-      
+
       TicketTemplate::dropdown($options);
       echo "</td></tr>\n";
 
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Ticket followup')."</th></tr>\n";
+      echo "<tr class='tab_bg_5'>";
+      echo "<th colspan='6'>"._n('Followup', 'Followups', 2)." / "._n('Task', 'Tasks', 2) ."</th>";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>".__('Ticket followup')."</td><td colspan='5'>";
+      echo "<td width='18%'>"._n('Followup', 'Followups', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('TicketFollowup'), "_followup",
                            $this->fields["followup"]);
       echo "</td></tr>\n";
-
-
-
-
-
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Creation')."</th>";
-      echo "</tr>\n";
-
-
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Add a task to all tickets')."</td><td>";
-      Dropdown::showYesNo("global_add_tasks", $this->fields["global_add_tasks"]);
-      echo "</td>";
-      echo "</tr>\n";
-
-
-      echo "<tr class='tab_bg_5'><th colspan='6'>"._x('noun','Update')."</th>";
-      echo "</tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Edit all tasks')."</td><td>";
-      Dropdown::showYesNo("update_tasks", $this->fields["update_tasks"]);
+      echo "<td width='18%'>"._n('Task', 'Tasks', 2)."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('TicketTask'), "_task", $this->fields["task"]);
       echo "</td></tr>\n";
+
+
+
+
 
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Deletion')."</th>";
@@ -1088,12 +1087,6 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See public tasks')."</td><td>";
-      Dropdown::showYesNo("observe_ticket", $this->fields["observe_ticket"]);
-      echo "</td>";
-      echo "<td>".__('See all tasks (public and private)')."</td><td>";
-      Dropdown::showYesNo("show_full_ticket", $this->fields["show_full_ticket"]);
-      echo "</td>";
       echo "<td>".__('Statistics')."</td><td>";
       Dropdown::showYesNo("statistic", $this->fields["statistic"]);
       echo "</td></tr>\n";
@@ -1932,7 +1925,7 @@ class Profile extends CommonDBTM {
       } else {
          $tab[108]['condition']     = '`entities_id` = 0';
       }
-      
+
       $tab[103]['table']         = 'glpi_profilerights';
       $tab[103]['field']         = 'right';
       $tab[103]['name']          = _n('Ticket template', 'Ticket templates', 2);
@@ -2002,7 +1995,7 @@ class Profile extends CommonDBTM {
       $tab[73]['datatype']       = 'bool';
       $tab[73]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_assign_ticket'");
-*/
+
       $tab[74]['table']          = 'glpi_profilerights';
       $tab[74]['field']          = 'right';
       $tab[74]['name']           = __('See all tasks (public and private)');
@@ -2016,7 +2009,7 @@ class Profile extends CommonDBTM {
       $tab[75]['datatype']       = 'bool';
       $tab[75]['joinparams']     = array('jointype' => 'child',
                                         'condition' => "AND `NEWTABLE`.`name`= 'observe_ticket'");
-/*
+
       $tab[76]['table']          = 'glpi_profilerights';
       $tab[76]['field']          = 'right';
       $tab[76]['name']           = __('Update all followups');
@@ -2112,28 +2105,28 @@ class Profile extends CommonDBTM {
       $tab[94]['datatype']       = 'bool';
       $tab[94]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'group_add_followups'");
-*/
+
       $tab[95]['table']          = 'glpi_profilerights';
       $tab[95]['field']          = 'right';
       $tab[95]['name']           = __('Add a task to all tickets');
       $tab[95]['datatype']       = 'bool';
       $tab[95]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'global_add_tasks'");
-/*
+
       $tab[96]['table']          = 'glpi_profilerights';
       $tab[96]['field']          = 'right';
       $tab[96]['name']           = __('Change the priority');
       $tab[96]['datatype']       = 'bool';
       $tab[96]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'update_priority'");
-*/
+
       $tab[97]['table']          = 'glpi_profilerights';
       $tab[97]['field']          = 'right';
       $tab[97]['name']           = __('Edit all tasks');
       $tab[97]['datatype']       = 'bool';
       $tab[97]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'update_tasks'");
-
+*/
       $tab[98]['table']          = 'glpi_profilerights';
       $tab[98]['field']          = 'right';
       $tab[98]['name']           = __('Validate a request');

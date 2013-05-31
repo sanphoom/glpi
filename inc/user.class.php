@@ -2892,10 +2892,15 @@ class User extends CommonDBTM {
                return false;
             }
             if ((Profile::$helpdesk_rights == 'followup')
-                & !Session::haveRightOr('followup', array(TicketFollowup::ADDMYTICKET,
-                                                          TicketFollowup::UPDATEMY))) {
+                & !Session::haveRightsOr('followup', array(TicketFollowup::ADDMYTICKET,
+                                                           TicketFollowup::UPDATEMY,
+                                                           TicketFollowup::SEEPUBLIC))) {
                return false;
             }
+            if ((Profile::$helpdesk_rights == 'task')
+                & !Session::haveRightsOr('task', TicketTask::SEEPUBLIC)) {
+                     return false;
+                  }
 
             foreach ($right as $r) {
                if ($r == 'own_ticket') {

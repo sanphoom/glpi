@@ -163,8 +163,8 @@ class TicketFollowup  extends CommonDBTM {
       if (($this->fields["users_id"] === Session::getLoginUserID())
           && Session::haveRight(self::$rightname, self::UPDATEMY)) {
          return true;
-
       }
+
       // Only the technician
       return (Session::haveRight(self::$rightname, self::UPDATEALL)
               || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())

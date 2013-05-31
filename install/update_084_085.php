@@ -659,6 +659,69 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete delete_followups right");
 
 
+   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   if (countElementsInTable("glpi_profilerights", "`name` = 'task'") == 0) {
+      // rename create_ticket
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `name` = 'task'
+                 WHERE `name` = 'global_add_tasks'";
+      $DB->queryOrDie($query, "0.85 rename global_add_tasks to task");
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = ". TicketTask::ADDALLTICKET ."
+                 WHERE `name` = 'task'
+                       AND `right` = '1'";
+      $DB->queryOrDie($query, "0.85 update followup with global_add_tasks right");
+   }
+
+
+   // delete update_tasks
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'update_tasks' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . READ  ." | ". TicketTask::UPDATEALL  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'task'";
+      $DB->queryOrDie($query, "0.85 update task with update_tasks right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'update_tasks'";
+   $DB->queryOrDie($query, "0.85 delete update_tasks right");
+
+
+   // delete observe_ticket for task
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'observe_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . TicketTask::SEEPUBLIC  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'task'";
+         $DB->queryOrDie($query, "0.85 update task with observe_ticket right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'observe_ticket'";
+   $DB->queryOrDie($query, "0.85 delete observe_ticket right");
+
+
+   // delete show_full_ticket for task
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'show_full_ticket' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " .TicketTask::SEEPUBLIC ." | ".TicketTask::SEEPRIVATE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'task'";
+         $DB->queryOrDie($query, "0.85 update task with show_full_ticket right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_full_ticket'";
+   $DB->queryOrDie($query, "0.85 delete show_full_ticket right");
+
 
    // don't drop column right  - be done later
 
@@ -889,7 +952,7 @@ function update084to085() {
             `answer`           longtext COLLATE utf8_unicode_ci,
             PRIMARY            KEY (`id`),
             KEY                `item` (`knowbaseitems_id`, `language`)
-         )  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";         
+         )  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->query($query)
          or die("0.85 add table glpi_knowbaseitemtranslations");
    }

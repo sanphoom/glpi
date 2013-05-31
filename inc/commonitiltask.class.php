@@ -84,7 +84,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $itemtype = $this->getItilObjectItemType();
       $item     = new $itemtype();
-      if (!$item->can($this->getField($item->getForeignKeyField()),'r')) {
+      if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
          return false;
       }
       return true;
