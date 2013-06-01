@@ -174,8 +174,8 @@ if ($DB->numrows($result)) {
       if (!empty($data['otherserial'])) {
          $output = sprintf(__('%1$s - %2$s'), $output, $data["otherserial"]);
       }
-      array_push($datastoadd, array ('id'    => $ID,
-                                     'text'  => $output));
+      array_push($datastoadd, array('id'    => $ID,
+                                    'text'  => $output));
    }
 
    if ($multi) {

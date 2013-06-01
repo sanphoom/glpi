@@ -2609,8 +2609,7 @@ abstract class CommonITILObject extends CommonDBTM {
                if ($showuserlink) {
                   $param['link'] = $userdata["link"];
                }
-               echo $userdata['name']."&nbsp;".Html::showToolTip($userdata["comment"],
-                                                                 $param);
+               echo $userdata['name']."&nbsp;".Html::showToolTip($userdata["comment"], $param);
             } else {
                echo $userdata;
             }

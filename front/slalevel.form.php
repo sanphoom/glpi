@@ -64,7 +64,7 @@ if (isset($_POST["update"])) {
       if ($item->delete($_POST, 1)) {
          Event::log($_POST["id"], "slas", 4, "setup",
                     //TRANS: %s is the user login
-                    sprintf(__('%s deletes a sla level'), $_SESSION["glpiname"]));
+                    sprintf(__('%s purges a sla level'), $_SESSION["glpiname"]));
       }
       $item->redirectToList();
    }

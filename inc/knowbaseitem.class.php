@@ -787,6 +787,7 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function searchForm($options) {
       global $CFG_GLPI;
+
       if (!$CFG_GLPI["use_public_faq"]
           && !Session::haveRightsOr(self::$rightname, array(READ, self::READFAQ))) {
          return false;
@@ -1049,7 +1050,7 @@ class KnowbaseItem extends CommonDBTM {
          $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
                           `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
       }
-      
+
       $query = "SELECT DISTINCT `glpi_knowbaseitems`.*,
                        `glpi_knowbaseitemcategories`.`completename` AS category
                        $addselect
@@ -1352,7 +1353,7 @@ class KnowbaseItem extends CommonDBTM {
                           `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
       }
 
-      
+
       $query = "SELECT DISTINCT `glpi_knowbaseitems`.* $addselect
                 FROM `glpi_knowbaseitems`
                 $join

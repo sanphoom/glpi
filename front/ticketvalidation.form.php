@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
               //TRANS: %s is the user login
-              sprintf(__('%s deletes an approval'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an approval'), $_SESSION["glpiname"]));
    Html::back();
 }
 

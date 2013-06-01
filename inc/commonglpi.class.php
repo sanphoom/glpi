@@ -986,7 +986,7 @@ class CommonGLPI {
    function display($options=array()) {
 
       if (isset($options['id'])
-         && !$this->isNewID($options['id'])) {
+          && !$this->isNewID($options['id'])) {
          $this->getFromDB($options['id']);
       }
 

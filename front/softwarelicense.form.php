@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
    $license->delete($_POST, 1);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the license id
-              sprintf(__('%1$s deletes the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
+              sprintf(__('%1$s purges the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $license->redirectToList();
 
 } else if (isset($_POST["update"])) {

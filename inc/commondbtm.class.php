@@ -1532,7 +1532,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function canDelete() {
 
-      If (static::$rightname) {
+      if (static::$rightname) {
          return Session::haveRight(static::$rightname, DELETE);
       }
       /// hack for old right management to avoid put $rightname in each class
@@ -1554,7 +1554,7 @@ class CommonDBTM extends CommonGLPI {
     **/
    static function canPurge() {
 
-      If (static::$rightname) {
+      if (static::$rightname) {
          return Session::haveRight(static::$rightname, PURGE);
       }
       return false;
@@ -1568,11 +1568,10 @@ class CommonDBTM extends CommonGLPI {
     * May be overloaded if needed
     *
     * @return booleen
-    * @see canCreate
    **/
    static function canUpdate() {
 
-      If (static::$rightname) {
+      if (static::$rightname) {
          return Session::haveRight(static::$rightname, UPDATE);
       }
 
@@ -1681,7 +1680,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function canView() {
 
-      If (static::$rightname) {
+      if (static::$rightname) {
          return Session::haveRight(static::$rightname, READ);
       }
       return false;
@@ -1715,8 +1714,10 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param $ID   integer   ID to check
     *
+    * @since version 0.85
+    *
     * @return booleen
-    **/
+   **/
    function canEdit($ID) {
 
       if ($this->maybeDeleted()) {
@@ -1724,11 +1725,10 @@ class CommonDBTM extends CommonGLPI {
                  || $this->can($ID, UPDATE)
                  || $this->can($ID, DELETE)
                  || $this->can($ID, PURGE));
-      } else {
-         return ($this->can($ID, CREATE)
-                 || $this->can($ID, UPDATE)
-                 || $this->can($ID, PURGE));
       }
+      return ($this->can($ID, CREATE)
+              || $this->can($ID, UPDATE)
+              || $this->can($ID, PURGE));
    }
 
 
@@ -1931,11 +1931,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (!$params['canedit']
-          || (!$this->can($ID, CREATE)
-               && !$this->can($ID, UPDATE)
-               && !$this->can($ID, DELETE)
-               && !$this->can($ID, PURGE)
-          )) {
+          || !$this->canEdit($ID)) {
          echo "</table></div>";
          // Form Header always open form
          if (!$params['canedit']) {

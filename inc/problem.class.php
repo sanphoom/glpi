@@ -184,8 +184,8 @@ class Problem extends CommonITILObject {
                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
-               $ong = array (1 => __('Analysis'),
-                             2 => _n('Solution', 'Solutions', 1));
+               $ong = array(1 => __('Analysis'),
+                            2 => _n('Solution', 'Solutions', 1));
                if (Session::haveRight('task', TicketTask::SEEPUBLIC)
                    || Session::haveRight('followup', TicketFollowup::SEEPUBLIC)) {
                   $ong[4] = __('Statistics');

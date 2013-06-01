@@ -51,12 +51,12 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["purge"])) {
-   $cartype->check($_POST["cartridgeitems_id"], UPDATE);
+   $cartype->check($_POST["cartridgeitems_id"], PURGE);
 
    if ($cart->delete($_POST, 1)) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes a cartridge'), $_SESSION["glpiname"]));
+                 sprintf(__('%s purges a cartridge'), $_SESSION["glpiname"]));
    }
    Html::back();
 

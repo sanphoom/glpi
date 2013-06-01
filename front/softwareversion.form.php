@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    $version->delete($_POST, 1);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",
               //TRANS: %s is the user login, %2$s is the version id
-              sprintf(__('%1$s deletes the version %2$s'), $_SESSION["glpiname"], $_POST["id"]));
+              sprintf(__('%1$s purges the version %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $version->redirectToList();
 
 } else if (isset($_POST["update"])) {

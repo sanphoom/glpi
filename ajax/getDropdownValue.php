@@ -137,7 +137,7 @@ if ($item instanceof CommonTreeDropdown) {
       $where .= " AND `$table`.`id` = '$one_item'";
    } else {
       if (isset($_GET['searchText'])) {
-         
+
          if (Session::haveTranslations($_GET['itemtype'], 'completename')) {
             $where .= " AND (`$table`.`completename` ".Search::makeTextSearch($_GET['searchText']).
                              "OR `namet`.`value` ".Search::makeTextSearch($_GET['searchText']).")" ;
@@ -226,7 +226,7 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `$table`.`completename`
              $LIMIT";
-   
+
    if ($result = $DB->query($query)) {
 
       if ($_GET['page'] == 1) {
@@ -241,8 +241,8 @@ if ($item instanceof CommonTreeDropdown) {
 
          if ($_GET['display_emptychoice']) {
             if (($one_item < 0) || ($one_item  == 0)) {
-               array_push($datas, array ('id'   => 0,
-                                         'text' => $_GET['emptylabel']));
+               array_push($datas, array('id'   => 0,
+                                        'text' => $_GET['emptylabel']));
             }
          }
       }
@@ -255,8 +255,8 @@ if ($item instanceof CommonTreeDropdown) {
          $firstitem_entity = -1;
 
          while ($data = $DB->fetch_assoc($result)) {
-            $ID        = $data['id'];
-            $level     = $data['level'];
+            $ID    = $data['id'];
+            $level = $data['level'];
 
             if (isset($data['transname']) && !empty($data['transname'])) {
                $outputval = $data['transname'];
@@ -326,10 +326,10 @@ if ($item instanceof CommonTreeDropdown) {
                               }
                               $output2 = $item->getName();
 
-                              $temp = array ('id'      => $ID,
-                                             'text'     => $output2,
-                                             'level'    => $work_level,
-                                             'disabled' => true);
+                              $temp = array('id'       => $ID,
+                                            'text'     => $output2,
+                                            'level'    => $work_level,
+                                            'disabled' => true);
                               if ($_GET['permit_select_parent']) {
                                  unset($temp['disabled']);
                               }
@@ -373,7 +373,7 @@ if ($item instanceof CommonTreeDropdown) {
                   }
                   $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                }
-               array_push($datastoadd, array ('id'    => $ID,
+               array_push($datastoadd, array('id'    => $ID,
                                              'text'  => $outputval,
                                              'level' => $level));
                $count++;
@@ -501,16 +501,16 @@ if ($item instanceof CommonTreeDropdown) {
       if ($_GET['page'] == 1) {
          if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
             if (($one_item < 0) || ($one_item == 0)) {
-               array_push($datas, array ('id'    => 0,
-                                         'text'  => $_GET["emptylabel"]));
+               array_push($datas, array('id'    => 0,
+                                        'text'  => $_GET["emptylabel"]));
             }
          }
 
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
                if (($one_item < 0) || ($one_item == $key)) {
-                  array_push($datas, array ('id'    => $key,
-                                            'text'  => $val));
+                  array_push($datas, array('id'    => $key,
+                                           'text'  => $val));
                }
             }
          }
@@ -575,8 +575,8 @@ if ($item instanceof CommonTreeDropdown) {
                //TRANS: %1$s is the name, %2$s the ID
                $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
             }
-            array_push($datastoadd, array ('id'    => $ID,
-                                           'text'  => $outputval));
+            array_push($datastoadd, array('id'    => $ID,
+                                          'text'  => $outputval));
             $count++;
          }
          if ($multi) {

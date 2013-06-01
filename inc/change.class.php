@@ -183,9 +183,9 @@ class Change extends CommonITILObject {
                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
-               return array (1 => __('Analysis'),
-                             2 => __('Plans'),
-                             3 => __('Solution'));
+               return array(1 => __('Analysis'),
+                            2 => __('Plans'),
+                            3 => __('Solution'));
          }
       }
       return '';

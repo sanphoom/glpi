@@ -3276,17 +3276,17 @@ class Ticket extends CommonITILObject {
 
          $rand   = Dropdown::showYesNo("nodelegate", $values['nodelegate']);
 
-         $params = array ('nodelegate' => '__VALUE__',
-                          'rand'       => $rand,
-                          'right'      => "delegate",
-                          '_users_id_requester'
-                                       => $values['_users_id_requester'],
-                          '_users_id_requester_notif'
-                                       => $values['_users_id_requester_notif'],
-                          'use_notification'
-                                       => $values['_users_id_requester_notif']['use_notification'],
-                          'entity_restrict'
-                                       => $_SESSION["glpiactive_entity"]);
+         $params = array('nodelegate' => '__VALUE__',
+                         'rand'       => $rand,
+                         'right'      => "delegate",
+                         '_users_id_requester'
+                                      => $values['_users_id_requester'],
+                         '_users_id_requester_notif'
+                                      => $values['_users_id_requester_notif'],
+                         'use_notification'
+                                      => $values['_users_id_requester_notif']['use_notification'],
+                         'entity_restrict'
+                                      => $_SESSION["glpiactive_entity"]);
 
          Ajax::UpdateItemOnSelectEvent("dropdown_nodelegate".$rand, "show_result".$rand,
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
@@ -5691,10 +5691,10 @@ class Ticket extends CommonITILObject {
                if ($d["users_id"] > 0) {
                   $userdata = getUserName($d["users_id"],2);
                   $name     = "<span class='b'>".$userdata['name']."</span>";
-                  $name = sprintf(__('%1$s %2$s'), $name,
-                                    Html::showToolTip($userdata["comment"],
-                                                      array('link'    => $userdata["link"],
-                                                            'display' => false)));
+                  $name     = sprintf(__('%1$s %2$s'), $name,
+                                      Html::showToolTip($userdata["comment"],
+                                                        array('link'    => $userdata["link"],
+                                                              'display' => false)));
                   echo $name;
                } else {
                   echo $d['alternative_email']."&nbsp;";

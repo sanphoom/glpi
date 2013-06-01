@@ -494,10 +494,10 @@ class MailCollector  extends CommonDBTM {
 
                //If entity assigned, or email refused by rule, or no user and no supplier associated with the email
                $user_condition = ($CFG_GLPI["use_anonymous_helpdesk"]
-                                  ||(isset($tkt['_users_id_requester'])
+                                  || (isset($tkt['_users_id_requester'])
                                      && ($tkt['_users_id_requester'] > 0))
                                   || (isset($tkt['_supplier_email'])
-                                     && $tkt['_supplier_email']));
+                                      && $tkt['_supplier_email']));
 
                $rejinput                      = array();
                $rejinput['mailcollectors_id'] = $mailgateID;
@@ -746,8 +746,8 @@ class MailCollector  extends CommonDBTM {
              && ($CFG_GLPI['use_anonymous_followups']
                  || ($tkt['_users_id_requester'] > 0)
                  || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from'])
-                 || ($tkt['_supplier_email'] = $st->isSupplierEmail($tkt['tickets_id'], $head['from']))
-                )) {
+                 || ($tkt['_supplier_email'] = $st->isSupplierEmail($tkt['tickets_id'],
+                                                                    $head['from'])))) {
 
             if ($tkt['_supplier_email']) {
                $tkt['content'] = sprintf(__('From %s'), $head['from'])."\n\n".$tkt['content'];
@@ -975,7 +975,7 @@ class MailCollector  extends CommonDBTM {
              $errors = imap_errors();
          }
 
-          
+
          if ($this->fields['errors'] > 0) {
             $this->update(array('id'     => $this->getID(),
                                 'errors' => 0));

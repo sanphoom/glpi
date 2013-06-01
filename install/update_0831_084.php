@@ -151,7 +151,7 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'tickets and problems status'));
 
-   $status = array ('new'           => CommonITILObject::INCOMING,
+   $status  = array('new'           => CommonITILObject::INCOMING,
                     'assign'        => CommonITILObject::ASSIGNED,
                     'plan'          => CommonITILObject::PLANNED,
                     'waiting'       => CommonITILObject::WAITING,
@@ -205,7 +205,7 @@ function update0831to084() {
          }
       }
    }
-   
+
    // Update Rules
    $changes                = array();
    $changes['RuleTicket']  = 'status';

@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    if ($cost->delete($_POST, 1)) {
       Event::log($cost->fields['contracts_id'], "contracts", 4, "financial",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes a cost'), $_SESSION["glpiname"]));
+                 sprintf(__('%s purges a cost'), $_SESSION["glpiname"]));
    }
    $contract = new Contract();
    $contract->getFromDB($cost->fields['contracts_id']);

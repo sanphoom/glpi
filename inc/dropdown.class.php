@@ -45,30 +45,31 @@ class Dropdown {
     *
     * @param $itemtype        itemtype used for create dropdown
     * @param $options   array of possible options:
-    *    - name                : string / name of the select (default is depending itemtype)
-    *    - value               : integer / preselected value (default -1)
-    *    - comments            : boolean / is the comments displayed near the dropdown (default true)
-    *    - toadd               : array / array of specific values to add at the begining
-    *    - entity              : integer or array / restrict to a defined entity or array of entities
-    *                                               (default -1 : no restriction)
-    *    - entity_sons         : boolean / if entity restrict specified auto select its sons
-    *                                      only available if entity is a single value not an array
-    *                                      (default false)
-    *    - toupdate            : array / Update a specific item on select change on dropdown
-    *                                    (need value_fieldname, to_update,
-    *                                     url (see Ajax::updateItemOnSelectEvent for information)
-    *                                     and may have moreparams)
-    *    - used                : array / Already used items ID: not to display in dropdown
+    *    - name                 : string / name of the select (default is depending itemtype)
+    *    - value                : integer / preselected value (default -1)
+    *    - comments             : boolean / is the comments displayed near the dropdown (default true)
+    *    - toadd                : array / array of specific values to add at the begining
+    *    - entity               : integer or array / restrict to a defined entity or array of entities
+    *                                                (default -1 : no restriction)
+    *    - entity_sons          : boolean / if entity restrict specified auto select its sons
+    *                                       only available if entity is a single value not an array
+    *                                       (default false)
+    *    - toupdate             : array / Update a specific item on select change on dropdown
+    *                                     (need value_fieldname, to_update,
+    *                                      url (see Ajax::updateItemOnSelectEvent for information)
+    *                                      and may have moreparams)
+    *    - used                 : array / Already used items ID: not to display in dropdown
     *                                    (default empty)
-    *    - on_change           : string / value to transmit to "onChange"
-    *    - rand                : integer / already computed rand value
-    *    - condition           : string / aditional SQL condition to limit display
-    *    - displaywith         : array / array of field to display with request
-    *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
-    *    - display_emptychoice : Display emptychoice ? (default true)
-    *    - display             : boolean / display or get string (default true)
-    *    - width               : specific width needed (default 80%)
-    *    - permit_select_parent : boolean / for tree dropdown permit to see parent items not available by default (default false)
+    *    - on_change            : string / value to transmit to "onChange"
+    *    - rand                 : integer / already computed rand value
+    *    - condition            : string / aditional SQL condition to limit display
+    *    - displaywith          : array / array of field to display with request
+    *    - emptylabel           : Empty choice's label (default self::EMPTY_VALUE)
+    *    - display_emptychoice  : Display emptychoice ? (default true)
+    *    - display              : boolean / display or get string (default true)
+    *    - width                : specific width needed (default 80%)
+    *    - permit_select_parent : boolean / for tree dropdown permit to see parent items
+    *                                       not available by default (default false)
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -289,7 +290,7 @@ class Dropdown {
                   FROM `$table`
                   $JOIN
                   WHERE `$table`.`id` = '$id'";
-         
+
          /// TODO review comment management...
          /// TODO getDropdownName need to return only name
          /// When needed to use comment use class instead : getComments function

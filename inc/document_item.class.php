@@ -101,6 +101,12 @@ class Document_Item extends CommonDBRelation{
       parent::post_addItem();
    }
 
+
+   /**
+    * @since version 0.83
+    *
+    * @see CommonDBTM::post_purgeItem()
+   **/
    function post_purgeItem() {
 
       if ($this->fields['itemtype'] == 'Ticket') {
@@ -116,6 +122,7 @@ class Document_Item extends CommonDBRelation{
       }
       parent::post_purgeItem();
    }
+
 
    /**
     * @param $item   CommonDBTM object

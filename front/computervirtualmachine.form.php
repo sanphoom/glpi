@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    if ($disk->delete($_POST, 1)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes a virtual machine'), $_SESSION["glpiname"]));
+                 sprintf(__('%s purges a virtual machine'), $_SESSION["glpiname"]));
    }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);

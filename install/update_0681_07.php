@@ -731,7 +731,7 @@ function update0681to07() {
 
    foreach ($template_tables as $table) {
       if (!isset($enum01[$table])) {
-         $enum01[$table] = array ();
+         $enum01[$table] = array();
       }
       $enum01[$table][] = "is_template";
    }
@@ -798,7 +798,7 @@ function update0681to07() {
 
    foreach ($deleted_tables as $table) {
       if (!isset($enum01[$table])) {
-         $enum01[$table] = array ();
+         $enum01[$table] = array();
       }
       $enumYN["N"][$table][] = "deleted";
    }

@@ -177,8 +177,8 @@ class Entity extends CommonTreeDropdown {
 
       foreach (self::$field_right as $right => $fields) {
 
-         if (($right == 'entity_helpdesk')) {
-            if(Session::haveRight(self::$rightname, self::UPDATEHELPDESK )) {
+         if ($right == 'entity_helpdesk') {
+            if (Session::haveRight(self::$rightname, self::UPDATEHELPDESK )) {
                foreach ($fields as $field) {
                   if (isset($input[$field])) {
                      $tmp[$field] = $input[$field];

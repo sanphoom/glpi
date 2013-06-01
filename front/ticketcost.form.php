@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
    if ($cost->delete($_POST, 1)) {
       Event::log($cost->fields['tickets_id'], "tickets", 4, "tracking",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes a cost'), $_SESSION["glpiname"]));
+                 sprintf(__('%s purges a cost'), $_SESSION["glpiname"]));
    }
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket').'?id='.$cost->fields['tickets_id']);
 

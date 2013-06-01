@@ -105,7 +105,7 @@ class TicketValidation  extends CommonDBChild {
    **/
    function canDeleteItem() {
 
-      If (($this->fields["users_id"] == Session::getLoginUserID())
+      if (($this->fields["users_id"] == Session::getLoginUserID())
           || Session::haveRight('delete_validations', 1)) {
          return true;
       }
@@ -442,7 +442,7 @@ class TicketValidation  extends CommonDBChild {
       $tab = self::getAllStatusArray($p['all'], $p['global']);
       unset($p['all']);
       unset($p['global']);
-      
+
       return Dropdown::showFromArray($name, $tab, $p);
    }
 

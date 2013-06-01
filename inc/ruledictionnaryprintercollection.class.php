@@ -328,8 +328,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
                                        AND `items_id` = '$new_printers_id'
                                        AND `computers_id`='".$connection["computers_id"]."'")) {
             //Direct connection doesn't exists in the target printer : move it
-            $computeritem->update(array ('id'       => $connection['id'],
-                                         'items_id' => $new_printers_id));
+            $computeritem->update(array('id'       => $connection['id'],
+                                        'items_id' => $new_printers_id));
          } else {
             //Direct connection already exists in the target printer : delete it
             $computeritem->delete($connection);
