@@ -27,13 +27,18 @@
  --------------------------------------------------------------------------
  */
 
+/** @file
+ * @brief
+ * @since version 0.85
+**/
+
 $AJAX_INCLUDE = 1;
 include ('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("dropdown", "w");
+Session::checkRight("dropdown", UPDATE);
 if (isset($_POST['itemtype']) && isset($_POST['language'])) {
    $item = new $_POST['itemtype'];
    $item->getFromDB($_POST['items_id']);

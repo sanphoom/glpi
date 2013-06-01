@@ -65,14 +65,16 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    *
     * Is translation enabled for this itemtype
+    *
     * @since 0.85
+    *
     * @return true if translation is available, false otherwise
-    */
+   **/
    function maybeTranslated () {
       return $this->can_be_translated;
    }
+
 
    /**
     * @see CommonGLPI::getMenuShorcut()

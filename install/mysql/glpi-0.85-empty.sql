@@ -1769,10 +1769,11 @@ CREATE TABLE `glpi_dropdowntranslations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `field` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `value` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`language`,`field`),
   KEY `typeid` (`itemtype`,`items_id`),
   KEY `language` (`language`),
   KEY `field` (`field`)
@@ -2674,12 +2675,11 @@ DROP TABLE IF EXISTS `glpi_knowbaseitemtranslations`;
 CREATE TABLE `glpi_knowbaseitemtranslations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-  `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
   `name` text COLLATE utf8_unicode_ci,
   `answer` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  KEY `item` (`knowbaseitems_id`, `language`),
-  FULLTEXT KEY `fulltext` (`name`,`answer`)
+  KEY `item` (`knowbaseitems_id`, `language`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

@@ -317,11 +317,11 @@ if ($item instanceof CommonTreeDropdown) {
                               $title = $item->fields['completename'];
 
                               if (isset($item->fields["comment"])) {
-                                 $addcomment = DropdownTranslation::getTranslatedValue($ID,
-                                                      $_GET['itemtype'],
-                                                      'comment',
-                                                       $_SESSION['glpilanguage'],
-                                                       $item->fields['comment']);
+                                 $addcomment
+                                 = DropdownTranslation::getTranslatedValue($ID, $_GET['itemtype'],
+                                                                           'comment',
+                                                                           $_SESSION['glpilanguage'],
+                                                                           $item->fields['comment']);
                                  $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                               }
                               $output2 = $item->getName();
@@ -449,17 +449,17 @@ if ($item instanceof CommonTreeDropdown) {
       $addselect .= ", `namet`.`value` AS transname";
       $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
                         ON (`namet`.`itemtype` = '".$_GET['itemtype']."'
-                           AND `namet`.`items_id` = `$table`.`id`
-                           AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
-                           AND `namet`.`field` = '$field')";
+                            AND `namet`.`items_id` = `$table`.`id`
+                            AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
+                            AND `namet`.`field` = '$field')";
    }
    if (Session::haveTranslations($_GET['itemtype'], 'comment')) {
       $addselect .= ", `commentt`.`value` AS transcomment";
       $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS commentt
                         ON (`commentt`.`itemtype` = '".$_GET['itemtype']."'
-                           AND `commentt`.`items_id` = `$table`.`id`
-                           AND `commentt`.`language` = '".$_SESSION['glpilanguage']."'
-                           AND `commentt`.`field` = 'comment')";
+                            AND `commentt`.`items_id` = `$table`.`id`
+                            AND `commentt`.`language` = '".$_SESSION['glpilanguage']."'
+                            AND `commentt`.`field` = 'comment')";
    }
 
    switch ($_GET['itemtype']) {
@@ -495,7 +495,7 @@ if ($item instanceof CommonTreeDropdown) {
       $query .= " ORDER BY `$table`.`$field`
                  $LIMIT";
    }
-   Toolbox::logDebug($query);
+//   Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
 
       if ($_GET['page'] == 1) {

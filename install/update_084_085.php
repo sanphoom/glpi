@@ -945,16 +945,15 @@ function update084to085() {
    Config::setConfigurationValues('core', array('translate_kb' => 0));
    if (!TableExists("glpi_knowbaseitemtranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_knowbaseitemtranslations` (
-            `id`               int(11) NOT NULL AUTO_INCREMENT,
-            `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
-            `language`         varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
-            `name`             text COLLATE utf8_unicode_ci,
-            `answer`           longtext COLLATE utf8_unicode_ci,
-            PRIMARY            KEY (`id`),
-            KEY                `item` (`knowbaseitems_id`, `language`)
-         )  ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->query($query)
-         or die("0.85 add table glpi_knowbaseitemtranslations");
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `knowbaseitems_id` int(11) NOT NULL DEFAULT '0',
+                  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `name` text COLLATE utf8_unicode_ci,
+                  `answer` longtext COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `item` (`knowbaseitems_id`, `language`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.85 add table glpi_knowbaseitemtranslations");
    }
 
    // kb translations
@@ -962,21 +961,20 @@ function update084to085() {
    Config::setConfigurationValues('core', array('translate_dropdowns' => 0));
    if (!TableExists("glpi_dropdowntranslations")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdowntranslations` (
-           `id` int(11) NOT NULL AUTO_INCREMENT,
-           `items_id` int(11) NOT NULL DEFAULT '0',
-           `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-           `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
-           `field` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-           `value` text COLLATE utf8_unicode_ci,
-           PRIMARY KEY (`id`),
-           UNIQUE KEY `unicity` (`itemtype`,`items_id`,`language`,`field`),
-           KEY `typeid` (`itemtype`,`items_id`),
-           KEY `language` (`language`),
-           KEY `field` (`field`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `itemtype` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `field` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `value` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`language`,`field`),
+                  KEY `typeid` (`itemtype`,`items_id`),
+                  KEY `language` (`language`),
+                  KEY `field` (`field`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
-      $DB->query($query)
-         or die("0.85 add table glpi_dropdowntranslations");
+      $DB->queryOrDie($query, "0.85 add table glpi_dropdowntranslations");
    }
 
 

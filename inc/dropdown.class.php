@@ -247,10 +247,11 @@ class Dropdown {
     * @param $table        the dropdown table from witch we want values on the select
     * @param $id           id of the element to get
     * @param $withcomment  give array with name and comment (default 0)
+    * @param $translate    (true by default)
     *
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
-   static function getDropdownName($table, $id, $withcomment=0, $translate = true) {
+   static function getDropdownName($table, $id, $withcomment=0, $translate=true) {
       global $DB, $CFG_GLPI;
 
       $item = getItemForItemtype(getItemTypeForTable($table));
@@ -271,25 +272,25 @@ class Dropdown {
                $SELECTNAME = "`$table`.`name`, `namet`.`value` AS transname";
                $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
                                  ON (`namet`.`itemtype` = '".getItemTypeForTable($table)."'
-                                    AND `namet`.`items_id` = `$table`.`id`
-                                    AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
-                                    AND `namet`.`field` = 'name')";
+                                     AND `namet`.`items_id` = `$table`.`id`
+                                     AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
+                                     AND `namet`.`field` = 'name')";
             }
             if (Session::haveTranslations(getItemTypeForTable($table), 'comment')) {
                $SELECTCOMMENT = "`$table`.`comment`, `namec`.`value` AS transcomment";
                $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namec
-                                 ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
-                                    AND `namec`.`items_id` = `$table`.`id`
-                                    AND `namec`.`language` = '".$_SESSION['glpilanguage']."'
-                                    AND `namec`.`field` = 'comment')";
+                                    ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
+                                        AND `namec`.`items_id` = `$table`.`id`
+                                        AND `namec`.`language` = '".$_SESSION['glpilanguage']."'
+                                              AND `namec`.`field` = 'comment')";
             }
 
          }
 
          $query = "SELECT $SELECTNAME, $SELECTCOMMENT
-                  FROM `$table`
-                  $JOIN
-                  WHERE `$table`.`id` = '$id'";
+                   FROM `$table`
+                   $JOIN
+                   WHERE `$table`.`id` = '$id'";
 
          /// TODO review comment management...
          /// TODO getDropdownName need to return only name
@@ -302,9 +303,9 @@ class Dropdown {
             if ($DB->numrows($result) != 0) {
                $data = $DB->fetch_assoc($result);
                if ($translate && !empty($data['transname'])) {
-                  $name    = $data['transname'];
+                  $name = $data['transname'];
                } else {
-                  $name    = $data["name"];
+                  $name = $data["name"];
                }
                if (isset($data["comment"])) {
                   if ($translate && !empty($data['transcomment'])) {

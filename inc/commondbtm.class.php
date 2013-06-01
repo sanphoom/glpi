@@ -613,12 +613,14 @@ class CommonDBTM extends CommonGLPI {
    function cleanDBonPurge() {
    }
 
+
    /**
-    *
     * Clean translations associated to a dropdown
+    *
     * @since 0.85
-    */
+   **/
    function cleanTranslations() {
+
       //Do not try to clean is dropdown translation is globally off
       if (DropdownTranslation::isDropdownTranslationActive()) {
          $translation = new DropdownTranslation();
@@ -626,6 +628,7 @@ class CommonDBTM extends CommonGLPI {
                                               'items_id' => $this->getID()));
       }
    }
+
 
    /**
     * Clean the date in the relation tables for the deleted item

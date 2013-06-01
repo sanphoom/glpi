@@ -27,13 +27,19 @@
  --------------------------------------------------------------------------
  */
 
+
+/** @file
+ * @brief
+ * @since version 0.85
+**/
+
 include ('../inc/includes.php');
 
 
 $translation = new KnowbaseItemTranslation();
 if (isset($_POST['add'])) {
    $translation->add($_POST);
-   
+
 } elseif(isset($_POST['update'])) {
    $translation->update($_POST);
 }
