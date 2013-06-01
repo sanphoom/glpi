@@ -1383,6 +1383,10 @@ class Config extends CommonDBTM {
       $sp = new SimplePie();
       echo "SimplePie version " . SIMPLEPIE_VERSION . " in (" . realpath(GLPI_SIMPLEPIE_PATH) . ")\n";
 
+      // TCPDF
+      include_once(GLPI_TCPDF_DIR.'/include/tcpdf_static.php');
+      echo "TCPDF version " . TCPDF_STATIC::getTCPDFVersion() . " in (" . realpath(GLPI_TCPDF_DIR) . ")\n";
+
       echo "\n</pre></td></tr>";
    }
 
