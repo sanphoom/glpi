@@ -957,9 +957,9 @@ class Ticket extends CommonITILObject {
       if (($this->fields['takeintoaccount_delay_stat'] == 0)
           && (Session::haveRight("task", TicketTask::ADDALLTICKET)
               || Session::haveRightsOr('followup',
-                                      array(TicketFollowup::ADDALLTICKET,
-                                            TicketFollowup::ADDMYTICKET,
-                                            TicketFollowup::ADDGROUPTICKET))
+                                       array(TicketFollowup::ADDALLTICKET,
+                                             TicketFollowup::ADDMYTICKET,
+                                             TicketFollowup::ADDGROUPTICKET))
               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])))) {
@@ -1702,9 +1702,9 @@ class Ticket extends CommonITILObject {
          if (!$no_stat_computation
              && (Session::haveRight('task', TicketTask::ADDALLTICKET)
                  || Session::haveRightsOr('followup',
-                                         array(TicketFollowup::ADDALLTICKET,
-                                               TicketFollowup::ADDMYTICKET,
-                                               TicketFollowup::ADDGROUPTICKET))
+                                          array(TicketFollowup::ADDALLTICKET,
+                                                TicketFollowup::ADDMYTICKET,
+                                                TicketFollowup::ADDGROUPTICKET))
                  || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
                      && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])))) {

@@ -70,8 +70,8 @@ class TicketFollowup  extends CommonDBTM {
    static function canCreate() {
 
       return (Session::haveRightsOr(self::$rightname,
-                                   array(self::ADDALLTICKET, self::ADDMYTICKET,
-                                         self::ADDGROUPTICKET))
+                                    array(self::ADDALLTICKET, self::ADDMYTICKET,
+                                          self::ADDGROUPTICKET))
               || Session::haveRight('ticket', Ticket::OWN));
    }
 
@@ -526,8 +526,8 @@ class TicketFollowup  extends CommonDBTM {
          $this->check(-1, CREATE, $options);
       }
       $tech = (Session::haveRightsOr(self::$rightname,
-                                    array(self::ADDALLTICKET, self::ADDMYTICKET,
-                                          self::ADDGROUPTICKET))
+                                     array(self::ADDALLTICKET, self::ADDMYTICKET,
+                                           self::ADDGROUPTICKET))
                || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                || (isset($_SESSION["glpigroups"])
                    && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));

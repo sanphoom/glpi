@@ -352,7 +352,7 @@ class Profile extends CommonDBTM {
    function cleanProfile() {
 
       if ((self::$helpdesk_rights == 'reservation')
-         && !ReservationItem::RESERVEANITEM) {
+          && !ReservationItem::RESERVEANITEM) {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
@@ -361,8 +361,8 @@ class Profile extends CommonDBTM {
       }
       if ((self::$helpdesk_rights == 'followup')
           && !Session::haveRightsOr('followup',
-                                   array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
-                                         TicketFollowup::SEEPUBLIC))) {
+                                    array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
+                                          TicketFollowup::SEEPUBLIC))) {
          return false;
       }
       if ((self::$helpdesk_rights == 'task')
@@ -417,7 +417,7 @@ class Profile extends CommonDBTM {
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
       if ((self::$helpdesk_rights == 'reservation')
-            & !ReservationItem::RESERVEANITEM) {
+          & !ReservationItem::RESERVEANITEM) {
          return false;
       }
       if ((self::$helpdesk_rights == 'ticket')
@@ -426,8 +426,8 @@ class Profile extends CommonDBTM {
       }
       if ((self::$helpdesk_rights == 'followup')
           && !Session::haveRightsOr('followup',
-                                   array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
-                                         TicketFollowup::SEEPUBLIC))) {
+                                    array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
+                                          TicketFollowup::SEEPUBLIC))) {
          return false;
       }
       if ((self::$helpdesk_rights == 'task')

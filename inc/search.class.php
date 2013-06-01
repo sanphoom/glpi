@@ -3034,7 +3034,7 @@ class Search {
          }
       }
 
-      $tocompute = "`$table`.`$field`";
+      $tocompute      = "`$table`.`$field`";
       $tocomputetrans = "`".$table."_trans`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
@@ -3332,18 +3332,18 @@ class Search {
     *
     * @param $itemtype                    item type
     * @param $ref_table                   reference table
-    * @param $already_link_tables   array of tables already joined
+    * @param $already_link_tables  array  of tables already joined
     * @param $new_table                   new table to join
     * @param $linkfield                   linkfield for LeftJoin
     * @param $meta                        is it a meta item ? (default 0)
     * @param $meta_type                   meta type table (default 0)
-    * @param $joinparams            array join parameters (condition / joinbefore...)
-    * @param $field                string field to display (needed for translation join)
+    * @param $joinparams           array  join parameters (condition / joinbefore...)
+    * @param $field                string field to display (needed for translation join) (default '')
     *
     * @return Left join string
    **/
    static function addLeftJoin($itemtype, $ref_table, array &$already_link_tables, $new_table,
-                                $linkfield, $meta=0, $meta_type=0, $joinparams=array(), $field = '') {
+                               $linkfield, $meta=0, $meta_type=0, $joinparams=array(), $field='') {
       global $CFG_GLPI;
 
       // Rename table for meta left join
@@ -3542,12 +3542,12 @@ class Search {
                                               $addcondition)";
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
-                     $transAS = $nt.'_trans';
+                     $transAS            = $nt.'_trans';
                      $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS $transAS
-                                          ON (`$transAS`.`itemtype` = '$transitemtype'
-                                             AND `$transAS`.`items_id` = `$nt`.`id`
-                                             AND `$transAS`.`language` = '".$_SESSION['glpilanguage']."'
-                                             AND `$transAS`.`field` = '$field')";
+                                             ON (`$transAS`.`itemtype` = '$transitemtype'
+                                                 AND `$transAS`.`items_id` = `$nt`.`id`
+                                                 AND `$transAS`.`language` = '".$_SESSION['glpilanguage']."'
+                                                 AND `$transAS`.`field` = '$field')";
                   }
                   break;
             }

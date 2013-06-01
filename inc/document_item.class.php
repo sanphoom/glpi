@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Documents and Items
+/**
+ * Document_Item Class
+ *
+ *  Relation between Documents and Items
+**/
 class Document_Item extends CommonDBRelation{
 
 
@@ -196,7 +200,7 @@ class Document_Item extends CommonDBRelation{
 
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(Document::getTypeName(2),
-                                                  self::countForItem($item));
+                                              self::countForItem($item));
                }
                return Document::getTypeName(2);
             }

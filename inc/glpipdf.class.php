@@ -49,7 +49,7 @@ class GLPIPDF extends TCPDF {
     * Page header
     *
     * @see TCPDF::Header()
-   */
+   **/
    public function Header() {
       // Title
       $this->Cell(0, 15, $this->title, 0, false, 'C', 0, '', 0, false, 'M', 'M');
@@ -62,6 +62,7 @@ class GLPIPDF extends TCPDF {
     * @see TCPDF::Footer()
    **/
    public function Footer() {
+
       // Position at 15 mm from bottom
       $this->SetY(-15);
       $text = "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
@@ -70,6 +71,7 @@ class GLPIPDF extends TCPDF {
       // Page number
       $this->Cell(0, 10, $text, 0, false, 'C', 0, '', 0, false, 'T', 'M');
    }
+
 
    /**
     * Get the list of available fonts
@@ -87,14 +89,16 @@ class GLPIPDF extends TCPDF {
          $font = basename($font, '.php');
 
          // skip subfonts
-         if ((substr($font, -1)=='b' || substr($font, -1)=='i') && isset($list[substr($font, 0, -1)])) {
+         if (((substr($font, -1) == 'b') || (substr($font, -1) == 'i'))
+             && isset($list[substr($font, 0, -1)])) {
             continue;
          }
-         if ((substr($font, -2)=='bi') && isset($list[substr($font, 0, -2)])) {
+         if (((substr($font, -2) == 'bi'))
+             && isset($list[substr($font, 0, -2)])) {
             continue;
          }
          if (isset($name)) {
-            if (isset($type) && $type=='cidfont0') {
+            if (isset($type) && ($type == 'cidfont0')) {
                // cidfont often have the same name (ArialUnicodeMS)
                $list[$font] = sprintf(__('%1$s (%2$s)'), $name, $font);
             } else {
@@ -102,9 +106,9 @@ class GLPIPDF extends TCPDF {
             }
          }
       }
-      toolbox::logdebug($list);
-
+  //    toolbox::logdebug($list);
       return $list;
    }
+
 }
 ?>
