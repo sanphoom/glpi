@@ -766,7 +766,9 @@ class Change extends CommonITILObject {
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
-      Html::showDateTimeFormItem("date", $date, 1, false);
+      Html::showDateTimeField("date", array('value'      => $date,
+                                            'timestep'   => 1,
+                                            'maybeempty' => false));
 
       echo "</td></tr>";
       if ($ID) {
@@ -801,7 +803,8 @@ class Change extends CommonITILObject {
       if ($this->fields["due_date"] == 'NULL') {
          $this->fields["due_date"] = '';
       }
-      Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
+      Html::showDateTimeField("due_date", array('value'    => $this->fields["due_date"],
+                                                'timestep' => 1));
       echo "</td></tr>";
 
       if ($ID) {
@@ -810,7 +813,9 @@ class Change extends CommonITILObject {
                echo "<tr>";
                echo "<td><span class='tracking_small'>".__('Close date')."</span></td>";
                echo "<td>";
-               Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
+               Html::showDateTimeField("closedate", array('value'      => $this->fields["closedate"],
+                                                          'timestep'   => 1,
+                                                          'maybeempty' => false));
                echo "</td></tr>";
                break;
 
@@ -819,7 +824,9 @@ class Change extends CommonITILObject {
                echo "<tr>";
                echo "<td><span class='tracking_small'>".__('Resolution date')."</span></td>";
                echo "<td>";
-               Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
+               Html::showDateTimeField("solvedate", array('value'      => $this->fields["solvedate"],
+                                                          'timestep'   => 1,
+                                                          'maybeempty' => false));
                echo "</td></tr>";
                break;
          }

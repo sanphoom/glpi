@@ -3920,7 +3920,9 @@ class Ticket extends CommonITILObject {
       $date = $this->fields["date"];
 
       if ($canupdate) {
-         Html::showDateTimeFormItem("date", $date, 1, false);
+         Html::showDateTimeField("date", array('value'      => $date,
+                                               'timestep'   => 1,
+                                               'maybeempty' => false));
       } else {
          echo Html::convDateTime($date);
       }
@@ -3980,7 +3982,10 @@ class Ticket extends CommonITILObject {
          } else {
             echo "<table width='100%'><tr><td class='nopadding'>";
             echo $tt->getBeginHiddenFieldValue('due_date');
-            Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true, $canupdate);
+            Html::showDateTimeField("due_date", array('value'      => $this->fields["due_date"],
+                                                      'timestep'   => 1,
+                                                      'maybeempty' => true,
+                                                      'canedit'    => $canupdate));
             echo $tt->getEndHiddenFieldValue('due_date',$this);
             echo "</td>";
             if ($canupdate) {
@@ -4010,7 +4015,10 @@ class Ticket extends CommonITILObject {
             $this->fields["due_date"]='';
          }
          echo $tt->getBeginHiddenFieldValue('due_date');
-         Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
+         Html::showDateTimeField("due_date", array('value'      => $this->fields["due_date"],
+                                                   'timestep'   => 1,
+                                                   'maybeempty' => false,
+                                                   'canedit'    => $canupdate));
          echo $tt->getEndHiddenFieldValue('due_date',$this);
          echo "</td>";
          if ($canupdate) {
@@ -4059,14 +4067,18 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<th width='$colsize1%'>".__('Resolution date')."</th>";
          echo "<td width='$colsize2%'>";
-         Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
-                                    $canupdate);
+         Html::showDateTimeField("solvedate", array('value'      => $this->fields["solvedate"],
+                                                    'timestep'   => 1,
+                                                    'maybeempty' => false,
+                                                    'canedit'    => $canupdate));
          echo "</td>";
          if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
             echo "<th width='$colsize3%'>".__('Close date')."</th>";
             echo "<td width='$colsize4%'>";
-            Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false,
-                                       $canupdate);
+            Html::showDateTimeField("closedate", array('value'      => $this->fields["closedate"],
+                                                       'timestep'   => 1,
+                                                       'maybeempty' => false,
+                                                       'canedit'    => $canupdate));
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";

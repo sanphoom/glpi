@@ -959,7 +959,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($ID > 0) {
          echo "<td>".__('Date')."</td>";
          echo "<td>";
-         Html::showDateTimeFormItem("date", $this->fields["date"], 1, false);
+         Html::showDateTimeField("date", array('value'      => $this->fields["date"],
+                                               'timestep'   => 1,
+                                               'maybeempty' => false));
       } else {
          echo "<td colspan='2'>&nbsp;";
       }

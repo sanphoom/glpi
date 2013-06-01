@@ -84,8 +84,15 @@ if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
 }
 
 echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
-$rand_begin = Html::showDateTimeFormItem("plan[begin]", $begin, -1, false, true, '', '',
-                                         $CFG_GLPI["planning_begin"], $CFG_GLPI["planning_end"]);
+$rand_begin = Html::showDateTimeField("plan[begin]",
+                                      array('value'      => $begin,
+                                            'timestep'   => -1,
+                                            'maybeempty' => false,
+                                            'canedit'    => true,
+                                            'mindate'    => '',
+                                            'maxdate'    => '',
+                                            'mintime'    => $CFG_GLPI["planning_begin"],
+                                            'maxtime'    => $CFG_GLPI["planning_end"]));
 echo "</td></tr>\n";
 
 echo "<tr class='tab_bg_2'><td>".__('Period')."&nbsp;";

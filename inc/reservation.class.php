@@ -696,7 +696,10 @@ class Reservation extends CommonDBChild {
          echo "</td></tr>\n";
       }
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
-      $rand_begin = Html::showDateTimeFormItem("resa[begin]", $resa->fields["begin"], -1, false);
+      $rand_begin = Html::showDateTimeField("resa[begin]",
+                                            array('value'      => $resa->fields["begin"],
+                                                  'timestep'   => -1,
+                                                  'maybeempty' => false));
       echo "</td></tr>\n";
       $default_delay = floor((strtotime($resa->fields["end"])-strtotime($resa->fields["begin"]))
                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)

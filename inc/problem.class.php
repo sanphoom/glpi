@@ -1199,7 +1199,9 @@ class Problem extends CommonITILObject {
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
-      Html::showDateTimeFormItem("date", $date, 1, false);
+      Html::showDateTimeField("date", array('value'      => $date,
+                                            'timestep'   => 1,
+                                            'maybeempty' => false));
       echo "</td>";
       echo "<th width='$colsize1%'>".__('Due date')."</th>";
       echo "<td width='$colsize2%' class='left'>";
@@ -1207,7 +1209,8 @@ class Problem extends CommonITILObject {
       if ($this->fields["due_date"] == 'NULL') {
          $this->fields["due_date"] = '';
       }
-      Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
+      Html::showDateTimeField("due_date", array('value'    => $this->fields["due_date"],
+                                                'timestep' => 1));
 
       echo "</td></tr>";
 
@@ -1233,12 +1236,16 @@ class Problem extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".__('Date of solving')."</th>";
          echo "<td>";
-         Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
+         Html::showDateTimeField("solvedate", array('value'      => $this->fields["solvedate"],
+                                                    'timestep'   => 1,
+                                                    'maybeempty' => false));
          echo "</td>";
          if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
             echo "<th>".__('Closing date')."</th>";
             echo "<td>";
-            Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
+            Html::showDateTimeField("closedate", array('value'      => $this->fields["closedate"],
+                                                       'timestep'   => 1,
+                                                       'maybeempty' => false));
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";

@@ -726,11 +726,17 @@ class Reminder extends CommonDBTM {
       echo "<td>";
       echo '<table><tr><td>';
       echo __('Begin').'</td><td>';
-      Html::showDateTimeFormItem("begin_view_date", $this->fields["begin_view_date"], 1, true,
-                                 $canedit);
+      Html::showDateTimeField("begin_view_date",
+                              array('value'      => $this->fields["begin_view_date"],
+                                    'timestep'   => 1,
+                                    'maybeempty' => true,
+                                    'canedit'    => $canedit));
       echo '</td><td>'.__('End').'</td><td>';
-      Html::showDateTimeFormItem("end_view_date", $this->fields["end_view_date"], 1, true,
-                                 $canedit);
+      Html::showDateTimeField("end_view_date",
+                              array('value'      => $this->fields["end_view_date"],
+                                    'timestep'   => 1,
+                                    'maybeempty' => true,
+                                    'canedit'    => $canedit));
       echo '</td></tr></table>';
       echo "</td>";
       echo "<td>".__('Status')."</td>";
