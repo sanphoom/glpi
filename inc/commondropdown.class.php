@@ -335,7 +335,7 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'date' :
-               Html::showDateFormItem($field['name'], $this->fields[$field['name']]);
+               Html::showDateField($field['name'], array('value' => $this->fields[$field['name']]));
                break;
 
             case 'datetime' :

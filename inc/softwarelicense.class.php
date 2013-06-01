@@ -226,7 +226,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Expiration')."</td>";
       echo "<td>";
-      Html::showDateFormItem('expire', $this->fields["expire"]);
+      Html::showDateField('expire', array('value' => $this->fields["expire"]));
       Alert::displayLastAlert('SoftwareLicense', $ID);
       echo "</td></tr>\n";
 

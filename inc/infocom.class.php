@@ -974,7 +974,9 @@ class Infocom extends CommonDBChild {
             Html::autocompletionTextField($ic, "order_number", array('option' => $option));
             echo "</td>";
             echo "<td>".__('Order date')."</td><td>";
-            Html::showDateFormItem("order_date", $ic->fields["order_date"], true, $editcalendar);
+            Html::showDateField("order_date", array('value'      => $ic->fields["order_date"],
+                                                    'maybeempty' => true,
+                                                    'canedit'    => $editcalendar));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -992,7 +994,9 @@ class Infocom extends CommonDBChild {
                                                                     'option' => $option));
             echo "</td>";
             echo "<td>".__('Date of purchase')."</td><td>";
-            Html::showDateFormItem("buy_date", $ic->fields["buy_date"], true, $editcalendar);
+            Html::showDateField("buy_date", array('value'      => $ic->fields["buy_date"],
+                                                  'maybeempty' => true,
+                                                  'canedit'    => $editcalendar));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1001,8 +1005,9 @@ class Infocom extends CommonDBChild {
             Html::autocompletionTextField($ic, "bill", array('option' => $option));
             echo "</td>";
             echo "<td>".__('Delivery date')."</td><td>";
-            Html::showDateFormItem("delivery_date", $ic->fields["delivery_date"], true,
-                                   $editcalendar);
+            Html::showDateField("delivery_date", array('value'      => $ic->fields["delivery_date"],
+                                                       'maybeempty' => true,
+                                                       'canedit'    => $editcalendar));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1010,7 +1015,9 @@ class Infocom extends CommonDBChild {
             Html::autocompletionTextField($ic, "delivery_number", array('option' => $option));
             echo "</td>";
             echo "<td>".__('Startup date')."</td><td>";
-            Html::showDateFormItem("use_date",$ic->fields["use_date"], true, $editcalendar);
+            Html::showDateField("use_date", array('value'      => $ic->fields["use_date"],
+                                                  'maybeempty' => true,
+                                                  'canedit'    => $editcalendar));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1019,8 +1026,10 @@ class Infocom extends CommonDBChild {
                    Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
             echo "</td>";
             echo "<td>".__('Date of last physical inventory')."</td><td>";
-            Html::showDateFormItem("inventory_date",$ic->fields["inventory_date"], true,
-                                   $editcalendar);
+            Html::showDateField("inventory_date",
+                                array('value'      => $ic->fields["inventory_date"],
+                                      'maybeempty' => true,
+                                      'canedit'    => $editcalendar));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1091,8 +1100,9 @@ class Infocom extends CommonDBChild {
             echo "<tr><th colspan='4'>".__('Warranty information')."</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Start date of warranty')."</td><td>";
-            Html::showDateFormItem("warranty_date", $ic->fields["warranty_date"], true,
-                                   $editcalendar);
+            Html::showDateField("warranty_date", array('value'      => $ic->fields["warranty_date"],
+                                                       'maybeempty' => true,
+                                                       'canedit'    => $editcalendar));
             echo "</td>";
 
             echo "<td>".__('Warranty duration')."</td><td>";

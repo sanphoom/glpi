@@ -47,13 +47,13 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
    switch ($_POST['type']) {
       case 'day' :
          echo "<tr><td>".__('End date').'</td><td>';
-         Html::showDateFormItem('periodicity[end]', $_POST['end']);
+         Html::showDateField('periodicity[end]', array('value' => $_POST['end']));
          echo "</td></tr>";
          break;
 
       case 'week' :
          echo "<tr><td>".__('End date').'</td><td>';
-         Html::showDateFormItem('periodicity[end]', $_POST['end']);
+         Html::showDateField('periodicity[end]', array('value' => $_POST['end']));
          echo "</td></tr></table>";
          echo "<table class='tab_glpi'>";
          echo "<tr class='center'><td>&nbsp;</td>";
@@ -76,7 +76,7 @@ if (isset($_POST['type']) && isset($_POST['end'])) {
          Dropdown::showFromArray('periodicity[subtype]', $values);
          echo "</td></tr>";
          echo "<tr><td>".__('End date').'</td><td>';
-         Html::showDateFormItem('periodicity[end]', $_POST['end']);
+         Html::showDateField('periodicity[end]', array('value' => $_POST['end']));
          echo "</td></tr>";
 
    }

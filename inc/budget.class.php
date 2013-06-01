@@ -134,13 +134,13 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("begin_date", $this->fields["begin_date"]);
+      Html::showDateField("begin_date", array('value' => $this->fields["begin_date"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('End date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("end_date", $this->fields["end_date"]);
+      Html::showDateField("end_date", array('value' => $this->fields["end_date"]));
       echo "</td></tr>";
 
       if ($ID > 0) {

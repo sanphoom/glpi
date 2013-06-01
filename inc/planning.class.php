@@ -346,7 +346,8 @@ class Planning extends CommonGLPI {
       echo "</td>";
 
       echo "<td>";
-      Html::showDateFormItem("date", $date, false);
+      Html::showDateField("date", array('value'      => $date,
+                                        'maybeempty' => false));
       echo '</td><td>';
 
       $values = array('day'   => __('Day'),
@@ -441,11 +442,13 @@ class Planning extends CommonGLPI {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start')."</td>\n";
       echo "<td>";
-      Html::showDateFormItem("begin", $begin, false);
+      Html::showDateField("begin", array('value'      => $begin,
+                                         'myabeempty' => false));
       echo "</td>\n";
       echo "<td>".__('End')."</td>\n";
       echo "<td>";
-      Html::showDateFormItem("end", $end, false);
+      Html::showDateField("end", array('value'      => $end,
+                                       'maybeempty' => false));
       echo "</td>\n";
 
       echo "<td rowspan='2' class='center'>";

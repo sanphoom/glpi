@@ -97,14 +97,14 @@ Dropdown::showFromArray('dropdown', $values, array('value' => $_GET["dropdown"])
 echo "</td>";
 
 echo "<td class='right'>".__('Start date')."</td><td>";
-Html::showDateFormItem("date1",$_GET["date1"]);
+Html::showDateField("date1", array('value' => $_GET["date1"]));
 echo "</td>";
 echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
 echo "<input type='submit' class='submit' name='submit' value='".__s('Display report')."'></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateFormItem("date2", $_GET["date2"]);
+Html::showDateField("date2", array('value' => $_GET["date2"]));
 echo "</td><td class='center'>";
 Dropdown::showYesNo('showgraph', $_GET['showgraph']);
 echo "</td>";

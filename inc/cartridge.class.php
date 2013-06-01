@@ -958,8 +958,10 @@ class Cartridge extends CommonDBChild {
 
       echo "<td>".__('Use date')."</td><td>";
       if ($is_used && !$is_old) {
-         Html::showDateFormItem("date_use", $this->fields["date_use"], false, true,
-                                $this->fields["date_in"]);
+         Html::showDateField("date_use", array('value'      => $this->fields["date_use"],
+                                               'maybeempty' => false,
+                                               'canedit'    => true,
+                                               'min'        => $this->fields["date_in"]));
       } else {
          echo Html::convDate($this->fields["date_use"]);
       }
@@ -968,8 +970,10 @@ class Cartridge extends CommonDBChild {
       if ($is_old) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('End date')."</td><td>";
-         Html::showDateFormItem("date_out", $this->fields["date_out"], false, true,
-                                $this->fields["date_use"]);
+         Html::showDateField("date_out", array('value'      => $this->fields["date_out"],
+                                               'maybeempty' => false,
+                                               'canedit'    => true,
+                                               'min'        => $this->fields["date_use"]));
          echo "</td>";
          echo "<td>".__('Printer counter')."</td><td>";
          echo "<input type='text' name='pages' value=\"".$this->fields['pages']."\">";

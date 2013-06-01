@@ -296,7 +296,7 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("begin_date", $this->fields["begin_date"]);
+      Html::showDateField("begin_date", array('value' => $this->fields["begin_date"]));
       echo "</td>";
       echo "<td>".__('Initial contract period')."</td><td>";
       Dropdown::showNumber("duration", array('value' => $this->fields["duration"],

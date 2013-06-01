@@ -414,7 +414,12 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" .__('Beginning of fiscal year') . "</td><td>";
-      Html::showDateFormItem("date_tax", $CFG_GLPI["date_tax"], false, true, '', '', false);
+      Html::showDateField("date_tax", array('value'      => $CFG_GLPI["date_tax"],
+                                            'maybeempty' => false,
+                                            'canedit'    => true,
+                                            'min'        => '',
+                                            'max'        => '',
+                                            'showyear'   => false));
       echo "</td><td> " . __('Restrict phone management') . "</td><td>";
       $this->dropdownGlobalManagement ("phones_management_restrict",
                                        $CFG_GLPI["phones_management_restrict"]);
