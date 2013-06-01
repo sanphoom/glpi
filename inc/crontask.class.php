@@ -438,14 +438,21 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Run period')."</td><td>";
-      Dropdown::showInteger('hourmin', $this->fields['hourmin'], 0, 24);
+      Dropdown::showNumber('hourmin', array('value' => $this->fields['hourmin'],
+                                            'min'   => 0,
+                                            'max'   => 24));
       echo "&nbsp;->&nbsp;";
-      Dropdown::showInteger('hourmax', $this->fields['hourmax'], 0, 24);
+      Dropdown::showNumber('hourmax', array('value' => $this->fields['hourmax'],
+                                            'min'   => 0,
+                                            'max'   => 24));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Number of days this action logs are stored')."</td><td>";
-      Dropdown::showInteger('logs_lifetime', $this->fields['logs_lifetime'], 10, 360, 10,
-                            array(0 => __('Infinite')));
+      Dropdown::showNumber('logs_lifetime', array('value' => $this->fields['logs_lifetime'],
+                                                  'min'   => 10,
+                                                  'max'   => 360,
+                                                  'step'  => 10,
+                                                  'toadd' => array(0 => __('Infinite'))));
       echo "</td><td>".__('Last run')."</td><td>";
 
       if (empty($this->fields['lastrun'])) {
@@ -464,7 +471,9 @@ class CronTask extends CommonDBTM{
          echo "&nbsp;</td><td>&nbsp;";
       } else {
          echo $label."&nbsp;</td><td>";
-         Dropdown::showInteger('param', $this->fields['param'],0,400,1);
+         Dropdown::showNumber('param', array('value' => $this->fields['param'],
+                                             'min'   => 0,
+                                             'max'   => 400));
       }
       echo "</td><td>".__('Next run')."</td><td>";
 

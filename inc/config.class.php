@@ -254,7 +254,10 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default search results limit (page)')."</td><td>";
-      Dropdown::showInteger("list_limit_max", $CFG_GLPI["list_limit_max"], 5, 200, 5);
+      Dropdown::showNumber("list_limit_max", array('value' => $CFG_GLPI["list_limit_max"],
+                                                   'min'   => 5,
+                                                   'max'   => 200,
+                                                   'step'  => 5));
       echo "</td><td>" . __('Standard interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='central_doc_url' value='" .
                  $CFG_GLPI["central_doc_url"] . "'></td>";
@@ -262,14 +265,22 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default characters limit (summary text boxes)') . "</td><td>";
-      Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500, 50);
+      Dropdown::showNumber('cut', array('value' => $CFG_GLPI["cut"],
+                                        'min'   => 50,
+                                        'max'   => 500,
+                                        'step'  => 50));
       echo "</td><td>" . __('Default url length limit') . "</td><td>";
-      Dropdown::showInteger('url_maxlength', $CFG_GLPI["url_maxlength"], 20, 80, 5);
+      Dropdown::showNumber('url_maxlength', array('value' => $CFG_GLPI["url_maxlength"],
+                                                  'min'   => 20,
+                                                  'max'   => 80,
+                                                  'step'  => 5));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td>" .__('Default decimals limit') . "</td><td>";
-      Dropdown::showInteger("decimal_number", $CFG_GLPI["decimal_number"], 1, 4);
+      Dropdown::showNumber("decimal_number", array('value' => $CFG_GLPI["decimal_number"],
+                                                   'min'   => 1,
+                                                   'max'   => 4));
       echo "</td><td>" . __('Default chart format')."</td><td>";
       Dropdown::showFromArray("default_graphtype", array('png' => 'PNG',
                                                          'svg' => 'SVG'),
@@ -291,11 +302,9 @@ class Config extends CommonDBTM {
       echo "<td>".
             __('Page size for dropdown (paging using scroll)').
             "</td><td>";
-      Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
-//       echo "</td>";
-//       echo "<td>".__('Minimum text length for dynamic search in dropdowns')."</td><td>";
-//       Dropdown::showInteger('ajax_min_textsearch_load', $CFG_GLPI["ajax_min_textsearch_load"],
-//                               0, 10, 1);
+      Dropdown::showNumber('dropdown_max', array('value' => $CFG_GLPI["dropdown_max"],
+                                                 'min'   => 0,
+                                                 'max'   => 200));
       echo "</td>";
       echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
       Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
@@ -305,8 +314,11 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>". __("Don't show search engine in dropdowns if the number of items is less than").
            "</td><td>";
-      Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
-                            array(0 => __('Never')));
+      Dropdown::showNumber('ajax_limit_count', array('value' => $CFG_GLPI["ajax_limit_count"],
+                                                     'min'   => 1,
+                                                     'max'   => 200,
+                                                     'step'  => 1,
+                                                     'toadd' => array(0 => __('Never'))));
 //       echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
 //       Dropdown::showNumber('ajax_buffertime_load',
 //                            array('value' => $CFG_GLPI["ajax_buffertime_load"],
@@ -631,11 +643,15 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Step for the hours (minutes)') . "</td><td>";
-      Dropdown::showInteger('time_step', $CFG_GLPI["time_step"], 30, 60, 30, array(1  => 1,
-                                                                                   5  => 5,
-                                                                                   10 => 10,
-                                                                                   15 => 15,
-                                                                                   20 => 20));
+      Dropdown::showNumber('time_step', array('value' => $CFG_GLPI["time_step"],
+                                              'min'   => 30,
+                                              'max'   => 60,
+                                              'step'  => 30,
+                                              'toadd' => array(1  => 1,
+                                                               5  => 5,
+                                                               10 => 10,
+                                                               15 => 15,
+                                                               20 => 20)));
       echo "</td><td>" .__('Limit of the schedules for planning') . "</td><td>";
       Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
       echo "&nbsp;->&nbsp;";
@@ -810,10 +826,12 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Results to display by page')."</td><td>";
       // Limit using global config
-      Dropdown::showInteger('list_limit',
-                            (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
-                             ? $data['list_limit'] : $CFG_GLPI['list_limit_max']),
-                            5, $CFG_GLPI['list_limit_max'], 5);
+      $value = (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
+                ? $data['list_limit'] : $CFG_GLPI['list_limit_max']);
+      Dropdown::showNumber('list_limit', array('value' => $value,
+                                               'min'   => 5,
+                                               'max'   => $CFG_GLPI['list_limit_max'],
+                                               'step'  => 5));
       echo "</td>";
 
       echo "<td>" .__('Number format') . "</td>";
@@ -827,7 +845,10 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
          echo "<td>" . __('Default characters limit in dropdowns') . "</td><td>";
-         Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
+         Dropdown::showNumber('dropdown_chars_limit',
+                              array('value' => $data["dropdown_chars_limit"],
+                                    'min'   => 20,
+                                    'max'   => 100));
          echo "</td>";
        } else {
         echo "<td colspan='2'>&nbsp;</td>";
@@ -887,7 +908,10 @@ class Config extends CommonDBTM {
       echo "</td>";
       if ($oncentral) {
          echo "<td>".__('Results to display on home page')."</td><td>";
-         Dropdown::showInteger('display_count_on_home', $data['display_count_on_home'], 0, 30);
+         Dropdown::showNumber('display_count_on_home',
+                              array('value' => $data['display_count_on_home'],
+                                    'min'   => 0,
+                                    'max'   => 30));
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -927,8 +951,11 @@ class Config extends CommonDBTM {
             echo Dropdown::getYesNo(0);
          }
          echo "</td><td>" . __('Automatically refresh the list of tickets (minutes)') . "</td><td>";
-         Dropdown::showInteger('refresh_ticket_list', $data["refresh_ticket_list"], 1, 30, 1,
-                               array(0 => __('Never')));
+         Dropdown::showNumber('refresh_ticket_list', array('value' => $data["refresh_ticket_list"],
+                                                           'min'   => 1,
+                                                           'max'   => 30,
+                                                           'step'  => 1,
+                                                           'toadd' => array(0 => __('Never'))));
          echo "</td>";
          echo "</tr>";
          echo "<tr class='tab_bg_2'>";
@@ -1198,7 +1225,9 @@ class Config extends CommonDBTM {
       Dropdown::showFromArray('event_loglevel', $values,
                               array('value' => $CFG_GLPI["event_loglevel"]));
       echo "</td><td>".__('Maximal number of automatic actions (run by CLI)')."</td><td>";
-      Dropdown::showInteger('cron_limit', $CFG_GLPI["cron_limit"], 1, 30);
+      Dropdown::showNumber('cron_limit', array('value' => $CFG_GLPI["cron_limit"],
+                                               'min'   => 1,
+                                               'max'   => 30));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -1220,7 +1249,9 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td>" . __('Password minimum length') . "</td>";
       echo "<td>";
-      Dropdown::showInteger('password_min_length', $CFG_GLPI["password_min_length"], 4, 30);
+      Dropdown::showNumber('password_min_length', array('value' => $CFG_GLPI["password_min_length"],
+                                                        'min'   => 4,
+                                                        'max'   => 30));
       echo "</td>";
       echo "</tr>";
 

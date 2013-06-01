@@ -858,9 +858,9 @@ class NetworkPort extends CommonDBChild {
          echo "<input type='hidden' name='several' value='yes'>";
          echo "<input type='hidden' name='logical_number' value=''>\n";
          echo __('from') . "&nbsp;";
-         Dropdown::showInteger('from_logical_number', 0, 0, 100);
+         Dropdown::showNumber('from_logical_number', array('value' => 0));
          echo "&nbsp;".__('to') . "&nbsp;";
-         Dropdown::showInteger('to_logical_number', 0, 0, 100);
+         Dropdown::showNumber('to_logical_number', array('value' => 0));
          echo "</td></tr>\n";
       }
 

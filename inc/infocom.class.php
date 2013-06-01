@@ -1106,8 +1106,13 @@ class Infocom extends CommonDBChild {
                }
 
             } else {
-               Dropdown::showInteger("warranty_duration", $ic->fields["warranty_duration"], 0, 120,
-                                     1, array(-1 => __('Lifelong')), array('unit' => 'month'));
+               Dropdown::showNumber("warranty_duration",
+                                    array('value' => $ic->fields["warranty_duration"],
+                                          'min'   => 0,
+                                          'max'   => 120,
+                                          'step'  => 1,
+                                          'toadd' => array(-1 => __('Lifelong')),
+                                          'unit'  => 'month'));
             }
             $tmpdat = self::getWarrantyExpir($ic->fields["warranty_date"],
                                              $ic->fields["warranty_duration"], 0, true);

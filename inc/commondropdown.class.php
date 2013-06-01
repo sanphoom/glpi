@@ -290,7 +290,7 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'integer' :
-               Dropdown::showInteger($field['name'], $this->fields[$field['name']]);
+               Dropdown::showNumber($field['name'], array('value' => $this->fields[$field['name']]));
                break;
 
             case 'timestamp' :

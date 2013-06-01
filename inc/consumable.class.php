@@ -417,7 +417,9 @@ class Consumable extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='consumableitems_id' value='$ID'>\n";
-         Dropdown::showInteger('to_add', 1, 1, 100);
+         Dropdown::showNumber('to_add', array('value' => 1,
+                                              'min'   => 1,
+                                              'max'   => 100));
          echo " <input type='submit' name='add_several' value=\""._sx('button','Add consumables')."\"
                 class='submit'>";
          echo "</td></tr>";

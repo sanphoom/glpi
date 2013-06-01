@@ -154,7 +154,7 @@ class Netpoint extends CommonDropdown {
                   "onClick=\"".Html::jsGetElementbyID('netpoint'.$rand).".dialog('open');\">";
             Ajax::createIframeModalWindow('netpoint'.$rand,
                                           $item->getFormURL());
-                  
+
          }
          $paramscomment = array('value' => '__VALUE__',
                                 'table' => "glpi_netpoints");
@@ -292,9 +292,13 @@ class Netpoint extends CommonDropdown {
          echo "<td class='b'>"._n('Network outlet', 'Network outlets', 2)."</td>";
          echo "<td>".__('Name')."</td><td>";
          echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
-         Dropdown::showInteger('_from', 0, 0, 400);
+         Dropdown::showNumber('_from', array('value' => 0,
+                                             'min'   => 0,
+                                             'max'   => 400));
          echo "&nbsp;-->&nbsp;";
-         Dropdown::showInteger('_to', 0, 0, 400);
+         Dropdown::showNumber('_to', array('value' => 0,
+                                           'min'   => 0,
+                                           'max'   => 400));
          echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";

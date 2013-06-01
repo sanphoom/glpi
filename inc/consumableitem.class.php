@@ -192,8 +192,11 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Alert threshold')."</td>";
       echo "<td>";
-      Dropdown::showInteger('alarm_threshold', $this->fields["alarm_threshold"], 0, 100, 1,
-                            array('-1' => __('Never')));
+      Dropdown::showNumber('alarm_threshold', array('value' => $this->fields["alarm_threshold"],
+                                                    'min'   => 0,
+                                                    'max'   => 100,
+                                                    'step'  => 1,
+                                                    'toadd' => array('-1' => __('Never'))));
 
       Alert::displayLastAlert('ConsumableItem', $ID);
       echo "</td></tr>";

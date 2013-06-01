@@ -216,8 +216,11 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('quantity', 'Number')."</td>";
       echo "<td>";
-      Dropdown::showInteger("number", $this->fields["number"], 1, 1000, 1,
-                            array(-1 => __('Unlimited')));
+      Dropdown::showNumber("number", array('value' => $this->fields["number"],
+                                           'min'   => 1,
+                                           'max'   => 1000,
+                                           'step'  => 1,
+                                           'toadd' => array(-1 => __('Unlimited'))));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

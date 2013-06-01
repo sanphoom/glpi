@@ -513,13 +513,19 @@ class AuthLDAP extends CommonDBTM {
          Dropdown::showYesNo('can_support_pagesize', $this->fields["can_support_pagesize"]);
          echo "</td>";
          echo "<td>" . __('Page size') . "</td><td>";
-         Dropdown::showInteger("pagesize", $this->fields['pagesize'], 100, 100000, 100);
+         Dropdown::showNumber("pagesize", array('value' => $this->fields['pagesize'],
+                                                'min'   => 100,
+                                                'max'   => 100000,
+                                                'step'  => 100));
          echo"</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Maximum number of results') . "</td><td>";
-         Dropdown::showInteger('ldap_maxlimit', $this->fields['ldap_maxlimit'], 100, 999999, 100,
-                               array(0 => __('Unlimited')));
+         Dropdown::showNumber('ldap_maxlimit', array('value' => $this->fields['ldap_maxlimit'],
+                                                     'min'   => 100,
+                                                     'max'   => 999999,
+                                                     'step'  => 100,
+                                                     'toadd' => array(0 => __('Unlimited'))));
          echo "</td><td colspan='2'></td></tr>";
 
       } else {

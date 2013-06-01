@@ -1336,9 +1336,12 @@ class Entity extends CommonTreeDropdown {
       } else {
          $toadd = array(self::CONFIG_NEVER => __('Never'));
       }
-      Dropdown::showInteger('default_cartridges_alarm_threshold',
-                            $entity->fields["default_cartridges_alarm_threshold"], 0, 100, 1,
-                            $toadd);
+      Dropdown::showNumber('default_cartridges_alarm_threshold',
+                            array('value' => $entity->fields["default_cartridges_alarm_threshold"],
+                                  'min'   => 0,
+                                  'max'   => 100,
+                                  'step'  => 1,
+                                  'toadd' => $toadd));
       if ($entity->fields['default_cartridges_alarm_threshold'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_cartridges_alarm_threshold',
                                     $entity->getField('entities_id'));
@@ -1373,9 +1376,12 @@ class Entity extends CommonTreeDropdown {
       } else {
          $toadd = array(self::CONFIG_NEVER => __('Never'));
       }
-      Dropdown::showInteger('default_consumables_alarm_threshold',
-                            $entity->fields["default_consumables_alarm_threshold"], 0, 100, 1,
-                            $toadd);
+      Dropdown::showNumber('default_consumables_alarm_threshold',
+                            array('value' => $entity->fields["default_consumables_alarm_threshold"],
+                                  'min'   => 0,
+                                  'max'   => 100,
+                                  'step'  => 1,
+                                  'toadd' => $toadd));
          if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_consumables_alarm_threshold',
                                     $entity->getField('entities_id'));
@@ -1773,8 +1779,13 @@ class Entity extends CommonTreeDropdown {
          unset($autoclose[self::CONFIG_PARENT]);
       }
 
-      Dropdown::showInteger('autoclose_delay', $entity->fields['autoclose_delay'], 1, 99, 1,
-                            $autoclose, array('unit' => 'day'));
+      Dropdown::showNumber('autoclose_delay',
+                           array('value' => $entity->fields['autoclose_delay'],
+                                 'min'   => 1,
+                                 'max'   => 99,
+                                 'step'  => 1,
+                                 'toadd' => $autoclose,
+                                 'unit'  => 'day'));
 
       if (($entity->fields['autoclose_delay'] == self::CONFIG_PARENT)
           && ($ID != 0)) {
