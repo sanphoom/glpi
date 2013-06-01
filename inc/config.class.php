@@ -899,10 +899,11 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('PDF export using unicode font') . "</td><td>";
-      Dropdown::showYesNo("use_unicodefont", $data["use_unicodefont"]);
+      echo "<td>" . __('PDF export font') . "</td><td  colspan='3'>";
+      Dropdown::showFromArray("pdffont", GLPIPDF::getFontList(),
+                              array('value' => $data["pdffont"],
+                                    'width' => 200));
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 
       if ($oncentral) {

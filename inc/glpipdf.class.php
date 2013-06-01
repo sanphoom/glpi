@@ -71,5 +71,40 @@ class GLPIPDF extends TCPDF {
       $this->Cell(0, 10, $text, 0, false, 'C', 0, '', 0, false, 'T', 'M');
    }
 
+   /**
+    * Get the list of available fonts
+    *
+    * @return Array of "filename" => "font name"
+   **/
+   public static function getFontList() {
+
+      $list = array();
+      $path = TCPDF_FONTS::_getfontpath();
+
+      foreach (glob($path.'/*.php') as $font) {
+         unset($name, $type);
+         include $font;
+         $font = basename($font, '.php');
+
+         // skip subfonts
+         if ((substr($font, -1)=='b' || substr($font, -1)=='i') && isset($list[substr($font, 0, -1)])) {
+            continue;
+         }
+         if ((substr($font, -2)=='bi') && isset($list[substr($font, 0, -2)])) {
+            continue;
+         }
+         if (isset($name)) {
+            if (isset($type) && $type=='cidfont0') {
+               // cidfont often have the same name (ArialUnicodeMS)
+               $list[$font] = sprintf(__('%1$s (%2$s)'), $name, $font);
+            } else {
+               $list[$font] = $name;
+            }
+         }
+      }
+      toolbox::logdebug($list);
+
+      return $list;
+   }
 }
 ?>

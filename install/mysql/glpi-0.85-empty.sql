@@ -755,7 +755,7 @@ INSERT INTO `glpi_configs` VALUES ('35','core','text_login','');
 INSERT INTO `glpi_configs` VALUES ('36','core','founded_new_version','');
 INSERT INTO `glpi_configs` VALUES ('37','core','dropdown_max','100');
 INSERT INTO `glpi_configs` VALUES ('38','core','ajax_wildcard','*');
-INSERT INTO `glpi_configs` VALUES ('147','core','use_unicodefont','0');
+INSERT INTO `glpi_configs` VALUES ('147','core','pdffont','helvetica');
 INSERT INTO `glpi_configs` VALUES ('42','core','ajax_limit_count','50');
 INSERT INTO `glpi_configs` VALUES ('43','core','use_ajax_autocompletion','1');
 INSERT INTO `glpi_configs` VALUES ('44','core','is_users_auto_add','1');
@@ -5924,7 +5924,7 @@ CREATE TABLE `glpi_users` (
   `duedatecritical_unit` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `display_options` text COLLATE utf8_unicode_ci,
   `is_deleted_ldap` tinyint(1) NOT NULL DEFAULT '0',
-  `use_unicodefont` int(11) DEFAULT NULL,
+  `pdffont` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT NULL,
   `picture` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'NULL',
   `begin_date` datetime DEFAULT NULL,
   `end_date` datetime DEFAULT NULL,

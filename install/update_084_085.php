@@ -1049,8 +1049,14 @@ function update084to085() {
    Config::deleteConfigurationValues('core', array('ajax_min_textsearch_load'));
    Config::deleteConfigurationValues('core', array('ajax_buffertime_load'));
 
-   Config::setConfigurationValues('core', array('use_unicodefont' => 0));
-   $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
+// Config::setConfigurationValues('core', array('use_unicodefont' => 0));
+// $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
+   Config::deleteConfigurationValues('core', array('use_unicodefont'));
+   $migration->dropField("glpi_users", 'use_unicodefont');
+   Config::setConfigurationValues('core', array('pdffont' => 'helvetica'));
+   $migration->addField("glpi_users", 'pdffont', "string");
+
+// TODO  please check this default is "NULL" instead of NULL
    $migration->addField("glpi_users", 'picture', "string", array('value' => 'NULL'));
 
    $migration->addField("glpi_authldaps", 'picture_field','string');

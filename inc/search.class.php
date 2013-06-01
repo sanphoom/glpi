@@ -2441,7 +2441,7 @@ class Search {
       $tocompute      = "`$table$addtable`.`$field`";
       $tocomputeid    = "`$table$addtable`.`id`";
       $tocomputetrans = "`$table".$addtable."_trans`.`value`";
-      
+
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
@@ -3205,7 +3205,7 @@ class Search {
          return " $link (".self::makeTextCriteria($tocompute,$val,$nott,'')."
                           OR ".self::makeTextCriteria($tocomputetrans,$val,$nott,'').")";
       }
-         
+
       return self::makeTextCriteria($tocompute,$val,$nott,$link);
    }
 
@@ -5579,11 +5579,11 @@ class Search {
             $pdf->SetTitle($title);
             $pdf->SetHeaderData('', '', $title, '');
             $font       = 'helvetica';
-            $subsetting = true;
+            //$subsetting = true;
             $fonsize    = 8;
-            if (isset($_SESSION['glpiuse_unicodefont']) && $_SESSION['glpiuse_unicodefont']) {
-               $font       = 'unifont';
-               $subsetting = false;
+            if (isset($_SESSION['glpipdffont']) && $_SESSION['glpipdffont']) {
+               $font       = $_SESSION['glpipdffont'];
+               //$subsetting = false;
             }
             $pdf->setHeaderFont(Array($font, 'B', 8));
             $pdf->setFooterFont(Array($font, 'B', 8));
@@ -5598,7 +5598,7 @@ class Search {
 
 
             // For standard language
-            $pdf->setFontSubsetting($subsetting);
+            //$pdf->setFontSubsetting($subsetting);
             // set font
             $pdf->SetFont($font, '', 8);
             $pdf->AddPage();
