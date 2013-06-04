@@ -810,9 +810,9 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('Personalization') . "</th></tr>";
 
-      echo "<tr class='tab_bg_2'>";
+      echo "<tr class='tab_bg_2'  width='30%'>";
       echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td>";
-      echo "<td>";
+      echo "<td width='20%'>";
       if (Config::canUpdate()
           || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
@@ -820,8 +820,8 @@ class Config extends CommonDBTM {
          echo "&nbsp;";
       }
 
-      echo "<td>" . __('Date format') ."</td>";
-      echo "<td>";
+      echo "<td width='30%'>" . __('Date format') ."</td>";
+      echo "<td width='20%'>";
       $date_formats = array(0 => __('YYYY-MM-DD'),
                             1 => __('DD-MM-YYYY'),
                             2 => __('MM-DD-YYYY'));
