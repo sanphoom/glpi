@@ -1172,7 +1172,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td class='b center'>".__("From \ To");
       echo "<input type='hidden' name='_cycles_ticket' value='1'</td>";
       foreach ($tabstatus as $label) {
-         echo "<td class='center' width='15%'>$label</td>";
+         echo "<td class='rotate4cb'>$label</td>";
       }
       echo "</tr>\n";
 
