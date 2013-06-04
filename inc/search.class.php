@@ -52,6 +52,8 @@ class Search {
    const CSV_OUTPUT           = 3;
    const PDF_OUTPUT_PORTRAIT  = 4;
 
+   const LBBR = '#LBBR#';
+   const LBHR = '#LBHR#';
 
    /**
     * Display search engine for an type
@@ -1133,12 +1135,12 @@ class Search {
                               $count_display = 0;
                               $out           = "";
                               $unit          = "";
-                              $separate      = '#LBBR#';
+                              $separate      = self::LBBR;
 
                               if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems'])
                                   && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['splititems']) {
 
-                                 $separate = '#LBHR#';
+                                 $separate = self::LBHR;
                               }
 
                               if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['unit'])) {
@@ -3857,7 +3859,7 @@ class Search {
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if ($split[$k] > 0) {
                         if ($count_display) {
-                           $out .= "#LBBR#";
+                           $out .= self::LBBR;
                         }
                         $count_display++;
                         if ($itemtype == 'Ticket') {
@@ -3881,7 +3883,7 @@ class Search {
                         $split2 = explode(" ",$split[$k]);
                         if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
                            if ($count_display) {
-                              $out .= "#LBBR#";
+                              $out .= self::LBBR;
                            }
                            $count_display++;
                            $out .= "<a href='mailto:".$split2[1]."'>".$split2[1]."</a>";
@@ -3928,7 +3930,7 @@ class Search {
                         }
                         if (!in_array($text,$added)) {
                            if ($count_display) {
-                              $out .= "#LBBR#";
+                              $out .= self::LBBR;
                            }
                            $count_display++;
                            $out     .= $text;
@@ -3957,7 +3959,7 @@ class Search {
                         }
                         if (!in_array($text,$added)) {
                            if ($count_display) {
-                              $out .= "#LBBR#";
+                              $out .= self::LBBR;
                            }
                            $count_display++;
                            $out    .= $text;
@@ -4000,7 +4002,7 @@ class Search {
                         if ((strlen(trim($split[$k])) > 0)
                             && !in_array($lowstr, $displayed)) {
                            if ($count_display) {
-                              $out .= "#LBBR#";
+                              $out .= self::LBBR;
                            }
                            $count_display++;
                            $out        .= $split[$k];
@@ -4008,7 +4010,7 @@ class Search {
                         }
                      }
                      if (!empty($data[$NAME.$num])) {
-                        $out .= "#LBBR#";
+                        $out .= self::LBBR;
                      }
                   }
                   if (!empty($data[$NAME.$num])) {
@@ -4019,7 +4021,7 @@ class Search {
                         if ((strlen(trim($split[$k])) > 0)
                             && !in_array($lowstr, $displayed)) {
                            if ($count_display) {
-                              $out .= "#LBBR#";
+                              $out .= self::LBBR;
                            }
                            $count_display++;
                            $out        .= $split[$k];
@@ -4039,7 +4041,7 @@ class Search {
                   $split  = explode('$$$$', $data[$NAME.$num]);
                   $output = "";
                   foreach ($split as $duration) {
-                     $output .= (empty($output)?'':'#LBBR#') .
+                     $output .= (empty($output)?'':self::LBBR) .
                                  sprintf(_n('%d month', '%d months', $duration), $duration);
                   }
                   return $output;
@@ -4054,7 +4056,7 @@ class Search {
 //                $split = explode("$$$$", $data[$NAME.$num]);
 //                $out   = '';
 //                foreach ($split as $val) {
-//                   $out .= (empty($out)?'':'#LBBR#');
+//                   $out .= (empty($out)?'':self::LBBR);
 //                   if ($val > 0) {
 //                      //TRANS: %d is a number of years
 //                      $out .= sprintf(_n('%d year', '%d years', $val), $val);
@@ -4069,7 +4071,7 @@ class Search {
 //                $split = explode("$$$$", $data[$NAME.$num]);
 //                $out   = '';
 //                foreach ($split as $val) {
-//                   $out .= (empty($out)?'':'#LBBR#');
+//                   $out .= (empty($out)?'':self::LBBR);
 //                   if ($val > 0) {
 //                      $out .= sprintf(_n('%d month', '%d months', $val), $val);
 //                   }
@@ -4085,7 +4087,7 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':'#LBBR#').Infocom::getAmortTypeName($val);
+                  $out .= (empty($out)?'':self::LBBR).Infocom::getAmortTypeName($val);
                }
                return $out;
 
@@ -4119,7 +4121,7 @@ class Search {
                      $text = sprintf(__('%1$s - %2$s'), $linkid,
                                      Dropdown::getDropdownName('glpi_tickets', $linkid));
                      if (count($displayed)) {
-                        $out .= "#LBBR#";
+                        $out .= self::LBBR;
                      }
                      $displayed[$linkid] = $linkid;
                      $out               .= $text;
@@ -4387,7 +4389,7 @@ class Search {
                         if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                            $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
                         }
-                        $out .= $name."</a>#LBBR#";
+                        $out .= $name."</a>".self::LBBR;
                      }
                   }
                   return $out;
@@ -4419,7 +4421,7 @@ class Search {
                foreach ($split as $val) {
                   $status  = TicketValidation::getStatus($val);
                   $bgcolor = TicketValidation::getStatusColor($val);
-                  $out    .= (empty($out)?'':'#LBBR#').
+                  $out    .= (empty($out)?'':self::LBBR).
                               "<div style=\"background-color:".$bgcolor.";\">".$status.'</div>';
                }
                return $out;
@@ -4491,9 +4493,9 @@ class Search {
                $out           = "";
                $split         = explode("$$$$", $data[$NAME.$num]);
                $count_display = 0;
-               $separate      = '#LBBR#';
+               $separate      = self::LBBR;
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-                  $separate = '#LBHR#';
+                  $separate = self::LBHR;
                }
 
                for ($k=0 ; $k<count($split) ; $k++) {
@@ -4518,9 +4520,9 @@ class Search {
                return $out;
 
             case "text" :
-               $separate = '#LBBR#';
+               $separate = self::LBBR;
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-                  $separate = '#LBHR#';
+                  $separate = self::LBHR;
                }
                $text = str_replace('$$$$', $separate, nl2br($data[$NAME.$num]));
                if (isset($searchopt[$ID]['htmltext']) && $searchopt[$ID]['htmltext']) {
@@ -4533,7 +4535,7 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':'#LBBR#').Html::convDate($val);
+                  $out .= (empty($out)?'':self::LBBR).Html::convDate($val);
                }
                return $out;
 
@@ -4541,7 +4543,7 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':'#LBBR#').Html::convDateTime($val);
+                  $out .= (empty($out)?'':self::LBBR).Html::convDateTime($val);
                }
                return $out;
 
@@ -4563,11 +4565,11 @@ class Search {
                foreach ($split as $val) {
                   $split2 = self::explodeWithID("$$", $val);
                   if ($count_display) {
-                     $out .= "#LBBR#";
+                     $out .= self::LBBR;
                   }
                   $count_display++;
                   if (!empty($val)) {
-                     $out .= (empty($out)?'':'#LBBR#');
+                     $out .= (empty($out)?'':self::LBBR);
                      $out .= "<a href='mailto:$split2[0]'>$split2[0]</a>";
                   }
                }
@@ -4595,7 +4597,7 @@ class Search {
                      if (strlen(trim($split[$k])) > 0) {
                         $split2 = self::explodeWithID("$$", $split[$k]);
                         if ($count_display) {
-                           $out .= "#LBBR#";
+                           $out .= self::LBBR;
                         }
                         $count_display++;
                         if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split2[0]])) {
@@ -4626,7 +4628,7 @@ class Search {
                         $split2 = self::explodeWithID("$$", $split[$k]);
 
                         if ($count_display) {
-                           $out .= "#LBBR#";
+                           $out .= self::LBBR;
                         }
                         $count_display++;
                         if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split2[0]])) {
@@ -4651,7 +4653,7 @@ class Search {
                      if (strlen(trim($split[$k])) > 0) {
                         $split2 = self::explodeWithID("$$", $split[$k]);
                         if ($count_display) {
-                           $out .= "#LBBR#";
+                           $out .= self::LBBR;
                         }
                         $count_display++;
                         $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($split2[0]),$unit);
@@ -4682,9 +4684,9 @@ class Search {
          $out           = "";
          $split         = explode("$$$$", $data[$NAME.$num]);
          $count_display = 0;
-         $separate      = '#LBBR#';
+         $separate      = self::LBBR;
          if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
-            $separate = '#LBHR#';
+            $separate = self::LBHR;
          }
          for ($k=0 ; $k<count($split) ; $k++) {
             if (strlen(trim($split[$k])) > 0) {
@@ -5476,8 +5478,8 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-            $value = preg_replace('/#LBBR#/','<br>',$value);
-            $value = preg_replace('/#LBHR#/','<hr>',$value);
+            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
             $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
             $PDF_TABLE .= "</td>\n";
@@ -5487,16 +5489,16 @@ class Search {
          case self::SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
             $value                  = Html::weblink_extract($value);
-            $value = preg_replace('/#LBBR#/','<br>',$value);
-            $value = preg_replace('/#LBHR#/','<hr>',$value);
+            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
             $SYLK_SIZE[$num]        = max($SYLK_SIZE[$num],
                                           Toolbox::strlen($SYLK_ARRAY[$row][$num]));
             break;
 
          case self::CSV_OUTPUT : //csv
-            $value = preg_replace('/#LBBR#/','<br>',$value);
-            $value = preg_replace('/#LBHR#/','<hr>',$value);
+            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $value = Html::weblink_extract($value);
             $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
@@ -5505,11 +5507,11 @@ class Search {
             //TODO supprimer valign pour mettre class mais conflit avec $extraparam
             $out = "<td $extraparam valign='top'>";
 
-            if (!preg_match('/#LBHR#/',$value)) {
-               $values = preg_split("/#LBBR#/i",$value);
+            if (!preg_match('/'.self::LBHR.'/',$value)) {
+               $values = preg_split('/'.self::LBBR.'/i',$value);
                $line_delimiter = '<br>';
             } else {
-               $values = preg_split("/#LBHR#/i",$value);
+               $values = preg_split('/'.self::LBHR.'/i',$value);
                $line_delimiter = '<hr>';
             }
             $limitto = 20;
@@ -5519,14 +5521,14 @@ class Search {
                }
 //                $rand=mt_rand();
                $out .= "...&nbsp;";
-               $value = preg_replace('/#LBBR#/','<br>',$value);
-               $value = preg_replace('/#LBHR#/','<hr>',$value);
+               $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+               $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
                $out .= Html::showToolTip($value,array('display'   => false,
                                                       'autoclose' => false));
 
             } else {
-               $value = preg_replace('/#LBBR#/','<br>',$value);
-               $value = preg_replace('/#LBHR#/','<hr>',$value);
+               $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
+               $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
                $out .= $value;
             }
             $out .= "</td>\n";
