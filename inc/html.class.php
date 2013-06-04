@@ -953,6 +953,8 @@ class Html {
       echo "<link rel='stylesheet' type='text/css' href='".
              $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css' media='screen' >\n";
       echo "<link rel='stylesheet' type='text/css' href='".
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css' media='screen' >\n";
+      echo "<link rel='stylesheet' type='text/css' href='".
             $CFG_GLPI["root_doc"]."/css/jquery-glpi.css' media='screen' >\n";
 
       echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
@@ -973,6 +975,8 @@ class Html {
              $CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js'></script>\n";
       echo "<script type='text/javascript' src='".
              $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js'></script>\n";
+      echo "<script type='text/javascript' src='".
+             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.js'></script>\n";
       echo "<script type='text/javascript' src='".
              $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js'></script>\n";
       echo "<script type='text/javascript' src='".
@@ -3214,11 +3218,18 @@ class Html {
                                                      'height'  => 300));
       }
       $out .= "<script type='text/javascript' >\n";
-      $out .= Html::jsGetElementbyID($param['applyto']).".tooltip({
-         content: function() {return $('#".$param['contentid']."').html()},
-         items: 'img, a',
-         tooltipClass: 'tooltip'
-      });";
+      $out .= Html::jsGetElementbyID($param['applyto']).".qtip({
+         content: {text: ".Html::jsGetElementbyID($param['contentid']);
+         if (!$param['autoclose']) {
+            $out .=", title: {text: ' ',button: true}";
+         }
+      $out .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}";
+      if (!$param['autoclose']) {
+         $out .= ",show: {
+                        solo: true, // ...and hide all other tooltips...
+                }, hide: false,";
+      }
+      $out .= "});";
       $out .= "</script>";
 
       if ($param['display']) {
