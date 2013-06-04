@@ -228,6 +228,15 @@ if ($item instanceof CommonTreeDropdown) {
              $LIMIT";
 
    if ($result = $DB->query($query)) {
+      // Empty search text : display first
+      if ($_GET['page'] == 1 && empty($_GET['searchText'])) {
+         if ($_GET['display_emptychoice']) {
+            if (($one_item < 0) || ($one_item  == 0)) {
+               array_push($datas, array('id'   => 0,
+                                        'text' => $_GET['emptylabel']));
+            }
+         }
+      }
 
       if ($_GET['page'] == 1) {
          if (count($toadd)) {
@@ -236,13 +245,6 @@ if ($item instanceof CommonTreeDropdown) {
                   array_push($datas, array('id'   => $key,
                                            'text' => $val));
                }
-            }
-         }
-
-         if ($_GET['display_emptychoice']) {
-            if (($one_item < 0) || ($one_item  == 0)) {
-               array_push($datas, array('id'   => 0,
-                                        'text' => $_GET['emptylabel']));
             }
          }
       }
@@ -381,6 +383,15 @@ if ($item instanceof CommonTreeDropdown) {
             $firstitem = false;
          }
       }
+      // Empty search text : display last
+      if ($_GET['page'] == 1 && !empty($_GET['searchText'])) {
+         if ($_GET['display_emptychoice']) {
+            if (($one_item < 0) || ($one_item  == 0)) {
+               array_push($datas, array('id'   => 0,
+                                        'text' => $_GET['emptylabel']));
+            }
+         }
+      }      
    }
    if ($multi) {
       if (count($datastoadd)) {
@@ -397,6 +408,8 @@ if ($item instanceof CommonTreeDropdown) {
          $datas = array_merge($datas, $datastoadd);
       }
    }
+
+   
 } else { // Not a dropdowntree
    $multi = false;
 
@@ -498,14 +511,16 @@ if ($item instanceof CommonTreeDropdown) {
 //   Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
 
-      if ($_GET['page'] == 1) {
+      // Display first if no search
+      if ($_GET['page'] == 1 && empty($_GET['searchText'])) {
          if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
             if (($one_item < 0) || ($one_item == 0)) {
                array_push($datas, array('id'    => 0,
                                         'text'  => $_GET["emptylabel"]));
             }
          }
-
+      }
+      if ($_GET['page'] == 1) {
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
                if (($one_item < 0) || ($one_item == $key)) {
@@ -591,6 +606,16 @@ if ($item instanceof CommonTreeDropdown) {
             }
          }
       }
+      // Display last if search
+      if ($_GET['page'] == 1 && !empty($_GET['searchText'])) {
+         if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
+            if (($one_item < 0) || ($one_item == 0)) {
+               array_push($datas, array('id'    => 0,
+                                        'text'  => $_GET["emptylabel"]));
+            }
+         }
+      }
+      
    }
 }
 

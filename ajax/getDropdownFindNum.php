@@ -111,7 +111,8 @@ $result = $DB->query($query);
 
 $datas = array();
 
-if ($_GET['page'] == 1) {
+// Display first if no search
+if ($_GET['page'] == 1 && empty($_GET['searchText'])) {
    array_push($datas, array('id'   => 0,
                             'text' => Dropdown::EMPTY_VALUE));
 }
@@ -142,6 +143,11 @@ if ($DB->numrows($result)) {
                                'text' => $output));
       $count++;
    }
+}
+// Display last if  search
+if ($_GET['page'] == 1 && !empty($_GET['searchText'])) {
+   array_push($datas, array('id'   => 0,
+                            'text' => Dropdown::EMPTY_VALUE));
 }
 
 $ret['count']   = $count;

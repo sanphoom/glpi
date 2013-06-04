@@ -127,7 +127,8 @@ $query .= $where ."
 
 $result = $DB->query($query);
 
-if (($one_item < 0) || ($one_item == 0)) {
+// Display first if no search
+if (empty($_GET['searchText'])($one_item < 0) || ($one_item == 0)) {
    if ($_GET['page'] == 1) {
       array_push($datas, array('id'   => 0,
                               'text' => Dropdown::EMPTY_VALUE));
@@ -154,6 +155,14 @@ if ($DB->numrows($result)) {
                                'text'  => $output,
                                'title' => $title));
       $count++;
+   }
+}
+
+// Display last if search
+if (!empty($_GET['searchText'])($one_item < 0) || ($one_item == 0)) {
+   if ($_GET['page'] == 1) {
+      array_push($datas, array('id'   => 0,
+                              'text' => Dropdown::EMPTY_VALUE));
    }
 }
 

@@ -144,9 +144,11 @@ $query = "SELECT DISTINCT `$table`.`id`,
 
 $result = $DB->query($query);
 
-array_push($datas, array('id'   => 0,
-                         'text' => Dropdown::EMPTY_VALUE));
-
+// Display first if no search
+if (empty($_GET['searchText'])) {
+   array_push($datas, array('id'   => 0,
+                            'text' => Dropdown::EMPTY_VALUE));
+}
 if ($DB->numrows($result)) {
    $prev       = -1;
    $datastoadd = array();
@@ -189,6 +191,12 @@ if ($DB->numrows($result)) {
       }
    }
 }
+// Display last if search
+if (!empty($_GET['searchText'])) {
+   array_push($datas, array('id'   => 0,
+                            'text' => Dropdown::EMPTY_VALUE));
+}
+
 $ret['results'] = $datas;
 
 echo json_encode($ret);

@@ -109,7 +109,8 @@ uasort($users, 'dpuser_cmp');
 
 $datas = array();
 
-if ($_GET['page'] == 1) {
+// Display first if empty search
+if ($_GET['page'] == 1 && empty($_GET['searchText'])) {
    if (($one_item < 0) || ($one_item == 0)) {
       if ($_GET['all'] == 0) {
          array_push($datas, array('id'   => 0,
@@ -131,6 +132,20 @@ if (count($users)) {
       $count++;
    }
 }
+
+// Display last if search
+if ($_GET['page'] == 1 && !empty($_GET['searchText'])) {
+   if (($one_item < 0) || ($one_item == 0)) {
+      if ($_GET['all'] == 0) {
+         array_push($datas, array('id'   => 0,
+                                  'text' => Dropdown::EMPTY_VALUE));
+      } else if ($_GET['all'] == 1) {
+         array_push($datas, array('id'   => 0,
+                                  'text' => __('All')));
+      }
+   }
+}
+
 
 if (($one_item >= 0)
     && isset($datas[0])) {
