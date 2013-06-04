@@ -3093,8 +3093,7 @@ class Ticket extends CommonITILObject {
 
             $types = parent::getAllTypesForHelpdesk();
 
-//             $atypes = array_merge(array(-1 => Dropdown::EMPTY_VALUE), $types);
-            $rand       = Dropdown::showItemTypes($myname, $types,
+            $rand       = Dropdown::showItemTypes($myname, array_keys($types),
                                                   array('emptylabel' => __('General'),
                                                         'value'      => $itemtype));
             $found_type = isset($types[$itemtype]);

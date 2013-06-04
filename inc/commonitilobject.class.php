@@ -3542,14 +3542,14 @@ abstract class CommonITILObject extends CommonDBTM {
       /// TODO ticket_types -> itil_types
 
       $types = array();
-
+      $ptypes = array();
       //Types of the plugins (keep the plugin hook for right check)
       if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
          foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
-            $types = Plugin::doOneHook($plugin, 'AssignToTicket', $types);
+            $ptypes = Plugin::doOneHook($plugin, 'AssignToTicket', $types);
          }
       }
-
+      asort($types);
       //Types of the core (after the plugin for robustness)
       foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
@@ -3559,8 +3559,8 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
       }
-      ksort($types); // core type first... asort could be better ?
-
+      asort($types); // core type first... asort could be better ?
+      $types = array_merge($types, $ptypes);
       return $types;
    }
 
