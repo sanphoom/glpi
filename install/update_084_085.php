@@ -1054,8 +1054,7 @@ function update084to085() {
    Config::setConfigurationValues('core', array('pdffont' => 'helvetica'));
    $migration->addField("glpi_users", 'pdffont', "string");
 
-// TODO  please check this default is "NULL" instead of NULL
-   $migration->addField("glpi_users", 'picture', "string", array('value' => 'NULL'));
+   $migration->addField("glpi_users", 'picture', "string");
 
    $migration->addField("glpi_authldaps", 'picture_field','string');
 

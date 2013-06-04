@@ -36,6 +36,7 @@ include("../../install/update_0803_083.php");
 include("../../install/update_083_0831.php");
 include("../../install/update_0831_0833.php");
 include("../../install/update_0831_084.php");
+include("../../install/update_084_085.php");
 
 function displayMigrationMessage ($id, $msg="") {
    // display nothing
@@ -104,7 +105,7 @@ class Install extends PHPUnit_Framework_TestCase {
       $this->assertTrue($res, "Fail: SQL Error during install");
 
       // update default language
-      $query = "UPDATE `glpi_configs`
+      $query = "UPDATE `glpi_config`
                 SET `language` = 'fr_FR'";
       $this->assertTrue($DB->query($query), "Fail: can't set default language");
       $query = "UPDATE `glpi_users`
@@ -200,6 +201,16 @@ class Install extends PHPUnit_Framework_TestCase {
                     `language` = 'fr_FR',
                     `founded_new_version` = ''";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
+      
+      // Update to 0.85
+      $res = update084to085(false);
+      $this->assertTrue($res, "Fail: SQL Error during upgrade");
+
+      $query = "UPDATE `glpi_configs`
+                SET `value` = '0.85'
+                WHERE `context`='context'
+                  AND `name`='version'";
+      $this->assertTrue($DB->query($query), "Fail: can't set version");
    }
 
 
@@ -208,14 +219,16 @@ class Install extends PHPUnit_Framework_TestCase {
       
       $DB->connect();
 
-      // Install a fresh 0.84 DB
+      // Install a fresh 0.85 DB
       $DB  = new DB();
-      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.84-empty.sql");
+      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.85-empty.sql");
       $this->assertTrue($res, "Fail: SQL Error during install");
 
       // update default language
       $query = "UPDATE `glpi_configs`
-                SET `language` = 'fr_FR'";
+                SET `value` = 'fr_FR'
+                WHERE `context`='context'
+                  AND `name`='language'";
       $this->assertTrue($DB->query($query), "Fail: can't set default language");
       $query = "UPDATE `glpi_users`
                 SET `language` = 'fr_FR'";
