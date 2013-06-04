@@ -251,14 +251,7 @@ class SLA extends CommonDBTM {
    function computeDueDate($start_date, $additional_delay=0) {
 
       if (isset($this->fields['id'])) {
-         $delay = 0;
-         if ($this->fields['definition_time'] == "minute") {
-            $delay = $this->fields['resolution_time'] * MINUTE_TIMESTAMP;
-         } else if ($this->fields['definition_time'] == "hour") {
-            $delay = $this->fields['resolution_time'] * HOUR_TIMESTAMP;
-         } else if ($this->fields['definition_time'] == "day") {
-            $delay = $this->fields['resolution_time'] * DAY_TIMESTAMP;
-         }
+         $delay = $this->getResolutionTime();
          
          // Based on a calendar
          if ($this->fields['calendars_id'] > 0) {
@@ -278,10 +271,6 @@ class SLA extends CommonDBTM {
             $endtime   = $starttime+$delay+$additional_delay;
             return date('Y-m-d H:i:s',$endtime);
          }
-         // Case of end of next business day
-         $endtime = strtotime($start_date)+$additional_delay;
-         $endtime += abs($delay) * DAY_TIMESTAMP;
-         return date('Y-m-d 23:59:59',$endtime);
       }
 
       return NULL;
@@ -323,21 +312,8 @@ class SLA extends CommonDBTM {
          if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
             if ($slalevel->fields['slas_id'] == $this->fields['id']) { // correct sla level
                $work_in_days = ($this->fields['definition_time'] == 'day');
-               $delay = 0;
-               if ($this->fields['definition_time'] == "minute") {
-                  $delay = $this->fields['resolution_time'] * MINUTE_TIMESTAMP;
-               } else if ($this->fields['definition_time'] == "hour") {
-                  $delay = $this->fields['resolution_time'] * HOUR_TIMESTAMP;
-               } else if ($this->fields['definition_time'] == "day") {
-                  $delay = $this->fields['resolution_time'] * DAY_TIMESTAMP;
-               }
+               $delay = $this->getResolutionTime();
 
-               // End of next working hour
-               if ($delay < 0) {
-                  $due_date = $this->computeDueDate($start_date, $additional_delay);
-                  $endtime  = strtotime($due_date)+$slalevel->fields['execution_time'];
-                  return date('Y-m-d H:i:s',$endtime);
-               }
                // Based on a calendar
                if ($this->fields['calendars_id'] > 0) {
                   $cal = new Calendar();
