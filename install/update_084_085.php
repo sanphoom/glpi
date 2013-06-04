@@ -1148,6 +1148,60 @@ function update084to085() {
       }
    }
 
+   // * Convert SLA resolution time to new system (ticket #4346)
+   if (!FieldExists("glpi_slas", "definition_time")) {
+      $migration->addField("glpi_slas", 'definition_time', "string");
+      $migration->addField("glpi_slas", 'end_of_working_day', "bool");
+      $migration->migrationOneTable('glpi_slas');
+      
+      // Minutes
+      $query = "SELECT * FROM `glpi_slas`
+                WHERE `resolution_time` <= '3000'";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $a_ids = array();
+            while ($data = $DB->fetch_assoc($result)) {
+               $a_ids[] = $data['id'];            
+            }
+            $DB->query("UPDATE `glpi_slas`
+               SET `definition_time`='minute',
+                  `resolution_time`=`resolution_time`/60
+               WHERE `id` IN (".implode(",", $a_ids).")");
+         }
+      }   
+      // Hours
+      $query = "SELECT * FROM `glpi_slas`
+                WHERE `resolution_time` > '3000'
+                  AND `resolution_time` <= '82800'";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $a_ids = array();
+            while ($data = $DB->fetch_assoc($result)) {
+               $a_ids[] = $data['id'];            
+            }
+            $DB->query("UPDATE `glpi_slas`
+               SET `definition_time`='hour',
+                  `resolution_time`=`resolution_time`/3600
+               WHERE `id` IN (".implode(",", $a_ids).")");
+         }
+      }    
+      // Days
+      $query = "SELECT * FROM `glpi_slas`
+                WHERE `resolution_time` > '82800'";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $a_ids = array();
+            while ($data = $DB->fetch_assoc($result)) {
+               $a_ids[] = $data['id'];            
+            }
+            $DB->query("UPDATE `glpi_slas`
+               SET `definition_time`='day',
+                  `resolution_time`=`resolution_time`/86400
+               WHERE `id` IN (".implode(",", $a_ids).")");
+         }
+      } 
+   }
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

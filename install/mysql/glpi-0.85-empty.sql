@@ -5200,6 +5200,8 @@ CREATE TABLE `glpi_slas` (
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `resolution_time` int(11) NOT NULL,
+  `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
   `calendars_id` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),

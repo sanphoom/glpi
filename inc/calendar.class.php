@@ -353,14 +353,15 @@ class Calendar extends CommonDropdown {
     * if delay >= DAY_TIMESTAMP : work in days
     * else work in minutes
     *
-    * @param $start            datetime    begin
-    * @param $delay            timestamp   delay to add (negative : next working day)
-    * @param $additional_delay timestamp   delay to add (default 0)
-    * @param $work_in_days     boolean     force working in days (false by default)
+    * @param $start              datetime    begin
+    * @param $delay              timestamp   delay to add
+    * @param $additional_delay   timestamp   delay to add (default 0)
+    * @param $work_in_days       boolean     force working in days (false by default)
+    * @param $end_of_working_day boolean     end of working day (false by default)
     *
     * @return end date
    **/
-   function computeEndDate($start, $delay, $additional_delay=0, $work_in_days=false) {
+   function computeEndDate($start, $delay, $additional_delay=0, $work_in_days=false, $end_of_working_day=false) {
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -371,8 +372,8 @@ class Calendar extends CommonDropdown {
       $datestart  = date('Y-m-d', $timestart);
 
       // End of working day
-      if ($delay < 0) {
-         $numberofdays = abs($delay);
+      if ($end_of_working_day) {
+         $numberofdays = $delay / DAY_TIMESTAMP;
          // Add $additional_delay to start time.
          // If start + delay is next day : +1 day
          $actualtime += $additional_delay;
