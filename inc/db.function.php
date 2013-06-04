@@ -428,12 +428,13 @@ function getAllDatasFromTable($table, $condition='', $usecache=false, $order='')
  * @param $table        string   Dropdown Tree table
  * @param $ID           integer  ID of the element
  * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
+ * @param $translation  boolean  (true by default) 
  *
  * @return string : name of the element
  *
  * @see getTreeValueCompleteName
 **/
-function getTreeLeafValueName($table, $ID, $withcomment=false) {
+function getTreeLeafValueName($table, $ID, $withcomment=false, $translate =true) {
    global $DB;
 
    $name    = "";
@@ -501,7 +502,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
  * @param $table        string   Dropdown Tree table
  * @param $ID           integer  ID of the element
  * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
- * @param $translation  coolean  (true by default)
+ * @param $translation  boolean  (true by default)
  *
  * @return string : completename of the element
  *

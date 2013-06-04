@@ -78,6 +78,10 @@ class SLA extends CommonDBTM {
       return $ong;
    }
 
+   function post_getEmpty() {
+      $this->fields['resolution_time'] = 4;
+      $this->fields['definition_time'] = 'hour';
+   }
 
    function cleanDBonPurge() {
       global $DB;
@@ -254,7 +258,7 @@ class SLA extends CommonDBTM {
             $delay = $this->fields['resolution_time'] * HOUR_TIMESTAMP;
          } else if ($this->fields['definition_time'] == "day") {
             $delay = $this->fields['resolution_time'] * DAY_TIMESTAMP;
-         }         
+         }
          
          // Based on a calendar
          if ($this->fields['calendars_id'] > 0) {
@@ -282,7 +286,24 @@ class SLA extends CommonDBTM {
 
       return NULL;
    }
-
+   
+   /**
+    * Get computed resolution time
+    *
+    * @return resolution time
+   **/
+   function getResolutionTime() {
+      if (isset($this->fields['id'])) {
+         if ($this->fields['definition_time'] == "minute") {
+            return $this->fields['resolution_time'] * MINUTE_TIMESTAMP;
+         } else if ($this->fields['definition_time'] == "hour") {
+            return $this->fields['resolution_time'] * HOUR_TIMESTAMP;
+         } else if ($this->fields['definition_time'] == "day") {
+            return $this->fields['resolution_time'] * DAY_TIMESTAMP;
+         }
+      } 
+      return 0;
+   }
 
    /**
     * Get execution date of a sla level
