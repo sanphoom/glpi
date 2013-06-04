@@ -951,7 +951,8 @@ function update084to085() {
                   `name` text COLLATE utf8_unicode_ci,
                   `answer` longtext COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
-                  KEY `item` (`knowbaseitems_id`, `language`)
+                  KEY `item` (`knowbaseitems_id`, `language`),
+                  FULLTEXT KEY `fulltext` (`name`,`answer`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_knowbaseitemtranslations");
    }
