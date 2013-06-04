@@ -969,6 +969,7 @@ class Search {
             $headers_line        = '';
             $headers_line_top    = '';
             $headers_line_bottom = '';
+            echo self::showBeginHeader($output_type);
             echo self::showNewLine($output_type);
             $header_num = 1;
             if (($output_type == self::HTML_OUTPUT)
@@ -1047,6 +1048,7 @@ class Search {
             $headers_line_bottom .= $headers_line;
 
             echo $headers_line_top;
+            echo self::showEndHeader($output_type);
 
             // if real search seek to begin of items to display (because of complete search)
             if (!$nosearch) {
@@ -5603,7 +5605,7 @@ class Search {
             $pdf->SetFont($font, '', 8);
             $pdf->AddPage();
             $PDF_TABLE.='</table>';
-            $pdf->writeHTML($PDF_TABLE, true, false, false, false, '');
+            $pdf->writeHTML($PDF_TABLE, true, false, true, false, '');
             $pdf->Output('glpi.pdf', 'I');
             break;
 
@@ -5657,7 +5659,7 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-            $PDF_TABLE = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\">";
+            $PDF_TABLE = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
             break;
 
          case self::SYLK_OUTPUT : // Sylk
@@ -5710,6 +5712,59 @@ class Search {
       return $out;
    }
 
+   /**
+    * Print begin of header part
+    *
+    * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    *
+    * @return string to display
+   **/
+   static function showBeginHeader($type) {
+
+      $out = "";
+      switch ($type) {
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            $PDF_TABLE .= "<thead>";
+            break;
+
+         case self::SYLK_OUTPUT : //sylk
+         case self::CSV_OUTPUT : //csv
+            break;
+
+         default :
+            $out = "<thead>";
+      }
+      return $out;
+   }
+   
+   /**
+    * Print end of header part
+    *
+    * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    *
+    * @return string to display
+   **/
+   static function showEndHeader($type) {
+
+      $out = "";
+      switch ($type) {
+         case self::PDF_OUTPUT_LANDSCAPE : //pdf
+         case self::PDF_OUTPUT_PORTRAIT :
+            global $PDF_TABLE;
+            $PDF_TABLE .= "</thead>";
+            break;
+
+         case self::SYLK_OUTPUT : //sylk
+         case self::CSV_OUTPUT : //csv
+            break;
+
+         default :
+            $out = "</thead>";
+      }
+      return $out;
+   }
 
    /**
     * Print generic new line
