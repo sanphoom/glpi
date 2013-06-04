@@ -383,15 +383,6 @@ if ($item instanceof CommonTreeDropdown) {
             $firstitem = false;
          }
       }
-      // Empty search text : display last
-      if ($_GET['page'] == 1 && !empty($_GET['searchText'])) {
-         if ($_GET['display_emptychoice']) {
-            if (($one_item < 0) || ($one_item  == 0)) {
-               array_push($datas, array('id'   => 0,
-                                        'text' => $_GET['emptylabel']));
-            }
-         }
-      }      
    }
    if ($multi) {
       if (count($datastoadd)) {
@@ -605,17 +596,7 @@ if ($item instanceof CommonTreeDropdown) {
                $datas = array_merge($datas, $datastoadd);
             }
          }
-      }
-      // Display last if search
-      if ($_GET['page'] == 1 && !empty($_GET['searchText'])) {
-         if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
-            if (($one_item < 0) || ($one_item == 0)) {
-               array_push($datas, array('id'    => 0,
-                                        'text'  => $_GET["emptylabel"]));
-            }
-         }
-      }
-      
+      }      
    }
 }
 

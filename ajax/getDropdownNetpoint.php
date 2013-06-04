@@ -158,13 +158,6 @@ if ($DB->numrows($result)) {
    }
 }
 
-// Display last if search
-if (!empty($_GET['searchText'])($one_item < 0) || ($one_item == 0)) {
-   if ($_GET['page'] == 1) {
-      array_push($datas, array('id'   => 0,
-                              'text' => Dropdown::EMPTY_VALUE));
-   }
-}
 
 if (($one_item >= 0) && isset($datas[0])) {
    echo json_encode($datas[0]);

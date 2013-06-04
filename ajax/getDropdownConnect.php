@@ -191,11 +191,6 @@ if ($DB->numrows($result)) {
       }
    }
 }
-// Display last if search
-if (!empty($_GET['searchText'])) {
-   array_push($datas, array('id'   => 0,
-                            'text' => Dropdown::EMPTY_VALUE));
-}
 
 $ret['results'] = $datas;
 
