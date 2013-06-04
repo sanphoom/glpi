@@ -5659,7 +5659,7 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-            $PDF_TABLE = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
+            $PDF_TABLE = "<table nobr=\"true\" cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
             break;
 
          case self::SYLK_OUTPUT : // Sylk
@@ -5786,7 +5786,7 @@ class Search {
             if ($odd) {
                $style = " style=\"background-color:#DDDDDD;\" ";
             }
-            $PDF_TABLE .= "<tr $style>";
+            $PDF_TABLE .= "<tr nobr=\"true\" $style>";
             break;
 
          case self::SYLK_OUTPUT : //sylk
