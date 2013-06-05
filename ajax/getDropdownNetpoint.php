@@ -128,7 +128,7 @@ $query .= $where ."
 $result = $DB->query($query);
 
 // Display first if no search
-if (empty($_GET['searchText'])($one_item < 0) || ($one_item == 0)) {
+if (empty($_GET['searchText']) && ($one_item < 0) || ($one_item == 0)) {
    if ($_GET['page'] == 1) {
       array_push($datas, array('id'   => 0,
                               'text' => Dropdown::EMPTY_VALUE));
