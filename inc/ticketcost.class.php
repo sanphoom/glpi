@@ -56,40 +56,6 @@ class TicketCost extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-
-      return (Session::haveRight(self::$rightname, CREATE)
-              && parent::canCreate());
-   }
-
-
-   static function canView() {
-
-      return (Session::haveRight(self::$rightname, READ)
-              && parent::canView());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canUpdate() {
-
-      return (Session::haveRight(self::$rightname, UPDATE)
-              && parent::canUpdate());
-   }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canPurge() {
-
-      return (Session::haveRight(self::$rightname, PURGE)
-              && parent::canPurge());
-   }
-
-
     /**
     * @see CommonDBChild::prepareInputForAdd()
    **/

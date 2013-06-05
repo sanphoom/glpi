@@ -92,6 +92,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canCreate() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, CREATE))) {
+         return false;
+      }
       return static::canChild('canUpdate');
    }
 
@@ -100,6 +103,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canView() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
+         return false;
+      }
       return static::canChild('canView');
    }
 
@@ -108,6 +114,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canUpdate() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
+         return false;
+      }
       return static::canChild('canUpdate');
    }
 
@@ -116,6 +125,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canDelete() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
+         return false;
+      }
       return static::canChild('canUpdate');
    }
 
@@ -124,6 +136,9 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.85
     **/
    static function canPurge() {
+      if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
+         return false;
+      }
       return static::canChild('canUpdate');
    }
 

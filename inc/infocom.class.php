@@ -63,41 +63,7 @@ class Infocom extends CommonDBChild {
    }
 
 
-   static function canCreate() {
-
-      return (Session::haveRight(self::$rightname, CREATE)
-              && parent::canCreate());
-   }
-
-
-   static function canView() {
-
-      return (Session::haveRight(self::$rightname, READ)
-              && parent::canView());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canUpdate() {
-
-      return (Session::haveRight(self::$rightname, UPDATE)
-              && parent::canUpdate());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canPurge() {
-
-      return (Session::haveRight(self::$rightname, PURGE)
-              && parent::canPurge());
-   }
-
-
-   function post_getEmpty() {
+    function post_getEmpty() {
 
       $this->fields["alert"] = Entity::getUsedConfig("use_infocoms_alert",
                                                      $this->fields["entities_id"],

@@ -61,50 +61,6 @@ class NetworkPort extends CommonDBChild {
    static $rightname                   = 'networking';
 
 
-   static function canCreate() {
-
-      return (Session::haveRight(self::$rightname, CREATE)
-              && parent::canCreate());
-   }
-
-
-   static function canView() {
-
-      return (Session::haveRight(self::$rightname, READ)
-              && parent::canView());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canUpdate() {
-
-      return (Session::haveRight(self::$rightname, UPDATE)
-              && parent::canUpdate());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canDelete() {
-
-      return (Session::haveRight(self::$rightname, DELETE)
-              && parent::canDelete());
-   }
-
-
-   /**
-    * @since version 0.85
-    **/
-   static function canPurge() {
-
-      return (Session::haveRight(self::$rightname, PURGE)
-            && parent::canPurge());
-   }
-
-
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();

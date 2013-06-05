@@ -64,41 +64,6 @@ class NetworkName extends FQDNLabel {
    static $rightname                   = 'internet';
 
 
-   static function canCreate() {
-
-      return (Session::haveRight(static::$rightname, CREATE)
-              && parent::canCreate());
-   }
-
-
-   static function canView() {
-
-      return (Session::haveRight(static::$rightname, READ)
-              && parent::canView());
-   }
-
-
-   static function canUpdate() {
-
-      return (Session::haveRight(static::$rightname, UPDATE)
-              && parent::canUpdate());
-   }
-
-
-   static function canDelete() {
-
-      return (Session::haveRight(static::$rightname, DELETE)
-              && parent::canDelete());
-   }
-
-
-   static function canPurge() {
-
-      return (Session::haveRight(static::$rightname, PURGE)
-            && parent::canPurge());
-   }
-
-
    static function getTypeName($nb=0) {
       return _n('Network name', 'Network names', $nb);
    }
@@ -727,10 +692,14 @@ class NetworkName extends FQDNLabel {
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button','Associate').
                 "' class='submit'>";
-         echo "</td><td class='right' width='30%'>";
-         echo "<a href=\"" . static::getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
-         echo __('Create a new network name')."</a>";
-         echo "</td></tr>\n";
+         echo "</td>";
+         if (static::canCreate()) {
+            echo "<td class='right' width='30%'>";
+            echo "<a href=\"" . static::getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
+            echo __('Create a new network name')."</a>";
+            echo "</td>";
+         }
+         echo "</tr>\n";
 
          echo "</table>\n";
          Html::closeForm();
@@ -783,60 +752,45 @@ class NetworkName extends FQDNLabel {
 
       $t_row   = $t_group->createRow();
 
-      // Reorder the columns for better display
-      $display_table = true;
-      switch ($item->getType()) {
-         case 'NetworkPort' :
-         case 'FQDN' :
-            break;
-      }
-
       self::getHTMLTableCellsForItem($t_row, $item, NULL, $table_options);
 
-      // Do not display table for netwokrport if only one networkname
-      if (($item->getType() == 'NetworkPort')
-          && ($table->getNumberOfRows() <= 1)) {
-         $display_table = false;
-      }
-      if ($display_table) {
-         if ($table->getNumberOfRows() > 0) {
-            $number = $table->getNumberOfRows();
-            if ($item->getType() == 'FQDN') {
-               $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
-               Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
-            }
-            Session::initNavigateListItems(__CLASS__,
-                                    //TRANS : %1$s is the itemtype name,
-                                    //        %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'),
-                                                   $item->getTypeName(1), $item->getName()));
-            if ($canedit && $number) {
-               Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $paramsma = array('num_displayed'    => $number,
-                                 'container'        => 'mass'.__CLASS__.$rand,
-                                 'specific_actions' => array('purge'    => _x('button',
-                                                                              'Delete permanently'),
-                                                             'unaffect' => __('Dissociate')));
-               Html::showMassiveActions(__CLASS__, $paramsma);
-            }
-
-            $table->display(array('display_title_for_each_group' => false,
-                                  'display_thead'                => false,
-                                  'display_tfoot'                => false));
-
-            if ($canedit && $number) {
-               $paramsma['ontop'] = false;
-               Html::showMassiveActions(__CLASS__, $paramsma);
-               Html::closeForm();
-            }
-
-            if ($item->getType() == 'FQDN') {
-               Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
-            }
-         } else {
-            echo "<table class='tab_cadre_fixe'><tr><th>".__('No network name found')."</th></tr>";
-            echo "</table>";
+      if ($table->getNumberOfRows() > 0) {
+         $number = $table->getNumberOfRows();
+         if ($item->getType() == 'FQDN') {
+            $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
+            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
          }
+         Session::initNavigateListItems(__CLASS__,
+                                 //TRANS : %1$s is the itemtype name,
+                                 //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
+         if ($canedit && $number) {
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            $paramsma = array('num_displayed'    => $number,
+                              'container'        => 'mass'.__CLASS__.$rand,
+                              'specific_actions' => array('purge'    => _x('button',
+                                                                           'Delete permanently'),
+                                                          'unaffect' => __('Dissociate')));
+            Html::showMassiveActions(__CLASS__, $paramsma);
+         }
+
+         $table->display(array('display_title_for_each_group' => false,
+                               'display_thead'                => false,
+                               'display_tfoot'                => false));
+
+         if ($canedit && $number) {
+            $paramsma['ontop'] = false;
+            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::closeForm();
+         }
+
+         if ($item->getType() == 'FQDN') {
+            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+         }
+      } else {
+         echo "<table class='tab_cadre_fixe'><tr><th>".__('No network name found')."</th></tr>";
+         echo "</table>";
       }
    }
 

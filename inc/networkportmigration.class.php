@@ -58,30 +58,6 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   static function canUpdate() {
-
-      return (Session::haveRight(self::$rightname, UPDATE)
-              && parent::canUpdate());
-   }
-
-
-   static function canView() {
-
-      return (Session::haveRight(self::$rightname, READ)
-              && parent::canView());
-   }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canPurge() {
-
-      return (Session::haveRight(self::$rightname, PURGE)
-              && parent::canPurge());
-   }
-
-
    private function cleanDatabase() {
       global $DB;
 
