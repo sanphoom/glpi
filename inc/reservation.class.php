@@ -42,6 +42,7 @@ class Reservation extends CommonDBChild {
    static public $itemtype = 'ReservationItem';
    static public $items_id = 'reservationitems_id';
 
+   static $rightname                = 'reservation';
 
 
    /**
@@ -293,38 +294,8 @@ class Reservation extends CommonDBChild {
    **/
    static function canCreate() {
 
-      return (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
+      return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM)
               && parent::canCreate());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canView() {
-
-      return (Session::haveRight("reservation", READ)
-              && parent::canView());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canUpdate() {
-
-      return (Session::haveRight("reservation", UPDATE)
-              && parent::canUpdate());
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   static function canDelete() {
-
-      return (Session::haveRight("reservation", DELETE)
-              && parent::canDelete());
    }
 
 
