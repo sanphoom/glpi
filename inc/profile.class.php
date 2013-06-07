@@ -49,7 +49,7 @@ class Profile extends CommonDBTM {
                                           'reservation', 'rssfeed_public',
                                           'show_group_hardware', 'task', 'ticket',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
-                                          'validate_incident', 'validate_request', 'validation');
+                                          'validation');
 
 
    /// Common fields used for all profiles type
@@ -370,15 +370,9 @@ class Profile extends CommonDBTM {
       }
       if ((self::$helpdesk_rights == 'validation')
             && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
-                                                          TicketValidation::CREATEINCIDENT))) {
-         return false;
-      }
-      if ((self::$helpdesk_rights == 'validate_request')
-          && !Session::haveRight('validation', TicketValidation::VALIDATEREQUEST)) {
-         return false;
-      }
-      if ((self::$helpdesk_rights == 'validate_incident')
-            && !Session::haveRight('validation', TicketValidation::VALIDATEINCIDENT)) {
+                                                          TicketValidation::CREATEINCIDENT,
+                                                          TicketValidation::VALIDATEREQUEST,
+                                                          TicketValidation::VALIDATEINCIDENT))) {
          return false;
       }
 
@@ -449,15 +443,9 @@ class Profile extends CommonDBTM {
       }
       if ((self::$helpdesk_rights == 'validation')
             && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
-                                                          TicketValidation::CREATEINCIDENT))) {
-         return false;
-      }
-      if ((self::$helpdesk_rights == 'validate_request')
-         && !Session::haveRight('validation', TicketValidation::VALIDATEREQUEST)) {
-         return false;
-      }
-      if ((self::$helpdesk_rights == 'validate_incident')
-            && !Session::haveRight('validation', TicketValidation::VALIDATEINCIDENT)) {
+                                                          TicketValidation::CREATEINCIDENT,
+                                                          TicketValidation::VALIDATEREQUEST,
+                                                          TicketValidation::VALIDATEINCIDENT))) {
          return false;
       }
 

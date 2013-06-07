@@ -2826,7 +2826,6 @@ class User extends CommonDBTM {
 
       $joinprofile      = false;
       $joinprofileright = false;
-      toolbox::logdebug($right);
       switch ($right) {
          case "interface" :
             $joinprofile = true;
@@ -2875,7 +2874,6 @@ class User extends CommonDBTM {
             break;
 
          default :
-            toolbox::logdebug("dans default");
             $joinprofile = true;
             $joinprofileright = true;
             if (!is_array($right)) {
@@ -2887,6 +2885,7 @@ class User extends CommonDBTM {
                 & !ReservationItem::RESERVEANITEM) {
                return false;
             }
+
             if ((Profile::$helpdesk_rights == 'ticket')
                 & !Ticket::canCreate()) {
                return false;
@@ -2899,19 +2898,13 @@ class User extends CommonDBTM {
             }
             if ((Profile::$helpdesk_rights == 'task')
                 & !Session::haveRight('task', TicketTask::SEEPUBLIC)) {
-                     return false;
-                  }
-            if ((self::$helpdesk_rights == 'validation')
-                && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
-                                                              TicketValidation::CREATEINCIDENT))) {
-                return false;
-            }
-            if ((self::$helpdesk_rights == 'validate_request')
-                  && !Session::haveRight('validation', TicketValidation::VALIDATEREQUEST)) {
                return false;
             }
-            if ((self::$helpdesk_rights == 'validate_incident')
-                  && !Session::haveRight('validation', TicketValidation::VALIDATEINCIDENT)) {
+            if ((Profile::$helpdesk_rights == 'validation')
+                && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
+                                                              TicketValidation::CREATEINCIDENT,
+                                                              TicketValidation::VALIDATEREQUEST,
+                                                              TicketValidation::VALIDATEINCIDENT))) {
                return false;
             }
 
@@ -2921,6 +2914,17 @@ class User extends CommonDBTM {
                                AND (`glpi_profilerights`.`rights` & ".Ticket::OWN.") ".
                                getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                           $entity_restrict, 1).") ";
+               } else if ($r == 'validate_request') {
+                     $where[]= " (`glpi_profilerights`.`name` = 'validation'
+                                   AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEREQUEST.") ".
+                                                 getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                       $entity_restrict, 1).") ";
+               } else if ($r == 'validate_incident') {
+                        $where[]= " (`glpi_profilerights`.`name` = 'validation'
+                                   AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEINCIDENT.") ".
+                                                        getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                              $entity_restrict, 1).") ";
+
                } else {
                   // Check read or active for rights
                   $where[]= " (`glpi_profilerights`.`name` = '".$r."'
@@ -3020,7 +3024,6 @@ class User extends CommonDBTM {
             $query .= " LIMIT $start,$limit";
          }
       }
-
       return $DB->query($query);
    }
 

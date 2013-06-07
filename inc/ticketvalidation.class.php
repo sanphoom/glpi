@@ -82,7 +82,18 @@ class TicketValidation  extends CommonDBChild {
     * @since version 0.85
    **/
    function canCreateItem() {
-      return $this->canChildItem('canViewItem', 'canView');
+
+      if ($this->canChildItem('canViewItem', 'canView')) {
+          $ticket = new Ticket();
+          if ($ticket->getFromDB($this->fields['tickets_id'])) {
+              if ($ticket->fields['type'] == Ticket::INCIDENT_TYPE) {
+                 return Session::haveRight(self::$rightname, self::CREATEINCIDENT);
+              }
+              if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
+                 return Session::haveRight(self::$rightname, self::CREATEREQUEST);
+              }
+          }
+      }
    }
 
 
@@ -719,10 +730,10 @@ class TicketValidation  extends CommonDBChild {
    function showForm($ID, $options=array()) {
 
       if ($ID > 0) {
-         $this->check($ID,'w');
+         $this->check($ID, CREATE);
       } else {
          $options['tickets_id'] = $options['parent']->fields["id"];;
-         $this->check(-1,'w', $options);
+         $this->check(-1, CREATE, $options);
       }
 
       // No update validation is answer set
