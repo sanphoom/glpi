@@ -1093,9 +1093,8 @@ class Profile extends CommonDBTM {
       echo "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Problem', 'Problems', 2)."</td><td>";
+      echo "<td>"._n('Problem', 'Problems', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Problem'), "_problem", $this->fields["problem"]);
-      echo "<td>".__('Update all problems')."</td><td>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
