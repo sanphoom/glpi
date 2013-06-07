@@ -4466,7 +4466,7 @@ class Search {
       }
       /// TODO try to use getvalueToDisplay instead of redefine display system
       // Preformat items
-      
+
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemlink" :
@@ -5718,10 +5718,13 @@ class Search {
       return $out;
    }
 
+
    /**
     * Print begin of header part
     *
     * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    *
+    * @since version 0.85
     *
     * @return string to display
    **/
@@ -5744,11 +5747,14 @@ class Search {
       }
       return $out;
    }
-   
+
+
    /**
     * Print end of header part
     *
     * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    *
+    * @since version 0.85
     *
     * @return string to display
    **/
@@ -5771,6 +5777,7 @@ class Search {
       }
       return $out;
    }
+
 
    /**
     * Print generic new line

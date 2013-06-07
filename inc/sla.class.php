@@ -78,10 +78,18 @@ class SLA extends CommonDBTM {
       return $ong;
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::post_getEmpty()
+   */
    function post_getEmpty() {
+
       $this->fields['resolution_time'] = 4;
       $this->fields['definition_time'] = 'hour';
    }
+
 
    function cleanDBonPurge() {
       global $DB;
@@ -164,33 +172,33 @@ class SLA extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__('Maximum time to solve')."</td>";
       echo "<td>";
-      Dropdown::showInteger("resolution_time", $this->fields["resolution_time"], 1);
-      $possible_values = array(
-          'minute'   => _n('Minute', 'Minutes', 2),
-          'hour'     => _n('Hour', 'Hours', 2),
-          'day'      => _n('Day', 'Days', 2));
+      Dropdown::showNumber("resolution_time", array('value' => $this->fields["resolution_time"],
+                                                    'min'   => 1));
+      $possible_values = array('minute'   => _n('Minute', 'Minutes', 2),
+                               'hour'     => _n('Hour', 'Hours', 2),
+                               'day'      => _n('Day', 'Days', 2));
       $rand = Dropdown::showFromArray('definition_time', $possible_values,
-                              array('value'     => $this->fields["definition_time"],
-                                    'on_change' => 'appearhideendofworking()'));
+                                      array('value'     => $this->fields["definition_time"],
+                                            'on_change' => 'appearhideendofworking()'));
       echo "\n<script type='text/javascript' >\n";
       echo "function appearhideendofworking() {\n";
       echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day') {
          $('#title_endworkingday').show();
          $('#dropdown_endworkingday').show();
       } else {
-         $('#title_endworkingday').hide();  
-         $('#dropdown_endworkingday').hide();   
+         $('#title_endworkingday').hide();
+         $('#dropdown_endworkingday').hide();
       }";
       echo "}\n";
       echo "appearhideendofworking();\n";
       echo "</script>\n";
-      
+
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td><div id='title_endworkingday'>".__('End of working day')."</div></td>";
       echo "<td><div id='dropdown_endworkingday'>";
       Dropdown::showYesNo("end_of_working_day", $this->fields["end_of_working_day"]);
       echo "</div></td></tr>";
-      
+
       $this->showFormButtons($options);
 
       return true;
@@ -252,7 +260,7 @@ class SLA extends CommonDBTM {
 
       if (isset($this->fields['id'])) {
          $delay = $this->getResolutionTime();
-         
+
          // Based on a calendar
          if ($this->fields['calendars_id'] > 0) {
             $cal          = new Calendar();
@@ -260,7 +268,7 @@ class SLA extends CommonDBTM {
 
             if ($cal->getFromDB($this->fields['calendars_id'])) {
                return $cal->computeEndDate($start_date, $delay,
-                                           $additional_delay, $work_in_days, 
+                                           $additional_delay, $work_in_days,
                                            $this->fields['end_of_working_day']);
             }
          }
@@ -275,24 +283,31 @@ class SLA extends CommonDBTM {
 
       return NULL;
    }
-   
+
+
    /**
     * Get computed resolution time
+    *
+    * @since version 0.85
     *
     * @return resolution time
    **/
    function getResolutionTime() {
+
       if (isset($this->fields['id'])) {
          if ($this->fields['definition_time'] == "minute") {
             return $this->fields['resolution_time'] * MINUTE_TIMESTAMP;
-         } else if ($this->fields['definition_time'] == "hour") {
+         }
+         if ($this->fields['definition_time'] == "hour") {
             return $this->fields['resolution_time'] * HOUR_TIMESTAMP;
-         } else if ($this->fields['definition_time'] == "day") {
+         }
+         if ($this->fields['definition_time'] == "day") {
             return $this->fields['resolution_time'] * DAY_TIMESTAMP;
          }
-      } 
+      }
       return 0;
    }
+
 
    /**
     * Get execution date of a sla level
@@ -312,7 +327,7 @@ class SLA extends CommonDBTM {
          if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
             if ($slalevel->fields['slas_id'] == $this->fields['id']) { // correct sla level
                $work_in_days = ($this->fields['definition_time'] == 'day');
-               $delay = $this->getResolutionTime();
+               $delay        = $this->getResolutionTime();
 
                // Based on a calendar
                if ($this->fields['calendars_id'] > 0) {
@@ -414,18 +429,28 @@ class SLA extends CommonDBTM {
       }
    }
 
-   
-   
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
+
       if ($input['definition_time'] != 'day') {
          $input['end_of_working_day'] = 0;
       }
       return $input;
    }
-   
-   
-   
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
+
       if ($input['definition_time'] != 'day') {
          $input['end_of_working_day'] = 0;
       }

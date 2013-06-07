@@ -2807,7 +2807,7 @@ class Ticket extends CommonITILObject {
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2, self::HELPDESK_MY_HARDWARE)) {
          $my_devices = array('' => __('General'));
          $my_item    = $itemtype.'_'.$items_id;
-         $devices = array();
+         $devices    = array();
 
          // My items
          foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
@@ -2838,7 +2838,6 @@ class Ticket extends CommonITILObject {
                   $type_name = $item->getTypeName($nb);
 
                   while ($data = $DB->fetch_assoc($result)) {
-//                      print_r($data);
                      $output = $data["name"];
                      if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                         $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);

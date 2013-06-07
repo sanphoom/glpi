@@ -78,12 +78,12 @@ class CliMigration extends Migration {
    }
 }
 $migration = new CliMigration("0.72.3");
-      
+
 class Install extends PHPUnit_Framework_TestCase {
 
    public function testUpdate() {
       global $DB;
-      
+
       $DB->connect();
 
       // Old devicetype for compatibility
@@ -151,7 +151,7 @@ class Install extends PHPUnit_Framework_TestCase {
                     `language` = 'fr_FR',
                     `founded_new_version` = ''";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
-      
+
       // Update to 0.80.1
       $res = update080to0801(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
@@ -161,7 +161,7 @@ class Install extends PHPUnit_Framework_TestCase {
                     `language` = 'fr_FR',
                     `founded_new_version` = ''";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
-      
+
       // Update to 0.80.3
       $res = update0801to0803(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
@@ -171,7 +171,7 @@ class Install extends PHPUnit_Framework_TestCase {
                     `language` = 'fr_FR',
                     `founded_new_version` = ''";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
-      
+
       // Update to 0.83
       $res = update0803to083(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
@@ -181,7 +181,7 @@ class Install extends PHPUnit_Framework_TestCase {
                     `language` = 'fr_FR',
                     `founded_new_version` = ''";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
-      
+
       // Update to 0.83.1
       $res = update083to0831(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
@@ -191,7 +191,7 @@ class Install extends PHPUnit_Framework_TestCase {
                     `language` = 'fr_FR',
                     `founded_new_version` = ''";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
-      
+
       // Update to 0.84
       $res = update0831to084(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
@@ -201,7 +201,7 @@ class Install extends PHPUnit_Framework_TestCase {
                     `language` = 'fr_FR',
                     `founded_new_version` = ''";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
-      
+
       // Update to 0.85
       $res = update084to085(false);
       $this->assertTrue($res, "Fail: SQL Error during upgrade");
@@ -209,14 +209,14 @@ class Install extends PHPUnit_Framework_TestCase {
       $query = "UPDATE `glpi_configs`
                 SET `value` = '0.85'
                 WHERE `context`='context'
-                  AND `name`='version'";
+                      AND `name`='version'";
       $this->assertTrue($DB->query($query), "Fail: can't set version");
    }
 
 
    public function testInstall() {
       global $DB;
-      
+
       $DB->connect();
 
       // Install a fresh 0.85 DB
@@ -228,7 +228,7 @@ class Install extends PHPUnit_Framework_TestCase {
       $query = "UPDATE `glpi_configs`
                 SET `value` = 'fr_FR'
                 WHERE `context`='context'
-                  AND `name`='language'";
+                      AND `name`='language'";
       $this->assertTrue($DB->query($query), "Fail: can't set default language");
       $query = "UPDATE `glpi_users`
                 SET `language` = 'fr_FR'";
