@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -99,9 +99,8 @@ class ITILCategory extends CommonTreeDropdown {
                          'list'      => true),
                   );
 
-      if (!Session::haveRight("edit_all_problem", "1")
-          && !Session::haveRight("show_all_problem", "1")
-          && !Session::haveRight("show_my_problem", "1")) {
+      if (!Session::haveRightsOr('problem', array(CREATE, UPDATE, DELETE,
+                                                  Problem::READALL, Problem::READMY))) {
 
          unset($tab[7]);
       }
@@ -172,7 +171,7 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[78]['forcegroupby']  = true;
       $tab[78]['massiveaction'] = false;
       $tab[78]['joinparams']    = array('jointype' => 'child');
-      
+
       return $tab;
    }
 

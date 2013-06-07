@@ -245,8 +245,8 @@ function update084to085() {
    // delete notes
    $tables = array('budget', 'cartridge', 'computer', 'consumable', 'contact_enterprise',
                    'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
-                   'phone', 'printer', 'software');
-   // TODO voir aussi pour 'glpi_changes','glpi_problems'
+                   'phone', 'printer', 'problem', 'software');
+   // TODO voir aussi pour 'glpi_changes'
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'notes' AND `right` = 'r'") as $profrights) {
 
@@ -808,7 +808,7 @@ function update084to085() {
                  WHERE `name` = 'show_planning'";
       $DB->queryOrDie($query, "0.85 rename show_planning to planning");
 
-      // READ = 1 => do update needed
+      // READMY = 1 => do update needed
    }
 
    // delete show_group_planning
@@ -841,6 +841,49 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'show_all_planning'";
    $DB->queryOrDie($query, "0.85 delete show_all_planning right");
+
+
+   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   if (countElementsInTable("glpi_profilerights", "`name` = 'problem'") == 0) {
+      // rename show_my_problem
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `name` = 'problem'
+                 WHERE `name` = 'show_my_problem'";
+      $DB->queryOrDie($query, "0.85 rename show_my_problem to problem");
+
+      // READMY = 1 => do update needed
+   }
+
+   // delete show_all_problem
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'problem' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Problem::READALL  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'problem'";
+      $DB->queryOrDie($query, "0.85 update problem with show_all_problem right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_all_problem'";
+   $DB->queryOrDie($query, "0.85 delete show_all_problem right");
+
+
+   // delete edit_all_problem
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'problem' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'problem'";
+         $DB->queryOrDie($query, "0.85 update problem with edit_all_problem right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'edit_all_problem'";
+   $DB->queryOrDie($query, "0.85 delete edit_all_problem right");
 
    // don't drop column right  - be done later
 

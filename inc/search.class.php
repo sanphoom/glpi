@@ -4131,7 +4131,7 @@ class Search {
 
             case "glpi_problems.count" :
                if (($data[$NAME.$num] > 0)
-                   && Session::haveRight("show_all_problem","1")) {
+                   && Session::haveRight("problem", Problem::READALL)) {
                   if ($itemtype == 'ITILCategory') {
                      $options['field'][0]      = 7;
                      $options['searchtype'][0] = 'equals';

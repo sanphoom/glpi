@@ -1093,16 +1093,10 @@ class Profile extends CommonDBTM {
       echo "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See all problems')."</td><td>";
-      Dropdown::showYesNo("show_all_problem", $this->fields["show_all_problem"]);
-      echo "</td>";
-      echo "<td>".__('See problems (author)')."</td><td>";
-      Dropdown::showYesNo("show_my_problem", $this->fields["show_my_problem"]);
-      echo "</td>";
+      echo "<td>"._n('Problem', 'Problems', 2)."</td><td>";
+      self::dropdownRights(Profile::getRightsFor('Problem'), "_problem", $this->fields["problem"]);
       echo "<td>".__('Update all problems')."</td><td>";
-      Dropdown::showYesNo("edit_all_problem", $this->fields["edit_all_problem"]);
-      echo "</td>";
-      echo "</tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Update all changes')."</td><td>";
@@ -2155,7 +2149,7 @@ class Profile extends CommonDBTM {
       $tab[110]['nosearch']      = true;
       $tab[110]['datatype']      = 'text';
       $tab[110]['massiveaction'] = false;
-
+/*
       $tab[112]['table']         = 'glpi_profilerights';
       $tab[112]['field']         = 'right';
       $tab[112]['name']          = __('See problems (author)');
@@ -2176,7 +2170,7 @@ class Profile extends CommonDBTM {
       $tab[114]['datatype']      = 'bool';
       $tab[114]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'edit_all_problem'");
-
+*/
       $tab[111]['table']         = $this->getTable();
       $tab[111]['field']         = 'change_status';
       $tab[111]['name']          = __('Life cycle of changes');

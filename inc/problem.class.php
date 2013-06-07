@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Problem class
+/**
+ * Problem class
+**/
 class Problem extends CommonITILObject {
 
    // From CommonDBTM
@@ -46,12 +48,15 @@ class Problem extends CommonITILObject {
    public $grouplinkclass    = 'Group_Problem';
    public $supplierlinkclass = 'Problem_Supplier';
 
+   static $rightname         = 'problem';
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
    const IMPACT_MASK_FIELD    = 'impact_mask';
    const STATUS_MATRIX_FIELD  = 'problem_status';
 
+   const READMY               = 1;
+   const READALL              = 1024;
 
    /**
     * Name of the type
@@ -64,17 +69,17 @@ class Problem extends CommonITILObject {
 
 
    function canAdminActors() {
-      return Session::haveRight('edit_all_problem', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssign() {
-      return Session::haveRight('edit_all_problem', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssignToMe() {
-      return Session::haveRight('edit_all_problem', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
@@ -83,8 +88,8 @@ class Problem extends CommonITILObject {
       return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
               && !in_array($this->fields['status'], $this->getClosedStatusArray())
-              && (Session::haveRight("edit_all_problem","1")
-                  || (Session::haveRight('show_my_problem', 1)
+              && (Session::haveRight(self::$rightname, UPDATE)
+                  || (Session::haveRight(self::$rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
                               && $this->haveAGroup(CommonITILActor::ASSIGN,
@@ -92,15 +97,8 @@ class Problem extends CommonITILObject {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('edit_all_problem', '1');
-   }
-
-
    static function canView() {
-
-      return (Session::haveRight('show_all_problem', '1')
-              || Session::haveRight('show_my_problem', '1'));
+      return Session::haveRight(self::$rightname, array(self::READALL, self::READMY));
    }
 
 
@@ -114,8 +112,8 @@ class Problem extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive())) {
          return false;
       }
-      return (Session::haveRight('show_all_problem', 1)
-              || (Session::haveRight('show_my_problem', 1)
+      return (Session::haveRight(self::$rightname, self::READALL)
+              || (Session::haveRight(self::$rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -153,7 +151,7 @@ class Problem extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return Session::haveRight('edit_all_problem', 1);
+      return Session::haveRight(self::$rightname, CREATE);
    }
 
 
@@ -415,7 +413,7 @@ class Problem extends CommonITILObject {
       if (ProblemTask::canCreate()) {
          $actions['add_task'] = __('Add a new task');
       }
-      if (Session::haveRight("edit_all_problem","1")) {
+      if (Session::haveRight(self::$rightname, UPDATE)) {
          $actions['add_actor'] = __('Add an actor');
       }
       if (Session::haveRight('transfer', READ)
@@ -731,8 +729,7 @@ class Problem extends CommonITILObject {
    static function showCentralList($start, $status="process", $showgroupproblems=true) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("show_all_problem","1")
-          && !Session::haveRight("show_my_problem","1")) {
+      if (!static::canView()) {
          return false;
       }
 
@@ -948,10 +945,10 @@ class Problem extends CommonITILObject {
       global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
-      if (!Session::haveRight("show_all_problem","1") && !Session::haveRight("show_my_problem",1)) {
+      if (!static::canView()) {
          return false;
       }
-      if (!Session::haveRight("show_all_problem","1")) {
+      if (!Session::haveRight(self::$rightname, self::SEEALL)) {
          $foruser = true;
       }
 
@@ -1386,8 +1383,8 @@ class Problem extends CommonITILObject {
    **/
    function showAnalysisForm() {
 
-      $this->check($this->getField('id'), 'r');
-      $canedit = $this->can($this->getField('id'), 'w');
+      $this->check($this->getField('id'), READ);
+      $canedit = $this->canEdit($this->getField('id'));
 
       $options            = array();
       $options['canedit'] = false;
@@ -1531,9 +1528,9 @@ class Problem extends CommonITILObject {
          $id_for_massaction = $id;
       }
 
-      $candelete   = Session::haveRight("edit_all_problem", "1");
-      $canupdate   = Session::haveRight("edit_all_problem", "1");
-      $showprivate = Session::haveRight("show_all_problem", "1");
+      $candelete   = Session::haveRight(self::$rightname, DELETE);
+      $canupdate   = Session::haveRight(self::$rightname, UPDATE);
+      $showprivate = Session::haveRight(self::$rightname, self::READALL);
       $align       = "class='center'";
       $align_desc  = "class='left'";
 
@@ -1720,7 +1717,7 @@ class Problem extends CommonITILObject {
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight("show_all_problem","1")) {
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
          return false;
       }
 
@@ -1908,6 +1905,23 @@ class Problem extends CommonITILObject {
       $result = $DB->query($query);
 
       return $DB->result($result, 0, 0);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      unset($values[READ]);
+
+      $values[self::READALL] = __('See all problems');
+      $values[self::READMY]  = __('See problems (author)');
+
+      return $values;
    }
 
 }

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -46,23 +46,17 @@ class ProblemTask extends CommonITILTask {
 
 
    static function canCreate() {
-
-      return (Session::haveRight('show_my_problem', '1')
-              || Session::haveRight('edit_all_problem', '1'));
+      return Session::haveRightsOr('problem', array(Problem::READMY, Problem::READALL));
    }
 
 
    static function canView() {
-
-      return (Session::haveRight('show_all_problem', 1)
-              || Session::haveRight('show_my_problem', 1));
+      return Session::haveRightsOr('problem', array(Problem::READALL, Problem::READMY));
    }
 
 
    static function canUpdate() {
-
-      return (Session::haveRight('edit_all_problem', 1)
-              || Session::haveRight('show_my_problem', 1));
+      return Session::haveRightsOr('problem', array(UPDATE, Problem::READMY));
    }
 
 
@@ -72,7 +66,7 @@ class ProblemTask extends CommonITILTask {
 
 
    function canEditAll() {
-      return Session::haveRight('edit_all_problem', 1);
+      return Session::haveRightsOr('problem', array(CREATE, UPDATE, DELETE, PURGE));
    }
 
 
@@ -97,8 +91,8 @@ class ProblemTask extends CommonITILTask {
          return false;
       }
 
-      return (Session::haveRight("edit_all_problem","1")
-              || (Session::haveRight("show_my_problem","1")
+      return (Session::haveRight('problem', Problem::CREATE)
+              || (Session::haveRight("problem", Problem::READMY)
                   && ($ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
                           && $ticket->haveAGroup(CommonITILActor::ASSIGN,
@@ -118,7 +112,7 @@ class ProblemTask extends CommonITILTask {
       }
 
       if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('edit_all_problem',1)) {
+          && !Session::haveRight('problem', UPDATE)) {
          return false;
       }
 

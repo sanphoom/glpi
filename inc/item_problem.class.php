@@ -252,7 +252,7 @@ class Item_Problem extends CommonDBRelation{
                return _n('Item', 'Items', 2);
 
             default :
-               if (Session::haveRight("show_all_problem","1")) {
+               if (Session::haveRight("problem", Problem::READALL)) {
                   $nb = 0;
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one

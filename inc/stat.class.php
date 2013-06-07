@@ -1508,8 +1508,8 @@ class Stat extends CommonGLPI {
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
 
-      $show_problem = Session::haveRight("edit_all_problem", "1")
-                      || Session::haveRight("show_all_problem", "1");
+      $show_problem = Session::haveRightsOr("problem", array(CREATE, UPDATE, DELETE,
+                                                             Problem::READALL));
 
       $opt_list["Ticket"]                             = __('Tickets');
 

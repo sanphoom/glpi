@@ -80,11 +80,11 @@ class Change_Problem extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID = $problem->getField('id');
-      if (!$problem->can($ID,'r')) {
+      if (!$problem->can($ID, READ)) {
          return false;
       }
 
-      $canedit       = $problem->can($ID,'w');
+      $canedit       = $problem->canEdit($ID);
       $rand          = mt_rand();
       $showentities  = Session::isMultiEntitiesMode();
 
@@ -298,7 +298,7 @@ class Change_Problem extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("show_all_problem","1")) {
+      if (Session::haveRight("problem", Problem::READALL)) {
          $nb = 0;
          switch ($item->getType()) {
             case 'Change' :
