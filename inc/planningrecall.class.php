@@ -79,9 +79,8 @@ class PlanningRecall extends CommonDBChild {
          if ($task->getFromDBbyName('PlanningRecall','planningrecall')) {
             // Only disabled by config
             if ($task->isDisabled() != 1) {
-               if (Session::haveRight("show_planning", "1")
-                   || Session::haveRight("show_all_planning", "1")
-                   || Session::haveRight("show_group_planning","1")) {
+               if (Session::haveRightsOr("planning", array(Planning::READMY, Planning::READGROUP),
+                                                           Planning::READALL)) {
                   $_SESSION['glpiplanningreminder_isavailable'] = 1;
                }
             }

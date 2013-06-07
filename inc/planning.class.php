@@ -39,6 +39,11 @@ if (!defined('GLPI_ROOT')) {
 
 class Planning extends CommonGLPI {
 
+   static $rightname = 'planning';
+
+   const READMY    =    1;
+   const READGROUP = 1024;
+   const READALL   = 2048;
 
 
    /**
@@ -66,9 +71,8 @@ class Planning extends CommonGLPI {
    **/
    static function canView() {
 
-      return (Session::haveRight("show_planning","1")
-              || Session::haveRight("show_all_planning","1")
-              || Session::haveRight("show_group_planning","1"));
+      return Session::haveRightsOr(self::$rightname, array(self::READMY, self::READGROUP,
+                                                           self::READALL));
    }
 
 
@@ -87,10 +91,10 @@ class Planning extends CommonGLPI {
 
       if ($item->getType() == __CLASS__) {
          $tabs[1] = __('Personal View');
-         if (Session::haveRight("show_group_planning","1")) {
+         if (Session::haveRight(self::$rightname, self::READGROUP)) {
             $tabs[2] = __('Group View');
          }
-         if (Session::haveRight("show_all_planning","1")) {
+         if (Session::haveRight(self::$rightname, self::READALL)) {
             $tabs[3] = _n('User', 'Users', 2);
             $tabs[4] = _n('Group', 'Groups', 2);
          }
@@ -287,21 +291,21 @@ class Planning extends CommonGLPI {
             break;
 
          case 'mygroups' :
-            if (!Session::haveRight("show_group_planning","1")) {
+            if (!Session::haveRight(self::$rightname, self::READGROUP)) {
                exit();
             }
             $gID = 'mine';
             break;
 
          case 'users' :
-            if (!Session::haveRight("show_all_planning","1")) {
+            if (!Session::haveRight(self::$rightname, self::READALL)) {
                exit();
             }
             $uID = $value;
             break;
 
          case 'groups' :
-            if (!Session::haveRight("show_all_planning","1")) {
+            if (!Session::haveRight(self::$rightname, self::READALL)) {
                exit();
             }
             $gID = $value;
@@ -601,8 +605,7 @@ class Planning extends CommonGLPI {
    static function showPlanning($who, $who_group, $when, $type, $limititemtype='') {
       global $CFG_GLPI, $DB;
 
-      if (!Session::haveRight("show_planning","1")
-          && !Session::haveRight("show_all_planning","1")) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::READMY, self::READALL))) {
          return false;
       }
 
@@ -949,7 +952,7 @@ class Planning extends CommonGLPI {
    static function showCentral($who) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("show_planning","1")
+      if (!Session::haveRight(self::$rightname, self::READMY)
           || ($who <= 0)) {
          return false;
       }
@@ -1116,5 +1119,16 @@ class Planning extends CommonGLPI {
       return $v->returnCalendar();
    }
 
+   /**
+    * @since version 0.85
+   **/
+   function getRights($interface='central') {
+
+      $values[self::READMY]    = __('See personnal planning');
+      $values[self::READGROUP] = __('See schedule of people in my groups');
+      $values[self::READALL]   = __('See all plannings');
+
+      return $values;
+   }
 }
 ?>

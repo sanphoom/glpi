@@ -939,7 +939,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->check(-1,'w',$options);
       }
 
-      $canplan = Session::haveRight("show_planning", "1");
+      $canplan = Session::haveRight("planning", Planning::READMY);
 
       $this->showFormHeader($options);
 
@@ -1013,7 +1013,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if (!empty($this->fields["begin"])) {
 
-         if (Session::haveRight('show_planning', 1)) {
+         if (Session::haveRight('planning', Planning::READMY)) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlan".$ID."() {\n";
             echo Html::jsHide('plan');
@@ -1040,14 +1040,14 @@ abstract class CommonITILTask  extends CommonDBTM {
                 Html::convDateTime($this->fields["end"]));
          echo "<br>".getUserName($this->fields["users_id_tech"]);
 
-         if (Session::haveRight('show_planning', 1)) {
+         if (Session::haveRight('planning', Planning::READMY)) {
             echo "</span>";
             echo "</div>\n";
             echo "<div id='viewplan'></div>\n";
          }
 
       } else {
-         if (Session::haveRight('show_planning', 1)) {
+         if (Session::haveRight('planning', Planning::READMY)) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlanUpdate() {\n";
             echo Html::jsHide('plan');

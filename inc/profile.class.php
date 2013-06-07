@@ -1084,14 +1084,9 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See personnal planning')."</td><td>";
-      Dropdown::showYesNo("show_planning", $this->fields["show_planning"]);
-      echo "</td>";
-      echo "<td>".__('See schedule of people in my groups')."</td><td>";
-      Dropdown::showYesNo("show_group_planning", $this->fields["show_group_planning"]);
-      echo "</td>";
-      echo "<td>".__('See all plannings')."</td><td>";
-      Dropdown::showYesNo("show_all_planning", $this->fields["show_all_planning"]);
+      echo "<td>".__('Planning')."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('Planning'), "_planning",
+                           $this->fields["planning"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>"._n('Problem', 'Problems', 2);
@@ -2008,7 +2003,7 @@ class Profile extends CommonDBTM {
       $tab[76]['datatype']       = 'bool';
       $tab[76]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'update_followups'");
-*/
+
       $tab[77]['table']          = 'glpi_profilerights';
       $tab[77]['field']          = 'right';
       $tab[77]['name']           = __('See personnal planning');
@@ -2022,13 +2017,13 @@ class Profile extends CommonDBTM {
       $tab[78]['datatype']       = 'bool';
       $tab[78]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'show_group_planning'");
-
+*/
       $tab[79]['table']          = 'glpi_profilerights';
       $tab[79]['field']          = 'right';
-      $tab[79]['name']           = __('See all plannings');
+      $tab[79]['name']           = __('Plannings');
       $tab[79]['datatype']       = 'bool';
       $tab[79]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'show_all_planning'");
+                                         'condition' => "AND `NEWTABLE`.`name`= 'planning'");
 /*
       $tab[80]['table']          = 'glpi_profilerights';
       $tab[80]['field']          = 'right';

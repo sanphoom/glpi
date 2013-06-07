@@ -1597,9 +1597,7 @@ class Stat extends CommonGLPI {
 
    /**
     * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
+   **/
    function getRights($interface='central') {
 
       $values[READ] = __('Read');

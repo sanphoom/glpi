@@ -775,9 +775,8 @@ class Reminder extends CommonDBTM {
       if (!$ID
           || !$this->fields["is_planned"]) {
 
-         if (Session::haveRight("show_planning","1")
-             || Session::haveRight("show_group_planning","1")
-             || Session::haveRight("show_all_planning","1")) {
+         if (Session::haveRightsOr("planning", array(Planning::READMY, Planning::READGROUP,
+                                                     Planning::READALL))) {
 
             echo "<div id='plan' onClick='showPlan()'>\n";
             echo "<a href='#' class='vsubmit'>".__('Add to schedule')."</a>";

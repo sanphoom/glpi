@@ -729,7 +729,7 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'validation'
                  WHERE `name` = 'delete_validations'";
-      $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
+      $DB->queryOrDie($query, "0.85 rename delete_validations to validation");
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = ". DELETE ."
@@ -792,12 +792,55 @@ function update084to085() {
                  SET `rights` = `rights` | " . TicketValidation::VALIDATEINCIDENT ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'validaton'";
-         $DB->queryOrDie($query, "0.85 update validation with validate_incident right");
+      $DB->queryOrDie($query, "0.85 update validation with validate_incident right");
    }
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'validate_incident'";
    $DB->queryOrDie($query, "0.85 delete validate_incident right");
+
+
+   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   if (countElementsInTable("glpi_profilerights", "`name` = 'planning'") == 0) {
+      // rename show_planning
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `name` = 'planning'
+                 WHERE `name` = 'show_planning'";
+      $DB->queryOrDie($query, "0.85 rename show_planning to planning");
+
+      // READ = 1 => do update needed
+   }
+
+   // delete show_group_planning
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'planning' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Planning::READGROUP  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'planning'";
+      $DB->queryOrDie($query, "0.85 update planning with show_group_planning right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_group_planning'";
+   $DB->queryOrDie($query, "0.85 delete show_group_planning right");
+
+
+   // delete show_all_planning
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'planning' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Planning::READALL  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'planning'";
+      $DB->queryOrDie($query, "0.85 update planning with show_all_planning right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_all_planning'";
+   $DB->queryOrDie($query, "0.85 delete show_all_planning right");
 
    // don't drop column right  - be done later
 
