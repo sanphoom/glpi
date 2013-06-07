@@ -40,6 +40,14 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Stat extends CommonGLPI {
 
+   static $rightname = 'statistic';
+
+
+   static function canView() {
+      return Session::haveRight(self::$rightname, READ);
+   }
+
+
    static function getTypeName($nb=0) {
       return __('Statistics');
    }
@@ -52,14 +60,6 @@ class Stat extends CommonGLPI {
    **/
    static function getMenuShorcut() {
       return 'a';
-   }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canView() {
-      return Session::haveRight("statistic","1");
    }
 
 
@@ -1592,6 +1592,18 @@ class Stat extends CommonGLPI {
       echo "</td>";
       echo "</tr>";
       echo "</table>";
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values[READ] = __('Read');
+      return $values;
    }
 
 }

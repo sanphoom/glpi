@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
-Session::checkRight("statistic", "1");
+Session::checkRight("statistic", READ);
 
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
    exit;

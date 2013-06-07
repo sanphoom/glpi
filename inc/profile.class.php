@@ -716,21 +716,6 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
-//      echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__('Create a validation request for a request')."</td><td>";
-//      Dropdown::showYesNo("create_request_validation", $this->fields["create_request_validation"]);
-//      echo "<td>".__('Create a validation request for an incident')."</td><td>";
-//      Dropdown::showYesNo("create_incident_validation", $this->fields["create_incident_validation"]);
-//      echo "</td>";
-//      echo "</tr>\n";
-
-//      echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__('Validate a request')."</td><td>";
-//      Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
-//      echo "<td>".__('Validate an incident')."</td><td>";
-//      Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
-//      echo "</td>";
-//      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Tools')."</th></tr>\n";
 
@@ -1070,28 +1055,6 @@ class Profile extends CommonDBTM {
 
 
 
-//      echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__('Delete all validations')."</td><td>";
-//      Dropdown::showYesNo("delete_validations", $this->fields["delete_validations"]);
-//      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Approval')."</th><";
-      echo "/tr>\n";
-
-//      echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__('Create a validation request for a request')."</td><td>";
-//      Dropdown::showYesNo("create_request_validation", $this->fields["create_request_validation"]);
-//      echo "<td>".__('Create a validation request for an incident')."</td><td>";
-//      Dropdown::showYesNo("create_incident_validation", $this->fields["create_incident_validation"]);
-//      echo "</td>";
-//      echo "<td colspan='2'></td></tr>\n";
-
-//      echo "<tr class='tab_bg_2'>";
-//      echo "<td>".__('Validate a request')."</td><td>";
-//      Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
-//      echo "<td>".__('Validate an incident')."</td><td>";
-//      Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
-//      echo "<td colspan='2'></td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
       echo "</tr>\n";
@@ -1116,8 +1079,8 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Statistics')."</td><td>";
-      Dropdown::showYesNo("statistic", $this->fields["statistic"]);
+      echo "<td>".__('Statistics')."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('Stat'), "_statistic", $this->fields["statistic"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";

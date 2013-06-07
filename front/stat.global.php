@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");
 
-Session::checkRight("statistic", "1");
+Session::checkRight("statistic", READ);
 
 
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {

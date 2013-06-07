@@ -45,6 +45,12 @@ class Backup extends CommonGLPI {
 
    static $rightname = 'backup';
 
+
+   static function canView() {
+      return Session::haveRight(self::$rightname, READ);
+   }
+
+
    static function getTypeName($nb=0) {
       return __('Maintenance');
    }
@@ -57,7 +63,8 @@ class Backup extends CommonGLPI {
    **/
    function getRights($interface='central') {
 
-      $values = array(CREATE  => __('Create'),
+      $values = array(READ    => __('Read'),
+                      CREATE  => __('Create'),
                       PURGE   => _x('button', 'Delete permanently'));
       return $values;
    }
