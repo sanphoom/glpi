@@ -51,6 +51,12 @@ class TicketValidation  extends CommonDBChild {
    static public $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
    static public $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
+   static $rightname                 = 'validation';
+
+   const CREATEREQUEST               = 1024;
+   const CREATEINCIDENT              = 2048;
+   const VALIDATEREQUEST             = 4096;
+   const VALIDATEINCIDENT            = 8192;
 
    function getForbiddenStandardMassiveAction() {
 
@@ -67,32 +73,34 @@ class TicketValidation  extends CommonDBChild {
 
    static function canCreate() {
 
-      return (Session::haveRight('create_request_validation', 1)
-              || Session::haveRight('create_incident_validation', 1));
+      return Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                           self::CREATEINCIDENT));
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   function canCreateItem() {
+      return $this->canChildItem('canViewItem', 'canView');
    }
 
 
    static function canView() {
 
-      return (Session::haveRight('create_request_validation', 1)
-              || Session::haveRight('create_incident_validation', 1)
-              || Session::haveRight('validate_request', 1)
-              || Session::haveRight('validate_incident', 1));
+      return Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                           self::CREATEINCIDENT,
+                                                           self::VALIDATEREQUEST,
+                                                           self::VALIDATEINCIDENT));
    }
 
 
    static function canUpdate() {
 
-      return (Session::haveRight('create_request_validation', 1)
-              || Session::haveRight('create_incident_validation', 1)
-              || Session::haveRight('validate_request', 1)
-              || Session::haveRight('validate_incident', 1));
-   }
-
-
-   static function canDelete() {
-      return (Session::haveRight('create_request_validation', 1)
-              || Session::haveRight('create_incident_validation', 1));
+      return Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                           self::CREATEINCIDENT,
+                                                           self::VALIDATEREQUEST,
+                                                           self::VALIDATEINCIDENT));
    }
 
 
@@ -106,7 +114,7 @@ class TicketValidation  extends CommonDBChild {
    function canDeleteItem() {
 
       if (($this->fields["users_id"] == Session::getLoginUserID())
-          || Session::haveRight('delete_validations', 1)) {
+          || Session::haveRight(self::$rightname, DELETE)) {
          return true;
       }
       return false;
@@ -120,8 +128,8 @@ class TicketValidation  extends CommonDBChild {
     */
    function canUpdateItem() {
 
-      if (!Session::haveRight('create_request_validation', 1)
-          && !Session::haveRight('create_incident_validation', 1)
+      if (!Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                         self::CREATEINCIDENT))
           && ($this->fields["users_id_validate"] != Session::getLoginUserID())) {
          return false;
       }
@@ -153,16 +161,13 @@ class TicketValidation  extends CommonDBChild {
 
       $hidetab = false;
       // Hide if no rights on validations
-      if (!Session::haveRight('create_incident_validation','1')
-          && !Session::haveRight('create_request_validation','1')
-          && !Session::haveRight('validate_request','1')
-          && !Session::haveRight('validate_incident','1')) {
+      if (!self::canView()) {
          $hidetab = true;
       }
       // No right to create and no validation for current object
       if (!$hidetab
-          && !Session::haveRight('create_incident_validation','1')
-          && !Session::haveRight('create_request_validation','1')
+          && !Session::haveRightsOr(self::$rightname, array(self::CREATEINCIDENT,
+                                                            self::CREATEREQUEST))
           && !self::canValidate($item->getID())) {
          $hidetab = true;
       }
@@ -172,8 +177,8 @@ class TicketValidation  extends CommonDBChild {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`tickets_id` = '".$item->getID()."'";
             // No rights for create only count asign ones
-            if (!Session::haveRight('create_request_validation','1')
-                && !Session::haveRight('create_incident_validation','1')) {
+            if (!Session::haveRightsOr(self::$rightname, array(self::CREATEREQUEST,
+                                                               self::CREATEINCIDENT))) {
               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."' ";
             }
             return self::createTabEntry(self::getTypeName(2),
@@ -295,8 +300,8 @@ class TicketValidation  extends CommonDBChild {
          $forbid_fields = array('entities_id', 'users_id', 'tickets_id', 'users_id_validate',
                                 'comment_submission', 'submission_date');
 
-      } else if (Session::haveRight('create_incident_validation',1)
-                 || Session::haveRight('create_request_validation',1)) { // Update validation request
+      } else if (Session::haveRightsOr(self::$rightname, array(self::CREATEINCIDENT,
+                                                               self::CREATEREQUEST))) { // Update validation request
          $forbid_fields = array('entities_id', 'tickets_id', 'status', 'comment_validation',
                                 'validation_date');
       }
@@ -592,17 +597,17 @@ class TicketValidation  extends CommonDBChild {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRight('validate_request',1)
-          && !Session::haveRight('validate_incident',1)
-          && !Session::haveRight('create_incident_validation',1)
-          && !Session::haveRight('create_request_validation',1)) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::VALIDATEINCIDENT,
+                                                        self::VALIDATEREQUEST,
+                                                        self::CREATEINCIDENT,
+                                                        self::CREATEREQUEST))) {
          return false;
       }
 
       $tID    = $ticket->fields['id'];
 
       $tmp    = array('tickets_id' => $tID);
-      $canadd = $this->can(-1,'w',$tmp);
+      $canadd = $this->can(-1, CREATE, $tmp);
       $rand   = mt_rand();
 
       echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
@@ -835,13 +840,13 @@ class TicketValidation  extends CommonDBChild {
       $tab[5]['field']           = 'validation_date';
       $tab[5]['name']            = __('Approval date');
       $tab[5]['datatype']        = 'datetime';
-
+/*
       $tab[6]['table']           = 'glpi_users';
       $tab[6]['field']           = 'name';
       $tab[6]['name']            = __('Approval requester');
       $tab[6]['datatype']        = 'itemlink';
       $tab[6]['right']           = array('create_incident_validation', 'create_request_validation');
-
+*/
       $tab[7]['table']           = 'glpi_users';
       $tab[7]['field']           = 'name';
       $tab[7]['linkfield']       = 'users_id_validate';
@@ -895,6 +900,29 @@ class TicketValidation  extends CommonDBChild {
             return self::dropdownStatus($name, $options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      unset($values[UPDATE], $values[CREATE], $values[READ]);
+
+      $values[self::CREATEREQUEST]    = __('Create a validation request for a request');
+      $values[self::CREATEINCIDENT]   = __('Create a validation request for an incident');
+      $values[self::VALIDATEREQUEST]  = __('Validate a request');
+      $values[self::VALIDATEINCIDENT] = __('Validate an incident');
+
+      if ($interface == 'helpdesk') {
+         unset($values[PURGE]);
+      }
+
+      return $values;
    }
 
 }

@@ -167,8 +167,8 @@ class Ticket extends CommonITILObject {
       if (TicketTemplate::canView()) {
          $links['template'] = TicketTemplate::getSearchURL(false);
       }
-      if (Session::haveRight('validate_incident', 1)
-         || Session::haveRight('validate_request', 1)) {
+      if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
+                                                    TicketValidation::VALIDATEREQUEST))) {
          $opt = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
@@ -230,8 +230,8 @@ class Ticket extends CommonITILObject {
       return (Session::haveRightsOr(self::$rightname,
                                     array(self::READALL, self::READMY, UPDATE, self::READASSIGN,
                                           self::READGROUP, self::OWN))
-              || Session::haveRight('validate_request','1')
-              || Session::haveRight('validate_incident','1'));
+              || Session::haveRightsOr('validation', array(TicketValidation::VALIDATEREQUEST,
+                                                           TicketValidation::VALIDATEINCIDENT)));
    }
 
 
@@ -260,8 +260,8 @@ class Ticket extends CommonITILObject {
                           && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))
                       || (Session::haveRight(self::$rightname, self::ASSIGN)
                           && ($this->fields["status"] == self::INCOMING))))
-              || ((Session::haveRight('validate_incident','1')
-                  || Session::haveRight('validate_request','1'))
+              || (Session::haveRight('validation', array(TicketValidation::VALIDATEINCIDENT,
+                                                         TicketValidation::VALIDATEREQUEST))
                   && TicketValidation::canValidate($this->fields["id"])));
    }
 
@@ -2540,10 +2540,10 @@ class Ticket extends CommonITILObject {
           && (!isset($_SESSION['glpiactiveprofile']['interface'])
               || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
          $tokeep = array('common', 'requester');
-         if (Session::haveRight('validate_request',1)
-             || Session::haveRight('validate_incident',1)
-             || Session::haveRight('create_incident_validation',1)
-             || Session::haveRight('create_request_validation',1)) {
+         if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
+                                                       TicketValidation::VALIDATEREQUEST,
+                                                       TicketValidation::CREATEREQUEST,
+                                                       TicketValidation::CREATEINCIDENT))) {
             $tokeep[] = 'validation';
          }
          $keep = false;
@@ -3185,7 +3185,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (Session::haveRight('validate_incident',1)
-            || Session::haveRight('validate_request',1)) {
+            || Session::haveRight('validation', TicketValidation::VALIDATEREQUEST)) {
          $opt                  = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
@@ -4236,11 +4236,11 @@ class Ticket extends CommonITILObject {
          echo $tt->getBeginHiddenFieldValue('_add_validation');
          $validation_right = '';
          if (($values['type'] == self::INCIDENT_TYPE)
-             && Session::haveRight('create_incident_validation', 1)) {
+             && Session::haveRight('validation', TicketValidation::CREATEINCIDENT)) {
             $validation_right = 'validate_incident';
          }
          if (($values['type'] == self::DEMAND_TYPE)
-             && Session::haveRight('create_request_validation', 1)) {
+             && Session::haveRight('validaton', TicketValidation::CREATEREQUEST)) {
             $validation_right = 'validate_request';
          }
 
@@ -4657,8 +4657,8 @@ class Ticket extends CommonITILObject {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRightsOr(self::$rightname, array(CREATE, self::READALL, self::READASSIGN))
-          && !Session::haveRight("validate_incident","1")
-          && !Session::haveRight("validate_request","1")) {
+          && !Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
+                                                        TicketValidation::VALIDATEREQUEST))) {
          return false;
       }
 

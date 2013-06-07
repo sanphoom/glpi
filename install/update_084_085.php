@@ -723,6 +723,82 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete show_full_ticket right");
 
 
+   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   if (countElementsInTable("glpi_profilerights", "`name` = 'validation'") == 0) {
+      // rename delete_validations
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `name` = 'validation'
+                 WHERE `name` = 'delete_validations'";
+      $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = ". DELETE ."
+                 WHERE `name` = 'validation'
+                       AND `right` = '1'";
+      $DB->queryOrDie($query, "0.85 update validation with delete_validations right");
+   }
+
+
+   // delete create_request_validation
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'create_request_validation' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . TicketValidation::CREATEREQUEST ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'validaton'";
+      $DB->queryOrDie($query, "0.85 update validation with create_request_validation right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'create_request_validation'";
+   $DB->queryOrDie($query, "0.85 delete create_request_validation right");
+
+   // delete create_incident_validation
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'create_incident_validation' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . TicketValidation::CREATEINCIDENT ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'validaton'";
+      $DB->queryOrDie($query, "0.85 update validation with create_incident_validation right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'create_incident_validation'";
+   $DB->queryOrDie($query, "0.85 delete create_incident_validation right");
+
+   // delete validate_request
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'validate_request' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . TicketValidation::VALIDATEREQUEST ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'validaton'";
+      $DB->queryOrDie($query, "0.85 update validation with validate_request right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'validate_request'";
+   $DB->queryOrDie($query, "0.85 delete validate_request right");
+
+   // delete validate_incident
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'validate_incident' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . TicketValidation::VALIDATEINCIDENT ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'validaton'";
+         $DB->queryOrDie($query, "0.85 update validation with validate_incident right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'validate_incident'";
+   $DB->queryOrDie($query, "0.85 delete validate_incident right");
+
    // don't drop column right  - be done later
 
 

@@ -70,8 +70,8 @@ if (isset($_GET["redirect"])) {
 if (!Session::haveRight('ticket', CREATE)) {
    if (Session::haveRight('followup', TicketFollowup::SEEPUBLIC)
        || Session::haveRight('task', TicketTask::SEEPUBLIC)
-       || Session::haveRight('validate_request',1)
-       || Session::haveRight('validate_incident',1)) {
+       || Session::haveRightsOr('validation', array(TicketValidation::VALIDATEREQUEST,
+                                                    TicketValidation::VALIDATEINCIDENT))) {
       Html::redirect($CFG_GLPI['root_doc']."/front/ticket.php");
 
    } else if (Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {

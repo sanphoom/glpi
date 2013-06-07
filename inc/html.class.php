@@ -1951,8 +1951,8 @@ class Html {
                  __s('Home')."\">".__('Home')."></a></li>";
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
-      if (Session::haveRight('validate_incident',1)
-            || Session::haveRight('validate_request',1)) {
+      if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEREQUEST,
+                                                    TicketValidation::VALIDATEINCIDENT))) {
          $opt                  = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status

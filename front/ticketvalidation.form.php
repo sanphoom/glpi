@@ -40,11 +40,9 @@ if (!isset($_GET["id"])) {
 }
 
 $validation = new Ticketvalidation();
-$ticket     = new Ticket();
-$user       = new User();
 
 if (isset($_POST["add"])) {
-   $validation->check(-1,'w',$_POST);
+   $validation->check(-1, CREATE, $_POST);
    $validation->add($_POST);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
@@ -53,7 +51,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $validation->check($_POST['id'],'w');
+   $validation->check($_POST['id'], UPDATE);
    $validation->update($_POST);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
@@ -62,7 +60,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["purge"])) {
-   $validation->check($_POST['id'], 'd');
+   $validation->check($_POST['id'], PURGE);
    $validation->delete($_POST, 1);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",

@@ -2898,9 +2898,22 @@ class User extends CommonDBTM {
                return false;
             }
             if ((Profile::$helpdesk_rights == 'task')
-                & !Session::haveRightsOr('task', TicketTask::SEEPUBLIC)) {
+                & !Session::haveRight('task', TicketTask::SEEPUBLIC)) {
                      return false;
                   }
+            if ((self::$helpdesk_rights == 'validation')
+                && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
+                                                              TicketValidation::CREATEINCIDENT))) {
+                return false;
+            }
+            if ((self::$helpdesk_rights == 'validate_request')
+                  && !Session::haveRight('validation', TicketValidation::VALIDATEREQUEST)) {
+               return false;
+            }
+            if ((self::$helpdesk_rights == 'validate_incident')
+                  && !Session::haveRight('validation', TicketValidation::VALIDATEINCIDENT)) {
+               return false;
+            }
 
             foreach ($right as $r) {
                if ($r == 'own_ticket') {

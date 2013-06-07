@@ -43,14 +43,13 @@ class Profile extends CommonDBTM {
    // Specific ones
 
    /// Helpdesk fields of helpdesk profiles
-   static public $helpdesk_rights = array('create_ticket_on_login', 'create_request_validation',
-                                          'create_incident_validation', 'followup',
+   static public $helpdesk_rights = array('create_ticket_on_login', 'followup',
                                           'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
                                           'password_update', 'reminder_public',
                                           'reservation', 'rssfeed_public',
                                           'show_group_hardware', 'task', 'ticket',
                                           'ticketrecurrent',  'tickettemplates_id', 'ticket_cost',
-                                          'validate_incident', 'validate_request');
+                                          'validate_incident', 'validate_request', 'validation');
 
 
    /// Common fields used for all profiles type
@@ -366,9 +365,23 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'task')
-         && !Session::haveRightsOr('followup', TicketTask::SEEPUBLIC)) {
+         && !Session::haveRight('followup', TicketTask::SEEPUBLIC)) {
          return false;
       }
+      if ((self::$helpdesk_rights == 'validation')
+            && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
+                                                          TicketValidation::CREATEINCIDENT))) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'validate_request')
+          && !Session::haveRight('validation', TicketValidation::VALIDATEREQUEST)) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'validate_incident')
+            && !Session::haveRight('validation', TicketValidation::VALIDATEINCIDENT)) {
+         return false;
+      }
+
 
       if ($this->fields["interface"] == "helpdesk") {
          foreach ($this->fields as $key=>$val) {
@@ -431,9 +444,23 @@ class Profile extends CommonDBTM {
          return false;
       }
       if ((self::$helpdesk_rights == 'task')
-         && !Session::haveRightsOr('task', TicketTask::SEEPUBLIC)) {
+         && !Session::haveRight('task', TicketTask::SEEPUBLIC)) {
          return false;
       }
+      if ((self::$helpdesk_rights == 'validation')
+            && !Session::haveRightsOr('validation', array(TicketValidation::CREATEREQUEST,
+                                                          TicketValidation::CREATEINCIDENT))) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'validate_request')
+         && !Session::haveRight('validation', TicketValidation::VALIDATEREQUEST)) {
+         return false;
+      }
+      if ((self::$helpdesk_rights == 'validate_incident')
+            && !Session::haveRight('validation', TicketValidation::VALIDATEINCIDENT)) {
+         return false;
+      }
+
 
       $query = $separator ." ";
 
@@ -675,6 +702,14 @@ class Profile extends CommonDBTM {
                            $this->fields["task"]);
       echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='18%'>"._n('Validation', 'Validations', 2)."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('TicketValidation', 'helpdesk'), "_validation",
+            $this->fields["validation"]);
+      echo "</td></tr>\n";
+
+
+
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See hardware of my group(s)')."</td><td>";
@@ -693,21 +728,21 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Create a validation request for a request')."</td><td>";
-      Dropdown::showYesNo("create_request_validation", $this->fields["create_request_validation"]);
-      echo "<td>".__('Create a validation request for an incident')."</td><td>";
-      Dropdown::showYesNo("create_incident_validation", $this->fields["create_incident_validation"]);
-      echo "</td>";
-      echo "</tr>\n";
+//      echo "<tr class='tab_bg_2'>";
+//      echo "<td>".__('Create a validation request for a request')."</td><td>";
+//      Dropdown::showYesNo("create_request_validation", $this->fields["create_request_validation"]);
+//      echo "<td>".__('Create a validation request for an incident')."</td><td>";
+//      Dropdown::showYesNo("create_incident_validation", $this->fields["create_incident_validation"]);
+//      echo "</td>";
+//      echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Validate a request')."</td><td>";
-      Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
-      echo "<td>".__('Validate an incident')."</td><td>";
-      Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
-      echo "</td>";
-      echo "</tr>\n";
+//      echo "<tr class='tab_bg_2'>";
+//      echo "<td>".__('Validate a request')."</td><td>";
+//      Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
+//      echo "<td>".__('Validate an incident')."</td><td>";
+//      Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
+//      echo "</td>";
+//      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Tools')."</th></tr>\n";
 
@@ -1033,36 +1068,42 @@ class Profile extends CommonDBTM {
       self::dropdownRights(Profile::getRightsFor('TicketTask'), "_task", $this->fields["task"]);
       echo "</td></tr>\n";
 
-
-
-
-
-
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Deletion')."</th>";
+      echo "<tr class='tab_bg_5'>";
+      echo "<th colspan='6'>"._n('Validation', 'Validations', 2)."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Delete all validations')."</td><td>";
-      Dropdown::showYesNo("delete_validations", $this->fields["delete_validations"]);
+      echo "<td width='18%'>"._n('Validation', 'Validations', 2)."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('TicketValidation'), "_validation",
+                           $this->fields["validation"]);
       echo "</td></tr>\n";
+
+
+
+
+
+//      echo "<tr class='tab_bg_2'>";
+//      echo "<td>".__('Delete all validations')."</td><td>";
+//      Dropdown::showYesNo("delete_validations", $this->fields["delete_validations"]);
+//      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Approval')."</th><";
       echo "/tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Create a validation request for a request')."</td><td>";
-      Dropdown::showYesNo("create_request_validation", $this->fields["create_request_validation"]);
-      echo "<td>".__('Create a validation request for an incident')."</td><td>";
-      Dropdown::showYesNo("create_incident_validation", $this->fields["create_incident_validation"]);
-      echo "</td>";
-      echo "<td colspan='2'></td></tr>\n";
+//      echo "<tr class='tab_bg_2'>";
+//      echo "<td>".__('Create a validation request for a request')."</td><td>";
+//      Dropdown::showYesNo("create_request_validation", $this->fields["create_request_validation"]);
+//      echo "<td>".__('Create a validation request for an incident')."</td><td>";
+//      Dropdown::showYesNo("create_incident_validation", $this->fields["create_incident_validation"]);
+//      echo "</td>";
+//      echo "<td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Validate a request')."</td><td>";
-      Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
-      echo "<td>".__('Validate an incident')."</td><td>";
-      Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
-      echo "<td colspan='2'></td></tr>\n";
+//      echo "<tr class='tab_bg_2'>";
+//      echo "<td>".__('Validate a request')."</td><td>";
+//      Dropdown::showYesNo("validate_request", $this->fields["validate_request"]);
+//      echo "<td>".__('Validate an incident')."</td><td>";
+//      Dropdown::showYesNo("validate_incident", $this->fields["validate_incident"]);
+//      echo "<td colspan='2'></td></tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
       echo "</tr>\n";
@@ -2051,14 +2092,14 @@ class Profile extends CommonDBTM {
       $tab[81]['datatype']       = 'bool';
       $tab[81]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'delete_followups'");
-*/
+
       $tab[121]['table']          ='glpi_profilerights';
       $tab[121]['field']          = 'right';
       $tab[121]['name']           = __('Delete all validations');
       $tab[121]['datatype']       = 'bool';
       $tab[121]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'delete_validations'");
-
+*/
       $tab[85]['table']          = 'glpi_profilerights';
       $tab[85]['field']          = 'right';
       $tab[85]['name']           = __('Statistics');
@@ -2126,7 +2167,7 @@ class Profile extends CommonDBTM {
       $tab[97]['datatype']       = 'bool';
       $tab[97]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'update_tasks'");
-*/
+
       $tab[98]['table']          = 'glpi_profilerights';
       $tab[98]['field']          = 'right';
       $tab[98]['name']           = __('Validate a request');
@@ -2154,7 +2195,7 @@ class Profile extends CommonDBTM {
       $tab[122]['datatype']       = 'bool';
       $tab[122]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'create_incident_validation'");
-
+*/
       $tab[100]['table']         = $this->getTable();
       $tab[100]['field']         = 'ticket_status';
       $tab[100]['name']          = __('Life cycle of tickets');
@@ -2356,6 +2397,11 @@ class Profile extends CommonDBTM {
             $tabselect[] = $k;
          }
       }
+      // To allow dropdown with no value to be in prepareInputForUpdate
+      // without this, you can't have an empty dropdown
+      // done to avoid define NORIGHT value
+      echo "<input type='hidden' name='".$name."[]' value='0'>";
+
       Dropdown::showFromArray($name, $values,
                                 array('multiple' => true,
                                       'size'     => $size,
