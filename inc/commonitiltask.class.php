@@ -950,11 +950,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       $fkfield = $item->getForeignKeyField();
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
          $options[$fkfield] = $item->getField('id');
-         $this->check(-1,'w',$options);
+         $this->check(-1, CREATE, $options);
       }
 
       $canplan = Session::haveRight("planning", Planning::READMY);
