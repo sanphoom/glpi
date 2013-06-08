@@ -47,7 +47,7 @@ class ProblemTask extends CommonITILTask {
 
 
    static function canCreate() {
-      return Session::haveRightsOr('problem', array(Problem::READMY, Problem::READALL));
+      return Session::haveRight('problem', UPDATE);
    }
 
 
@@ -57,7 +57,17 @@ class ProblemTask extends CommonITILTask {
 
 
    static function canUpdate() {
-      return Session::haveRightsOr('problem', array(UPDATE, Problem::READMY));
+      return Session::haveRight('problem', UPDATE);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @return boolean
+   **/
+   static function canPurge() {
+      return Session::haveRight('problem', UPDATE);
    }
 
 
@@ -97,26 +107,16 @@ class ProblemTask extends CommonITILTask {
     * @return boolean
    **/
    function canUpdateItem() {
-
-      if (!parent::canReadITILItem()) {
-         return false;
-      }
-
-      if (($this->fields["users_id"] != Session::getLoginUserID())
-          && !Session::haveRight('problem', UPDATE)) {
-         return false;
-      }
-
-      return true;
+      return parent::canUpdateITILItem();
    }
 
 
    /**
-    * Is the current user have right to delete the current task ?
+    * Is the current user have right to purge the current task ?
     *
     * @return boolean
    **/
-   function canDeleteItem() {
+   function canPurgeItem() {
       return $this->canUpdateItem();
    }
 

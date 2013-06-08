@@ -2065,10 +2065,10 @@ class CommonDBTM extends CommonGLPI {
          // Restore saved input if available
          $input = $this->restoreInput($options);
          // Create item
-         $this->check(-1, PURGE, $input);
+         $this->check(-1, CREATE, $input);
       } else {
-         // Modify item
-         $this->check($ID, UPDATE);
+         // Existing item
+         $this->check($ID, READ);
       }
 
       return (isset($options['withtemplate']) ? $options['withtemplate'] : '');
