@@ -98,7 +98,7 @@ class Problem extends CommonITILObject {
 
 
    static function canView() {
-      return Session::haveRight(self::$rightname, array(self::READALL, self::READMY));
+      return Session::haveRightsOr(self::$rightname, array(self::READALL, self::READMY));
    }
 
 

@@ -92,6 +92,24 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    /**
+    * can update the parent ITIL Object ?
+    *
+    * @since version 0.85
+    *
+    * @return boolean
+   **/
+   function canUpdateITILItem() {
+
+      $itemtype = $this->getItilObjectItemType();
+      $item     = new $itemtype();
+      if (!$item->can($this->getField($item->getForeignKeyField()), UPDATE)) {
+         return false;
+      }
+      return true;
+   }
+
+
+   /**
     * Name of the type
     *
     * @param $nb : number of item in the type (default 0)

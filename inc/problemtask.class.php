@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 class ProblemTask extends CommonITILTask {
 
+
    /**
     * @since version 0.84
    **/
@@ -86,17 +87,7 @@ class ProblemTask extends CommonITILTask {
     * @return boolean
    **/
    function canCreateItem() {
-
-      if (!parent::canReadITILItem()) {
-         return false;
-      }
-
-      return (Session::haveRight('problem', Problem::CREATE)
-              || (Session::haveRight("problem", Problem::READMY)
-                  && ($ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                      || (isset($_SESSION["glpigroups"])
-                          && $ticket->haveAGroup(CommonITILActor::ASSIGN,
-                                                 $_SESSION['glpigroups'])))));
+      return parent::canUpdateITILItem();
    }
 
 
