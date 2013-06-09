@@ -265,7 +265,7 @@ class Item_Devices extends CommonDBRelation {
       $table_options = array('canedit' => $canedit);
 
       if ($is_device) {
-         foreach (array_merge(array(''), getConcernedItems()) as $itemtype) {
+         foreach (array_merge(array(''), self::getConcernedItems()) as $itemtype) {
             $table_options['itemtype'] = $itemtype;
             static::getTableGroup($item, $table, $table_options, $delete_all_column,
                                   $common_column, $specific_column, $delete_column,
