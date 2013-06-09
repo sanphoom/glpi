@@ -52,5 +52,11 @@ class Item_DeviceNetworkCard extends Item_Devices {
                                   'size'       => 18));
    }
 
+
+   static function itemAffinity() {
+      return array('Computer', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone');
+   }
+
+
 }
 ?>

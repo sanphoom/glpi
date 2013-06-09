@@ -334,8 +334,9 @@ class Computer extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // TODO : manage templates for item_devices
          // ADD Devices
-         Item_devices::cloneItem(__CLASS__, $this->input["_oldID"], $this->fields['id']);
+         Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Infocoms
          Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
@@ -377,7 +378,7 @@ class Computer extends CommonDBTM {
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
 
-      Item_Devices::cleanItemDeviceDBOnItemDelete('Computer', $this->fields['id']);
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id']);
 
       $disk = new ComputerDisk();
       $disk->cleanDBonItemDelete('Computer', $this->fields['id']);

@@ -70,6 +70,7 @@ class Phone extends CommonDBTM {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Item_Devices', $ong, $options);
       $this->addStandardTab('Computer_Item', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
@@ -103,6 +104,10 @@ class Phone extends CommonDBTM {
 
       // Manage add from template
       if (isset($this->input["_oldID"])) {
+         // TODO : manage templates for item_devices
+         // ADD Devices
+         Item_devices::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
          // ADD Infocoms
          Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
@@ -125,6 +130,7 @@ class Phone extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
+      // TODO: add Computer_Item::cleanDBOnItemDelete ?
       $query = "SELECT `id`
                 FROM `glpi_computers_items`
                 WHERE `itemtype` = '".$this->getType()."'
@@ -143,6 +149,8 @@ class Phone extends CommonDBTM {
 
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
+
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id']);
    }
 
 

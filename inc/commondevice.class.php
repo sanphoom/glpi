@@ -42,15 +42,7 @@ if (!defined('GLPI_ROOT')) {
 */
 abstract class CommonDevice extends CommonDropdown {
 
-
-   static function canCreate() {
-      return Session::haveRight('device', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('device', 'r');
-   }
+   static $rightname = 'device';
 
 
    static function getTypeName($nb=0) {
@@ -181,15 +173,13 @@ abstract class CommonDevice extends CommonDropdown {
          $content = static::getTypeName(1);
       }
 
-      switch ($itemtype) {
-         case 'Computer':
-            $column = $base->addHeader('device', $content, $super, $father);
-            $column->setItemType($this_type, (isset($options['itemtype_title']) ?
-                                              $options['itemtype_title'] : ''));
-            break;
-         default:
+      $linktype = 'Item_'.static::getType();
+      if (in_array($itemtype, $linktype::itemAffinity())) {
+         $column = $base->addHeader('device', $content, $super, $father);
+         $column->setItemType($this_type, (isset($options['itemtype_title']) ?
+                                           $options['itemtype_title'] : ''));
+      } else {
             $column = $father;
-            break;
       }
 
       return $column;
@@ -238,14 +228,12 @@ abstract class CommonDevice extends CommonDropdown {
                            "</span>");
       }
 
-      switch ($item->getType()) {
-         case 'Computer':
-            $cell = $row->addCell($row->getHeaderByName('common', 'device'),
-                                  $content, $father, $this);
-            break;
-         default:
-            $cell = $father;
-            break;
+      $linktype = 'Item_'.$this->getType();
+      if (in_array($item->getType(), $linktype::itemAffinity())) {
+         $cell = $row->addCell($row->getHeaderByName('common', 'device'),
+                               $content, $father, $this);
+      } else {
+         $cell = $father;
       }
 
       return $cell;
@@ -306,6 +294,15 @@ abstract class CommonDevice extends CommonDropdown {
 
       return array('designation'      => 'equal',
                    'manufacturers_id' => 'equal');
+   }
+
+   function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addDefaultFormTab($ong);
+      $this->addStandardTab('Item_'.static::getType(), $ong, $options);
+
+      return $ong;
    }
 
 }

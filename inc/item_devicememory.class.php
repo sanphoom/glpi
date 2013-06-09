@@ -55,5 +55,11 @@ class Item_DeviceMemory extends Item_Devices {
                                      'short name' => __('Serial number'),
                                      'size'       => 20));
    }
+
+   static function itemAffinity() {
+      return array('Computer', 'NetworkEquipment', 'Printer', 'Peripheral');
+   }
+
+
 }
 ?>

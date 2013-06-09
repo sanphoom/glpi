@@ -45,5 +45,10 @@ class Item_DevicePowerSupply extends Item_Devices {
 
    static protected $notable = false;
 
+
+   static function itemAffinity() {
+      return array('Computer', 'NetworkEquipment');
+   }
+
 }
 ?>
