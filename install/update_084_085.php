@@ -386,7 +386,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 rename create_ticket to ticket");
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". CREATE ."
+                 SET `rights` = ". (CREATE | Ticket::READMY)."
                  WHERE `name` = 'ticket'
                        AND `right` = '1'";
       $DB->queryOrDie($query, "0.85 update ticket with create_ticket right");
