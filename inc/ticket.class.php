@@ -3184,8 +3184,9 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
-                                                    TicketValidation::VALIDATEREQUEST))) {
+      if (!$ticket_template
+          && Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
+                                                       TicketValidation::VALIDATEREQUEST))) {
          $opt                  = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
