@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
 } else if ($_GET["action"] == "edit"
            && isset($_GET['mark_default'])
            && isset($_GET["id"])) {
-   $bookmark->check($_GET["id"], UPDATE);
+   $bookmark->check($_GET["id"], READ);
 
    if ($_GET["mark_default"] > 0) {
       $bookmark->mark_default($_GET["id"]);
