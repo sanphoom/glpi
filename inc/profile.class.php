@@ -664,6 +664,20 @@ class Profile extends CommonDBTM {
                            $this->fields["ticket"]);
       echo "</td></tr>\n";
 
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='20%'>".__('Link with items for the creation of tickets')."</td>";
+      echo "<td width='30%'>";
+      Dropdown::showFromArray('helpdesk_hardware', self::getHelpdeskHardwareTypes(),
+                              array('value' => $this->fields["helpdesk_hardware"]));
+      echo "</td>\n";
+      echo "<td width='20%'>".__('Associable items to a ticket')."</td>";
+      echo "<td width='30%'><input type='hidden' name='_helpdesk_item_types' value='1'>";
+      self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
+      echo "</td>";
+      echo "</tr>\n";
+
+      
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Default ticket template')."</td><td>";
       // Only root entity ones and recursive
@@ -703,19 +717,6 @@ class Profile extends CommonDBTM {
       echo "<td>".__('See hardware of my group(s)')."</td><td>";
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
       echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Link with items for the creation of tickets')."</td>";
-      echo "<td>";
-      Dropdown::showFromArray('helpdesk_hardware', self::getHelpdeskHardwareTypes(),
-                              array('value' => $this->fields["helpdesk_hardware"]));
-      echo "</td>\n";
-      echo "<td>".__('Associable items to a ticket')."</td>";
-      echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
-      self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
-      echo "</td>";
-      echo "</tr>\n";
-
 
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Tools')."</th></tr>\n";
 
