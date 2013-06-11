@@ -366,6 +366,11 @@ class Translator
             return ($number == 1 ? $singular : $plural);
         }
 
+        /// GLPI Hack for languages with 1 plural form (chinese)
+        if (!is_array($translation)) {
+            return $translation;
+        }
+        
         $index = $this->messages[$textDomain][$locale]
                       ->getPluralRule()
                       ->evaluate($number);
