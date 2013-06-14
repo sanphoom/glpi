@@ -2978,8 +2978,11 @@ class CommonDBTM extends CommonGLPI {
       switch ($input['action']) {
          case "add_contract_item" :
             if ($input['itemtype'] == 'Contract') {
-               Dropdown::showAllItems("items_id", 0, 0, 1,
-                                       $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
+               Dropdown::showAllItems(array('item_name'       => 'items_id',
+                                            'entity_restrict' => 1,
+                                            'types'           => $CFG_GLPI["contract_types"],
+                                            'checkright'      => true,
+                                            'itemtype_name'   => 'item_itemtype'));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                               _sx('button', 'Add')."'>";
             } else {
@@ -2991,8 +2994,11 @@ class CommonDBTM extends CommonGLPI {
 
          case "remove_contract_item" :
             if ($input['itemtype'] == 'Contract') {
-               Dropdown::showAllItems("items_id", 0, 0, 1,
-                                    $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
+               Dropdown::showAllItems(array('item_name'       => 'items_id',
+                                            'entity_restrict' => 1,
+                                            'types'           => $CFG_GLPI["contract_types"],
+                                            'checkright'      => true,
+                                            'itemtype_name'   => 'item_itemtype'));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                               _sx('button', 'Delete permanently')."'>";
             } else {

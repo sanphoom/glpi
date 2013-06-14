@@ -51,7 +51,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
 
    $rand     = mt_rand();
 
-   $field_id = Html::cleanId("dropdown_".$_POST["myname"].$rand);
+   $field_id = Html::cleanId("dropdown_".$_POST["name"].$rand);
 
    $p        = array('value'               => 0,
                      'valuename'           => Dropdown::EMPTY_VALUE,
@@ -67,8 +67,21 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    if (isset($_POST['condition'])) {
       $p['condition'] = $_POST['condition'];
    }
-   echo  Html::jsAjaxDropdown($_POST["myname"], $field_id,
+   echo  Html::jsAjaxDropdown($_POST["name"], $field_id,
                               $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
                               $p);
+
+   if (isset($_POST['displaySubItem'])) {
+      $params = array('items_id' => '__VALUE__',
+                      'itemtype' => $_POST["idtable"]);
+      if (isset($_POST['entity_restrict'])) {
+         $params['entity_restrict'] = $_POST['entity_restrict'];
+      }
+
+      Ajax::updateItemOnSelectEvent($field_id, "displaySubItem_".$_POST["name"]."$rand",
+                                    $_POST['displaySubItem'], $params);
+
+      echo "<br><span id='displaySubItem_".$_POST["name"]."$rand'>&nbsp;</span>\n";
+   }
 }
 ?>

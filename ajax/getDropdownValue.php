@@ -136,7 +136,7 @@ if ($item instanceof CommonTreeDropdown) {
    if ($one_item >= 0) {
       $where .= " AND `$table`.`id` = '$one_item'";
    } else {
-      if (isset($_GET['searchText'])) {
+      if (!empty($_GET['searchText'])) {
 
          if (Session::haveTranslations($_GET['itemtype'], 'completename')) {
             $where .= " AND (`$table`.`completename` ".Search::makeTextSearch($_GET['searchText']).
@@ -434,7 +434,7 @@ if ($item instanceof CommonTreeDropdown) {
    if ($one_item >= 0) {
       $where .=" AND `$table`.`id` = '$one_item'";
    } else {
-      if (isset($_GET['searchText'])) {
+      if (!empty($_GET['searchText'])) {
          $search = Search::makeTextSearch($_GET['searchText']);
          $where .=" AND  (`$table`.`$field` ".$search;
 

@@ -215,6 +215,7 @@ class Item_Devices extends CommonDBRelation {
 
 
    static function showForItem(CommonGLPI $item, $withtemplate=0) {
+      global $CFG_GLPI;
 
       $is_device = ($item instanceof CommonDevice);
 
@@ -287,7 +288,10 @@ class Item_Devices extends CommonDBRelation {
          if ($is_device) {
             Dropdown::showInteger('number_devices_to_add', 0, 0, 10);
          } else {
-            Dropdown::showAllItems('devices_id', '', 0, -1, $devtypes, false, false, 'devicetype');
+            Dropdown::showAllItems(array('itemtype_name'  => 'devicetype',
+                                         'item_name'      => 'devices_id',
+                                         'types'          => $devtypes,
+                                         'displaySubItem' => $CFG_GLPI['root_doc'].'/ajax/getUnaffectedItemDevice.php'));
          }
          echo "</td><td>";
          echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
@@ -530,8 +534,19 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if (isset($input['devicetype'])) {
-         if ($link = getItemForItemtype('Item_'.$input['devicetype'])) {
-            $link->addDevices(1, $input['itemtype'], $input['items_id'], $input['devices_id']);
+         $linktype = 'Item_'.$input['devicetype'];
+         if ($link = getItemForItemtype($linktype)) {
+            if ((isset($input[$linktype::getForeignKeyField()]))
+                && (count($input[$linktype::getForeignKeyField()]))) {
+               $update_input = array('itemtype' => $input['itemtype'],
+                              'items_id' => $input['items_id']);
+               foreach ($input[$linktype::getForeignKeyField()] as $id) {
+                  $update_input['id'] = $id;
+                  $link->update($update_input);
+               }
+            } else {
+               $link->addDevices(1, $input['itemtype'], $input['items_id'], $input['devices_id']);
+            }
          }
       } else {
          if (!$item = getItemForItemtype($input['itemtype'])) {
