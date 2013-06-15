@@ -71,17 +71,17 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
                               $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
                               $p);
 
-   if (isset($_POST['displaySubItem'])) {
+   if (!empty($_POST['showItemSpecificity'])) {
       $params = array('items_id' => '__VALUE__',
                       'itemtype' => $_POST["idtable"]);
       if (isset($_POST['entity_restrict'])) {
          $params['entity_restrict'] = $_POST['entity_restrict'];
       }
 
-      Ajax::updateItemOnSelectEvent($field_id, "displaySubItem_".$_POST["name"]."$rand",
-                                    $_POST['displaySubItem'], $params);
+      Ajax::updateItemOnSelectEvent($field_id, "showItemSpecificity_".$_POST["name"]."$rand",
+                                    $_POST['showItemSpecificity'], $params);
 
-      echo "<br><span id='displaySubItem_".$_POST["name"]."$rand'>&nbsp;</span>\n";
+      echo "<br><span id='showItemSpecificity_".$_POST["name"]."$rand'>&nbsp;</span>\n";
    }
 }
 ?>

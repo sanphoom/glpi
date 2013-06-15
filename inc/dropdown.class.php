@@ -1068,32 +1068,70 @@ class Dropdown {
    /**
     * Make a select box for all items
     *
+    * @deprecated since version 0.85, replaced by self::showSelectItemFromItemtypes()
+    *
+    * @param $myname          select name
+    * @param $value_type      default value for the device type (default 0)
+    * @param $value           default value (default 0)
+    * @param $entity_restrict Restrict to a defined entity (default -1)
+    * @param $types           Types used (default '')
+    * @param $onlyglobal      Restrict to global items (false by default)
+    * @param $checkright      Restrict to items with read rights (false by default)
+    * @param $itemtypename    name used for itemtype select
+    *
+    * @return nothing (print out an HTML select box)
+   **/
+   static function showAllItems($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
+                                $onlyglobal=false, $checkright=false, $itemtypename = 'itemtype') {
+      $options = array();
+      $options['itemtype_name']   = $itemtypename;
+      $options['items_id_name']   = $myname;
+      $options['itemtypes']       = $types;
+      $options['entity_restrict'] = $entity_restrict;
+      $options['onlyglobal']      = $onlyglobal;
+      $options['checkright']      = $checkright;
+
+      if ($value > 0) {
+         $options['default']         = $value_type;
+      }
+
+      self::showSelectItemFromItemtypes($options);
+   }
+
+
+   /**
+    * Make a select box for all items
+    *
+    * @since version 0.84
+    *
     * @param $options array:
-    *             - itemtype_name: the name of the field containing the itemtype
-    *             - item_name: the name of the field containing the id of the selected item
-    *             - types: all possible types to search for (default: $CFG_GLPI["state_types"])
-    *             - default: the default itemtype to select (don't define if you don't
+    *             - itemtype_name: the name of the field containing the itemtype (default:
+    *                              'itemtype')
+    *             - items_id_name: the name of the field containing the id of the selected item
+    *                              (default: 'items_id')
+    *             - itemtypes: all possible types to search for (default: $CFG_GLPI["state_types"])
+    *             - default_itemtype: the default itemtype to select (don't define if you don't
     *                        need a default)
-    *             - entity_restrict: restrict entity in searching items
+    *             - entity_restrict: restrict entity in searching items (default: -1)
     *             - onlyglobal: don't match item that don't have `is_global` == 1
     *             - checkright: check to see if we can "view" the itemtype
-    *             - displaySubItem: given an item, the AJAX file to open if there is special
+    *             - showItemSpecificity: given an item, the AJAX file to open if there is special
     *                               treatment. For instance, select a Item_Device* for CommonDevice
     *
     * @return randomized value used to generate HTML IDs
    **/
-   static function showAllItems(array $options = array()) {
+   static function showSelectItemFromItemtypes(array $options = array()) {
       global $CFG_GLPI;
 
       $params = array();
-      $params['itemtype_name']   = 'itemtype';
-      $params['item_name']       = '';
-      $params['types']           = '';
-      $params['default']         = 0;
-      $params['entity_restrict'] = -1;
-      $params['onlyglobal']      = false;
-      $params['checkright']      = false;
-      $params['displaySubItem']  = '';
+      $params['itemtype_name']       = 'itemtype';
+      $params['items_id_name']       = 'items_id';
+      $params['itemtypes']           = '';
+      $params['default_itemtype']    = 0;
+      $params['entity_restrict']     = -1;
+      $params['onlyglobal']          = false;
+      $params['checkright']          = false;
+      $params['showItemSpecificity'] = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1101,34 +1139,35 @@ class Dropdown {
          }
       }
 
-      $rand = self::showItemType($params['types'], array('checkright' => $params['checkright'],
-                                                         'name'       => $params['itemtype_name']));
+      $rand = self::showItemType($params['itemtypes'], array('checkright' => $params['checkright'],
+                                                             'name'       => $params['itemtype_name']));
 
       if ($rand) {
-         $p = array('idtable'         => '__VALUE__',
-                    'name'            => $params['name'],
-                    'entity_restrict' => $params['entity_restrict'],
-                    'displaySubItem'  => $params['displaySubItem']);
+         $p = array('idtable'             => '__VALUE__',
+                    'name'                => $params['items_id_name'],
+                    'entity_restrict'     => $params['entity_restrict'],
+                    'showItemSpecificity' => $params['showItemSpecificity']);
 
          if ($params['onlyglobal']) {
-            $p['condition'] = "`is_global` = '1'";
+            $p['condition'] = "`is_global` = 1";
          }
 
          $field_id = Html::cleanId("dropdown_".$params['itemtype_name'].$rand);
-         $show_id  = "show_".$params['name']."$rand";
+         $show_id  = Html::cleanId("show_".$params['items_id_name'].$rand);
+
          Ajax::updateItemOnSelectEvent($field_id, $show_id,
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $p);
 
          echo "<br><span id='$show_id'>&nbsp;</span>\n";
 
-         // We check $options as the caller will set $options['default'] only if it needs a default
-         // and the default value can be '' thus empty won't be valid !
-         if (array_key_exists ('default', $options)) {
+         // We check $options as the caller will set $options['default_itemtype'] only if it needs a
+         // default itemtype and the default value can be '' thus empty won't be valid !
+         if (array_key_exists ('default_itemtype', $options)) {
             echo "<script type='text/javascript' >\n";
-            echo Html::jsSetDropdownValue($field_id, $params['default']);
+            echo Html::jsSetDropdownValue($field_id, $params['default_itemtype']);
             echo "</script>\n";
 
-            $p["idtable"] = $params['default'];
+            $p["idtable"] = $params['default_itemtype'];
             Ajax::updateItem($show_id, $CFG_GLPI["root_doc"]. "/ajax/dropdownAllItems.php", $p);
          }
       }

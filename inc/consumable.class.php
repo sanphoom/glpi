@@ -178,10 +178,10 @@ class Consumable extends CommonDBTM {
       switch ($input['action']) {
          case "give" :
             if (isset($input["entities_id"])) {
-               Dropdown::showAllItems(array('itemtype_name'   => 'give_itemtype',
-                                            'item_name'       => 'give_items_id',
-                                            'entity_restrict' => $input["entities_id"],
-                                            'types'           => $CFG_GLPI["consumables_types"]));
+               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'give_itemtype',
+                                                           'items_id_name'   => 'give_items_id',
+                                                           'entity_restrict' => $input["entities_id"],
+                                                           'itemtypes'       => $CFG_GLPI["consumables_types"]));
                echo "<br><br><input type='submit' class='submit' name='massiveaction' value='".
                               _sx('button', 'Give')."'>";
                return true;

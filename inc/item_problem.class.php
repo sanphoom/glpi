@@ -131,9 +131,8 @@ class Item_Problem extends CommonDBRelation{
          foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
          }
-         Dropdown::showAllItems(array('item_name'       => 'items_id',
-                                      'types          ' => $types,
-                                      'entity_restrict' => ($problem->fields['is_recursive']?-1:$problem->fields['entities_id'])));
+         Dropdown::showSelectItemFromItemtypes(array('itemtypes'       => $types,
+                                                     'entity_restrict' => ($problem->fields['is_recursive']?-1:$problem->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='problems_id' value='$instID'>";

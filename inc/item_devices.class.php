@@ -288,10 +288,10 @@ class Item_Devices extends CommonDBRelation {
          if ($is_device) {
             Dropdown::showInteger('number_devices_to_add', 0, 0, 10);
          } else {
-            Dropdown::showAllItems(array('itemtype_name'  => 'devicetype',
-                                         'item_name'      => 'devices_id',
-                                         'types'          => $devtypes,
-                                         'displaySubItem' => $CFG_GLPI['root_doc'].'/ajax/getUnaffectedItemDevice.php'));
+            Dropdown::showSelectItemFromItemtypes(array('itemtype_name'       => 'devicetype',
+                                                        'items_id_name'       => 'devices_id',
+                                                        'itemtypes'           => $devtypes,
+                                                        'showItemSpecificity' => $CFG_GLPI['root_doc'].'/ajax/getUnaffectedItemDevice.php'));
          }
          echo "</td><td>";
          echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
