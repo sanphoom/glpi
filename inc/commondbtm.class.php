@@ -64,6 +64,9 @@ class CommonDBTM extends CommonGLPI {
    /// Foreign key field cache : set dynamically calling getForeignKeyField
    protected $fkfield                       = "";
 
+   /// Search options of the item : to avoid multiple load
+   protected $searchopt                     = false;
+   
    /// Tab orientation : horizontal or vertical
    public $taborientation                   = 'vertical';
    /// Need to get item to show tab
@@ -1037,8 +1040,25 @@ class CommonDBTM extends CommonGLPI {
                       && ($this->input[$key] == 'NULL')) {
                      $this->fields[$key] = 'NULL';
                   }
+                  // Compare item
+                  $ischanged = true;
+                  $searchopt = $this->getSearchOptionByField('field', $key, $this->getTable());
+                  if (isset($searchopt['datatype'])) {
+                     switch ($searchopt['datatype']) {
+                        case 'string' :
+                        case 'text' :
+                           $ischanged = (strcmp($DB->escape($this->fields[$key]),$this->input[$key])!=0);
+                           break;
+                        default :
+                           $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                           break;
+                     }
+                  } else {
+                     // No searchoption case
+                     $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
 
-                  if ($DB->escape($this->fields[$key]) != $this->input[$key]) {
+                  }
+                  if ($ischanged) {
                      if ($key != "id") {
 
                         // Store old values
@@ -3608,7 +3628,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getSearchOptionByField($field, $value, $table='') {
 
-      foreach (Search::getOptions(get_class($this)) as $id => $searchOption) {
+      foreach ($this->getSearchOptions() as $id => $searchOption) {
          if ((isset($searchOption['linkfield']) && ($searchOption['linkfield'] == $value))
              || (isset($searchOption[$field]) && ($searchOption[$field] == $value))) {
             if (($table == '')
@@ -3622,7 +3642,19 @@ class CommonDBTM extends CommonGLPI {
       return array();
    }
 
+   /**
+    * Get search options 
+    *
+    * @return then search option array
+   **/
+   function getOptions() {
 
+      if (!$this->searchopt) {
+         $this->searchopt = Search::getOptions($this->getType());
+      }
+
+      return $this->searchopt;
+   }
    /**
     * Return a search option ID by looking for a value of a specific field and maybe a specific table
     *
@@ -4157,7 +4189,7 @@ class CommonDBTM extends CommonGLPI {
       if (is_array($field_id_or_search_options)) {
          $searchoptions = $field_id_or_search_options;
       } else {
-         $searchopt = Search::getOptions($this->getType());
+         $searchopt = $this->getSearchOptions();
 
          // Get if id of search option is passed
          if (is_numeric($field_id_or_search_options)) {
@@ -4381,7 +4413,7 @@ class CommonDBTM extends CommonGLPI {
       if (is_array($field_id_or_search_options)) {
          $searchoptions = $field_id_or_search_options;
       } else {
-         $searchopt = Search::getOptions($this->getType());
+         $searchopt = $this->getSearchOptions();
 
          // Get if id of search option is passed
          if (is_numeric($field_id_or_search_options)) {
