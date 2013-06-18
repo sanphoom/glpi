@@ -739,12 +739,26 @@ class Html {
    **/
    static function addConfirmationOnAction($string, $additionalactions='') {
 
+      return "onclick=\"".Html::getConfirmationOnActionScript($string, $additionalactions)."\"";
+   }
+
+   /**
+    * Get confirmation on button or link before action
+    *
+    * @param $string             string   to display or array of string for using multilines
+    * @param $additionalactions  string   additional actions to do on success confirmation
+    *                                     (default '')
+    *
+    * @return confirmation script
+   **/
+   static function getConfirmationOnActionScript($string, $additionalactions='') {
+
       if (!is_array($string)) {
          $string = array($string);
       }
       $string            = Toolbox::addslashes_deep($string);
       $additionalactions = trim($additionalactions);
-      $out               = " onclick=\"";
+      $out               = "";
       $multiple          = false;
       $close_string      = '';
       // Manage multiple confirmation
@@ -764,10 +778,9 @@ class Html {
             $out          .= "')){ ";
             $close_string .= "return true;} else { return false;}";
       }
-      $out .= $additionalactions.(substr($additionalactions, -1)!=';'?';':'').$close_string."\"";
+      $out .= $additionalactions.(substr($additionalactions, -1)!=';'?';':'').$close_string;
       return $out;
    }
-
 
    /**
     * Create a Dynamic Progress Bar
@@ -2564,7 +2577,7 @@ class Html {
       }
 
       $output = "<input id='_showdate".$p['rand']."' type='text' size='10' name='_$name' value='".self::convDate($p['value'])."'>";
-      $output .= "<input type='hidden' id='showdate".$p['rand']."' type='text' size='10' name='$name'  value='".$p['value']."'>";
+      $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "showdate".$p['rand'], 'size' => 10));
       if ($p['maybeempty']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
       }
@@ -2704,7 +2717,7 @@ class Html {
       }
 
       $output = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".self::convDateTime($p['value'])."'>";
-      $output .= "<input type='hidden' id='showdate".$p['rand']."' type='text' name='$name'  value='".$p['value']."'>";
+      $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "showdate".$p['rand']));
       if ($p['maybeempty']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
       }
@@ -3585,19 +3598,17 @@ class Html {
          echo "<td class='tab_bg_2' width='30%'>";
          echo "<form method='GET' action='".$CFG_GLPI["root_doc"]."/front/report.dynamic.php'
                 target='_blank'>";
-         echo "<input type='hidden' name='item_type' value='$item_type_output'>";
+         echo Html::hidden('item_type', array('value' => $item_type_output));
 
          if ($item_type_output_param != 0) {
-            echo "<input type='hidden' name='item_type_param' value='".
-                   serialize($item_type_output_param)."'>";
+            echo Html::hidden('item_type_param', array('value' => serialize($item_type_output_param)));
          }
          $split = explode("&amp;",$parameters);
 
          for ($i=0 ; $i<count($split) ; $i++) {
             $pos    = Toolbox::strpos($split[$i], '=');
             $length = Toolbox::strlen($split[$i]);
-            echo "<input type='hidden' name='".Toolbox::substr($split[$i],0,$pos)."' value='".
-                   urldecode(Toolbox::substr($split[$i], $pos+1))."'>";
+            echo Html::hidden(Toolbox::substr($split[$i],0,$pos), array('value' => urldecode(Toolbox::substr($split[$i], $pos+1))));
          }
 
          Dropdown::showOutputFormat();
@@ -3804,7 +3815,7 @@ class Html {
 
       $out = '';
       if (GLPI_USE_CSRF_CHECK) {
-         $out .= "<input type='hidden' name='_glpi_csrf_token' value='".Session::getNewCSRFToken()."'>";
+         $out .= Html::hidden('_glpi_csrf_token', array('value' => Session::getNewCSRFToken()));
       }
 
       $out .= "</form>\n";
@@ -3984,7 +3995,7 @@ class Html {
       unset($params['value']);
       unset($params['valuename']);
 
-      $output = "<input type='hidden' id='$field_id' name='".$name."' value='$value'>";
+      $output = Html::hidden($name, array('value' => $value, 'id' => $field_id));
 
       $output .= "<script type='text/javascript'>\n";
       $output .= " $('#$field_id').select2({
@@ -4123,11 +4134,23 @@ class Html {
                }
                unset($options['confirmaction']);
             }
-            $options['onclick'] = Html::addConfirmationOnAction($options['confirm'], $confirmAction);
+            $options['onclick'] = Html::getConfirmationOnActionScript($options['confirm'], $confirmAction);
          }
          unset($options['confirm']);
       }
       return sprintf('<a href="%1$s" %2$s>%3$s</a>', $url, Html::parseAttributes($options), $title);
+   }
+
+
+   /**
+   * Creates a hidden input field.
+   *
+   * @param string $fieldName Name of a field
+   * @param array $options Array of HTML attributes.
+   * @return string A generated hidden input
+   */
+   static function hidden($fieldName, $options = array()) {
+      return sprintf('<input type="hidden" name="%s" %s/>', $fieldName, Html::parseAttributes($options));
    }
 
    /**
