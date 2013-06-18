@@ -124,8 +124,8 @@ html .ui-autocomplete {
 }
 .select2-container .select2-choice span {
     margin-top: -2px;
-    /* to have cut on left*/
-    direction: rtl;
+    /* to have cut on left : not working reverse display for simple items*/
+    /*direction: rtl;*/
 }
 
 .select2-container .select2-choice div b {

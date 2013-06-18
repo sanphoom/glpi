@@ -371,9 +371,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
 
       $this->input["_job"]->updateDateMod($this->input[$this->input["_job"]->getForeignKeyField()]);
 

@@ -1292,6 +1292,12 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
+      echo "<td>".__('Mail queue')."</td><td>";
+      self::dropdownRights(Profile::getRightsFor('QueuedMail'), "_queuedmail",
+                           $this->fields["queuedmail"]);
+      echo "</td></tr>\n";
+      
+      echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Maintenance')."</td><td>";
       self::dropdownRights(Profile::getRightsFor('Backup'), "_backup", $this->fields["backup"]);
       echo "</td></tr>\n";
@@ -1456,17 +1462,13 @@ class Profile extends CommonDBTM {
       self::dropdownRights(Profile::getRightsFor('Notification'), "_notification",
                            $this->fields["notification"]);
       echo "</td>";
+      echo "<td>".__('SLA')."</td><td>";
+      self::dropdownRights(Profile::getRightsFor('SLA'), "_sla", $this->fields["sla"]);
+      echo "</td>";
       echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td>";
       self::dropdownRights(Profile::getRightsFor('Calendar'), "_calendar",
                            $this->fields["calendar"]);
       echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('SLA')."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('SLA'), "_sla", $this->fields["sla"]);
-      echo "</td>";
-      echo "<td colspan='4'>&nbsp;</td>";
-      echo "</tr>\n";
 
       if ($canedit
           && $closeform) {

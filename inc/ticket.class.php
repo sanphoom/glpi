@@ -1381,7 +1381,7 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["_followup"]['is_private'])) {
             $toadd["is_private"] = $this->input["_followup"]['is_private'];
          }
-         $toadd['_no_notif'] = true;
+//          $toadd['_no_notif'] = true;
 
          $fup->add($toadd);
       }
@@ -1406,7 +1406,7 @@ class Ticket extends CommonITILObject {
             $toadd['is_private'] = $_SESSION['glpitask_private'];
          }
 
-         $toadd['_no_notif'] = true;
+//          $toadd['_no_notif'] = true;
 
          $task->add($toadd);
       }
@@ -2819,12 +2819,12 @@ class Ticket extends CommonITILObject {
                              FROM `$itemtable`
                              WHERE `users_id` = '$userID'";
                if ($item->maybeDeleted()) {
-                  $query .= " AND `is_deleted` = '0' ";
+                  $query .= " AND `$itemtable`.`is_deleted` = '0' ";
                }
                if ($item->maybeTemplate()) {
-                  $query .= " AND `is_template` = '0' ";
+                  $query .= " AND `$itemtable`.`is_template` = '0' ";
                }
-               if (in_array($itemtype,$CFG_GLPI["helpdesk_visible_types"])) {
+               if (in_array($itemtype, $CFG_GLPI["helpdesk_visible_types"])) {
                   $query .= " AND `is_helpdesk_visible` = '1' ";
                }
 

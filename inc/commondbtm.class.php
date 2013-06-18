@@ -69,12 +69,15 @@ class CommonDBTM extends CommonGLPI {
    /// Need to get item to show tab
    public $get_item_to_display_tab          = true;
 
-   ///Forward entity to plugins itemtypes
+   /// Forward entity to plugins itemtypes
    static protected $plugins_forward_entity = array();
 
-   // profile name
+   /// Profile name
    static $rightname = '';
 
+   /// FLush mail queue for
+   public $mailqueueonaction = false;
+   
    const SUCCESS                    = 0; //Process is OK
    const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
    const ERROR_FIELDSIZE_EXCEEDED   = 2; //Value is bigger than the field's size
@@ -839,6 +842,9 @@ class CommonDBTM extends CommonGLPI {
                if (isset($this->input['_add'])) {
                   $this->clearSavedInput();
                }
+               if ($this->mailqueueonaction) {
+                  QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+               }
                return $this->fields['id'];
             }
          }
@@ -1090,6 +1096,11 @@ class CommonDBTM extends CommonGLPI {
                }
             }
             $this->post_updateItem($history);
+            
+            if ($this->mailqueueonaction) {
+               QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+            }
+            
             return true;
          }
       }
@@ -1297,6 +1308,9 @@ class CommonDBTM extends CommonGLPI {
 
                Plugin::doHook("item_delete",$this);
             }
+            if ($this->mailqueueonaction) {
+               QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+            }
             return true;
          }
 
@@ -1442,6 +1456,9 @@ class CommonDBTM extends CommonGLPI {
 
          $this->post_restoreItem();
          Plugin::doHook("item_restore", $this);
+         if ($this->mailqueueonaction) {
+            QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+         }
          return true;
       }
 

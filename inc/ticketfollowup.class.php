@@ -339,9 +339,9 @@ class TicketFollowup  extends CommonDBTM {
 
       $donotif = $CFG_GLPI["use_mailing"];
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
 
       $this->input["_job"]->updateDateMod($this->input["tickets_id"], false,
                                           $this->input["users_id"]);

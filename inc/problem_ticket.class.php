@@ -79,9 +79,9 @@ class Problem_Ticket extends CommonDBRelation{
 
       $donotif = $CFG_GLPI["use_mailing"];
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
       if ($donotif) {
          $problem = new Problem();
          if ($problem->getFromDB($this->input["problems_id"])) {
@@ -102,9 +102,9 @@ class Problem_Ticket extends CommonDBRelation{
 
       $donotif = $CFG_GLPI["use_mailing"];
 
-      if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-         $donotif = false;
-      }
+//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
+//          $donotif = false;
+//       }
       if ($donotif) {
          $problem = new Problem();
          if ($problem->getFromDB($this->fields["problems_id"])) {

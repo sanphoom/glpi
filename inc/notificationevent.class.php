@@ -164,8 +164,14 @@ class NotificationEvent extends CommonDBTM {
                                                                     $event, $options)) {
                            //Send notification to the user
                            if ($label == '') {
-                              Notification::send($template->getDataToSend($notificationtarget, $tid,
-                                                                          $users_infos, $options));
+                              $datas = $template->getDataToSend($notificationtarget, $tid,
+                                                                          $users_infos, $options);
+                              $datas['_notificationtemplates_id'] = $data['notificationtemplates_id'];
+                              $datas['_itemtype']                 = $item->getType();
+                              $datas['_items_id']                 = $item->getID();
+                              $datas['_entities_id']              = $entity;
+
+                              Notification::send($datas);
                            } else {
                               $notificationtarget->getFromDB($target['id']);
                               echo "<tr class='tab_bg_2'><td>".$label."</td>";

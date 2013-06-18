@@ -439,7 +439,7 @@ class Notification extends CommonDBTM {
 
       $mail = new NotificationMail();
       $mail->sendNotification($mailing_options);
-      $mail->ClearAddresses();
+//       $mail->ClearAddresses();
    }
 
 

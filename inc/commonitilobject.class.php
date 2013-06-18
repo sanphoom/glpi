@@ -54,6 +54,10 @@ abstract class CommonITILObject extends CommonDBTM {
    /// Use user entity to select entity of the object
    protected $userentity_oncreate = false;
 
+
+   /// From CommonDBTM
+   public $mailqueueonaction = true;
+
    const MATRIX_FIELD         = '';
    const URGENCY_MASK_FIELD   = '';
    const IMPACT_MASK_FIELD    = '';

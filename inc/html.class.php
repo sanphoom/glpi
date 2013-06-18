@@ -1100,7 +1100,7 @@ class Html {
 
          $menu['admin']['title']        = __('Administration');
          $menu['admin']['types']        = array('User', 'Group', 'Entity', 'Rule',
-                                                'Profile', 'Backup', 'Event');
+                                                'Profile', 'QueuedMail', 'Backup', 'Event');
 
          $menu['config']['title']       = __('Setup');
          $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
