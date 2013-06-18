@@ -3013,9 +3013,8 @@ class CommonDBTM extends CommonGLPI {
       switch ($input['action']) {
          case "add_contract_item" :
             if ($input['itemtype'] == 'Contract') {
-               // TODO: check entity_restrict that should be current entity or -1
                Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'item_itemtype',
-                                                           'entity_restrict' => 1,
+                                                           'entity_restrict' => -1,
                                                            'itemtypes'       => $CFG_GLPI["contract_types"],
                                                            'checkright'      => true));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
@@ -3030,7 +3029,7 @@ class CommonDBTM extends CommonGLPI {
          case "remove_contract_item" :
             if ($input['itemtype'] == 'Contract') {
                Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'item_itemtype',
-                                                           'entity_restrict' => 1,
+                                                           'entity_restrict' => -1,
                                                            'itemtypes'       => $CFG_GLPI["contract_types"],
                                                            'checkright'      => true));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
