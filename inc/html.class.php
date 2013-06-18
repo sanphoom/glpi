@@ -673,12 +673,11 @@ class Html {
             echo "</div>";
 
          }
-         echo "<script type='text/javascript'>
-               $( '#debugtabs$rand' ).tabs({
-                  collapsible: true,
-                  active: false
-               });";
-         echo "</script>";
+         
+         echo Html::scriptBlock("$('#debugtabs$rand').tabs({
+                              collapsible: true,
+                              active: false
+                              });");
 
          echo "</div>";
       }
@@ -798,9 +797,7 @@ class Html {
       echo "</div>";
       echo "</div><br>";
 
-       echo "<script type='text/javascript'>";
-       echo self::jsGetElementbyID('doaction_progress').".progressbar();";
-       echo "</script>\n";
+       echo Html::scriptBlock(self::jsGetElementbyID('doaction_progress').".progressbar();");
        self::changeProgressBarMessage($msg);
    }
 
@@ -812,10 +809,8 @@ class Html {
     * @return nothing
    **/
    static function changeProgressBarMessage($msg="&nbsp;") {
-
-       echo "<script type='text/javascript'>".self::jsGetElementbyID('doaction_progress_text').".text(\"".addslashes($msg)."\")".
-            "</script>\n";
-       self::glpi_flush();
+      echo Html::scriptBlock(self::jsGetElementbyID('doaction_progress_text').".text(\"".addslashes($msg)."\");");
+      self::glpi_flush();
    }
 
 
@@ -839,8 +834,7 @@ class Html {
        } else {
           $pct = 100*$crt/$tot;
        }
-       echo "<script type='text/javascript'>".self::jsGetElementbyID('doaction_progress').".progressbar('option', 'value', $pct ); ";
-       echo "</script>\n";
+       echo Html::scriptBlock(self::jsGetElementbyID('doaction_progress').".progressbar('option', 'value', $pct );");
        if (!empty($msg)) {
          self::changeProgressBarMessage($msg);
        }
@@ -1599,14 +1593,15 @@ class Html {
       echo "</table></td></tr></table>";
 
       echo "</div>";
-      echo "<script type='text/javascript'>
-       var show_all_menu_modal = ".self::jsGetElementbyID('show_all_menu').".dialog({
+      Html::scriptStart();
+      echo "var show_all_menu_modal = ".self::jsGetElementbyID('show_all_menu').".dialog({
          height: 'auto',
          width: 'auto',
          modal: true,
          autoOpen: false
-         });
-      </script>";
+         });";
+      echo Html::scriptEnd();
+         
       echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       echo "</li>";
 
@@ -1645,8 +1640,8 @@ class Html {
       }
 
       // Back to top
-      echo "<script type='text/javascript'>
-            $(document).ready(function(){
+      Html::scriptStart();
+      echo "$(document).ready(function(){
                BackToTop({
                text : '".__s("^Top^")."',
                autoShow : true,
@@ -1655,8 +1650,9 @@ class Html {
                appearMethod : '',
                effectScroll : 'linear'
                });
-            });
-         </script>";
+            });";
+      echo Html::scriptEnd();
+            
 
       // call static function callcron() every 5min
       CronTask::callCron();
@@ -2583,14 +2579,14 @@ class Html {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
       }
 
-      $output .= "<script type='text/javascript'>\n";
+      $js = '';
       if ($p['maybeempty']) {
-         $output .= "$('#resetdate".$p['rand']."').click(function(){
+         $js .= "$('#resetdate".$p['rand']."').click(function(){
                   $('#_showdate".$p['rand']."').val('');
                   $('#showdate".$p['rand']."').val('');
                   });";
       }
-      $output .= "$( '#_showdate".$p['rand']."' ).datepicker({
+      $js .= "$( '#_showdate".$p['rand']."' ).datepicker({
                   altField: '#showdate".$p['rand']."',
                   altFormat: 'yy-mm-dd',
                   firstDay: 1,
@@ -2604,11 +2600,11 @@ class Html {
                   buttonImage: '../pics/calendar.png',
                   buttonImageOnly: true  ";
       if (!empty($p['min'])) {
-         $output .= ",minDate: '".self::convDate($p['min'])."'";
+         $js .= ",minDate: '".self::convDate($p['min'])."'";
       }
 
       if (!empty($p['max'])) {
-         $output .= ",maxDate: '".self::convDate($p['max'])."'";
+         $js .= ",maxDate: '".self::convDate($p['max'])."'";
       }
 
       switch ($_SESSION['glpidate_format']) {
@@ -2623,11 +2619,10 @@ class Html {
          default :
             $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
       }
-      $output .= ",dateFormat: '".$format."'";
+      $js .= ",dateFormat: '".$format."'";
 
-      $output .= "});";
-
-      $output .= "</script>\n";
+      $js .= "});";
+      $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
          echo $output;
@@ -2759,15 +2754,15 @@ class Html {
          $p['value'] = $date_value.' '.$hour_value;
       }
 
-      $output .= "<script type='text/javascript'>";
+      $js = "";
       if ($p['maybeempty']) {
-         $output .= "$('#resetdate".$p['rand']."').click(function(){
+         $js .= "$('#resetdate".$p['rand']."').click(function(){
                   $('#_showdate".$p['rand']."').val('');
                   $('#showdate".$p['rand']."').val('');
                   });";
       }
 
-      $output .= "$( '#_showdate".$p['rand']."' ).datetimepicker({
+      $js .= "$( '#_showdate".$p['rand']."' ).datetimepicker({
                   altField: '#showdate".$p['rand']."',
                   altFormat: 'yy-mm-dd',
                   altTimeFormat: 'HH:mm:ss',
@@ -2784,11 +2779,11 @@ class Html {
                   buttonImage: '../pics/calendar.png',
                   buttonImageOnly: true";
       if (!empty($p['min'])) {
-         $output .= ",minDate: '".self::convDate($p['min'])."'";
+         $js .= ",minDate: '".self::convDate($p['min'])."'";
       }
 
       if (!empty($p['max'])) {
-         $output .= ",maxDate: '".self::convDate($p['max'])."'";
+         $js .= ",maxDate: '".self::convDate($p['max'])."'";
       }
 
       switch ($_SESSION['glpidate_format']) {
@@ -2803,12 +2798,12 @@ class Html {
          default :
             $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
       }
-      $output .= ",dateFormat: '".$format."'";
-      $output .= ",timeFormat: 'HH:mm'";
+      $js .= ",dateFormat: '".$format."'";
+      $js .= ",timeFormat: 'HH:mm'";
 
-      $output .= "});";
+      $js .= "});";
 
-      $output .= "</script>\n";
+      $output .= Html::scriptBlock($js);
 
 
       if ($p['display']) {
@@ -3248,20 +3243,20 @@ class Html {
                                                      'width'   => 600,
                                                      'height'  => 300));
       }
-      $out .= "<script type='text/javascript' >\n";
-      $out .= Html::jsGetElementbyID($param['applyto']).".qtip({
+      $js = "";
+      $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
          content: {text: ".Html::jsGetElementbyID($param['contentid']);
          if (!$param['autoclose']) {
-            $out .=", title: {text: ' ',button: true}";
+            $js .=", title: {text: ' ',button: true}";
          }
-      $out .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}";
+      $js .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}";
       if (!$param['autoclose']) {
-         $out .= ",show: {
+         $js .= ",show: {
                         solo: true, // ...and hide all other tooltips...
                 }, hide: false,";
       }
-      $out .= "});";
-      $out .= "</script>";
+      $js .= "});";
+      $out .= Html::scriptBlock($js);
 
       if ($param['display']) {
          echo $out;
@@ -3319,8 +3314,6 @@ class Html {
                        "' value=\"".self::cleanInputText($params['value']).
                        "\" size='".$params['size']."'>\n";
 
-         $output .= "<script type='text/javascript' >\n";
-
          $parameters['itemtype'] = $item->getType();
          $parameters['field']    = $field;
 
@@ -3331,12 +3324,12 @@ class Html {
                   $parameters['user_restrict']    = $params['user'];
                }
 
-         $output .= "  $( '#text$name' ).autocomplete({
+         $js = "  $( '#text$name' ).autocomplete({
                         source: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php?".Toolbox::append_params($parameters,'&')."',
                         minLength: 3,
                         });";
 
-         $output .= "</script>";
+         $output .= Html::scriptBlock($js);
 
       } else {
          $output .=  "<input ".$params['option']." type='text' name='".$params['name']."'
@@ -3361,7 +3354,7 @@ class Html {
    static function initEditorSystem($name) {
       global $CFG_GLPI;
 
-      echo "<script language='javascript' type='text/javascript'>";
+      Html::scriptStart();
       echo "tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
@@ -3378,8 +3371,8 @@ class Html {
          theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
          theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
          theme_advanced_buttons3 : ''});";
-      echo "</script>";
 //         invalid_elements : 'script',
+      echo Html::scriptEnd();
    }
 
 
@@ -3944,14 +3937,12 @@ class Html {
          $width = $params["width"];
          unset($params["width"]);
       }
-      $out  = "<script type='text/javascript'>\n";
-      $out .= "$(document).ready(function() { $('#$id').select2({
+      $js = "$(document).ready(function() { $('#$id').select2({
                   width: '$width',
                   closeOnSelect: false,
                   quietMillis: 100,
                   minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count']."}); });";
-      $out .= "</script>\n";
-      return $out;
+      return Html::scriptBlock($js);
    }
 
 
@@ -3998,8 +3989,8 @@ class Html {
 
       $output = Html::hidden($name, array('value' => $value, 'id' => $field_id));
 
-      $output .= "<script type='text/javascript'>\n";
-      $output .= " $('#$field_id').select2({
+      $js = "";
+      $js .= " $('#$field_id').select2({
                         width: '$width',
                         minimumInputLength: 0,
                         quietMillis: 100,
@@ -4011,10 +4002,10 @@ class Html {
                            data: function (term, page) {
                               return { ";
       foreach ($params as $key => $val) {
-         $output .= "$key: ".json_encode($val).",\n";
+         $js .= "$key: ".json_encode($val).",\n";
       }
 
-      $output .= "               searchText: term,
+      $js .= "               searchText: term,
                                  page_limit: ".$CFG_GLPI['dropdown_max'].", // page size
                                  page: page, // page number
                               };
@@ -4040,10 +4031,10 @@ class Html {
                                  $.ajax('$url', {
                                  data: {";
          foreach ($params as $key => $val) {
-            $output .= "$key: ".json_encode($val).",\n";
+            $js .= "$key: ".json_encode($val).",\n";
          }
 
-         $output .= "            _one_id: id},
+         $js .= "            _one_id: id},
                                  dataType: 'json',
                                  }).done(function(data) { callback(data); });
                               }
@@ -4067,11 +4058,11 @@ class Html {
 
                      });";
       if (!empty($on_change)) {
-         $output .= " $('#$field_id').on('change', function(e) {".
+         $js .= " $('#$field_id').on('change', function(e) {".
                   stripslashes($on_change)."});";
       }
 
-      $output .= "</script>\n";
+      $output .= Html::scriptBlock($js);
       return $output;
    }
 
@@ -4161,7 +4152,6 @@ class Html {
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
 
-
    /**
    * Creates a submit button element. This method will generate `<input />` elements that
    * can be used to submit, and reset forms by using $options. Image submits can be created by supplying an
@@ -4246,6 +4236,46 @@ class Html {
       }
 
       return sprintf('%1$s="%2$s"', $key, Html::cleanInputText($value));
+   }
+   /**
+   * Wrap $script in a script tag.
+   *
+   * @param string $script The script to wrap
+   * @return string
+   */
+   static function scriptBlock($script) {
+      $script = "\n" . '//<![CDATA[' . "\n" . $script . "\n" . '//]]>' . "\n";
+
+      return sprintf('<script type="text/javascript">%s</script>', $script);
+   }
+
+   /**
+   * Begin a script block that captures output until HtmlHelper::scriptEnd()
+   * is called. This capturing block will capture all output between the methods
+   * and create a scriptBlock from it.
+   *
+   * ### Options
+   *
+   * - `safe` Whether the code block should contain a CDATA
+   * - `inline` Should the generated script tag be output inline or in `$scripts_for_layout`
+   *
+   * @param array $options Options for the code block.
+   * @return void
+   */
+   static function scriptStart() {
+      ob_start();
+      return null;
+   }
+
+   /**
+   * End a Buffered section of Javascript capturing.
+   * Generates a script tag inline
+   *
+   * @return mixed depending on the settings of scriptStart() either a script tag or null
+   */
+   static function scriptEnd() {
+      $buffer = ob_get_clean();
+      return Html::scriptBlock($buffer);
    }
 }
 ?>
