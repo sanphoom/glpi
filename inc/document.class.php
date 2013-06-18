@@ -681,7 +681,6 @@ class Document extends CommonDBTM {
 
       $showAllItemsOptions = array('itemtype_name'   => 'item_itemtype',
                                    'itemtypes'       => $CFG_GLPI["document_types"],
-                                   'entity_restrict' => -1,
                                    'checkright'      => true);
       switch ($input['action']) {
          case "add_document_item" :
