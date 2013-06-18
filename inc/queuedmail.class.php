@@ -513,14 +513,18 @@ class QueuedMail extends CommonDBTM {
       echo "<td>";
       if (!($item = getItemForItemtype($this->fields['itemtype']))) {
          echo NOT_AVAILABLE;
+         echo "</td>";
+         echo "<td>"._n('Item', 'Items', 1)."</td>";
+         echo "<td>";
+         echo NOT_AVAILABLE;
       } else {
          echo $item->getType();
          $item->getFromDB($this->fields['items_id']);
+         echo "</td>";
+         echo "<td>"._n('Item', 'Items', 1)."</td>";
+         echo "<td>";
+         echo $item->getLink();
       }
-      echo "</td>";
-      echo "<td>"._n('Item', 'Items', 1)."</td>";
-      echo "<td>";
-      echo $item->getLink();
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
