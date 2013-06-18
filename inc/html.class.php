@@ -926,93 +926,61 @@ class Html {
       echo "<meta http-equiv='Cache-Control' content='no-cache'>\n";
 
       //  CSS link
-      echo "<link rel='stylesheet' href='".
-             $CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
+      echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
 
       // surcharge CSS hack for IE
       echo "<!--[if lte IE 6]>" ;
-      echo "<link rel='stylesheet' href='".
-             $CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
+      echo Html::css($CFG_GLPI["root_doc"]."/css/styles_ie.css");
       echo "<![endif]-->";
-      echo "<link rel='stylesheet' type='text/css' media='print' href='".
-             $CFG_GLPI["root_doc"]."/css/print.css' >\n";
+      echo Html::css($CFG_GLPI["root_doc"]."/css/print.css", array('media' => 'print'));
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
       // AJAX library
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.js'></script>\n";
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.js'></script>\n";
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.js");
       } else {
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.min.js'></script>\n";
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.min.js'></script>\n";
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.9.0.min.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.9.2.custom.min.js");
       }
 
-      echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.9.2.custom.css' media='screen' >\n";
-      echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/themes/classic/style.css' media='screen' >\n";
-      echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css' media='screen' >\n";
-      echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css' media='screen' >\n";
-      echo "<link rel='stylesheet' type='text/css' href='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css' media='screen' >\n";
-      echo "<link rel='stylesheet' type='text/css' href='".
-            $CFG_GLPI["root_doc"]."/css/jquery-glpi.css' media='screen' >\n";
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.9.2.custom.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/themes/classic/style.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
 
-      echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"].
-            "/lib/tiny_mce/tiny_mce.js'></script>";
-
-      // Add default tooltip system for all titles
-// echo "<script type='text/javascript'>
-//          $(function() {
-//          $( document ).tooltip();
-//          });
-//          </script>";
-
-//       echo "<link rel='stylesheet' type='text/css' href='".
-//              $CFG_GLPI["root_doc"]."/css/ext-all-glpi.css' media='screen' >\n";
-
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
+            
       // PLugins jquery
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js'></script>\n";
-      echo "<script type='text/javascript' src='".
-             $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
-           "</script>\n";
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js");
 
       if (isset($_SESSION['glpilanguage'])) {
-         echo "<script type='text/javascript' src='".
-                $CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
-                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js'></script>\n";
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
+                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
          $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/localization/jquery-ui-timepicker-".
                       $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.$filename)) {
-            echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."$filename'></script>\n";
+            echo Html::script($CFG_GLPI["root_doc"].$filename);
          }
          $filename = "/lib/jqueryplugins/select2/select2_locale_".
                       $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.$filename)) {
-            echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."$filename'></script>\n";
+            echo Html::script($CFG_GLPI["root_doc"].$filename);
          }
       }
 
 
       // Some Javascript-Functions which we may need later
-      echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
+      echo Html::script($CFG_GLPI["root_doc"].'/script.js');
 
       // Add specific javascript for plugins
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
@@ -1020,12 +988,14 @@ class Html {
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
             if (is_array($files)) {
                foreach ($files as $file) {
-                  echo "<script type='text/javascript' src='".
-                         $CFG_GLPI["root_doc"]."/plugins/$plugin/$file'></script>\n";
+                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
+                     echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
+                  }
                }
             } else {
-               echo "<script type='text/javascript' src='".
-                      $CFG_GLPI["root_doc"]."/plugins/$plugin/$files'></script>\n";
+               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
+                  echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
+               }
             }
          }
       }
@@ -1036,12 +1006,14 @@ class Html {
          foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
             if (is_array($files)) {
                foreach ($files as $file) {
-                  echo "<link rel='stylesheet' href='".
-                        $CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen'>\n";
+                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
+                     echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
+                  }
                }
             } else {
-               echo "<link rel='stylesheet' href='".
-                     $CFG_GLPI["root_doc"]."/plugins/$plugin/$files' type='text/css' media='screen'>\n";
+               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
+                  echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
+               }
             }
          }
       }
@@ -4071,8 +4043,8 @@ class Html {
    *
    * This method will set an empty alt attribute if no alt and no title is not supplied
    *
-   * @param string $path Path to the image file
-   * @param array $options Array of HTML attributes
+   * @param $path Path to the image file
+   * @param $options Array of HTML attributes
    *        - `url` If provided an image link will be generated and the link will point at
    *               `$options['url']`.
    * @return string completed img tag
@@ -4106,9 +4078,9 @@ class Html {
    /**
    * Creates an HTML link.
    *
-   * @param string $title The content to be wrapped by <a> tags.
-   * @param string $url URL parameter
-   * @param array $options Array of HTML attributes.
+   * @param $title The content to be wrapped by <a> tags.
+   * @param $url URL parameter
+   * @param $options Array of HTML attributes.
    *     - `confirm` JavaScript confirmation message.
    *     - `confirmaction` optional action to do on confirmation
    * @return string An `<a />` element.
@@ -4143,8 +4115,8 @@ class Html {
    /**
    * Creates a hidden input field.
    *
-   * @param string $fieldName Name of a field
-   * @param array $options Array of HTML attributes.
+   * @param $fieldName Name of a field
+   * @param $options Array of HTML attributes.
    * @return string A generated hidden input
    */
    static function hidden($fieldName, $options = array()) {
@@ -4157,8 +4129,8 @@ class Html {
    * can be used to submit, and reset forms by using $options. Image submits can be created by supplying an
    * image option
    *
-   * @param string $caption
-   * @param array $options Array of options.
+   * @param $caption caption of the input
+   * @param $options Array of options.
    *     - image : will use a submit image input
    *     - `confirm` JavaScript confirmation message.
    *     - `confirmaction` optional action to do on confirmation
@@ -4206,10 +4178,10 @@ class Html {
    /**
    * Returns a space-delimited string with items of the $options array.
    *
-   * @param array $options Array of options.
+   * @param $options Array of options.
    * @return string Composed attributes.
    */
-   static function parseAttributes($options) {
+   static function parseAttributes($options = array()) {
       if (!is_string($options)) {
          $attributes = array();
 
@@ -4226,8 +4198,8 @@ class Html {
    /**
    * Formats an individual attribute, and returns the string value of the composed attribute.
    *
-   * @param string $key The name of the attribute to create
-   * @param string $value The value of the attribute to create.
+   * @param $key The name of the attribute to create
+   * @param $value The value of the attribute to create.
    * @return string The composed attribute.
    */
    static function formatAttribute($key, $value) {
@@ -4240,7 +4212,7 @@ class Html {
    /**
    * Wrap $script in a script tag.
    *
-   * @param string $script The script to wrap
+   * @param $script The script to wrap
    * @return string
    */
    static function scriptBlock($script) {
@@ -4277,5 +4249,29 @@ class Html {
       $buffer = ob_get_clean();
       return Html::scriptBlock($buffer);
    }
+   
+   /**
+   * Returns one or many `<script>` tags depending on the number of scripts given.
+   *
+   * @param $url String of javascript file to include
+   * @return String of `<script />` tags
+   */
+   static function script($url) {
+      return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
+   }
+   
+   /**
+   * Creates a link element for CSS stylesheets.
+   *
+   * @param $url String of javascript file to include
+   * @param array $options Array of HTML attributes. 
+   * @return string CSS <link /> tag
+   */
+   static function css($url, $options = array()) {
+      if (!isset($options['media'])) {
+         $options['media'] = 'screen';
+      }
+      return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,  Html::parseAttributes($options));
+   }   
 }
 ?>
