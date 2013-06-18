@@ -163,6 +163,7 @@ function update084to085() {
       $migration->migrationOneTable('glpi_profiles');
       $migration->dropTable('origin_glpi_profiles');
 
+      /// TODO : review change right system
       ProfileRight::addProfileRights(array('show_my_change', 'show_all_change', 'edit_all_change'));
 
       ProfileRight::updateProfileRightAsOtherRight('show_my_change', '1',
@@ -888,7 +889,73 @@ function update084to085() {
    // don't drop column right  - be done later
    //$migration->dropField("glpi_profilerights", 'right');
 
+   $migration->displayTitle('Update for mailqueue');
 
+   if (!TableExists('glpi_queuedmails')) {
+      $query = "CREATE TABLE `glpi_queuedmails` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `itemtype` varchar(100) default NULL,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `notificationtemplates_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `sent_try` int(11) NOT NULL DEFAULT '0',
+                  `create_time` datetime DEFAULT NULL,
+                  `send_time` datetime DEFAULT NULL,
+                  `sent_time` datetime DEFAULT NULL,
+                  `name` TEXT DEFAULT NULL,
+                  `sender` TEXT DEFAULT NULL,
+                  `sendername` TEXT DEFAULT NULL,
+                  `recipient` TEXT DEFAULT NULL,
+                  `recipientname` TEXT DEFAULT NULL,
+                  `replyto` TEXT DEFAULT NULL,
+                  `replytoname` TEXT DEFAULT NULL,
+                  `headers` TEXT DEFAULT NULL,
+                  `body_html` LONGTEXT DEFAULT NULL,
+                  `body_text` LONGTEXT DEFAULT NULL,
+                  `messageid` TEXT DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `item` (`itemtype`,`items_id`, `notificationtemplates_id`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `sent_try` (`sent_try`),
+                  KEY `create_time` (`create_time`),
+                  KEY `send_time` (`send_time`),
+                  KEY `sent_time` (`sent_time`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add glpi_queuedmails");
+      $ADDTODISPLAYPREF['QueueMail'] = array(16, 7, 20, 21, 22, 15);
+   }
+   
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='QueuedMail' AND `name`='queuedmail'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('QueuedMail', 'queuedmail', 60, 50, 1, 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for queuemail");
+   }
+   
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='QueuedMail' AND `name`='queuedmailclean'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('QueuedMail', 'queuedmailclean', 86400, 30, 1, 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for queuemail");
+   }
+   
+   if ($migration->addField("glpi_entities", "delay_send_emails", "integer", array('value' => -2))) {
+      $migration->migrationOneTable('glpi_entities');
+      // Set directly to root entity
+      $query = 'UPDATE `glpi_entities` SET `delay_send_emails` = 0 WHERE `id`=0;';
+      $DB->queryOrDie($query, "0.85 default value for delay_send_emails for root entity");
+   }
+   ProfileRight::addProfileRights(array('queuedmail'));
+
+   ProfileRight::updateProfileRightsAsOtherRights('queuedmail', 'notification');
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
 
@@ -1061,18 +1128,7 @@ function update084to085() {
    /// TODO add changetasktypes table as dropdown
    /// TODO review users linked to changetask
    /// TODO add display prefs
-/*
-   ProfileRight::addProfileRights(array('show_my_change',
-                                        'show_all_change',
-                                        'edit_all_change'));
 
-   ProfileRight::updateProfileRightAsOtherRight('show_my_change', '1',
-                                 "`name` = 'own_ticket' AND `right`='1'");
-   ProfileRight::updateProfileRightAsOtherRight('show_all_change', '1',
-                                 "`name` = 'show_all_ticket' AND `right`='1'");
-   ProfileRight::updateProfileRightAsOtherRight('edit_all_change', '1',
-                                 "`name` = 'update_ticket' AND `right`='1'");
-*/
    $migration->addField('glpi_profiles', 'change_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
 
