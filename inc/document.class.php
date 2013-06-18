@@ -679,10 +679,9 @@ class Document extends CommonDBTM {
    function showSpecificMassiveActionsParameters($input=array()) {
       global $CFG_GLPI;
 
-      // TODO: check, because 'entity_restrict' == 1 => only entity 1 can match ...
       $showAllItemsOptions = array('itemtype_name'   => 'item_itemtype',
                                    'itemtypes'       => $CFG_GLPI["document_types"],
-                                   'entity_restrict' => 1,
+                                   'entity_restrict' => -1,
                                    'checkright'      => true);
       switch ($input['action']) {
          case "add_document_item" :
