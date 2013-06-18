@@ -52,6 +52,10 @@ class QueuedMail extends CommonDBTM {
       return Session::getLoginUserID(false);
    }
 
+   static function getForbiddenActionsForMenu() {
+      return array('add');
+   }
+   
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
