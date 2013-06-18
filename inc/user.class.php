@@ -481,6 +481,12 @@ class User extends CommonDBTM {
          return false;
       }
 
+      if (!Auth::isValidLogin($input['name'])) {
+         Session::addMessageAfterRedirect(__('The login is not valid. Unable to add the user.'),
+                                          false, ERROR);
+         return false;
+      }
+      
       // Check if user does not exists
       $query = "SELECT *
                 FROM `".$this->getTable()."`
@@ -617,7 +623,7 @@ class User extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
-
+      
       //picture manually uploaded by user
       if (isset($_FILES['picture'])) {
          if (!count($_FILES['picture'])
@@ -2288,6 +2294,15 @@ class User extends CommonDBTM {
             Session::addMessageAfterRedirect(__('Unable to update login. A user already exists.'),
                                              false, ERROR);
          }
+
+         if (!Auth::isValidLogin($this->input['name'])) {
+            $this->fields['name'] = $this->oldvalues['name'];
+            unset($this->updates[$key]);
+            unset($this->oldvalues['name']);
+            Session::addMessageAfterRedirect(__('The login is not valid. Unable to update login.'),
+                                             false, ERROR);
+         }
+
       }
 
       /// Security system except for login update
