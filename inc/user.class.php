@@ -1893,7 +1893,7 @@ class User extends CommonDBTM {
             echo "<td colspan='2'>&nbsp;</td>";
          }
       } else {
-         echo "<td colspan='2'>---<input type='hidden' name='authtype' value='1'></td>";
+         echo "<td colspan='2'><input type='hidden' name='authtype' value='1'></td>";
       }
 
       echo "</tr>";
