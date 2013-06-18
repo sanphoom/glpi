@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Html Class
+ * Inpired from Html/FormHelper for several functions
 **/
 class Html {
 
@@ -558,8 +559,9 @@ class Html {
       echo "<div class='center'><table class='tab_glpi'><tr>";
       if ($ref_pic_link!="") {
          $ref_pic_text = self::clean($ref_pic_text);
-         echo "<td><img src='".$ref_pic_link."' alt=\"".$ref_pic_text."\" title=\"".$ref_pic_text."\">
-               </td>";
+         echo "<td>";
+         echo Html::image($ref_pic_link, array('alt' => $ref_pic_text));
+         echo "</td>";
       }
 
       if ($ref_title != "") {
@@ -719,7 +721,7 @@ class Html {
          }
       }
       echo "<div class='center'><br><br>";
-      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('Warning')."'";
+      echo Html::image($CFG_GLPI["root_doc"] . "/pics/warning.png", array('alt' => __('Warning')));
       echo "><br><br><span class='b'>$message</span></div>";
       self::nullFooter();
       exit ();
@@ -1239,9 +1241,10 @@ class Html {
 
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/central.php' accesskey='1' title=\"".
-             __s('Home')."\">";
-      echo "</a></div>";
+      echo Html::link('', $CFG_GLPI["root_doc"]."/front/central.php",
+                        array('accesskey' => '1',
+                              'title' => __('Home')));
+      echo "</div>";
 
       /// Prefs / Logout link
       echo "<div id='c_preference' >";
@@ -1457,27 +1460,27 @@ class Html {
          // Add item
          echo "<li>";
          if (isset($links['add'])) {
-            echo "<a href='".$CFG_GLPI["root_doc"].$links['add']."'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"". __s('Add')."\"
-                   alt=\"". __s('Add')."\"></a>";
-
+            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add.png",
+                              array('alt' => __('Add'),
+                                    'url' => $CFG_GLPI["root_doc"].$links['add']));
          } else {
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title=\"".__s('Add')."\"
-                   alt=\"". __s('Add')."\">";
+            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add_off.png",
+                              array('alt' => __('Add')));
          }
          echo "</li>";
 
          // Search Item
+         echo "<li>";
          if (isset($links['search'])) {
-            echo "<li><a href='".$CFG_GLPI["root_doc"].$links['search']."'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png'
-                   title=\"".__s('Search')."\" alt=\"".__s('Search')."\"></a></li>";
-
+            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search.png",
+                              array('alt' => __('Add'),
+                                    'url' => $CFG_GLPI["root_doc"].$links['search']));
          } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png'
-                       title=\"".__s('Search')."\" alt=\"".__s('Search')."\"></li>";
+            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search_off.png",
+                              array('alt' => __('Search')));
          }
-         // Links
+         echo "</li>";
+        // Links
          if (count($links) > 0) {
             foreach ($links as $key => $val) {
 
@@ -1487,32 +1490,41 @@ class Html {
                      break;
 
                   case "template" :
-                     echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                __s('Manage templates...')."\" alt=\"".__s('Manage templates...').
-                                "\" src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png'></a>".
-                          "</li>";
+                     echo "<li>";
+                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
+                                       array('alt' => __('Manage templates...'),
+                                             'url' => $CFG_GLPI["root_doc"].$val));
+                     echo "</li>";
                      break;
 
                   case "showall" :
-                     echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                __s('Show all')."\" alt=\"".__s('Show all')."\" src='".
-                                $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a></li>";
+                     echo "<li>";
+                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
+                                       array('alt' => __('Show all'),
+                                             'url' => $CFG_GLPI["root_doc"].$val));
+                     echo "</li>";
                      break;
 
                   case "summary" :
-                     echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                __s('Summary')."\" alt=\"".__s('Summary')."\" src='".
-                                $CFG_GLPI["root_doc"]."/pics/menu_show.png'></a></li>";
+                     echo "<li>";
+                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
+                                       array('alt' => __('Summary'),
+                                             'url' => $CFG_GLPI["root_doc"].$val));
+                     echo "</li>";
                      break;
 
                   case "config" :
-                     echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'><img title=\"".
-                                __s('Setup')."\" alt=\"".__s('Setup')."\" src='".
-                                $CFG_GLPI["root_doc"]."/pics/menu_config.png'></a></li>";
+                     echo "<li>";
+                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_config.png",
+                                       array('alt' => __('Setup'),
+                                             'url' => $CFG_GLPI["root_doc"].$val));
+                     echo "</li>";
                      break;
 
                   default :
-                     echo "<li><a href='".$CFG_GLPI["root_doc"].$val."'>".$key."</a></li>";
+                     echo "<li>";
+                     echo Html::link($key, $CFG_GLPI["root_doc"].$val);                     
+                     echo "</li>";
                      break;
                }
             }
@@ -4046,6 +4058,106 @@ class Html {
       return $output;
    }
 
+   /**
+   * Creates a formatted IMG element.
+   *
+   * This method will set an empty alt attribute if no alt and no title is not supplied
+   *
+   * @param string $path Path to the image file
+   * @param array $options Array of HTML attributes
+   *        - `url` If provided an image link will be generated and the link will point at
+   *               `$options['url']`.
+   * @return string completed img tag
+   */
+   static function image($path, $options = array()) {
+      if (!isset($options['title'])) {
+         $options['title'] = '';
+      }
+   
+      if (!isset($options['alt'])) {
+         $options['alt'] = $options['title'];
+      }
 
+      if (empty($options['title']) && !empty($options['alt'])) {
+         $options['title'] = $options['alt'];
+      }
+
+      $url = false;
+      if (!empty($options['url'])) {
+            $url = $options['url'];
+            unset($options['url']);
+      }
+
+      $image = sprintf('<img src="%1$s" %2$s/>', $path, Html::parseAttributes($options));
+
+      if ($url) {
+            return Html::link($image, $url);
+      }
+      return $image;
+   }
+   
+   /**
+   * Creates an HTML link.
+   *
+   * @param string $title The content to be wrapped by <a> tags.
+   * @param string $url URL parameter
+   * @param array $options Array of HTML attributes.
+   *     - `confirm` JavaScript confirmation message.
+   *     - `confirmaction` optional action to do on confirmation
+   * @return string An `<a />` element.
+   */
+   static function link($title, $url, $options = array()) {
+
+      if (isset($options['confirm'])) {
+         if (!empty($options['confirm'])) {
+            $confirmMessage = $options['confirm'];
+            $confirmAction = '';
+            if (isset($options['confirmaction'])) {
+               if (!empty($options['confirmaction'])) {
+                  $confirmAction = $options['confirmaction'];
+               }
+               unset($options['confirmaction']);
+            }
+            $options['onclick'] = Html::addConfirmationOnAction($options['confirm'], $confirmAction);
+         }
+         unset($options['confirm']);
+      }
+      return sprintf('<a href="%1$s" %2$s>%3$s</a>', $url, Html::parseAttributes($options), $title);
+   }
+
+   /**
+   * Returns a space-delimited string with items of the $options array.
+   *
+   * @param array $options Array of options.
+   * @return string Composed attributes.
+   */
+   static function parseAttributes($options) {
+      if (!is_string($options)) {
+         $attributes = array();
+
+         foreach ($options as $key => $value) {
+            $attributes[] = Html::formatAttribute($key, $value);
+         }
+         $out = implode(' ', $attributes);
+      } else {
+         $out = $options;
+      }
+      return $out;
+   }
+   
+   /**
+   * Formats an individual attribute, and returns the string value of the composed attribute.
+   *
+   * @param string $key The name of the attribute to create
+   * @param string $value The value of the attribute to create.
+   * @return string The composed attribute.
+   */
+   static function formatAttribute($key, $value) {
+      if (is_array($value)) {
+            $value = implode(' ' , $value);
+      }
+
+      return sprintf('%s="%s"', $key, Html::cleanInputText($value));
+   }
 }
 ?>
