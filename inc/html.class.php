@@ -2408,16 +2408,12 @@ class Html {
       $p['rand']              = '';
       $p['container']         = '';
       $p['display_arrow']     = true;
-      $p['title']             = '';
+      $p['title']             = _n('Action', 'Actions', 2);
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
             $p[$key] = $val;
          }
-      }
-
-      if (empty($p['title'])) {
-         $p['title'] = _n('Action', 'Actions', 2);
       }
 
       $p['extraparams']['itemtype'] = $itemtype;
