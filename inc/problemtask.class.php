@@ -97,7 +97,21 @@ class ProblemTask extends CommonITILTask {
     * @return boolean
    **/
    function canCreateItem() {
-      return parent::canUpdateITILItem();
+
+      if (!parent::canReadITILItem()) {
+         return false;
+      }
+
+      $problem = new Problem();
+      if ($problem->getFromDB($this->fields['problems_id'])) {
+         return (Session::haveRight('problem', UPDATE)
+                 || (Session::haveRight('problem', Problem::READMY)
+                     && ($problem->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+                         || (isset($_SESSION["glpigroups"])
+                             && $problem->haveAGroup(CommonITILActor::ASSIGN,
+                                                     $_SESSION['glpigroups'])))));
+      }
+      return false;
    }
 
 
@@ -107,7 +121,17 @@ class ProblemTask extends CommonITILTask {
     * @return boolean
    **/
    function canUpdateItem() {
-      return parent::canUpdateITILItem();
+
+      if (!parent::canReadITILItem()) {
+         return false;
+      }
+
+      if (($this->fields["users_id"] != Session::getLoginUserID())
+          && !Session::haveRight('problem', UPDATE)) {
+         return false;
+      }
+
+      return true;
    }
 
 
