@@ -520,7 +520,7 @@ class QueuedMail extends CommonDBTM {
       echo "</td>";
       echo "<td>"._n('Item', 'Items', 1)."</td>";
       echo "<td>";
-      echo $item->getNameID();
+      echo $item->getLink();
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
