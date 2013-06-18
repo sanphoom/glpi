@@ -420,10 +420,16 @@ class Item_Devices extends CommonDBRelation {
                                       'fixed'            => false,
                                       'display_arrow'    => false,
                                       'specific_actions' => array('unaffect' => __('Dissociate'),
-                                                                  'purge_device' => _x('button', 'Delete permanently')),
-                                      'title'            => __('Actions for all devices'));
+                                                                  'purge_device' => _x('button', 'Delete permanently')));
+         if ($is_device) {
+            $class = 'Item_'.$item->getType();
+            $massiveactionparams['specific_actions']['update_device'] = _x('button', 'Update');
+         } else {
+            $class = __CLASS__;
+            $massiveactionparams['title'] = __('Actions for all devices');
+         }
          $content = array(array('function'   => 'Html::showMassiveActions',
-                                'parameters' => array(__CLASS__, $massiveactionparams)));
+                                'parameters' => array($class, $massiveactionparams)));
          $delete_column = $table->addHeader('delete one', $content);
          $delete_column->setHTMLClass('center');
       }
@@ -568,15 +574,19 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($options['canedit']) {
-         $massiveactionparams = array('container'        => 'form_device_action'.$options['rand'],
-                                      'fixed'            => false,
-                                      'display_arrow'    => false,
-                                      'specific_actions' => array('update_device' => _x('button', 'Update'),
-                                                                  'unaffect' => __('Dissociate'),
-                                                                  'purge_device' => _x('button', 'Delete permanently')),
-                                      'title'            => __('Actions for this kind of device'));
-         $content = array(array('function'   => 'Html::showMassiveActions',
-                                'parameters' => array(static::getType(), $massiveactionparams)));
+         if ($item instanceof CommonDevice) {
+            $content = '&nbsp;';
+         } else {
+            $massiveactionparams = array('container'        => 'form_device_action'.$options['rand'],
+                                         'fixed'            => false,
+                                         'display_arrow'    => false,
+                                         'specific_actions' => array('update_device' => _x('button', 'Update'),
+                                                                     'unaffect' => __('Dissociate'),
+                                                                     'purge_device' => _x('button', 'Delete permanently')),
+                                         'title'            => __('Actions for this kind of device'));
+            $content = array(array('function'   => 'Html::showMassiveActions',
+                                   'parameters' => array(static::getType(), $massiveactionparams)));
+         }
          $delete_one  = $table_group->addHeader('one', $content, $delete_column, $previous_column);
       }
 
@@ -657,7 +667,12 @@ class Item_Devices extends CommonDBRelation {
             if (isset($_SESSION['glpimassiveactionselected'][$peer_type][$link['id']])) {
                $sel = "checked";
             }
-            $cell_value   = "<input type='checkbox' name='item[" . $peer_type . "][" .
+            if ($is_device) {
+               $typename_field = static::getDeviceType();
+            } else {
+               $typename_field = $peer_type;
+            }
+            $cell_value   = "<input type='checkbox' name='item[" . $typename_field . "][" .
                             $link['id'] . "]' value='1' id='massaction_item_".mt_rand()."' $sel>";
             $current_row->addCell($delete_one, $cell_value, $previous_cell);
          }
