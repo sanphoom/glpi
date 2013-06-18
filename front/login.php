@@ -30,7 +30,7 @@
 /** @file
 * @brief
 */
-include ('./inc/includes.php');
+include ('../inc/includes.php');
 
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
@@ -92,7 +92,7 @@ if ($auth->Login($_POST['login_name'], $_POST['login_password'],
    Html::nullHeader("Login", $CFG_GLPI["root_doc"] . '/index.php');
    echo '<div class="center b">' . $auth->getErr() . '<br><br>';
    // Logout whit noAUto to manage auto_login with errors
-   echo '<a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1'.
+   echo '<a href="' . $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1'.
          str_replace("?","&",$REDIRECT).'">' .__('Log in again') . '</a></div>';
    Html::nullFooter();
    exit();

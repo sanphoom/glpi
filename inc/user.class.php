@@ -2293,7 +2293,7 @@ class User extends CommonDBTM {
       /// Security system except for login update
       if (Session::getLoginUserID()
           && !Session::haveRight("user", UPDATE)
-          && !strpos($_SERVER['PHP_SELF'], "login.php")) {
+          && !strpos($_SERVER['PHP_SELF'], "/front/login.php")) {
 
          if (Session::getLoginUserID() === $this->input['id']) {
             if (isset($this->fields["authtype"])) {

@@ -1247,7 +1247,7 @@ class Html {
       echo "<div id='c_preference' >";
       echo "<ul>";
 
-      echo "<li id='deconnexion'><a href='".$CFG_GLPI["root_doc"]."/logout.php";
+      echo "<li id='deconnexion'><a href='".$CFG_GLPI["root_doc"]."/front/logout.php";
 
       /// logout witout noAuto login for extauth
       if (isset($_SESSION['glpiextauth']) && $_SESSION['glpiextauth']) {
@@ -1825,7 +1825,7 @@ class Html {
 
       // Les préférences + lien déconnexion
       echo "<div id='c_preference' >";
-      echo "<ul><li id='deconnexion'><a href='".$CFG_GLPI["root_doc"]."/logout.php' title=\"".
+      echo "<ul><li id='deconnexion'><a href='".$CFG_GLPI["root_doc"]."/front/logout.php' title=\"".
                                       __s('Logout')."\">".__('Logout')."</a>";
 
       // check user id : header used for display messages when session logout

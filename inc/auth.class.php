@@ -973,7 +973,7 @@ class Auth extends CommonGLPI {
           && strstr($_SERVER['SSL_CLIENT_S_DN'], $CFG_GLPI["x509_email_field"])) {
 
          if ($redirect) {
-            Html::redirect("login.php".$redir_string);
+            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
          } else {
             return self::X509;
          }
@@ -987,7 +987,7 @@ class Auth extends CommonGLPI {
               /*|| (isset($_REQUEST[$ssovariable]) && !empty($_REQUEST[$ssovariable]))*/)) {
 
          if ($redirect) {
-            Html::redirect("login.php".$redir_string);
+            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
          } else {
             return self::EXTERNAL;
          }
@@ -996,7 +996,7 @@ class Auth extends CommonGLPI {
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
          if ($redirect) {
-            Html::redirect("login.php".$redir_string);
+            Html::redirect($CFG_GLPI["root_doc"]."/front/login.php".$redir_string);
          } else {
             return self::CAS;
          }

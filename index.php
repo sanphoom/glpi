@@ -93,7 +93,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "</div>";
 
    echo "<div id='boxlogin'>";
-   echo "<form action='".$CFG_GLPI["root_doc"]."/login.php' method='post'>";
+   echo "<form action='".$CFG_GLPI["root_doc"]."/front/login.php' method='post'>";
 
    // Other CAS
    if (isset($_GET["noAUTO"])) {
