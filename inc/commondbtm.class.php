@@ -1967,10 +1967,10 @@ class CommonDBTM extends CommonGLPI {
          echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
          if (($ID <= 0) || ($params['withtemplate'] == 2)) {
-            echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+            echo Html::submit(_x('button','Add'), array('name' => 'add'));
          } else {
             //TRANS : means update / actualize
-            echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+            echo Html::submit(_x('button','Save'), array('name' => 'update'));
          }
 
       } else {
@@ -1984,17 +1984,17 @@ class CommonDBTM extends CommonGLPI {
             if ($params['canedit']
                 && $this->can($ID, UPDATE)) {
                echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
-                      class='submit'>";
+               echo Html::submit(_x('button','Save'), array('name' => 'update'));
                echo "</td></tr><tr class='tab_bg_2'>\n";
             }
             if ($this->isDeleted()
                 && $this->can($ID, PURGE)) {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-               echo "<input type='submit' name='restore' value=\""._sx('button','Restore')."\"
-                      class='submit'>";
-               echo "<span class='very_small_space'><input type='submit' name='purge' value=\"".
-                      _sx('button', 'Delete permanently')."\" class='submit'></span>";
+               echo Html::submit(_x('button','Restore'), array('name' => 'restore'));
+
+               echo "<span class='very_small_space'>";
+               echo Html::submit(_x('button','Delete permanently'), array('name' => 'purge'));
+               echo "</span>";
 
             } else {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
@@ -2002,24 +2002,22 @@ class CommonDBTM extends CommonGLPI {
                if (!$this->maybeDeleted()
                    || $this->useDeletedToLockIfDynamic()) {
                   if ($this->can($ID, PURGE)) {
-                     echo "<input type='submit' name='purge' value=\""._sx('button',
-                                                                           'Delete permanently')."\"
-                            class='submit' ".
-                            Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
+                     echo Html::submit(_x('button','Delete permanently'),
+                                          array('name'    => 'purge',
+                                                'confirm' => __('Confirm the final deletion?')));
                   }
                } else if (!$this->isDeleted()
                           && $this->can($ID, DELETE)) {
-                     echo "<input type='submit' name='delete' value='"._sx('button',
-                                                                           'Put in dustbin')."'
-                            class='submit'>";
+                  echo Html::submit(_x('button','Put in dustbin'),
+                                       array('name' => 'delete'));
                }
             }
 
          } else {
             if ($this->can($ID, UPDATE)) {
                echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
-                      class='submit'>";
+               echo Html::submit(_x('button','Save'),
+                                    array('name' => 'update'));
             }
          }
          if ($this->isField('date_mod')) {

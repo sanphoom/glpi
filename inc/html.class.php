@@ -1304,8 +1304,8 @@ class Html {
       if ($CFG_GLPI['allow_search_global']) {
          echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
          echo "<div id='boutonRecherche'>";
-         echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/search.png' value='OK'
-                title=\"". __s('Post')."\"  alt=\"".__s('Post')."\"></div>";
+         echo Html::submit(__('Post'), array('image' => $CFG_GLPI["root_doc"]."/pics/search.png"));
+         echo "</div>";
          echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch'
                                          value='". __s('Search')."' onfocus=\"this.value='';\">";
          echo "</div>";
@@ -2256,6 +2256,7 @@ class Html {
       if (count($actions)) {
          foreach ($actions as $name => $label) {
             if (!empty($name)) {
+            
                echo "<input type='submit' name='$name' ";
                if (is_array($confirm) && isset($confirm[$name])) {
                   echo self::addConfirmationOnAction($confirm[$name]);
@@ -4104,8 +4105,7 @@ class Html {
             unset($options['url']);
       }
 
-      $image = sprintf('<img src="%1$s" %2$s/>', $path, Html::parseAttributes($options));
-
+      $image = sprintf('<img src="%1$s" %2$s>', $path, Html::parseAttributes($options));
       if ($url) {
             return Html::link($image, $url);
       }
@@ -4138,7 +4138,14 @@ class Html {
          }
          unset($options['confirm']);
       }
-      return sprintf('<a href="%1$s" %2$s>%3$s</a>', $url, Html::parseAttributes($options), $title);
+      // Do not escape title if it is an image
+      if (!preg_match('/^<img.*/', $title)) {
+         $title = Html::cleanInputText($title);
+      }
+
+      
+      return sprintf('<a href="%1$s" %2$s>%3$s</a>', Html::cleanInputText($url),
+                     Html::parseAttributes($options), $title);
    }
 
 
@@ -4150,7 +4157,60 @@ class Html {
    * @return string A generated hidden input
    */
    static function hidden($fieldName, $options = array()) {
-      return sprintf('<input type="hidden" name="%s" %s/>', $fieldName, Html::parseAttributes($options));
+      return sprintf('<input type="hidden" name="%1$s" %2$s>',
+                     Html::cleanInputText($fieldName), Html::parseAttributes($options));
+   }
+
+
+   /**
+   * Creates a submit button element. This method will generate `<input />` elements that
+   * can be used to submit, and reset forms by using $options. Image submits can be created by supplying an
+   * image option
+   *
+   * @param string $caption
+   * @param array $options Array of options.
+   *     - image : will use a submit image input
+   *     - `confirm` JavaScript confirmation message.
+   *     - `confirmaction` optional action to do on confirmation
+   * @return string A HTML submit button
+   */
+   static function submit($caption, $options = array()) {
+      $image = false;
+      if (isset($options['image'])) {
+         if (preg_match('/\.(jpg|jpe|jpeg|gif|png|ico)$/', $options['image'])) {
+            $image = $options['image'];
+         }
+         unset($options['image']);
+      }
+      
+      // Set default class to submit
+      if (!isset($options['class'])) {
+         $options['class'] = 'submit';
+      }
+      if (isset($options['confirm'])) {
+         if (!empty($options['confirm'])) {
+            $confirmMessage = $options['confirm'];
+            $confirmAction = '';
+            if (isset($options['confirmaction'])) {
+               if (!empty($options['confirmaction'])) {
+                  $confirmAction = $options['confirmaction'];
+               }
+               unset($options['confirmaction']);
+            }
+            $options['onclick'] = Html::getConfirmationOnActionScript($options['confirm'], $confirmAction);
+         }
+         unset($options['confirm']);
+      }
+
+      if ($image) {
+         $options['title'] = $caption;
+         $options['alt']   = $caption;
+         return sprintf('<input type="image" src="%s" %s>',
+               Html::cleanInputText($image), Html::parseAttributes($options));
+      } else {
+         return sprintf('<input type="submit" value="%s" %s>',
+               Html::cleanInputText($caption), Html::parseAttributes($options));
+      }
    }
 
    /**
@@ -4185,7 +4245,7 @@ class Html {
             $value = implode(' ' , $value);
       }
 
-      return sprintf('%s="%s"', $key, Html::cleanInputText($value));
+      return sprintf('%1$s="%2$s"', $key, Html::cleanInputText($value));
    }
 }
 ?>
