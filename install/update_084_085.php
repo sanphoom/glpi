@@ -886,7 +886,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete edit_all_problem right");
 
    // don't drop column right  - be done later
-
+   //$migration->dropField("glpi_profilerights", 'right');
 
 
 
