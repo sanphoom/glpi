@@ -59,6 +59,165 @@ class Item_Devices extends CommonDBRelation {
    static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
 
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+
+
+   function doSpecificMassiveActions($input=array()) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      foreach ($input["item"] as $itemtype => $items) {
+         $itemtype = 'Item_'.$itemtype;
+         $link = new $itemtype();
+         if ($link instanceof $input['itemtype']) {
+            foreach ($items as $key => $val) {
+               if ($val == 1) {
+                  switch ($input['action']) {
+                     case 'unaffect' :
+                     case 'update_device':
+                        if ($link->can($key,'w')) {
+                           $update_input = array('id' => $key);
+                           if ($input['action'] == 'unaffect') {
+                              $update_input['itemtype'] = '';
+                              $update_input['items_id'] = 0;
+                           } else { // update_device
+                              $update_input[$input['field']] = $input[$input['field']];
+                           }
+                           if ($link->update($update_input)) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                           }
+                        } else {
+                           $res['noright']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                        }
+                        break;
+                     case 'purge_device' :
+                        if ($link->can($key,'d')) {
+                           $force = 1;
+                           // Only mark deletion for
+                           if ($link->maybeDeleted()
+                               && $link->useDeletedToLockIfDynamic()
+                               && $link->isDynamic()) {
+                              $force = 0;
+                           }
+                           if ($link->delete(array("id" => $key), $force)) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                           }
+                        } else {
+                           $res['noright']++;
+                           $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                        }
+                        break;
+                  }
+               }
+            }
+         }
+      }
+      return $res;
+   }
+
+
+   function getSearchOptions() {
+
+      $tab = parent::getSearchOptions();
+
+      foreach (static::getSpecificities() as $field => $attributs) {
+         $tab[] = array('table'         => $this->getTable(),
+                        'field'         => $field,
+                        'name'          => $attributs['long name'],
+                        'massiveaction' => true);
+      }
+
+      return $tab;
+   }
+
+
+   function showSpecificMassiveActionsParameters($input=array()) {
+      global $CFG_GLPI;
+
+      switch ($input['action']) {
+         case 'update_device':
+            // Specific options for update fields
+            if (isset($input['options'])) {
+               $input['options'] = unserialize(stripslashes($input['options']));
+            } else {
+               $input['options'] = array();
+            }
+            $group          = "";
+            $show_all       = true;
+            $show_infocoms  = true;
+
+            $searchopt = Search::getCleanedOptions($input["itemtype"], 'w');
+
+            $values = array(0 => Dropdown::EMPTY_VALUE);
+
+            foreach ($searchopt as $key => $val) {
+               if (!is_array($val)) {
+                  $group = $val;
+               } else {
+                  // No id and no entities_id massive action and no first item
+                  if (($val["field"] != 'id')
+                      && ($key != 1)
+                     // Permit entities_id is explicitly activate
+                      && (($val["linkfield"] != 'entities_id')
+                          || (isset($val['massiveaction']) && $val['massiveaction']))) {
+
+                     if (!isset($val['massiveaction']) || $val['massiveaction']) {
+
+                        if ($show_all) {
+                           $values[$group][$key] = $val["name"];
+                        } else {
+                           // Do not show infocom items
+                           if (($show_infocoms
+                                && Search::isInfocomOption($input["itemtype"], $key))
+                               || (!$show_infocoms
+                                   && !Search::isInfocomOption($input["itemtype"], $key))) {
+                              $values[$group][$key] = $val["name"];
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+
+            $rand = Dropdown::showFromArray('id_field', $values);
+
+            $paramsmassaction = array('id_field' => '__VALUE__',
+                                      'itemtype' => $input["itemtype"],
+                                      'options'  => $input['options']);
+
+            foreach ($input as $key => $val) {
+               if (preg_match("/extra_/",$key,$regs)) {
+                  $paramsmassaction[$key] = $val;
+               }
+            }
+            Ajax::updateItemOnSelectEvent("dropdown_id_field$rand", "show_massiveaction_field",
+                                          $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
+                                          $paramsmassaction);
+
+            echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
+            return true;
+            break;
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+      }
+      return false;
+   }
+
+
    /**
     * Get the specificities of the given device. For instance, the
     * serial number, the size of the memory, the frequency of the CPUs ...
@@ -257,13 +416,20 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($canedit) {
-         $content       = "<input type='submit' class='submit' name='purge' value='".
-                            _sx('button', 'Delete permanently')."'>";
+         $massiveactionparams = array('container'        => 'form_device_action'.$rand,
+                                      'fixed'            => false,
+                                      'display_arrow'    => false,
+                                      'specific_actions' => array('unaffect' => __('Dissociate'),
+                                                                  'purge_device' => _x('button', 'Delete permanently')),
+                                      'title'            => __('Actions for all devices'));
+         $content = array(array('function'   => 'Html::showMassiveActions',
+                                'parameters' => array(__CLASS__, $massiveactionparams)));
          $delete_column = $table->addHeader('delete one', $content);
          $delete_column->setHTMLClass('center');
       }
 
-      $table_options = array('canedit' => $canedit);
+      $table_options = array('canedit' => $canedit,
+                             'rand'    => $rand);
 
       if ($is_device) {
          foreach (array_merge(array(''), self::getConcernedItems()) as $itemtype) {
@@ -402,7 +568,16 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($options['canedit']) {
-         $delete_one  = $table_group->addHeader('one', '&nbsp;', $delete_column, $previous_column);
+         $massiveactionparams = array('container'        => 'form_device_action'.$options['rand'],
+                                      'fixed'            => false,
+                                      'display_arrow'    => false,
+                                      'specific_actions' => array('update_device' => _x('button', 'Update'),
+                                                                  'unaffect' => __('Dissociate'),
+                                                                  'purge_device' => _x('button', 'Delete permanently')),
+                                      'title'            => __('Actions for this kind of device'));
+         $content = array(array('function'   => 'Html::showMassiveActions',
+                                'parameters' => array(static::getType(), $massiveactionparams)));
+         $delete_one  = $table_group->addHeader('one', $content, $delete_column, $previous_column);
       }
 
       if ($is_device) {
@@ -478,8 +653,12 @@ class Item_Devices extends CommonDBRelation {
          }
 
          if ($options['canedit']) {
-            $cell_value   = "<input type='checkbox' name='remove_" . $peer_type . "_" .
-                              $link['id'] . "' value='1'>";
+            $sel = "";
+            if (isset($_SESSION['glpimassiveactionselected'][$peer_type][$link['id']])) {
+               $sel = "checked";
+            }
+            $cell_value   = "<input type='checkbox' name='item[" . $peer_type . "][" .
+                            $link['id'] . "]' value='1' id='massaction_item_".mt_rand()."' $sel>";
             $current_row->addCell($delete_one, $cell_value, $previous_cell);
          }
       }
@@ -654,6 +833,15 @@ class Item_Devices extends CommonDBRelation {
          }
       }
 
+   }
+
+
+   static function affectItem_Device($item_devices_id, $items_id, $itemtype) {
+
+      $link = new static();
+      return $link->update(array('id'       => $item_devices_id,
+                                 'items_id' => $items_id,
+                                 'itemtype' => $itemtype));
    }
 
 

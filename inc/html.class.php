@@ -2407,12 +2407,19 @@ class Html {
       $p['confirm']           = '';
       $p['rand']              = '';
       $p['container']         = '';
+      $p['display_arrow']     = true;
+      $p['title']             = '';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
             $p[$key] = $val;
          }
       }
+
+      if (empty($p['title'])) {
+         $p['title'] = _n('Action', 'Actions', 2);
+      }
+
       $p['extraparams']['itemtype'] = $itemtype;
       $url                          = $CFG_GLPI['root_doc']."/ajax/massiveaction.php";
       if ($p['container']) {
@@ -2467,15 +2474,17 @@ class Html {
 
             Ajax::createModalWindow('massiveaction_window'.$identifier,
                                     $url,
-                                    array('title'       => _n('Action', 'Actions', 2),
+                                    array('title'       => $p['title'],
                                           'container'   => 'massiveactioncontent'.$identifier,
                                           'extraparams' => $p['extraparams'],
                                           'width'       => $p['width'],
                                           'height'      => $p['height'],));
          }
          echo "<table class='tab_glpi' width='$width'><tr>";
-         echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
-                ($p['ontop']?'-top':'').".png' alt=''></td>";
+         if ($p['display_arrow']) {
+            echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
+                   ($p['ontop']?'-top':'').".png' alt=''></td>";
+         }
          echo "<td width='100%' class='left'>";
          echo "<a class='vsubmit' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
@@ -2483,8 +2492,8 @@ class Html {
          }  else {
             echo "onclick='massiveaction_window$identifier.dialog(\"open\");'";
          }
-         echo "href='#modal_massaction_content$identifier' title=\""._sn('Action', 'Actions',2)."\">";
-         echo _n('Action', 'Actions',2)."</a>";
+         echo "href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
+         echo $p['title']."</a>";
          echo "</td>";
 
          echo "</tr></table>";
