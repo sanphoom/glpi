@@ -253,7 +253,8 @@ class Printer  extends CommonDBTM {
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
-      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id']);
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
+                                                  (!empty($this->input['keep_devices'])));
    }
 
 

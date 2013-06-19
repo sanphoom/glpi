@@ -378,7 +378,8 @@ class Computer extends CommonDBTM {
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete('Computer', $this->fields['id']);
 
-      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id']);
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
+                                                  (!empty($this->input['keep_devices'])));
 
       $disk = new ComputerDisk();
       $disk->cleanDBonItemDelete('Computer', $this->fields['id']);

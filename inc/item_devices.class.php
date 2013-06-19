@@ -864,13 +864,26 @@ class Item_Devices extends CommonDBRelation {
     * @param $itemtype
     * @param $items_id
    **/
-   static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id) {
+   static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect) {
+      global $DB;
 
-      // TODO: do we remove the item_device or unaffect it ?
       foreach (self::getItemAffinities($itemtype) as $link_type) {
          $link = getItemForItemtype($link_type);
          if ($link) {
-            $link->cleanDBOnItemDelete($itemtype, $items_id);
+            if ($unaffect) {
+               $query = "SELECT `id`
+                         FROM `".$link->getTable()."`
+                         WHERE `itemtype` = '$itemtype'
+                           AND `items_id` = '$items_id'";
+               $input = array('items_id' => 0,
+                              'itemtype' => '');
+               foreach ($DB->request($query) as $data) {
+                  $input['id'] = $data['id'];
+                  $link->update($input);
+               }
+            } else {
+               $link->cleanDBOnItemDelete($itemtype, $items_id);
+            }
          }
       }
    }

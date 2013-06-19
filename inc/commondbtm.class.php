@@ -3210,8 +3210,9 @@ class CommonDBTM extends CommonGLPI {
             }
             break;
 
-         case "purge" :
-            foreach ($input["item"] as $key => $val) {
+         case 'purge_item_but_devices':
+         case 'purge' :
+             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
                   if ($this->can($key,'d')) {
                      $force = 1;
@@ -3221,7 +3222,11 @@ class CommonDBTM extends CommonGLPI {
                          && $this->isDynamic()) {
                         $force = 0;
                      }
-                     if ($this->delete(array("id" => $key), $force)) {
+                     $delete_array = array('id' => $key);
+                     if ($input['action'] == 'purge_item_but_devices') {
+                        $delete_array['keep_devices'] = true;
+                     }
+                     if ($this->delete($delete_array, $force)) {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
@@ -3486,7 +3491,14 @@ class CommonDBTM extends CommonGLPI {
 
       if ($is_deleted) {
          if ($canpurge) {
-            $actions['purge']   = _x('button', 'Delete permanently');
+            if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
+               $actions['purge_item_but_devices'] = _x('button',
+                                                       'Delete permanently but keep devices');
+               $actions['purge']                  = _x('button',
+                                                       'Delete permanently and remove devices');
+            } else {
+               $actions['purge']   = _x('button', 'Delete permanently');
+            }
          }
 
          if ( $canpurge) {
