@@ -297,8 +297,14 @@ class DropdownTranslation extends CommonDBChild {
          $completenames_id = self::getTranslationID($son, $input['itemtype'],
                                                     'completename', $input['language']);
          if ($son != $item->getID()) {
+            //get son value
+            $son_item = new $input['itemtype']();
+            $son_item->getFromDB($son);
+
+            //generate completename for son
             $completename .= " > ".self::getTranslatedValue($son, $input['itemtype'], 'name',
-                                                            $input['language']);
+                                                            $input['language'], 
+                                                            $son_item->fields['name']);
             unset($tmp['id']);
             $tmp                      = array();
             $tmp['items_id']          = $son;
