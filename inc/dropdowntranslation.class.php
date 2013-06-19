@@ -157,9 +157,6 @@ class DropdownTranslation extends CommonDBChild {
          $translation = new self();
          $translation->generateCompletename($this->fields, false);
       }
-       $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']]
-                [$this->fields['items_id']][$this->fields['field']]
-                = $this->fields['value'];
    }
 
 
@@ -170,9 +167,8 @@ class DropdownTranslation extends CommonDBChild {
          $translation->generateCompletename($this->fields, true);
       }
       // Add to session
-       $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']]
-                [$this->fields['items_id']][$this->fields['field']]
-                = $this->fields['value'];
+      $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']][$this->fields['field']]
+            = $this->fields['field'];
    }
 
 
@@ -297,14 +293,8 @@ class DropdownTranslation extends CommonDBChild {
          $completenames_id = self::getTranslationID($son, $input['itemtype'],
                                                     'completename', $input['language']);
          if ($son != $item->getID()) {
-            //get son value
-            $son_item = new $input['itemtype']();
-            $son_item->getFromDB($son);
-
-            //generate completename for son
             $completename .= " > ".self::getTranslatedValue($son, $input['itemtype'], 'name',
-                                                            $input['language'], 
-                                                            $son_item->fields['name']);
+                                                            $input['language']);
             unset($tmp['id']);
             $tmp                      = array();
             $tmp['items_id']          = $son;
@@ -560,11 +550,6 @@ class DropdownTranslation extends CommonDBChild {
           || !Session::haveTranslations($itemtype, $field)) {
          return $value;
       }
-
-      if (Session::haveTranslations($itemtype, $ID, $field)) {
-         return $_SESSION['glpi_dropdowntranslations'][$itemtype][$ID][$field];
-      }
-
       //ID > 0 : dropdown item might be translated !
       if ($ID > 0) {
          //There's at least one translation for this itemtype
@@ -699,13 +684,11 @@ class DropdownTranslation extends CommonDBChild {
 
       $tab = array();
       if (self::isDropdownTranslationActive()) {
-         $query   = "SELECT DISTINCT `items_id`, `itemtype`, `field`,  `value`
+         $query   = "SELECT DISTINCT `itemtype`, `field`
                      FROM `".self::getTable()."`
                      WHERE `language` = '$language'";
          foreach ($DB->request($query) as $data) {
-            $tab[$data['itemtype']]
-                [$data['items_id']]
-                [$data['field']] = $data['value'];
+            $tab[$data['itemtype']][$data['field']] = $data['field'];
          }
       }
       return $tab;
