@@ -1950,6 +1950,7 @@ class CommonDBTM extends CommonGLPI {
     *     - addbuttons : array of buttons to add
    **/
    function showFormButtons($options=array()) {
+      global $CFG_GLPI;
 
       // for single object like config
       if (isset($this->fields['id'])) {
@@ -2013,6 +2014,15 @@ class CommonDBTM extends CommonGLPI {
                echo Html::submit(_x('button','Restore'), array('name' => 'restore'));
 
                echo "<span class='very_small_space'>";
+               if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
+                  Html::showToolTip(__('Notch to keep the devices while deleting this item'));
+                  echo "&nbsp;";
+                  echo "<input type='checkbox' name='keep_devices' value='1'";
+                  if (!empty($CFG_GLPI['keep_devices_when_purging_item'])) {
+                     echo " checked";
+                  }
+                  echo ">&nbsp;";
+               }
                echo Html::submit(_x('button','Delete permanently'), array('name' => 'purge'));
                echo "</span>";
 

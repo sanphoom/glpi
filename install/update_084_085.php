@@ -1423,6 +1423,9 @@ function update084to085() {
       }
    }
 
+   Config::setConfigurationValues('core', array('keep_devices_when_purging_item' => 0));
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

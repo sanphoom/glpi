@@ -924,10 +924,15 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('PDF export font') . "</td><td  colspan='3'>";
+      echo "<td>" . __('PDF export font') . "</td><td>";
       Dropdown::showFromArray("pdffont", GLPIPDF::getFontList(),
                               array('value' => $data["pdffont"],
                                     'width' => 200));
+      echo "</td>";
+
+      echo "<td>" . __('Keep devices when purging an item') . "</td><td>";
+      Dropdown::showYesNo('keep_devices_when_purging_item',
+                          $data['keep_devices_when_purging_item']);
       echo "</td>";
       echo "</tr>";
 
