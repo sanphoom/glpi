@@ -97,7 +97,6 @@ if (isset($_REQUEST)) {
    $_REQUEST = array_map(array('Toolbox','addslashes_deep'), $_REQUEST);
    $_REQUEST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_REQUEST);
 }
-print_r($_REQUEST);
 
 // Mark if Header is loaded or not :
 $HEADER_LOADED = false;
