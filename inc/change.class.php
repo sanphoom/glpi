@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Change class
+/**
+ * Change Class
+**/
 class Change extends CommonITILObject {
 
    // From CommonDBTM
@@ -46,11 +48,17 @@ class Change extends CommonITILObject {
    public $grouplinkclass     = 'Change_Group';
    public $supplierlinkclass  = 'Change_Supplier';
 
+   static $rightname          = 'change';
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
    const IMPACT_MASK_FIELD    = 'impact_mask';
    const STATUS_MATRIX_FIELD  = 'change_status';
+
+
+   const READMY               = 1;
+   const READALL              = 1024;
+
 
 
    /**
@@ -64,17 +72,17 @@ class Change extends CommonITILObject {
 
 
    function canAdminActors() {
-      return Session::haveRight('edit_all_change', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssign() {
-      return Session::haveRight('edit_all_change', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssignToMe() {
-      return Session::haveRight('edit_all_change', '1');
+      return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
@@ -83,8 +91,8 @@ class Change extends CommonITILObject {
       return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
               // No edition on closed status
               && !in_array($this->fields['status'], $this->getClosedStatusArray())
-              && (Session::haveRight("edit_all_change", "1")
-                  || (Session::haveRight('show_my_change', 1)
+              && (Session::haveRight(self::$rightname, UPDATE)
+                  || (Session::haveRight(self::$rightname, self::READMY)
                       && ($this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                           || (isset($_SESSION["glpigroups"])
                               && $this->haveAGroup(CommonITILActor::ASSIGN,
@@ -92,14 +100,8 @@ class Change extends CommonITILObject {
    }
 
 
-   static function canCreate() {
-      return Session::haveRight('edit_all_change', '1');
-   }
-
-
    static function canView() {
-      return (Session::haveRight('edit_all_change', '1')
-              || Session::haveRight('show_my_change', '1'));
+      return Session::haveRightsOr(self::$rightname, array(self::READALL, self::READMY));
    }
 
 
@@ -113,8 +115,8 @@ class Change extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return (Session::haveRight('edit_all_change', 1)
-              || (Session::haveRight('show_my_change', 1)
+      return (Session::haveRight(self::$rightname, self::READALL)
+              || (Session::haveRight(self::$rightname, self::READMY)
                   && ($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                       || $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
@@ -152,7 +154,7 @@ class Change extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-      return Session::haveRight('edit_all_change', 1);
+      return Session::haveRight(self::$rightname, CREATE);
    }
 
 
@@ -738,10 +740,10 @@ class Change extends CommonITILObject {
       }
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
-         $this->check(-1,'w',$options);
+         $this->check(-1, CREATE, $options);
       }
 
       $showuserlink = 0;
@@ -958,8 +960,8 @@ class Change extends CommonITILObject {
    **/
    function showAnalysisForm() {
 
-      $this->check($this->getField('id'), 'r');
-      $canedit = $this->can($this->getField('id'), 'w');
+      $this->check($this->getField('id'), READ);
+      $canedit = $this->canEdit($this->getField('id'));
 
       $options            = array();
       $options['canedit'] = false;
@@ -998,8 +1000,8 @@ class Change extends CommonITILObject {
    **/
    function showPlanForm() {
 
-      $this->check($this->getField('id'), 'r');
-      $canedit            = $this->can($this->getField('id'), 'w');
+      $this->check($this->getField('id'), READ);
+      $canedit            = $this->canEdit($this->getField('id'));
 
       $options            = array();
       $options['canedit'] = false;
@@ -1044,5 +1046,21 @@ class Change extends CommonITILObject {
 
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      unset($values[READ]);
+
+      $values[self::READALL] = __('See all changes');
+      $values[self::READMY]  = __('See changes (author)');
+
+      return $values;
+   }
 }
 ?>

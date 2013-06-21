@@ -244,10 +244,10 @@ function update084to085() {
 
 
    // delete notes
-   $tables = array('budget', 'cartridge', 'computer', 'consumable', 'contact_enterprise',
+   $tables = array('budget', 'cartridge', 'change', 'computer', 'consumable', 'contact_enterprise',
                    'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
                    'phone', 'printer', 'problem', 'software');
-   // TODO voir aussi pour 'glpi_changes'
+
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'notes' AND `right` = 'r'") as $profrights) {
 
@@ -270,12 +270,10 @@ function update084to085() {
          $DB->queryOrDie($query, "0.85 update $table with update notes right");
       }
    }
-/* DELETE AT THE END
    $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'notes'";
    $DB->queryOrDie($query, "0.85 delete notes right");
-*/
 
 
    // delete faq
@@ -886,8 +884,53 @@ function update084to085() {
              WHERE `name` = 'edit_all_problem'";
    $DB->queryOrDie($query, "0.85 delete edit_all_problem right");
 
+
+   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   if (countElementsInTable("glpi_profilerights", "`name` = 'change'") == 0) {
+      // rename show_my_change
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `name` = 'change'
+                 WHERE `name` = 'show_my_change'";
+      $DB->queryOrDie($query, "0.85 rename show_my_change to change");
+
+      // READMY = 1 => do update needed
+   }
+
+   // delete show_all_change
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'change' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Change::READALL  ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'change'";
+      $DB->queryOrDie($query, "0.85 update change with show_all_change right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'show_all_change'";
+   $DB->queryOrDie($query, "0.85 delete show_all_change right");
+
+
+   // delete edit_all_change
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'change' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'change'";
+      $DB->queryOrDie($query, "0.85 update change with edit_all_change right");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'edit_all_change'";
+   $DB->queryOrDie($query, "0.85 delete edit_all_change right");
+
    // don't drop column right  - be done later
    //$migration->dropField("glpi_profilerights", 'right');
+
+
 
    $migration->displayTitle('Update for mailqueue');
 
@@ -926,7 +969,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add glpi_queuedmails");
       $ADDTODISPLAYPREF['QueueMail'] = array(16, 7, 20, 21, 22, 15);
    }
-   
+
    if (!countElementsInTable('glpi_crontasks',
                              "`itemtype`='QueuedMail' AND `name`='queuedmail'")) {
       $query = "INSERT INTO `glpi_crontasks`
@@ -936,7 +979,7 @@ function update084to085() {
                         0, 24, 30, NULL, NULL, NULL)";
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for queuemail");
    }
-   
+
    if (!countElementsInTable('glpi_crontasks',
                              "`itemtype`='QueuedMail' AND `name`='queuedmailclean'")) {
       $query = "INSERT INTO `glpi_crontasks`
@@ -946,7 +989,7 @@ function update084to085() {
                         0, 24, 30, NULL, NULL, NULL)";
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for queuemail");
    }
-   
+
    if ($migration->addField("glpi_entities", "delay_send_emails", "integer", array('value' => -2))) {
       $migration->migrationOneTable('glpi_entities');
       // Set directly to root entity

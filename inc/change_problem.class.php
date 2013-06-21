@@ -37,6 +37,10 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * @since version 0.84
+ *
+ * Change_Problem Class
+ *
+ * Relation between Changes and Problems
 **/
 class Change_Problem extends CommonDBRelation{
 
@@ -196,11 +200,11 @@ class Change_Problem extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID = $change->getField('id');
-      if (!$change->can($ID,'r')) {
+      if (!$change->can($ID, READ)) {
          return false;
       }
 
-      $canedit      = $change->can($ID,'w');
+      $canedit      = $change->canEdit($ID);
       $rand         = mt_rand();
       $showentities = Session::isMultiEntitiesMode();
 

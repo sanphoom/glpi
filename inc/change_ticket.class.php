@@ -35,6 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Change_Ticket Class
+ *
+ * Relation between Changes and Tickets
+**/
 class Change_Ticket extends CommonDBRelation{
 
    // From CommonDBRelation
@@ -77,11 +82,11 @@ class Change_Ticket extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID = $change->getField('id');
-      if (!$change->can($ID,'r')) {
+      if (!$change->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $change->can($ID,'w');
+      $canedit = $change->canEdit($ID);
       $rand    = mt_rand();
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
@@ -192,11 +197,11 @@ class Change_Ticket extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $ID = $ticket->getField('id');
-      if (!$ticket->can($ID,'r')) {
+      if (!$ticket->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $ticket->can($ID,'w');
+      $canedit = $ticket->canEdit($ID);
       $rand    = mt_rand();
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 

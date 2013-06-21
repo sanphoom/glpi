@@ -28,14 +28,18 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Changes and Items
+/**
+ * Change_Item Class
+ *
+ * Relation between Changes and Items
+**/
 class Change_Item extends CommonDBRelation{
 
 
@@ -99,10 +103,10 @@ class Change_Item extends CommonDBRelation{
 
       $instID = $change->fields['id'];
 
-      if (!$change->can($instID,'r')) {
+      if (!$change->can($instID, READ)) {
          return false;
       }
-      $canedit = $change->can($instID,'w');
+      $canedit = $change->canEdit($instID);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`

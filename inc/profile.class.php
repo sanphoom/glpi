@@ -677,7 +677,7 @@ class Profile extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Default ticket template')."</td><td>";
       // Only root entity ones and recursive
@@ -1090,7 +1090,8 @@ class Profile extends CommonDBTM {
                            $this->fields["planning"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>"._n('Problem', 'Problems', 2);
+      echo "<tr class='tab_bg_5'>";
+      echo "<th colspan='6'>"._n('Problem', 'Problems', 2)." / "._n('Change', 'Changes', 2);
       echo "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -1099,16 +1100,9 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Update all changes')."</td><td>";
-      Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
-      echo "</td>";
-      echo "<td>".__('See all changes')."</td><td>";
-      Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
-      echo "</td>";
-      echo "<td>".__('See changes (author)')."</td><td>";
-      Dropdown::showYesNo("show_my_change", $this->fields["show_my_change"]);
-      echo "</td>";
-      echo "</tr>\n";
+      echo "<td>"._n('Change', 'Changes', 2)."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('Change'), "_change", $this->fields["change"]);
+      echo "</td></tr>\n";
 
       if ($canedit
           && $closeform) {
@@ -1296,7 +1290,7 @@ class Profile extends CommonDBTM {
       self::dropdownRights(Profile::getRightsFor('QueuedMail'), "_queuedmail",
                            $this->fields["queuedmail"]);
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Maintenance')."</td><td>";
       self::dropdownRights(Profile::getRightsFor('Backup'), "_backup", $this->fields["backup"]);
@@ -2179,7 +2173,7 @@ class Profile extends CommonDBTM {
       $tab[111]['nosearch']      = true;
       $tab[111]['datatype']      = 'text';
       $tab[111]['massiveaction'] = false;
-
+/*
       $tab[115]['table']         = 'glpi_profilerights';
       $tab[115]['field']         = 'right';
       $tab[115]['name']          =__('See changes (author)');
@@ -2200,7 +2194,7 @@ class Profile extends CommonDBTM {
       $tab[117]['datatype']      = 'bool';
       $tab[117]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'edit_all_change'");
-
+*/
       $tab['other']              = __('Other');
 
       $tab[4]['table']           = 'glpi_profilerights';
