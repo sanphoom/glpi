@@ -591,10 +591,10 @@ class Profile extends CommonDBTM {
       $rowspan = 5;
       if ($ID > 0) {
          $rowspan++;
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
-         $this->check(-1,'w');
+         $this->check(-1, CREATE);
          $onfocus = "onfocus=\"if (this.value=='".$this->fields["name"]."') this.value='';\"";
          $new     = true;
       }
@@ -667,12 +667,14 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='20%'>".__('Link with items for the creation of tickets')."</td>";
-      echo "<td width='30%'>";
-      Dropdown::showFromArray('helpdesk_hardware', self::getHelpdeskHardwareTypes(),
-                              array('value' => $this->fields["helpdesk_hardware"]));
-      echo "</td>\n";
+      echo "<td colspan='5'>";
+      self::dropdownRights(self::getHelpdeskHardwareTypes(), 'helpdesk_hardware',
+                           $this->fields["helpdesk_hardware"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td width='20%'>".__('Associable items to a ticket')."</td>";
-      echo "<td width='30%'><input type='hidden' name='_helpdesk_item_types' value='1'>";
+      echo "<td colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
       echo "</td>";
       echo "</tr>\n";
@@ -1016,11 +1018,13 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Ticket template', 'Ticket templates', 2)."</td><td colspan='3'>";
+      echo "<td>"._n('Ticket template', 'Ticket templates', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('TicketTemplate'), "_tickettemplate",
                            $this->fields["tickettemplate"]);
-      echo "</td>";
-      echo "<td>".__('Default ticket template')."</td><td>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Default ticket template')."</td><td  width='30%'>";
       // Only root entity ones and recursive
       $options = array('value'     => $this->fields["tickettemplates_id"],
                        'entity'    => 0);
@@ -1060,26 +1064,25 @@ class Profile extends CommonDBTM {
                            $this->fields["validation"]);
       echo "</td></tr>\n";
 
-
-
-
-
-
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See hardware of my groups')."</td><td>";
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
-      echo "</td>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "\n<td>";
-      Dropdown::showFromArray('helpdesk_hardware', self::getHelpdeskHardwareTypes(),
-                              array('value' => $this->fields["helpdesk_hardware"]));
+      self::dropdownRights(self::getHelpdeskHardwareTypes(), 'helpdesk_hardware',
+                           $this->fields["helpdesk_hardware"]);
 
-      echo "</td>\n";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Associable items to a ticket')."</td>";
-      echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
+      echo "<td  colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
       echo "</td>";
       echo "</tr>\n";
