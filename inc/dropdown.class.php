@@ -102,6 +102,7 @@ class Dropdown {
       $params['display_emptychoice']  = ($itemtype != 'Entity');
       $params['display']              = true;
       $params['permit_select_parent'] = false;
+      $params['addicon']              = true;
 
 
       if (is_array($options) && count($options)) {
@@ -200,7 +201,8 @@ class Dropdown {
 
          if (($item instanceof CommonDropdown)
              && $item->canCreate()
-             && !isset($_REQUEST['_in_modal'])) {
+             && !isset($_REQUEST['_in_modal'])
+             && $params['addicon']) {
 
                $output .= "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                             "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'

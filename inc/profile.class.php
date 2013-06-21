@@ -686,6 +686,10 @@ class Profile extends CommonDBTM {
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive` = 1';
       }
+      $entity = implode(",", $_SESSION['glpiactiveentities']);
+      if ($entity != 0) {
+         $options['addicon'] = false;
+      }
 
       TicketTemplate::dropdown($options);
       echo "</td>";
@@ -1022,6 +1026,10 @@ class Profile extends CommonDBTM {
                        'entity'    => 0);
       if (Session::isMultiEntitiesMode()) {
          $options['condition'] = '`is_recursive` = 1';
+      }
+      $entity = implode(",", $_SESSION['glpiactiveentities']);
+      if ($entity != 0) {
+         $options['addicon'] = false;
       }
 
       TicketTemplate::dropdown($options);
