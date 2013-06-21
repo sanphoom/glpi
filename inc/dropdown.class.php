@@ -633,7 +633,7 @@ class Dropdown {
       global $CFG_GLPI;
       static $optgroup = NULL;
 
-      if (!Session::haveRight('device', 'r')) {
+      if (!Session::haveRight('device', 'w')) {
          return array();
       }
 
@@ -828,7 +828,6 @@ class Dropdown {
       $selected = '';
 
       foreach ($optgroup as $label => $dp) {
-
          foreach ($dp as $key => $val) {
             $search = Toolbox::getItemTypeSearchURL($key);
 
@@ -841,6 +840,7 @@ class Dropdown {
       Dropdown::showFromArray('dpmenu', $values,
                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
                                     'value'     => $selected));
+
       echo "</td></tr>";
       echo "</table><br>";
    }
