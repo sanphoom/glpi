@@ -75,7 +75,7 @@ class NetworkAlias extends FQDNLabel {
    static function getInternetNameFromID($ID) {
 
       $networkAlias = new self();
-      if ($networkalias->can($ID, 'r'))
+      if ($networkalias->can($ID, READ))
          return FQDNLabel::getInternetNameFromLabelAndDomainID($this->fields["name"],
                                                                $this->fields["fqdns_id"]);
       return "";
@@ -246,11 +246,11 @@ class NetworkAlias extends FQDNLabel {
       global $DB, $CFG_GLPI;
 
       $ID = $item->getID();
-      if (!$item->can($ID, 'r')) {
+      if (!$item->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $item->can($ID, 'w');
+      $canedit = $item->canEdit($ID);
       $rand    = mt_rand();
 
       $query = "SELECT *
@@ -359,8 +359,8 @@ class NetworkAlias extends FQDNLabel {
 
       $alias   = new self();
       $address = new NetworkName();
-      $item->check($item->getID(), 'r');
-      $canedit = $item->can($item->getID(), 'w');
+      $item->check($item->getID(), READ);
+      $canedit = $item->canEdit($item->getID());
 
       if (isset($_GET["start"])) {
          $start = $_GET["start"];
@@ -447,7 +447,7 @@ class NetworkAlias extends FQDNLabel {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getID()
-          && $item->can($item->getField('id'),'r')) {
+          && $item->can($item->getField('id'), READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
                case 'NetworkName' :

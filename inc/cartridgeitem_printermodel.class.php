@@ -110,11 +110,11 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $instID = $item->getField('id');
-      if (!$item->can($instID, 'r')) {
+      if (!$item->can($instID, READ)) {
          return false;
       }
-      $canedit = $item->can($instID, 'w');
-      $rand = mt_rand();
+      $canedit = $item->canEdit($instID);
+      $rand    = mt_rand();
 
       $query = "SELECT `".static::getTable()."`.`id`,
                        `glpi_printermodels`.`name` AS `type`,

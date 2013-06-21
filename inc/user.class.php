@@ -486,7 +486,7 @@ class User extends CommonDBTM {
                                           false, ERROR);
          return false;
       }
-      
+
       // Check if user does not exists
       $query = "SELECT *
                 FROM `".$this->getTable()."`
@@ -623,7 +623,7 @@ class User extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
-      
+
       //picture manually uploaded by user
       if (isset($_FILES['picture'])) {
          if (!count($_FILES['picture'])
@@ -2011,7 +2011,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       $user = new self();
-      if (!$user->can($userid,'r')
+      if (!$user->can($userid, READ)
           && ($userid != Session::getLoginUserID())) {
          return false;
       }
@@ -2943,7 +2943,8 @@ class User extends CommonDBTM {
                } else {
                   // Check read or active for rights
                   $where[]= " (`glpi_profilerights`.`name` = '".$r."'
-                               AND `glpi_profilerights`.`right` IN ('1', 'r', 'w', $r) ".
+                               AND `glpi_profilerights`.`rights` & ".
+                                     (READ | CREATE | UPDATE | DELETE | PURGE) ." ".
                                getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                           $entity_restrict, 1).") ";
                }

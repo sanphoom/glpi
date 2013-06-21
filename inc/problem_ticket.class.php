@@ -158,7 +158,7 @@ class Problem_Ticket extends CommonDBRelation{
             $ticket = new Ticket();
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'r')) {
+                  if ($this->can($key, READ)) {
                      if ($ticket->getFromDB($this->fields['tickets_id'])
                          && $ticket->canSolve()) {
                         $toupdate                     = array();
@@ -308,9 +308,8 @@ class Problem_Ticket extends CommonDBRelation{
 
       $ID = $ticket->getField('id');
       if (!Session::haveRight("problem", Problem::READALL)
-            || !$ticket->can($ID, READ)) {
+          || !$ticket->can($ID, READ)) {
 
-//      if (!$ticket->can($ID,'r')) {
          return false;
       }
 

@@ -34,12 +34,12 @@
 include ('../inc/includes.php');
 
 if (isset($_POST['check_version'])) {
-   Session::checkRight("check_update", "r");
+   Session::checkRight('backup', Backup::CHECKUPDATE);
    Toolbox::checkNewVersionAvailable(0, true);
    Html::back();
 }
 
-Session::checkRight("backup", CREATE);
+Session::checkRight("backup", READ);
 
 // full path
 $path = GLPI_DUMP_DIR ;
@@ -560,7 +560,7 @@ if (isset($_POST["delfile"])) {
    }
 }
 
-if (Session::haveRight("check_update","r")) {
+if (Session::haveRight('backup', Backup::CHECKUPDATE)) {
    echo "<div class='center spaced'><table class='tab_glpi'>";
    echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>";
    Html::showSimpleForm($_SERVER['PHP_SELF'], 'check_version',
@@ -569,20 +569,23 @@ if (Session::haveRight("check_update","r")) {
 }
 
 // Title backup
-echo "<div class='center'><table class='tab_glpi'><tr><td>".
-     "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
-     "</td>";
-echo "<td><a class='vsubmit'
-           href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
-                 "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?dump=dump'").
-           ">".__('SQL Dump')."</a>&nbsp;</td>";
-echo "<td><a class='vsubmit'
-           href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
-                 "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?xmlnow=xmlnow'").
-           ">".__('XML Dump')."</a>&nbsp;</td>";
-
-echo "</tr></table>";
-
+echo "<div class='center'>";
+if (Session::haveRight('backup', CREATE)) {
+   echo "<table class='tab_glpi'><tr><td>".
+         "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
+         "</td>";
+   echo "<td><a class='vsubmit'
+              href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
+                                                         "window.location='".$CFG_GLPI["root_doc"].
+                                                           "/front/backup.php?dump=dump'").
+              ">".__('SQL Dump')."</a>&nbsp;</td>";
+   echo "<td><a class='vsubmit'
+              href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
+                                                         "window.location='".$CFG_GLPI["root_doc"].
+                                                           "/front/backup.php?xmlnow=xmlnow'").
+              ">".__('XML Dump')."</a>&nbsp;</td>";
+   echo "</tr></table>";
+}
 echo "<br><table class='tab_cadre' cellpadding='5'>".
      "<tr class='center'>".
      "<th><u><i>".__('File')."</i></u></th>".
@@ -630,9 +633,12 @@ if (count($files)) {
                                         "/front/backup.php?file=$file&amp;donotcheckversion=1'").
               ">".__('Restore')."</a>&nbsp;</td>";
       }
-      echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".
-                     __('Download')."</a>".
-           "</td></tr>";
+      if (Session::haveRight('backup', CREATE)) {
+         echo "<td>&nbsp;".
+              "<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".__('Download').
+              "</a></td>";
+      }
+      echo "</tr>";
    }
 }
 closedir($dir);

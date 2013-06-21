@@ -38,8 +38,8 @@ if (!defined('GLPI_ROOT')) {
 
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
-Session::checkSeveralRightsOr(array("search_config_global" => "w",
-                                    "search_config"        => "w"));
+Session::haveRightsOr('serach_config', array(DisplayPreference::PERSONAL,
+                                             DisplayPreference::GENERAL));
 
 $setupdisplay = new DisplayPreference();
 

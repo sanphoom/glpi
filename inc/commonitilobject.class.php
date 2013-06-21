@@ -3330,7 +3330,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function showSolutionForm($knowbase_id_toload=0) {
       global $CFG_GLPI;
 
-      $this->check($this->getField('id'), 'r');
+      $this->check($this->getField('id'), READ);
 
       $canedit = $this->canSolve();
       $options = array();

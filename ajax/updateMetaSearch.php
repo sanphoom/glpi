@@ -39,11 +39,11 @@ if (!($item = getItemForItemtype($_POST['itemtype']))) {
    exit();
 }
 
-$item->checkGlobal('r');
+$item->checkGlobal(READ);
 
-$group  = "";
-$values = array();
-$searchopt      = Search::getCleanedOptions($_POST["itemtype"], 'r', false);
+$group     = "";
+$values    = array();
+$searchopt = Search::getCleanedOptions($_POST["itemtype"], READ, false);
 echo "<table width='100%'><tr><td width='40%'>";
 
 foreach ($searchopt as $key => $val) {

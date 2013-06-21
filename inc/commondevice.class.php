@@ -45,6 +45,12 @@ abstract class CommonDevice extends CommonDropdown {
    static $rightname = 'device';
 
 
+
+   static function canView() {
+      return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE));
+   }
+
+
    static function getTypeName($nb=0) {
       return _n('Component', 'Components', $nb);
    }
@@ -58,7 +64,7 @@ abstract class CommonDevice extends CommonDropdown {
    static function getMenuContent() {
 
       $menu = array();
-      if (static::canCreate()) {
+      if (Session::haveRightsOr('device', array(CREATE, UPDATE, PURGE))) {
          $menu['title'] = static::getTypeName(2);
          $menu['page']  = '/front/device.php';
 

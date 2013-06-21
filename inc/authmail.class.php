@@ -316,7 +316,7 @@ class AuthMail extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && $item->can($item->getField('id'),'r')) {
+      if (!$withtemplate && $item->can($item->getField('id'),READ)) {
          $ong = array();
          $ong[1] = _sx('button','Test');    // test connexion
 

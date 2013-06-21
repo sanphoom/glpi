@@ -103,10 +103,10 @@ class Item_Problem extends CommonDBRelation{
 
       $instID = $problem->fields['id'];
 
-      if (!$problem->can($instID,'r')) {
+      if (!$problem->can($instID, READ)) {
          return false;
       }
-      $canedit = $problem->can($instID,'w');
+      $canedit = $problem->canEdit($instID);
       $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`

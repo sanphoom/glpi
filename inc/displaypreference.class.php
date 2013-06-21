@@ -47,6 +47,13 @@ class DisplayPreference extends CommonDBTM {
    protected $displaylist          = false;
 
 
+   static $rightname = 'search_config';
+
+   const PERSONAL = 1024;
+   const GENERAL  = 2048;
+
+
+
    /**
     * @see CommonDBTM::prepareInputForAdd()
    **/
@@ -156,7 +163,7 @@ class DisplayPreference extends CommonDBTM {
    function activatePerso(array $input) {
       global $DB;
 
-      if (!Session::haveRight("search_config", "w")) {
+      if (!Session::haveRight(self::$rightname, self::PERSONAL)) {
          return false;
       }
 
@@ -288,7 +295,7 @@ class DisplayPreference extends CommonDBTM {
       $numrows = $DB->numrows($result);
 
       if ($numrows == 0) {
-         Session::checkRight("search_config", "w");
+         Session::checkRight(self::$rightname, self::PERSONAL);
          echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
          echo "<form method='post' action='$target'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
@@ -433,7 +440,7 @@ class DisplayPreference extends CommonDBTM {
          $item = getItemForItemtype($itemtype);
       }
 
-      $global_write = Session::haveRight("search_config_global", "w");
+      $global_write = Session::haveRight(self::$rightname, self::GENERAL);
 
       echo "<div class='center' id='tabsbody' >";
       // Defined items
@@ -650,7 +657,7 @@ class DisplayPreference extends CommonDBTM {
 
       switch ($item->getType()) {
          case 'Preference' :
-            if (Session::haveRight('search_config', 'w')) {
+            if (Session::haveRight(self::$rightname, self::PERSONAL)) {
                return __('Personal View');
             }
             break;
@@ -658,7 +665,7 @@ class DisplayPreference extends CommonDBTM {
          case __CLASS__:
             $ong = array();
             $ong[1] = __('Global View');
-            if (Session::haveRight('search_config', 'w')) {
+            if (Session::haveRight(self::$rightname, self::PERSONAL)) {
                $ong[2] = __('Personal View');
             }
             return $ong;
@@ -681,12 +688,27 @@ class DisplayPreference extends CommonDBTM {
                   return true;
 
                case 2 :
-                  Session::checkRight('search_config', 'w');
+                  Session::checkRight(self::$rightname, self::PERSONAL);
                   $item->showFormPerso($_GET['_target'], $_GET["displaytype"]);
                   return true;
             }
       }
       return false;
    }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      $values[self::PERSONAL]  = __('Search result user display');
+      $values[self::GENERAL]  =  __('Search result default display');
+
+      return $values;
+   }
+
 }
 ?>

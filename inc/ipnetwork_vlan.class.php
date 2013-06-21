@@ -103,11 +103,11 @@ class IPNetwork_Vlan extends CommonDBRelation {
       global $DB, $CFG_GLPI;
 
       $ID = $port->getID();
-      if (!$port->can($ID, 'r')) {
+      if (!$port->can($ID, READ)) {
          return false;
       }
 
-      $canedit = $port->can($ID, 'w');
+      $canedit = $port->canEdit($ID);
       $rand    = mt_rand();
 
       $query = "SELECT `".self::getTable()."`.id as assocID,

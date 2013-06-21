@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    if ($node = getItemForItemtype($nn->fields["itemtype"])) {
-      if ($node->can($nn->fields["items_id"], 'r')) {
+      if ($node->can($nn->fields["items_id"], READ)) {
          Html::redirect($node->getLinkURL());
       }
    }

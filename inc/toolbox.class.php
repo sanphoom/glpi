@@ -1274,7 +1274,8 @@ class Toolbox {
    static function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
       global $CFG_GLPI;
 
-      if (!$auto && !Session::haveRight("check_update","r")) {
+      if (!$auto
+          && !Session::haveRight('backup', Backup::CHECKUPDATE)) {
          return false;
       }
 

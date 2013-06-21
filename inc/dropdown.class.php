@@ -633,7 +633,7 @@ class Dropdown {
       global $CFG_GLPI;
       static $optgroup = NULL;
 
-      if (!Session::haveRight('device', 'w')) {
+      if (!Session::haveRightsOr('device', array(CREATE, UPDATE, PURGE))) {
          return array();
       }
 

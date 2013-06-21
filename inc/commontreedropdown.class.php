@@ -59,7 +59,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      
+
       $this->addStandardTab($this->getType(), $ong, $options);
       if ($this->dohistory) {
          $this->addStandardTab('Log',$ong, $options);
@@ -376,7 +376,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       global $DB, $CFG_GLPI;
 
       $ID            = $this->getID();
-      $this->check($ID, 'r');
+      $this->check($ID, READ);
       $fields        = $this->getAdditionalFields();
       $nb            = count($fields);
       $entity_assign = $this->isEntityAssign();

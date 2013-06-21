@@ -95,7 +95,7 @@ class TicketCost extends CommonDBChild {
 
       // can exists for template
       if (($item->getType() == 'Ticket')
-          && Session::haveRight("ticketcost","r")) {
+          && Session::haveRight(self::$rightname, READ)) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
@@ -208,11 +208,11 @@ class TicketCost extends CommonDBChild {
       }
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
          $options['tickets_id'] = $ticket->getField('id');
-         $this->check(-1,'w',$options);
+         $this->check(-1, CREATE, $options);
          $this->initBasedOnPrevious();
       }
 

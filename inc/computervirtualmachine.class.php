@@ -251,7 +251,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
                echo "<tr class='tab_bg_2'>";
                echo "<td>";
-               if ($computer->can($host['computers_id'],'r')) {
+               if ($computer->can($host['computers_id'], READ)) {
                   echo "<a href='computer.form.php?id=".$computer->fields['id']."'>";
                   echo $computer->fields['name']."</a>";
                   $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].
@@ -356,7 +356,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo "<td>";
             if ($link_computer = self::findVirtualMachine($virtualmachine)) {
                $computer = new Computer();
-               if ($computer->can($link_computer,'r')) {
+               if ($computer->can($link_computer, READ)) {
                   $url  = "<a href='computer.form.php?id=".$link_computer."'>";
                   $url .= $computer->fields["name"]."</a>";
 

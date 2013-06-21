@@ -66,7 +66,7 @@ class CommonDBTM extends CommonGLPI {
 
    /// Search options of the item : to avoid multiple load
    protected $searchopt                     = false;
-   
+
    /// Tab orientation : horizontal or vertical
    public $taborientation                   = 'vertical';
    /// Need to get item to show tab
@@ -80,7 +80,7 @@ class CommonDBTM extends CommonGLPI {
 
    /// FLush mail queue for
    public $mailqueueonaction = false;
-   
+
    const SUCCESS                    = 0; //Process is OK
    const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
    const ERROR_FIELDSIZE_EXCEEDED   = 2; //Value is bigger than the field's size
@@ -882,7 +882,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->no_form_page
-          || !$this->can($this->fields['id'],'r')) {
+          || !$this->can($this->fields['id'], READ)) {
          return $this->getNameID($options);
       }
 
@@ -1116,11 +1116,11 @@ class CommonDBTM extends CommonGLPI {
                }
             }
             $this->post_updateItem($history);
-            
+
             if ($this->mailqueueonaction) {
                QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
             }
-            
+
             return true;
          }
       }
@@ -3205,7 +3205,7 @@ class CommonDBTM extends CommonGLPI {
          case "delete" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'d')) {
+                  if ($this->can($key, DELETE)) {
                      if ($this->delete(array("id" => $key))) {
                         $res['ok']++;
                      } else {
@@ -3224,7 +3224,7 @@ class CommonDBTM extends CommonGLPI {
          case 'purge' :
              foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'d')) {
+                  if ($this->can($key, PURGE)) {
                      $force = 1;
                      // Only mark deletion for
                      if ($this->maybeDeleted()
@@ -3253,7 +3253,7 @@ class CommonDBTM extends CommonGLPI {
          case "restore" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'d')) {
+                  if ($this->can($key, PURGE)) {
                      if ($this->restore(array("id" => $key))) {
                         $res['ok']++;
                      } else {
@@ -3662,7 +3662,7 @@ class CommonDBTM extends CommonGLPI {
    }
 
    /**
-    * Get search options 
+    * Get search options
     *
     * @return then search option array
    **/

@@ -517,7 +517,7 @@ class SoftwareLicense extends CommonDBTM {
       $license       = new self();
       $computer      = new Computer();
 
-      if (!$software->can($softwares_id,"r")) {
+      if (!$software->can($softwares_id, READ)) {
          return false;
       }
       if (isset($_GET["start"])) {

@@ -750,17 +750,17 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $device1 = $netport->getItem();
 
-      if (!$device1->can($device1->getID(), 'r')) {
+      if (!$device1->can($device1->getID(), READ)) {
          return false;
       }
-      $canedit      = $device1->can($device1->fields["id"], 'w');
+      $canedit      = $device1->canEdit($device1->fields["id"]);
       $relations_id = 0;
       $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
 
       if ($oppositePort !== false) {
          $device2 = $oppositePort->getItem();
 
-         if ($device2->can($device2->fields["id"], 'r')) {
+         if ($device2->can($device2->fields["id"], READ)) {
             $networklink = $oppositePort->getLink();
             $tooltip     = Html::showToolTip($oppositePort->fields['comment'],
                                              array('display' => false));
@@ -776,7 +776,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
             // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
             if ($canedit
-                || $device2->can($device2->fields["id"], 'w')) {
+                || $device2->canEdit($device2->fields["id"])) {
                echo "&nbsp;";
                Html::showSimpleForm($oppositePort->getFormURL(), 'disconnect', __('Disconnect'),
                                     array('id' => $relations_id));

@@ -4310,7 +4310,7 @@ class Ticket extends CommonITILObject {
                 && ($item = getItemForItemtype($this->fields['itemtype']))
                 && $this->fields["items_id"]) {
 
-                if ($item->can($this->fields["items_id"],'r')) {
+                if ($item->can($this->fields["items_id"], READ)) {
                   printf(__('%1$s - %2$s'), $item->getTypeName(),
                          $item->getLink(array('comments' => true)));
                } else {

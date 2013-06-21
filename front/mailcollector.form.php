@@ -42,7 +42,7 @@ if (!isset($_GET["id"])) {
 $mailgate = new MailCollector();
 
 if (isset($_POST["add"])) {
-   $mailgate->check(-1,'w',$_POST);
+   $mailgate->check(-1, CREATE, $_POST);
    $newID = $mailgate->add($_POST);
 
    Event::log($newID, "mailcollector", 4, "setup",
@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["purge"])) {
-   $mailgate->check($_POST['id'],'d');
+   $mailgate->check($_POST['id'], PURGE);
    $mailgate->delete($_POST, 1);
 
    Event::log($_POST["id"], "mailcollector", 4, "setup",
@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
    $mailgate->redirectToList();
 
 } else if (isset($_POST["update"])) {
-   $mailgate->check($_POST['id'],'w');
+   $mailgate->check($_POST['id'], UPDATE);
    $mailgate->update($_POST);
 
    Event::log($_POST["id"], "mailcollector", 4, "setup",
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["get_mails"])) {
-   $mailgate->check($_POST['id'],'w');
+   $mailgate->check($_POST['id'], UPDATE);
    $mailgate->collect($_POST["id"],1);
 
    Html::back();

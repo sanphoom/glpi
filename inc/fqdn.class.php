@@ -121,7 +121,7 @@ class FQDN extends CommonDropdown {
    **/
    function getFQDN() {
 
-      if ($this->can($this->getID(), 'r')) {
+      if ($this->can($this->getID(), READ)) {
          return $this->fields["fqdn"];
       }
       return "";

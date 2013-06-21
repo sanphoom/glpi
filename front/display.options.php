@@ -50,7 +50,7 @@ if ($item = getItemForItemtype($itemtype)) {
    if (isset($_GET['update']) || isset($_GET['reset'])) {
       $item->updateDisplayOptions($_GET, $_GET["sub_itemtype"]);
    }
-   $item->checkGlobal('r');
+   $item->checkGlobal(READ);
    $item->showDislayOptions($_GET["sub_itemtype"]);
 }
 

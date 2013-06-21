@@ -472,7 +472,7 @@ class Document_Item extends CommonDBRelation{
          return false;
       }
 
-      if (!$item->can($item->fields['id'],'r')) {
+      if (!$item->can($item->fields['id'], READ)) {
          return false;
       }
 

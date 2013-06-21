@@ -305,7 +305,7 @@ class IPAddress extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getID()
-          && $item->can($item->getField('id'),'r')) {
+          && $item->can($item->getField('id'), READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
          }

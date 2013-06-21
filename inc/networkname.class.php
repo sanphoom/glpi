@@ -380,7 +380,7 @@ class NetworkName extends FQDNLabel {
 
       $networkName = new self();
 
-      if ($networkName->can($ID, 'r')) {
+      if ($networkName->can($ID, READ)) {
          return FQDNLabel::getInternetNameFromLabelAndDomainID($this->fields["name"],
                                                                $this->fields["fqdns_id"]);
       }
@@ -665,7 +665,7 @@ class NetworkName extends FQDNLabel {
       global $DB, $CFG_GLPI;
 
       $ID = $item->getID();
-      if (!$item->can($ID, 'r')) {
+      if (!$item->can($ID, READ)) {
          return false;
       }
 
@@ -844,7 +844,7 @@ class NetworkName extends FQDNLabel {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getID()
-          && $item->can($item->getField('id'),'r')) {
+          && $item->can($item->getField('id'), READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
          }

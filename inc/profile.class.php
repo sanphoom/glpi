@@ -478,26 +478,6 @@ class Profile extends CommonDBTM {
              && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
                  || in_array($key,self::$helpdesk_rights))) {
 
-//            switch ($val) {
-//               case '0' :
-//                  $possible_rights = "('0', '')";
-//                  break;
-
-//               case '1' :
-//                  $possible_rights = "('0', '1', '')";
-//                  break;
-
-//               case 'r' :
-//                  $possible_rights = "('r', '')";
-//                  break;
-
-//               case 'w' :
-//                  $possible_rights = "('w', 'r', '')";
-//                  break;
-
-//               default :
-//                  $possible_rights = "('0', '')";
-//            }
             $right_subqueries[] = "(`glpi_profilerights`.`name` = '$key'
                                    AND (`glpi_profilerights`.`rights` | $val) = $val)";
          }
@@ -1418,27 +1398,24 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Setup')."</th></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td width='18%'>".__('General setup')."</td><td width='15%'>";
+      echo "<td width='18%'>".__('General setup')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Config'), "_config",
                            $this->fields["config"]);
-
-      echo "</td>";
-      echo "<td width='18%'>".__('Search result default display')."</td><td width='15%'>";
-      self::dropdownRight("search_config_global",
-                          array('value'   => $this->fields["search_config_global"],
-                                'noread'  => true));
-      echo "</td>";
-      echo "<td  width='18%' class='tab_bg_2'>".__('Search result user display')."</td width='15%'>";
-      echo "<td class='tab_bg_2'>";
-      self::dropdownRight("search_config", array('value'   => $this->fields["search_config"],
-                                                 'noread'  => true));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Component', 'Components', 2)."</td><td>";
-      self::dropdownRight("device", array('value'   => $this->fields["device"],
-                                          'noread'  => true));
-      echo "</td>";
+      echo "<td width='18%'>".__('Search result display')."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('DisplayPreference'), "_search_config",
+                           $this->fields["search_config"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
+      echo "<td>"._n('Component', 'Components', 2)."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('item_devices'), "_device",
+                           $this->fields["device"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
       echo "<td>"._n('Dropdown', 'Dropdowns', 2)."</td><td>";
       $tab = CommonDBTM::getRights();
       unset($tab[DELETE]);
@@ -1450,27 +1427,29 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Document type')."</td><td>";
+      echo "<td>".__('Document type')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('DocumentType'), "_typedoc",
                            $this->fields["typedoc"]);
-      echo "</td>";
-      echo "<td>"._n('External link', 'External links',2)."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
+      echo "<td>"._n('External link', 'External links',2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Link'), "_link", $this->fields["link"]);
-      echo "</td>";
-      echo "<td>".__('Check for upgrade')."</td><td>";
-      self::dropdownRight("check_update", array('value'   => $this->fields["check_update"],
-                                                'nowrite' => true));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Notification', 'Notifications',2)."</td><td>";
+      echo "<td>"._n('Notification', 'Notifications',2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Notification'), "_notification",
                            $this->fields["notification"]);
-      echo "</td>";
-      echo "<td>".__('SLA')."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('SLA')."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('SLA'), "_sla", $this->fields["sla"]);
-      echo "</td>";
-      echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td colspan='5'>";
       self::dropdownRights(Profile::getRightsFor('Calendar'), "_calendar",
                            $this->fields["calendar"]);
       echo "</td></tr>\n";
@@ -1746,7 +1725,7 @@ class Profile extends CommonDBTM {
       $tab[52]['noread']         = true;
       $tab[52]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'search_config'");
-
+/*
       $tab[53]['table']          = 'glpi_profilerights';
       $tab[53]['field']          = 'right';
       $tab[53]['name']           = __('Search result default display');
@@ -1754,7 +1733,7 @@ class Profile extends CommonDBTM {
       $tab[53]['noread']         = true;
       $tab[53]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'search_config_global'");
-
+*/
       $tab[107]['table']         = 'glpi_profilerights';
       $tab[107]['field']         = 'right';
       $tab[107]['name']          = _n('Calendar', 'Calendars', 2);
@@ -1820,7 +1799,7 @@ class Profile extends CommonDBTM {
       $tab[93]['datatype']       = 'right';
       $tab[93]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'entity_rule_ticket'");
-
+/*
       $tab[54]['table']          = 'glpi_profilerights';
       $tab[54]['field']          = 'right';
       $tab[54]['name']           = __('Check for upgrade');
@@ -1828,7 +1807,7 @@ class Profile extends CommonDBTM {
       $tab[54]['nowrite']        = true;
       $tab[54]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'check_update'");
-
+*/
       $tab[55]['table']          = 'glpi_profilerights';
       $tab[55]['field']          = 'right';
       $tab[55]['name']           = self::getTypeName(2);

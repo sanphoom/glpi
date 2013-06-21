@@ -482,7 +482,7 @@ class Document extends CommonDBTM {
           && ($_SESSION["glpiactiveprofile"]["interface"] == "central")) {
 
          // My doc Check and Common doc right access
-         if ($this->can($this->fields["id"],'r')
+         if ($this->can($this->fields["id"], READ)
              || ($this->fields["users_id"] === Session::getLoginUserID())) {
             return true;
          }
@@ -537,7 +537,7 @@ class Document extends CommonDBTM {
          if (isset($options["tickets_id"])) {
             $job = new Ticket();
 
-            if ($job->can($options["tickets_id"],'r')) {
+            if ($job->can($options["tickets_id"], READ)) {
                $query = "SELECT *
                          FROM `glpi_documents_items`
                          WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'
@@ -594,7 +594,7 @@ class Document extends CommonDBTM {
          if (isset($options["tickets_id"])) {
             $job = new Ticket();
 
-            if ($job->can($options["tickets_id"],'r')) {
+            if ($job->can($options["tickets_id"], READ)) {
                $query = "SELECT *
                          FROM `glpi_documents_items`
                          WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'

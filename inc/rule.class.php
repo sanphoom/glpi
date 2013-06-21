@@ -739,10 +739,10 @@ class Rule extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {
-         $this->check($ID, 'r');
+         $this->check($ID, READ);
       } else {
          // Create item
-         $this->checkGlobal('w');
+         $this->checkGlobal(UPDATE);
       }
 
       $canedit = $this->can(static::$rightname, UPDATE);

@@ -251,10 +251,10 @@ class SoftwareVersion extends CommonDBChild {
 
       $softwares_id = $soft->getField('id');
 
-      if (!$soft->can($softwares_id,'r')) {
+      if (!$soft->can($softwares_id, READ)) {
          return false;
       }
-      $canedit = $soft->can($softwares_id,"w");
+      $canedit = $soft->canEdit($softwares_id);
 
       echo "<div class='spaced'>";
 

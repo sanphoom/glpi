@@ -41,7 +41,7 @@ class Location extends CommonTreeDropdown {
    // From CommonDBTM
    public $dohistory = true;
    var $can_be_translated = true;
-    
+
 
    static function canCreate() {
       return Session::haveRight('entity_dropdown', 'w');
@@ -199,7 +199,7 @@ class Location extends CommonTreeDropdown {
       $locations_id = $this->fields['id'];
       $crit         = Session::getSavedOption(__CLASS__, 'criterion', '');
 
-      if (!$this->can($locations_id,'r')) {
+      if (!$this->can($locations_id, READ)) {
          return false;
       }
 

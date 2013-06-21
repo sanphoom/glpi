@@ -222,7 +222,9 @@ abstract class CommonDBConnexity extends CommonDBTM {
          // Solution 1 : If we cannot create the new item or delete the old item,
          // then we cannot update the item
          unset($new_item->fields);
-         if ((!$new_item->can(-1, 'w', $input)) || (!$this->can($this->getID(), 'd'))) {
+         if (!$new_item->can(-1, CREATE, $input)
+              || !$this->can($this->getID(), DELETE)
+              || !$this->can($this->getID(), PURGE)) {
             Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
                                              INFO, true);
             return false;

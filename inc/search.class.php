@@ -874,8 +874,8 @@ class Search {
                   }
                }
                $search_config = "";
-               if (Session::haveRight("search_config","w")
-                   || Session::haveRight("search_config_global","w")) {
+               if (Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
+                                                                DisplayPreference::GENERAL))) {
 
                   $tmp = " class='pointer' onClick=\"".Html::jsGetElementbyID('search_config').".dialog('open');\"";
 

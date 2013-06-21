@@ -267,7 +267,7 @@ class ITILCategory extends CommonTreeDropdown {
       $ID           = $tt->fields['id'];
 
       if (!$tt->getFromDB($ID)
-          || !$tt->can($ID, "r")) {
+          || !$tt->can($ID, READ)) {
          return false;
       }
       $ttm  = new self();

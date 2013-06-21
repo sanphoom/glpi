@@ -96,7 +96,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $menu = array();
       if (get_called_class() == 'CommonDropdown') {
-         if (Session::haveRight("dropdown","r")
+         if (Session::haveRight("dropdown", READ)
              || Session::haveRight("entity_dropdown","r")
              || Session::haveRight("internet", READ)) {
             $menu['title']             = static::getTypeName(2);
@@ -207,10 +207,10 @@ abstract class CommonDropdown extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {
-         $this->check($ID,'r');
+         $this->check($ID, READ);
       } else {
          // Create item
-         $this->check(-1,'w');
+         $this->check(-1, CREATE);
       }
       $this->showFormHeader($options);
 

@@ -259,8 +259,8 @@ class Netpoint extends CommonDropdown {
 
       $ID       = $item->getField('id');
       $netpoint = new self();
-      $item->check($ID, 'r');
-      $canedit  = $item->can($ID, 'w');
+      $item->check($ID, READ);
+      $canedit  = $item->canEdit($ID);
 
       if (isset($_POST["start"])) {
          $start = $_POST["start"];

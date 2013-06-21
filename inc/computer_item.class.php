@@ -349,7 +349,7 @@ class Computer_Item extends CommonDBRelation{
             }
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($item->can($key, 'd')) {
+                  if ($item->can($key, DELETE)) {
                      if ($this->disconnectForItem($item)) {
                         $res['ok']++;
                      } else {

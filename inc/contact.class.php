@@ -410,7 +410,7 @@ class Contact extends CommonDBTM{
 
       include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
 
-      if (!$this->can($this->fields['id'],'r')) {
+      if (!$this->can($this->fields['id'], READ)) {
          return false;
       }
 

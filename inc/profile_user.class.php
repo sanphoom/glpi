@@ -645,7 +645,7 @@ class Profile_User extends CommonDBRelation {
                   ON (`glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`)
                 WHERE `glpi_profiles_users`.`users_id` = '$user_ID'
                   AND `glpi_profilerights`.`name` = '$right'
-                  AND `glpi_profilerights`.`right` IN ('1','r','w')";
+                  AND `glpi_profilerights`.`rights` & ". (READ | CREATE | UPDATE | DELETE |PURGE);
       $result = $DB->query($query);
 
       if ($DB->numrows($result) > 0) {

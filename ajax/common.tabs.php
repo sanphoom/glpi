@@ -63,9 +63,9 @@ if (!isset($_GET["withtemplate"])) {
 if ($item = getItemForItemtype($_GET['_itemtype'])) {
    if ($item->get_item_to_display_tab) {
       if (!isset($_GET["id"])
-          || ($item->isNewID($_GET["id"]) && !$item->can(-1, 'w', $_GET))) {
+          || ($item->isNewID($_GET["id"]) && !$item->can(-1, CREATE, $_GET))) {
          exit();
-      } else if (!$item->can($_GET["id"],'r')){
+      } else if (!$item->can($_GET["id"], READ)){
          exit();
       }
    }

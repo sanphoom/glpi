@@ -927,6 +927,51 @@ function update084to085() {
              WHERE `name` = 'edit_all_change'";
    $DB->queryOrDie($query, "0.85 delete edit_all_change right");
 
+
+   // update search_config
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'search_config' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . DisplayPreference::PERSONAL ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'search_config'";
+      $DB->queryOrDie($query, "0.85 update search_config with search_config");
+   }
+
+
+   // delete search_config_global
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'search_config_global' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . DisplayPreference::GENERAL ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'search_config'";
+      $DB->queryOrDie($query, "0.85 update search_config with search_config_global");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'search_config_global'";
+   $DB->queryOrDie($query, "0.85 delete search_config_global right");
+
+
+   // delete check_update
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'check_update' AND `right` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . Backup::CHECKUPDATE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'backup'";
+         $DB->queryOrDie($query, "0.85 update backup with check_update");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'check_update'";
+   $DB->queryOrDie($query, "0.85 delete check_update right");
+
+
    // don't drop column right  - be done later
    //$migration->dropField("glpi_profilerights", 'right');
 

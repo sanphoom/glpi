@@ -124,7 +124,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['delete_user'])) {
    ///TODO try to move it to specific form page
    $ticket_user = new Ticket_User();
-   $ticket_user->check($_POST['id'], 'd');
+   $ticket_user->check($_POST['id'], DELETE);
    $ticket_user->delete($_POST);
 
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
@@ -134,7 +134,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['delete_group'])) {
    $group_ticket = new Group_Ticket();
-   $group_ticket->check($_POST['id'], 'd');
+   $group_ticket->check($_POST['id'], DELETE);
    $group_ticket->delete($_POST);
 
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
@@ -143,7 +143,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['delete_supplier'])) {
    $supplier_ticket = new Supplier_Ticket();
-   $supplier_ticket->check($_POST['id'], 'd');
+   $supplier_ticket->check($_POST['id'], DELETE);
    $supplier_ticket->delete($_POST);
 
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
@@ -152,7 +152,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['addme_observer'])) {
    $ticket_user = new Ticket_User();
-   $track->check($_POST['tickets_id'], 'r');
+   $track->check($_POST['tickets_id'], READ);
    $input = array('tickets_id'       => $_POST['tickets_id'],
                   'users_id'         => Session::getLoginUserID(),
                   'use_notification' => 1,

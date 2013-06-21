@@ -58,6 +58,8 @@ class Item_Devices extends CommonDBRelation {
    static public $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
    static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
+   static $rightname = 'device';
+
 
    function getForbiddenStandardMassiveAction() {
 
@@ -102,7 +104,7 @@ class Item_Devices extends CommonDBRelation {
                         }
                         break;
                      case 'purge_device' :
-                        if ($link->can($key,'d')) {
+                        if ($link->can($key, PURGE)) {
                            $force = 1;
                            // Only mark deletion for
                            if ($link->maybeDeleted()
@@ -380,10 +382,10 @@ class Item_Devices extends CommonDBRelation {
 
       $ID = $item->getField('id');
 
-      if (!$item->can($ID, 'r')) {
+      if (!$item->can($ID, READ)) {
          return false;
       }
-      $canedit = (($withtemplate != 2) && $item->can($ID, 'w'));
+      $canedit = (($withtemplate != 2) && $item->canEdit($ID));
       echo "<div class='spaced'>";
       $rand = mt_rand();
       if ($canedit) {
@@ -886,6 +888,19 @@ class Item_Devices extends CommonDBRelation {
             }
          }
       }
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      unset($values[READ]);
+      return $values;
    }
 
 }
