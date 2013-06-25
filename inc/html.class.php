@@ -2298,7 +2298,7 @@ class Html {
       if (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id])) {
          $sel = "checked";
       }
-      return "<input type='checkbox' id='massaction_item_$id' name=\"item[$itemtype][".$id."]\" value='1' $sel>";
+      return "<input type='checkbox' id='massaction_item_".$itemtype."_$id' name=\"item[$itemtype][".$id."]\" value='1' $sel>";
    }
 
 
@@ -2380,6 +2380,8 @@ class Html {
    static function showMassiveActions($itemtype, $options=array()) {
       global $CFG_GLPI;
 
+      /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
+      
       $p['ontop']             = true;
       $p['num_displayed']     = -1;
       $p['fixed']             = true;

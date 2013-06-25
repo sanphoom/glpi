@@ -146,49 +146,6 @@ class Reminder extends CommonDBTM {
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "deletevisibility":
-            foreach ($input['item'] as $type => $items) {
-               if (in_array($type, array('Entity_Reminder', 'Group_Reminder', 'Profile_Reminder',
-                                         'Reminder_User'))) {
-                  $item = new $type();
-                  foreach ($items as $key => $val) {
-                     if ($item->can($key,'w')) {
-                        if ($item->delete(array('id' => $key))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                     }
-                  }
-               }
-            }
-
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
-
-
    /**
     * @since version 0.83
    **/
@@ -1206,7 +1163,7 @@ class Reminder extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('deletevisibility'
+                           'specific_actions' => array('delete'
                                                          => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
@@ -1232,8 +1189,7 @@ class Reminder extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]'
-                          value='1' >";
+                  Html::showMassiveActionCheckBox('Reminder_User',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1242,7 +1198,6 @@ class Reminder extends CommonDBTM {
             }
          }
       }
-
       // Groups
       if (count($this->groups)) {
          foreach ($this->groups as $key => $val) {
@@ -1250,8 +1205,7 @@ class Reminder extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Group_Reminder',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1282,8 +1236,7 @@ class Reminder extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]'
-                          value='1'>";
+                  Html::showMassiveActionCheckBox('Entity_Reminder',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1307,8 +1260,7 @@ class Reminder extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Profile_Reminder',$data["id"]);
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";

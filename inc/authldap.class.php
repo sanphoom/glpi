@@ -1718,7 +1718,7 @@ class AuthLDAP extends CommonDBTM {
 
                echo "<tr class='tab_bg_2 center'>";
                //Need to use " instead of ' because it doesn't work with names with ' inside !
-               echo "<td><input type='checkbox' name=\"item[" .$group_dn. "]\"></td>";
+               echo "<td><input type='checkbox' name=\"item[".__CLASS__."][" .$group_dn. "]\"></td>";
                echo "<td>" . $group . "</td>";
                echo "<td>" .$group_dn. "</td>";
                echo "<td>";

@@ -239,47 +239,6 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "deletevisibility":
-            foreach ($input['item'] as $type => $items) {
-               if (in_array($type, array('Entity_KnowbaseItem', 'Group_KnowbaseItem',
-                                         'KnowbaseItem_Profile', 'KnowbaseItem_User'))) {
-                  $item = new $type();
-                  foreach ($items as $key => $val) {
-                     if ($item->can($key,'w')) {
-                        if ($item->delete(array('id' => $key))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                     }
-                  }
-               }
-            }
-
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
-
 
    /**
     * @since version 0.83
@@ -1513,7 +1472,7 @@ class KnowbaseItem extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('deletevisibility'
+                           'specific_actions' => array('delete'
                                                          => _x('button', 'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
@@ -1540,8 +1499,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[KnowbaseItem_User][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('KnowbaseItem_User',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1558,8 +1516,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Group_KnowbaseItem][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Group_KnowbaseItem',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1590,8 +1547,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_KnowbaseItem][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Entity_KnowbaseItem',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1617,8 +1573,7 @@ class KnowbaseItem extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[KnowbaseItem_Profile][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('KnowbaseItem_Profile',$data["id"]);
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";

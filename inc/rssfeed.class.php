@@ -159,44 +159,6 @@ class RSSFeed extends CommonDBTM {
    }
 
 
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "deletevisibility" :
-            foreach ($input['item'] as $type => $items) {
-               if (in_array($type, array('Entity_RSSFeed', 'Group_RSSFeed', 'Profile_RSSFeed',
-                                         'RSSFeed_User'))) {
-                  $item = new $type();
-                  foreach ($items as $key => $val) {
-                     if ($item->can($key,'w')) {
-                        if ($item->delete(array('id' => $key))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                     }
-                  }
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
-
 
    function countVisibilities() {
 
@@ -1029,8 +991,8 @@ class RSSFeed extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('deletevisibility' => _x('button',
-                                                                                'Delete permanently')));
+                           'specific_actions' => array('delete' => _x('button',
+                                                                      'Delete permanently')));
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm']
@@ -1056,7 +1018,7 @@ class RSSFeed extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[RSSFeed_User][".$data["id"]."]' value='1' >";
+                  Html::showMassiveActionCheckBox('RSSFeed_User',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -1073,7 +1035,7 @@ class RSSFeed extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Group_RSSFeed][".$data["id"]."]' value='1'>";
+                  Html::showMassiveActionCheckBox('Group_RSSFeed',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -1104,8 +1066,7 @@ class RSSFeed extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_RSSFeed][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Entity_RSSFeed',$data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Entity')."</td>";
@@ -1129,8 +1090,7 @@ class RSSFeed extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Profile_RSSFeed][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('Profile_RSSFeed',$data["id"]);
                   echo "</td>";
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
