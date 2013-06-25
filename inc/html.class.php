@@ -3567,7 +3567,7 @@ class Html {
          echo Html::hidden('item_type', array('value' => $item_type_output));
 
          if ($item_type_output_param != 0) {
-            echo Html::hidden('item_type_param', array('value' => serialize($item_type_output_param)));
+            echo Html::hidden('item_type_param', array('value' => Toolbox::prepareArrayForInput($item_type_output_param)));
          }
          $split = explode("&amp;",$parameters);
 

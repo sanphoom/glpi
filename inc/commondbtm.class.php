@@ -3063,9 +3063,7 @@ class CommonDBTM extends CommonGLPI {
 
          case "update" :
             // Specific options for update fields
-            if (isset($input['options'])) {
-               $input['options'] = unserialize(stripslashes($input['options']));
-            } else {
+            if (!isset($input['options'])) {
                $input['options'] = array();
             }
             $group          = "";

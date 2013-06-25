@@ -153,9 +153,7 @@ class Item_Devices extends CommonDBRelation {
       switch ($input['action']) {
          case 'update_device':
             // Specific options for update fields
-            if (isset($input['options'])) {
-               $input['options'] = unserialize(stripslashes($input['options']));
-            } else {
+            if (!isset($input['options'])) {
                $input['options'] = array();
             }
             $group          = "";
