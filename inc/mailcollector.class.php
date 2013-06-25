@@ -736,8 +736,8 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
-      $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
-
+      $tkt['content'] = $this->cleanMailContent($tkt['content']);
+      
       $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
@@ -883,6 +883,37 @@ class MailCollector  extends CommonDBTM {
       return $tkt;
    }
 
+
+   /** Clean mail content : HTML + XSS + blacklisted content
+    *
+    * @param $string text to clean
+    *
+    * @return cleaned text
+   **/   
+   function cleanMailContent($string) {
+      global $DB;
+      // First clean HTML and XSS
+      $string = Toolbox::clean_cross_side_scripting_deep(Html::clean($string));
+
+      $rand = mt_rand();
+      // Move line breaks to special CHARS
+      $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
+      
+      // Wrap content for blacklisted items
+      $itemstoclean = array();
+      foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
+         $toclean = trim($data['content']);
+         if (!empty($toclean)) {
+            $toclean = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $toclean);
+            $itemstoclean[] = $toclean;
+         }
+      }
+      if (count($itemstoclean)) {
+         $string = str_replace($itemstoclean, '', $string);
+      }
+      $string = str_replace("==$rand==", "\r\n", $string);
+      return $string;
+   }
 
    /** function textCleaner - Strip out unwanted/unprintable characters from the subject.
     *
@@ -1376,7 +1407,6 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($mid, $folder='') {
-
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {

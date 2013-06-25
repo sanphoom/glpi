@@ -285,7 +285,16 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'textarea' :
-               echo "<textarea name='".$field['name']."' cols='40' rows='3'>".
+               $cols = 40;
+               $rows = 3;
+
+               if (isset($field['rows'])) {
+                  $rows = $field['rows'];
+               }
+               if (isset($field['cols'])) {
+                  $cols = $field['cols'];
+               }
+               echo "<textarea name='".$field['name']."' cols='$cols' rows='$rows'>".
                      $this->fields[$field['name']]."</textarea >";
                break;
 

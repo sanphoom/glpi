@@ -671,7 +671,9 @@ class Dropdown {
                         => array('Location'        => _n('Location', 'Locations', 2),
                                  'State'           => _n('Status of items', 'Statuses of items', 2),
                                  'Manufacturer'    => _n('Manufacturer', 'Manufacturers', 2),
-                                 'Blacklist'       => _n('Blacklist','Blacklists',2)),
+                                 'Blacklist'       => _n('Blacklist','Blacklists',2),
+                                 'BlacklistedMailContent' => __('Blacklisted mail content')
+                                 ),
 
                     __('Assistance')
                         => array('ITILCategory'     =>  _n('Category of ticket',
@@ -680,7 +682,8 @@ class Dropdown {
                                  'SolutionType'     => _n('Solution type', 'Solution types', 2),
                                  'RequestType'      => _n('Request source', 'Request sources', 2),
                                  'SolutionTemplate' => _n('Solution template',
-                                                          'Solution templates', 2)),
+                                                          'Solution templates', 2)
+                                ),
 
                     _n('Type', 'Types', 2)
                         => array('ComputerType'         => _n('Computer type', 'Computers types', 2),
@@ -704,7 +707,8 @@ class Dropdown {
                                  'DeviceCaseType'       => _n('Case type', 'Case types', 2),
                                  'PhonePowerSupply'     => _n('Phone power supply type',
                                                               'Phones power supply types', 2),
-                                 'Filesystem'           => _n('File system', 'File systems', 2)),
+                                 'Filesystem'           => _n('File system', 'File systems', 2)
+                                 ),
 
                     __('Model')
                         => array('ComputerModel'         => _n('Computer model',
@@ -715,7 +719,8 @@ class Dropdown {
                                  'MonitorModel'          => _n('Monitor model', 'Monitor models', 2),
                                  'PeripheralModel'       => _n('Peripheral model',
                                                                'Peripheral models', 2),
-                                 'PhoneModel'            =>  _n('Phone model', 'Phone models', 2)),
+                                 'PhoneModel'            =>  _n('Phone model', 'Phone models', 2)
+                                 ),
 
                     _n('Virtual machine', 'Virtual machines', 2)
                         => array('VirtualMachineType'   => _n('Virtualization model',
@@ -723,19 +728,23 @@ class Dropdown {
                                  'VirtualMachineSystem' => _n('Virtualization system',
                                                               'Virtualization systems', 2),
                                  'VirtualMachineState'  => _n('State of the virtual machine',
-                                                              'States of the virtual machine', 2)),
+                                                              'States of the virtual machine', 2)
+                                ),
 
                     __('Management')
                         => array('DocumentCategory' => _n('Document heading', 'Document headings', 2),
-                                 'DocumentType'     => _n('Document type', 'Document types', 2)),
+                                 'DocumentType'     => _n('Document type', 'Document types', 2)
+                                ),
 
                     __('Tools')
                         => array('KnowbaseItemCategory' => _n('Knowledge base category',
-                                                              'Knowledge base categories', 2)),
+                                                              'Knowledge base categories', 2)
+                                ),
 
                     __('Calendar')
                         => array('Calendar' => _n('Calendar', 'Calendars', 2),
-                                 'Holiday'  => _n('Close time', 'Close times', 2)),
+                                 'Holiday'  => _n('Close time', 'Close times', 2)
+                                ),
 
                     _n('Operating system', 'Operating systems',2)
                         => array('OperatingSystem'     => _n('Operating system',
@@ -745,7 +754,8 @@ class Dropdown {
                                                             'Versions of the operating system', 2),
                                  'OperatingSystemServicePack'
                                                       => _n('Service pack', 'Service packs', 2),
-                                 'AutoUpdateSystem'   => _n('Update source', 'Update sources', 2)),
+                                 'AutoUpdateSystem'   => _n('Update source', 'Update sources', 2)
+                                 ),
 
                     __('Networking')
                         => array('NetworkInterface'         => _n('Network interface',
@@ -755,33 +765,39 @@ class Dropdown {
                                                                   'Network outlets', 2),
                                  'Domain'                   => _n('Domain', 'Domains', 2),
                                  'Network'                  => _n('Network', 'Networks', 2),
-                                 'Vlan'                     => __('VLAN')),
+                                 'Vlan'                     => __('VLAN')
+                                 ),
 
                     __('Internet')
                         => array('IPNetwork'    => _n('IP network', 'IP networks', 2),
                                  'FQDN'         => _n('Internet domain', 'Internet domains', 2),
                                  'WifiNetwork'  => _n('Wifi network', 'Wifi networks', 2),
-                                 'NetworkName'  => _n('Network name', 'Network names', 2)),
+                                 'NetworkName'  => _n('Network name', 'Network names', 2)
+                                 ),
 
                     _n('Software', 'Software', 1)
                         => array('SoftwareCategory' => _n('Software category',
-                                                          'Software categories', 2)),
+                                                          'Software categories', 2)
+                                ),
 
                     __('User')
                         => array('UserTitle'     => _n('User title', 'Users titles', 2),
-                                 'UserCategory'  => _n('User category', 'User categories', 2)),
+                                 'UserCategory'  => _n('User category', 'User categories', 2)
+                                ),
 
                     __('Authorizations assignment rules')
                         => array('RuleRightParameter' => _n('LDAP criterion', 'LDAP criteria', 2)),
 
                     __('Fields unicity')
                         => array('Fieldblacklist' => _n('Ignored value for the unicity',
-                                                        'Ignored values for the unicity', 2)),
+                                                        'Ignored values for the unicity', 2)
+                                ),
 
                     __('External authentications')
                         => array('SsoVariable' => _n('Field storage of the login in the HTTP request',
                                                      'Fields storage of the login in the HTTP request',
-                                                     2))
+                                                     2)
+                                )
 
 
                  ); //end $opt

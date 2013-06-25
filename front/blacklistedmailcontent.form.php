@@ -34,7 +34,7 @@
 
 include ('../inc/includes.php');
 
-$dropdown = new Calendar();
+$dropdown = new BlacklistedMailContent();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
 
-include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>

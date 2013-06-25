@@ -1572,6 +1572,17 @@ function update084to085() {
 
    $migration->addField('glpi_documents', 'is_blacklisted', 'bool');
    
+   if (!TableExists("glpi_blacklistedmailcontents")) {
+      $query = "CREATE TABLE IF NOT EXISTS `glpi_blacklistedmailcontents` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) DEFAULT NULL,
+                  `content` text COLLATE utf8_unicode_ci,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.85 add table glpi_blacklistedmailcontents");
+   }
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
