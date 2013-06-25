@@ -1514,6 +1514,61 @@ function update084to085() {
    Config::setConfigurationValues('core', array('keep_devices_when_purging_item' => 0));
 
 
+
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `itemtype` = 'MailCollector'";
+
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                          (`name`, `itemtype`, `date_mod`)
+                   VALUES ('Receiver errors', 'MailCollector', NOW())";
+         $DB->queryOrDie($query, "0.85 add mail collector notification");
+         $notid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                          (`notificationtemplates_id`, `language`, `subject`,
+                           `content_text`,
+                           `content_html`)
+                   VALUES ($notid, '', '##mailcollector.action##',
+                           '##FOREACHmailcollectors##
+##lang.mailcollector.name## : ##mailcollector.name##
+##lang.mailcollector.errors## : ##mailcollector.errors##
+##mailcollector.url##
+##ENDFOREACHmailcollectors##',
+'&lt;p&gt;##FOREACHmailcollectors##&lt;br /&gt;##lang.mailcollector.name## : ##mailcollector.name##&lt;br /&gt; ##lang.mailcollector.errors## : ##mailcollector.errors##&lt;br /&gt;&lt;a href=\"##mailcollector.url##\"&gt;##mailcollector.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHmailcollectors##&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;')";
+         $DB->queryOrDie($query, "0.85 add mail collector notification translation");
+
+
+         $query = "INSERT INTO `glpi_notifications`
+                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                           `date_mod`)
+                   VALUES ('Receiver errors', 0, 'MailCollector', 'error', 'mail',
+                             $notid, '', 1, 1, NOW())";
+         $DB->queryOrDie($query, "0.85 add mail collector notification");
+         $notifid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtargets`
+                          (`id`, `notifications_id`, `type`, `items_id`)
+                   VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::GLOBAL_ADMINISTRATOR.");";
+         $DB->queryOrDie($query, "0.85 add mail collector notification target");
+      }
+   }
+
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='MailCollector' AND `name`='mailgateerror'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('MailCollector', 'mailgateerror', ".DAY_TIMESTAMP.", NULL, 1, 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for mailgateerror");
+   }
+
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

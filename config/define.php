@@ -232,7 +232,7 @@ $CFG_GLPI['items_that_owns_devices'] = array(1  => 'Item_DeviceMotherboard', 2  
 
 $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'ConsumableItem', 'Contract', 'Crontask',
                                                   'DBConnection', 'FieldUnicity', 'Infocom',
-                                                  'PlanningRecall',
+                                                  'MailCollector', 'PlanningRecall',
                                                   'Problem', 'Reservation', 'SoftwareLicense',
                                                   'Ticket', 'User');
 

@@ -1403,9 +1403,16 @@ class MailCollector  extends CommonDBTM {
     * @param $name
    **/
    static function cronInfo($name) {
+      switch($name) {
+         case 'mailgate' :
+            return array('description' => __('Retrieve email (Mails receivers)'),
+                        'parameter'   => __('Number of emails to retrieve'));
+            break;
 
-      return array('description' => __('Retrieve email (Mails receivers)'),
-                   'parameter'   => __('Number of emails to retrieve'));
+         case 'mailgateerror' :
+            return array('description' => __('Send alarms on receiver errors'));
+            break;
+      }
    }
 
 
@@ -1455,7 +1462,40 @@ class MailCollector  extends CommonDBTM {
       return 0;
    }
 
+   /**
+    * Send Alarms on mailgate errors
+    *
+    * @param $task for log
+   **/
+   static function cronMailgateError($task) {
+      global $DB, $CFG_GLPI;
 
+      if (!$CFG_GLPI["use_mailing"]) {
+         return 0;
+      }
+      $cron_status   = 0;
+
+      $query = "SELECT `glpi_mailcollectors`.*
+                  FROM `glpi_mailcollectors`
+                  WHERE `glpi_mailcollectors`.`errors`  > 0
+                     AND `glpi_mailcollectors`.`is_active`";
+
+      $items = array();
+      foreach ($DB->request($query) as $data) {
+         $items[$data['id']]  = $data;
+      }
+
+      if (count($items)) {
+         if (NotificationEvent::raiseEvent('error', new self(),
+                                             array('items' => $items))) {
+            $cron_status = 1;
+            if ($task) {
+               $task->setVolume(count($items));
+            }
+         }
+      }
+      return $cron_status;
+   }
    /**
     * @param $width
    **/
@@ -1587,7 +1627,6 @@ class MailCollector  extends CommonDBTM {
       Rule::cleanForItemCriteria($this, 'mailcollector');
       Rule::cleanForItemCriteria($this, '_mailgate');
    }
-
 
 }
 ?>

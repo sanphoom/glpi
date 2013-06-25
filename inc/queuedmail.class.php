@@ -135,6 +135,12 @@ class QueuedMail extends CommonDBTM {
       } else {
         $input['headers'] = ''; 
       }
+
+      // Force items_id to integer
+      if (!isset($input['items_id']) || empty($input['items_id'])) {
+         $input['items_id'] = 0;
+      }
+      
       // Drop existing mails in queue for the same event and item  and recipient
       if (isset($input['itemtype']) && !empty($input['itemtype'])
          && isset($input['entities_id']) && $input['entities_id']>=0
