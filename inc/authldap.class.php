@@ -63,6 +63,13 @@ class AuthLDAP extends CommonDBTM {
       return _n('LDAP directory', 'LDAP directories', $nb);
    }
 
+   static function canCreate() {
+      return static::canUpdate();
+   }
+
+   static function canPurge() {
+      return static::canUpdate();
+   }
 
    function post_getEmpty() {
 

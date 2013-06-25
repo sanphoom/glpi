@@ -50,7 +50,14 @@ class Blacklist extends CommonDropdown {
    const UUID   = 4;
    const EMAIL  = 5;
 
+   static function canCreate() {
+      return static::canUpdate();
+   }
 
+   static function canPurge() {
+      return static::canUpdate();
+   }
+   
    function getAdditionalFields() {
 
       return array(array('name'  => 'value',

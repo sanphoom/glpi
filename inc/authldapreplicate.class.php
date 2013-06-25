@@ -39,6 +39,14 @@ class AuthLdapReplicate extends CommonDBTM {
    static $rightname = 'config';
 
 
+   static function canCreate() {
+      return static::canUpdate();
+   }
+
+   static function canPurge() {
+      return static::canUpdate();
+   }
+  
    /**
     * @since version 0.84
     *

@@ -85,6 +85,10 @@ class MailCollector  extends CommonDBTM {
    static function canCreate() {
       return static::canUpdate();
    }
+
+   static function canPurge() {
+      return static::canUpdate();
+   }
    
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()

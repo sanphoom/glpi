@@ -47,5 +47,13 @@ class SsoVariable extends CommonDropdown {
                 'Fields storage of the login in the HTTP request', $nb);
    }
 
+   static function canCreate() {
+      return static::canUpdate();
+   }
+
+   static function canPurge() {
+      return static::canUpdate();
+   }   
+
 }
 ?>

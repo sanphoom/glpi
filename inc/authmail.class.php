@@ -56,7 +56,14 @@ class AuthMail extends CommonDBTM {
       return $input;
    }
 
+   static function canCreate() {
+      return static::canUpdate();
+   }
 
+   static function canPurge() {
+      return static::canUpdate();
+   }
+   
    function prepareInputForAdd($input) {
 
       if (isset($input['mail_server']) && !empty($input['mail_server'])) {

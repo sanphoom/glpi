@@ -55,7 +55,14 @@ class NotificationTemplate extends CommonDBTM {
       return _n('Notification template', 'Notification templates', $nb);
    }
 
+   static function canCreate() {
+      return static::canUpdate();
+   }
 
+   static function canPurge() {
+      return static::canUpdate();
+   }
+   
    function defineTabs($options=array()) {
 
       $ong = array();
