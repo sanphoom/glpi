@@ -277,6 +277,7 @@ $CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_re
                                      'duedatewarning_unit',
                                      'followup_private', 'is_categorized_soft_expanded',
                                      'is_ids_visible', 'is_not_categorized_soft_expanded',
+                                     'keep_devices_when_purging_item',
                                      'language', 'list_limit', 'names_format',
                                      'notification_to_myself', 'number_format', 'pdffont', 'priority_1',
                                      'priority_2', 'priority_3', 'priority_4', 'priority_5',
