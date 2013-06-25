@@ -930,7 +930,7 @@ function update084to085() {
 
    // update search_config
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'search_config' AND `right` = '1'") as $profrights) {
+                         "`name` = 'search_config' AND `right` = 'w'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . DisplayPreference::PERSONAL ."
@@ -942,7 +942,7 @@ function update084to085() {
 
    // delete search_config_global
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'search_config_global' AND `right` = '1'") as $profrights) {
+                         "`name` = 'search_config_global' AND `right` = 'w'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . DisplayPreference::GENERAL ."
