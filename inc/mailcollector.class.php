@@ -82,7 +82,10 @@ class MailCollector  extends CommonDBTM {
       return _n('Receiver', 'Receivers', $nb);
    }
 
-
+   static function canCreate() {
+      return static::canUpdate();
+   }
+   
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
     *
