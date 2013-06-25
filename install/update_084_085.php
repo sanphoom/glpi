@@ -1515,6 +1515,7 @@ function update084to085() {
    $migration->addField("glpi_users", "keep_devices_when_purging_item", "tinyint(1) DEFAULT NULL");
 
    Config::setConfigurationValues('core', array('maintenance_mode' => 0));
+   Config::setConfigurationValues('core', array('maintenance_text' => ''));
    
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
