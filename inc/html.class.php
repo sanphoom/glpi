@@ -599,7 +599,6 @@ class Html {
       return $request;
    }
 
-
    /**
     * Display Debug Information
     *
@@ -607,12 +606,12 @@ class Html {
    **/
    static function displayDebugInfos($with_session=true) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
-
+      
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
          echo "<br><br><br><div id='debug'>";
-         echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
+         echo "<h1><a id='see_debug' name='see_debug'>GLPI DEBUG MODE</a></h1>";
 
 
          echo "<div id='debugtabs$rand'><ul>";
@@ -1681,13 +1680,18 @@ class Html {
 
       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
          echo "<div id='debug-float'>";
-         echo "<a href='#see_debug'>GLPI MODE TRANSLATION</a>";
+         echo "<a href='#see_debug'>GLPI TRANSLATION MODE</a>";
          echo "</div>";
       }
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<div id='debug-float'>";
-         echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
+         echo "<a href='#see_debug'>GLPI DEBUG MODE</a>";
+         echo "</div>";
+      }
+      if ($CFG_GLPI['maintenance_mode']) { // mode maintenance
+         echo "<div id='maintenance-float'>";
+         echo "<a href='#see_maintenance'>GLPI MAINTENANCE MODE</a>";
          echo "</div>";
       }
       self::displayDebugInfos();
@@ -2076,8 +2080,9 @@ class Html {
       // Body with configured stuff
       echo "<body>";
       echo "<div id='page'>";
+      echo "<br><br>";
       echo "<div id='bloc'>";
-       echo "<div id='logo_bloc'></div>";
+      echo "<div id='logo_bloc'></div>";
    }
 
 

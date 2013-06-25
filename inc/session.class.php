@@ -73,7 +73,8 @@ class Session {
 
       if ($auth->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
-         $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens');
+         $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
+                         'glpiskipMaintenance');
          $save   = array();
          foreach ($tosave as $t) {
             if (isset($_SESSION[$t])) {
@@ -995,6 +996,7 @@ class Session {
             if (!empty($toadd)) {
                switch ($message_type) {
                   case ERROR :
+                  case WARNING :
                      $_SESSION["MESSAGE_AFTER_REDIRECT"] .= "<h3><span class='red'>$toadd</span></h3>";
                      break;
 

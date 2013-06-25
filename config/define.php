@@ -130,6 +130,7 @@ define("MAIL_SMTPTLS",3);
 // MESSAGE TYPE
 define("INFO",0);
 define("ERROR",1);
+define("WARNING",2);
 
 // ACTIONS_ERROR
 

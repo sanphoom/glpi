@@ -1304,7 +1304,6 @@ div#tabcontent {
    background: url(../pics/login_logo_glpi.png)  no-repeat; 
 }
 
-
 #boxlogin {
    position:relative;
    margin:auto;
@@ -1860,7 +1859,15 @@ div#show_all_menu .tab_bg_1 a:hover {
    z-index: 100;
 }
 
-#debug-float a {
+#maintenance-float {
+   top: 0px;
+   left: 280px;
+   position: absolute;
+   z-index: 100;
+}
+
+
+#debug-float a, #maintenance-float a {
    border-top: 1px solid #cecece;
    border-bottom: 2px solid #4a4a4a;
    border-left: 1px solid #cecece;
@@ -1876,7 +1883,7 @@ div#show_all_menu .tab_bg_1 a:hover {
    color:red;
 }
 
-#debug-float a:hover {
+#debug-float a:hover, #maintenance-float a:hover {
    background-color: #fc3;
    border-bottom: 2px solid #36f;
 }
