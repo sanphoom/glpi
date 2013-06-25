@@ -1472,10 +1472,9 @@ function generate_entity($ID_entity) {
    $FIRST["users_sadmin"] = getMaxItem("glpi_users")+1;
    $user                  = new User();
    $gu                    = new Group_User();
-
    for ($i=0 ; $i<$MAX['users_sadmin'] ; $i++) {
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "sadmin'$i-$ID_entity",
+                             array('name'               => "sadmin$i-$ID_entity",
                                    'password'           => "sadmin'$i",
                                    'password2'          => "sadmin'$i",
                                    'phone'              => "tel $i",
@@ -1497,14 +1496,13 @@ function generate_entity($ID_entity) {
       $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['techgroups'], $LAST['techgroups'])));
    }
-
    $LAST["users_sadmin"] = getMaxItem("glpi_users");
    $FIRST["users_admin"] = getMaxItem("glpi_users")+1;
 
    for ($i=0 ; $i<$MAX['users_admin'] ; $i++) {
 
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "admin'$i-$ID_entity",
+                             array('name'               => "admin$i-$ID_entity",
                                    'password'           => "admin'$i",
                                    'password2'          => "admin'$i",
                                    'phone'              => "tel $i",
@@ -1535,7 +1533,7 @@ function generate_entity($ID_entity) {
 
    for ($i=0 ; $i<$MAX['users_normal'] ; $i++) {
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "normal'$i-$ID_entity",
+                             array('name'               => "normal$i-$ID_entity",
                                    'password'           => "normal'$i",
                                    'password2'          => "normal'$i",
                                    'phone'              => "tel $i",
@@ -1562,7 +1560,7 @@ function generate_entity($ID_entity) {
 
    for ($i=0 ; $i<$MAX['users_postonly'] ; $i++) {
       $users_id = $user->add(toolbox::addslashes_deep(
-                             array('name'               => "postonly'$i-$ID_entity",
+                             array('name'               => "postonly$i-$ID_entity",
                                    'password'           => "postonly'$i",
                                    'password2'          => "postonly'$i",
                                    'phone'              => "tel $i",
