@@ -1457,12 +1457,14 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($_FILES['filename'])
              && (count($_FILES['filename']) > 0)
              && ($_FILES['filename']["size"] > 0)) {
-
+             
+            $docID = 0;
             // Check for duplicate
             if ($doc->getFromDBbyContent($this->fields["entities_id"],
                                          $_FILES['filename']['tmp_name'])) {
-               $docID = $doc->fields["id"];
-
+               if (!$doc->fields['is_blacklisted']) {
+                  $docID = $doc->fields["id"];
+               }
             } else {
                $input2         = array();
                //TRANS: Default document to files attached to tickets : %d is the ticket id

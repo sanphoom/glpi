@@ -312,6 +312,12 @@ class Document extends CommonDBTM {
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Heading')."</td>";
+      echo "<td>";
+      DocumentCategory::dropdown(array('value' => $this->fields["documentcategories_id"]));
+      echo "</td></tr>";
+      
       if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Current file')."</td>";
@@ -339,12 +345,6 @@ class Document extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Heading')."</td>";
-      echo "<td>";
-      DocumentCategory::dropdown(array('value' => $this->fields["documentcategories_id"]));
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('MIME type')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mime");
@@ -354,7 +354,14 @@ class Document extends CommonDBTM {
          echo "<td>".$this->fields["sha1sum"];
       }
       echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Blacklisted for import')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo("is_blacklisted", $this->fields["is_blacklisted"]);
+      echo "</td></tr>";
 
+      
       $this->showFormButtons($options);
 
       return true;

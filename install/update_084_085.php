@@ -1570,6 +1570,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for mailgateerror");
    }
 
+   $migration->addField('glpi_documents', 'is_blacklisted', 'bool');
    
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
