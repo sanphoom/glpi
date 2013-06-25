@@ -69,19 +69,18 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
 
-   // Copy solution to KB redirect to KB
-   if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
-      Html::redirect($CFG_GLPI["root_doc"].
-                     "/front/knowbaseitem.form.php?id=new&item_itemtype=Ticket&item_items_id=".
-                     $_POST["id"]);
-   } else {
-      if ($track->can($_POST["id"], READ)) {
-         Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
+
+   if ($track->can($_POST["id"], READ)) {
+      $toadd = '';
+      // Copy solution to KB redirect to KB
+      if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
+         $toadd = "&_sol_to_kb=1";
       }
-      Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'),
-                                       true, ERROR);
-      Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.php");
+      Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"].$toadd);
    }
+   Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'),
+                                    true, ERROR);
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.php");
 
 } else if (isset($_POST['delete'])) {
    $track->check($_POST['id'], DELETE);
@@ -185,6 +184,16 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    $options['id'] = $_GET["id"];
    $track->display($options);
 
+   if (isset($_GET['_sol_to_kb'])) {
+      Ajax::createIframeModalWindow('savetokb',
+                                    $CFG_GLPI["root_doc"].
+                                    "/front/knowbaseitem.form.php?_in_modal=1&item_itemtype=Ticket&item_items_id=".
+                                    $_GET["id"],
+                                    array('title'         => __('Save solution to the knowledge base'),
+                                          'reloadonclose' => false));
+      echo Html::scriptBlock(Html::jsGetElementbyID('savetokb').".dialog('open');");
+   }
+   
 } else {
    Html::header(__('New ticket'),'',"helpdesk","ticket");
 

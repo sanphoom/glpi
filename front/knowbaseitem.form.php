@@ -52,11 +52,14 @@ $kb = new KnowbaseItem();
 if (isset($_POST["add"])) {
    // ajoute un item dans la base de connaisssances
    $kb->check(-1, CREATE,$_POST);
-
    $newID = $kb->add($_POST);
    Event::log($newID, "knowbaseitem", 5, "tools",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
+   if (isset($_POST['_in_modal']) && $_POST['_in_modal']) {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$newID&_in_modal=1");
+   } else {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
+   }
 
 } else if (isset($_POST["update"])) {
    // actualiser  un item dans la base de connaissances
@@ -116,11 +119,14 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET["id"])) {
 
    if (isset($_GET["_in_modal"])) {
-
       Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
       $kb = new KnowbaseItem();
-      $kb->check($_GET["id"], READ);
-      $kb->showFull();
+      if ($_GET['id']) {
+         $kb->check($_GET["id"], READ);
+         $kb->showFull();
+      } else { // New item
+         $kb->showForm($_GET["id"], $_GET);
+      }
       Html::popFooter();
    } else {
       // modifier un item dans la base de connaissance

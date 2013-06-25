@@ -637,7 +637,15 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Content')."</td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='100' rows='30' id='answer' name='answer'>".$this->fields["answer"];
+      
+      $cols = 100;
+      $rows = 30;
+      if (isset($options['_in_modal']) && $options['_in_modal']) {
+         $rows=15;
+         echo Html::hidden('_in_modal', array('value' => 1));
+      }
+      
+      echo "<textarea cols='$cols' rows='$rows' id='answer' name='answer'>".$this->fields["answer"];
       echo "</textarea>";
       echo "</td>";
       echo "</tr>\n";
