@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -46,6 +46,9 @@ class Item_DevicePowerSupply extends Item_Devices {
    static protected $notable = false;
 
 
+   /**
+    * @since version 0.85
+   **/
    static function itemAffinity() {
       return array('Computer', 'NetworkEquipment');
    }

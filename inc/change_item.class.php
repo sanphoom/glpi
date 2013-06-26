@@ -131,10 +131,12 @@ class Change_Item extends CommonDBRelation{
          foreach ($change->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
          }
-         Dropdown::showSelectItemFromItemtypes(array('itemtypes'       => $types,
-                                                     'entity_restrict' => ($change->fields['is_recursive']?-1:$change->fields['entities_id'])));
+         Dropdown::showSelectItemFromItemtypes(array('itemtypes' => $types,
+                                                     'entity_restrict'
+                                                                 => ($change->fields['is_recursive']
+                                                                     ?-1:$change->fields['entities_id'])));
          echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='changes_id' value='$instID'>";
          echo "</td></tr>";
          echo "</table>";

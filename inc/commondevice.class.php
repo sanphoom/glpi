@@ -182,8 +182,8 @@ abstract class CommonDevice extends CommonDropdown {
       $linktype = 'Item_'.static::getType();
       if (in_array($itemtype, $linktype::itemAffinity())) {
          $column = $base->addHeader('device', $content, $super, $father);
-         $column->setItemType($this_type, (isset($options['itemtype_title']) ?
-                                           $options['itemtype_title'] : ''));
+         $column->setItemType($this_type,
+                              isset($options['itemtype_title']) ? $options['itemtype_title'] : '');
       } else {
             $column = $father;
       }
@@ -302,6 +302,12 @@ abstract class CommonDevice extends CommonDropdown {
                    'manufacturers_id' => 'equal');
    }
 
+
+   /**
+    * @see CommonDropdown::defineTabs()
+    *
+    * @since version 0.85
+    */
    function defineTabs($options=array()) {
 
       $ong = array();

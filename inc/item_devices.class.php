@@ -238,6 +238,8 @@ class Item_Devices extends CommonDBRelation {
     *
     * Should be overloaded by Item_Device*
     *
+    * @since version 0.85
+    *
     * @return array of the itemtype that can have this Item_Device
    **/
    static function itemAffinity() {
@@ -264,6 +266,8 @@ class Item_Devices extends CommonDBRelation {
     *
     * @param $itemtype the type of the item that we want to know its devices
     *
+    * @since version 0.85
+    *
     * @return array of Item_Device*
    **/
    static function getItemAffinities($itemtype) {
@@ -282,7 +286,6 @@ class Item_Devices extends CommonDBRelation {
          $_SESSION['glpi_item_device_affinities'][$itemtype] = $afffinities;
       }
 
-
       return $_SESSION['glpi_item_device_affinities'][$itemtype];
    }
 
@@ -290,10 +293,12 @@ class Item_Devices extends CommonDBRelation {
    /**
     * Get all kind of items that can be used by Item_Device*
     *
+    * @since version 0.85
+    *
     * @return array of the available items
    **/
    static function getConcernedItems() {
-      return array('Computer', 'Monitor', 'NetworkEquipment', 'Printer', 'Peripheral', 'Phone');
+      return array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
    }
 
 
@@ -339,7 +344,7 @@ class Item_Devices extends CommonDBRelation {
                   $nb   += countElementsInTable($link_type::getTable(),
                                                 "`items_id` = '".$item->getID()."'
                                                    AND `itemtype` = '".$item->getType()."'
-                                                   AND `is_deleted`='0'");
+                                                   AND `is_deleted` = '0'");
                }
             }
             if (isset($nb)) {
@@ -353,8 +358,9 @@ class Item_Devices extends CommonDBRelation {
                $linkClass       = "Item_$deviceClass";
                $table           = $linkClass::getTable();
                $foreignkeyField = $deviceClass::getForeignKeyField();
-               $nb = countElementsInTable($table, "`$foreignkeyField` = '".$item->getID()."'
-                                               AND `is_deleted`='0'");
+               $nb = countElementsInTable($table,
+                                          "`$foreignkeyField` = '".$item->getID()."'
+                                            AND `is_deleted` = '0'");
             }
             if (isset($nb)) {
                return self::createTabEntry(_n('Item', 'Items', $nb), $nb);
@@ -416,11 +422,15 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($canedit) {
-         $massiveactionparams = array('container'        => 'form_device_action'.$rand,
-                                      'fixed'            => false,
-                                      'display_arrow'    => false,
-                                      'specific_actions' => array('unaffect' => __('Dissociate'),
-                                                                  'purge_device' => _x('button', 'Delete permanently')));
+         $massiveactionparams = array('container'
+                                              => 'form_device_action'.$rand,
+                                      'fixed' => false,
+                                      'display_arrow'
+                                              => false,
+                                      'specific_actions'
+                                              => array('unaffect' => __('Dissociate'),
+                                                       'purge_device' => _x('button',
+                                                                            'Delete permanently')));
          if ($is_device) {
             $class = 'Item_'.$item->getType();
             $massiveactionparams['specific_actions']['update_device'] = _x('button', 'Update');
@@ -458,12 +468,15 @@ class Item_Devices extends CommonDBRelation {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
          echo __('Add a new component')."</td><td class=left width='70%'>";
          if ($is_device) {
-            Dropdown::showInteger('number_devices_to_add', 0, 0, 10);
+            Dropdown::showNumber('number_devices_to_add', array('value' => 0,
+                                                                'min'   => 0,
+                                                                'max'   => 10));
          } else {
             Dropdown::showSelectItemFromItemtypes(array('itemtype_name'       => 'devicetype',
                                                         'items_id_name'       => 'devices_id',
                                                         'itemtypes'           => $devtypes,
-                                                        'showItemSpecificity' => $CFG_GLPI['root_doc'].'/ajax/getUnaffectedItemDevice.php'));
+                                                        'showItemSpecificity' => $CFG_GLPI['root_doc']
+                                                                 .'/ajax/getUnaffectedItemDevice.php'));
          }
          echo "</td><td>";
          echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
@@ -501,7 +514,7 @@ class Item_Devices extends CommonDBRelation {
     *
     * @param $item
     * @param $table
-    * @param $options
+    * @param $options            array
     * @param $delete_all_column
     * @param $common_column
     * @param $specific_column
@@ -543,7 +556,7 @@ class Item_Devices extends CommonDBRelation {
          }
 
       } else {
-         $peer_type = static::getDeviceType();
+         $peer_type   = static::getDeviceType();
 
          $table_group = $table->createGroup($peer_type, '');
 
@@ -577,13 +590,17 @@ class Item_Devices extends CommonDBRelation {
          if ($item instanceof CommonDevice) {
             $content = '&nbsp;';
          } else {
-            $massiveactionparams = array('container'        => 'form_device_action'.$options['rand'],
-                                         'fixed'            => false,
-                                         'display_arrow'    => false,
-                                         'specific_actions' => array('update_device' => _x('button', 'Update'),
-                                                                     'unaffect' => __('Dissociate'),
-                                                                     'purge_device' => _x('button', 'Delete permanently')),
-                                         'title'            => __('Actions for this kind of device'));
+            $massiveactionparams = array('container'
+                                                 => 'form_device_action'.$options['rand'],
+                                         'fixed' => false,
+                                         'display_arrow'
+                                                 => false,
+                                         'specific_actions'
+                                                 => array('update_device' => _x('button', 'Update'),
+                                                          'unaffect'      => __('Dissociate'),
+                                                          'purge_device'  => _x('button',
+                                                                                'Delete permanently')),
+                                         'title' => __('Actions for this kind of device'));
             $content = array(array('function'   => 'Html::showMassiveActions',
                                    'parameters' => array(static::getType(), $massiveactionparams)));
          }
@@ -719,6 +736,8 @@ class Item_Devices extends CommonDBRelation {
     * Add one or several device(s) from front/item_devices.form.php.
     *
     * @param $input array of input: should be $_POST
+    *
+    * @since version 0.85
    **/
    static function addDevicesFromPOST($input) {
 
@@ -733,7 +752,7 @@ class Item_Devices extends CommonDBRelation {
             if ((isset($input[$linktype::getForeignKeyField()]))
                 && (count($input[$linktype::getForeignKeyField()]))) {
                $update_input = array('itemtype' => $input['itemtype'],
-                              'items_id' => $input['items_id']);
+                                     'items_id' => $input['items_id']);
                foreach ($input[$linktype::getForeignKeyField()] as $id) {
                   $update_input['id'] = $id;
                   $link->update($update_input);

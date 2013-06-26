@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Relation between Problems and Items
+/**
+ * Item_Problem Class
+ *
+ *  Relation between Problems and Items
+**/
 class Item_Problem extends CommonDBRelation{
 
 
@@ -131,8 +135,11 @@ class Item_Problem extends CommonDBRelation{
          foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
             $types[] = $key;
          }
-         Dropdown::showSelectItemFromItemtypes(array('itemtypes'       => $types,
-                                                     'entity_restrict' => ($problem->fields['is_recursive']?-1:$problem->fields['entities_id'])));
+         Dropdown::showSelectItemFromItemtypes(array('itemtypes'
+                                                         => $types,
+                                                     'entity_restrict'
+                                                         => ($problem->fields['is_recursive']
+                                                             ?-1 :$problem->fields['entities_id'])));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='problems_id' value='$instID'>";

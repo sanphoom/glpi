@@ -1120,25 +1120,24 @@ class Dropdown {
    /**
     * Make a select box for all items
     *
-    * @since version 0.84
+    * @since version 0.85
     *
     * @param $options array:
-    *             - itemtype_name: the name of the field containing the itemtype (default:
-    *                              'itemtype')
-    *             - items_id_name: the name of the field containing the id of the selected item
-    *                              (default: 'items_id')
-    *             - itemtypes: all possible types to search for (default: $CFG_GLPI["state_types"])
-    *             - default_itemtype: the default itemtype to select (don't define if you don't
-    *                        need a default)
-    *             - entity_restrict: restrict entity in searching items (default: -1)
-    *             - onlyglobal: don't match item that don't have `is_global` == 1
-    *             - checkright: check to see if we can "view" the itemtype
-    *             - showItemSpecificity: given an item, the AJAX file to open if there is special
-    *                               treatment. For instance, select a Item_Device* for CommonDevice
+    *   - itemtype_name        : the name of the field containing the itemtype (default 'itemtype')
+    *   - items_id_name        : the name of the field containing the id of the selected item
+    *                            (default 'items_id')
+    *   - itemtypes            : all possible types to search for (default: $CFG_GLPI["state_types"])
+    *   - default_itemtype     : the default itemtype to select (don't define if you don't
+    *                            need a default) (defaut 0)
+    *    - entity_restrict     : restrict entity in searching items (default -1)
+    *    - onlyglobal          : don't match item that don't have `is_global` == 1 (false by default)
+    *    - checkright          : check to see if we can "view" the itemtype (false by default)
+    *    - showItemSpecificity : given an item, the AJAX file to open if there is special
+    *                            treatment. For instance, select a Item_Device* for CommonDevice
     *
     * @return randomized value used to generate HTML IDs
    **/
-   static function showSelectItemFromItemtypes(array $options = array()) {
+   static function showSelectItemFromItemtypes(array $options=array()) {
       global $CFG_GLPI;
 
       $params = array();
@@ -1157,8 +1156,9 @@ class Dropdown {
          }
       }
 
-      $rand = self::showItemType($params['itemtypes'], array('checkright' => $params['checkright'],
-                                                             'name'       => $params['itemtype_name']));
+      $rand = self::showItemType($params['itemtypes'],
+                                 array('checkright' => $params['checkright'],
+                                       'name'       => $params['itemtype_name']));
 
       if ($rand) {
          $p = array('idtable'             => '__VALUE__',

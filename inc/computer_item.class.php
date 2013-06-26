@@ -270,11 +270,17 @@ class Computer_Item extends CommonDBRelation{
       switch ($input['action']) {
          case "connect" :
             if ($input['itemtype'] == 'Computer') {
-               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'item_itemtype',
-                                                           'entity_restrict' => $_SESSION["glpiactive_entity"],
-                                                           'itemtypes'       => array('Monitor', 'Peripheral', 'Phone',  'Printer'),
-                                                           'onlyglobal'      => true,
-                                                           'checkright'      => true));
+               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'
+                                                                 => 'item_itemtype',
+                                                           'entity_restrict'
+                                                                 => $_SESSION["glpiactive_entity"],
+                                                           'itemtypes'
+                                                                 => array('Monitor', 'Peripheral',
+                                                                          'Phone', 'Printer'),
+                                                           'onlyglobal'
+                                                                 => true,
+                                                           'checkright'
+                                                                 => true));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                               __s('Connect')."'>";
             } else {

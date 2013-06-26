@@ -29,6 +29,7 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 
 include ('../inc/includes.php');
@@ -39,7 +40,8 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 // Make a select box
-if ($_POST['items_id'] &&  $_POST['itemtype'] && class_exists($_POST['itemtype'])) {
+if ($_POST['items_id']
+    && $_POST['itemtype'] && class_exists($_POST['itemtype'])) {
    $devicetype = $_POST['itemtype'];
    $linktype   = 'Item_'.$devicetype;
 
@@ -48,10 +50,10 @@ if ($_POST['items_id'] &&  $_POST['itemtype'] && class_exists($_POST['itemtype']
    } else {
       $name_field = "`id`";
    }
-   $query = "SELECT `id`, $name_field as name
+   $query = "SELECT `id`, $name_field AS name
              FROM `".$linktype::getTable()."`
              WHERE `".$devicetype::getForeignKeyField()."` = '".$_POST['items_id']."'
-             AND `itemtype` = ''";
+                    AND `itemtype` = ''";
    $result = $DB->request($query);
    if ($result->numrows() == 0) {
       echo __('No unaffected device !');

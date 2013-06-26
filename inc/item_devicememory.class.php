@@ -46,7 +46,10 @@ class Item_DeviceMemory extends Item_Devices {
 
    static protected $notable = false;
 
+
+
    static function getSpecificities() {
+
       return array('size'   => array('long name'  => sprintf(__('%1$s (%2$s)'), __('Size'),
                                                              __('Mio')),
                                      'short name' => __('Size'),
@@ -56,10 +59,13 @@ class Item_DeviceMemory extends Item_Devices {
                                      'size'       => 20));
    }
 
-   static function itemAffinity() {
-      return array('Computer', 'NetworkEquipment', 'Printer', 'Peripheral');
-   }
 
+   /**
+    * @since version 0.85
+   **/
+   static function itemAffinity() {
+      return array('Computer', 'NetworkEquipment', 'Peripheral', 'Printer');
+   }
 
 }
 ?>

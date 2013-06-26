@@ -3023,9 +3023,12 @@ class CommonDBTM extends CommonGLPI {
       switch ($input['action']) {
          case "add_contract_item" :
             if ($input['itemtype'] == 'Contract') {
-               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'item_itemtype',
-                                                           'itemtypes'       => $CFG_GLPI["contract_types"],
-                                                           'checkright'      => true));
+               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'
+                                                                   => 'item_itemtype',
+                                                           'itemtypes'
+                                                                    => $CFG_GLPI["contract_types"],
+                                                           'checkright'
+                                                                    => true));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                               _sx('button', 'Add')."'>";
             } else {
@@ -3037,9 +3040,12 @@ class CommonDBTM extends CommonGLPI {
 
          case "remove_contract_item" :
             if ($input['itemtype'] == 'Contract') {
-               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'item_itemtype',
-                                                           'itemtypes'       => $CFG_GLPI["contract_types"],
-                                                           'checkright'      => true));
+               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'
+                                                                   => 'item_itemtype',
+                                                           'itemtypes'
+                                                                    => $CFG_GLPI["contract_types"],
+                                                           'checkright'
+                                                                    => true));
                echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                               _sx('button', 'Delete permanently')."'>";
             } else {
@@ -3177,7 +3183,7 @@ class CommonDBTM extends CommonGLPI {
       foreach ($items as $itemtype => $data) {
          $input['itemtype'] = $itemtype;
          $input['item']     = $data;
-         
+
          // Check if action is available for this itemtype
          $actionok = false;
          if ($item = getItemForItemtype($itemtype)) {
@@ -3209,7 +3215,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
    }
-   
+
    /**
     * Do the standard massive actions
     *
@@ -3230,7 +3236,7 @@ class CommonDBTM extends CommonGLPI {
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
-                   
+
       switch ($input['action']) {
          case 'add_document' :
          case 'remove_document' :
