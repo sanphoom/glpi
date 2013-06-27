@@ -37,35 +37,41 @@ if (!defined('GLPI_ROOT')) {
 
 
 /** QueuedMail class
-* @since version 0.85
-*/
+ *
+ * @since version 0.85
+**/
 class QueuedMail extends CommonDBTM {
 
    static $rightname = 'queuedmail';
 
+
    static function getTypeName($nb=0) {
       return __('Mail queue');
    }
+
 
    static function canCreate() {
       // Everybody can create : human and cron
       return Session::getLoginUserID(false);
    }
 
+
    static function getForbiddenActionsForMenu() {
       return array('add');
    }
-   
+
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
+
    /**
     * @see CommonDBTM::getSpecificMassiveActions()
-    **/
+   **/
    function getSpecificMassiveActions($checkitem=NULL, $is_deleted=false) {
 
       $isadmin = static::canUpdate();
@@ -77,7 +83,8 @@ class QueuedMail extends CommonDBTM {
 
       return $actions;
    }
-   
+
+
    /**
     * @see CommonDBTM::doSpecificMassiveActions()
    **/
@@ -91,7 +98,7 @@ class QueuedMail extends CommonDBTM {
          case "sendmail" :
             foreach ($input['item'] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key, 'w')) {
+                  if ($this->canEdit($key)) {
                      if ($this->sendMailById($key)) {
                         $res['ok']++;
                      } else {
@@ -109,21 +116,22 @@ class QueuedMail extends CommonDBTM {
       }
       return $res;
    }
-   
+
+
    function prepareInputForAdd($input) {
       global $DB;
-   
+
       if (!isset($input['create_time']) || empty($input['create_time'])) {
          $input['create_time'] = $_SESSION["glpi_currenttime"];
       }
       if (!isset($input['send_time']) || empty($input['send_time'])) {
          $toadd = 0;
          if (isset($input['entities_id'])) {
-            $toadd = Entity::getUsedConfig('delay_send_emails',
-                                          $input['entities_id']);
+            $toadd = Entity::getUsedConfig('delay_send_emails', $input['entities_id']);
          }
-         if ($toadd>0) {
-            $input['send_time'] = date("Y-m-d H:i:s", strtotime($_SESSION["glpi_currenttime"])
+         if ($toadd > 0) {
+            $input['send_time'] = date("Y-m-d H:i:s",
+                                       strtotime($_SESSION["glpi_currenttime"])
                                                       +$toadd*MINUTE_TIMESTAMP);
          } else {
             $input['send_time'] = $_SESSION["glpi_currenttime"];
@@ -133,26 +141,26 @@ class QueuedMail extends CommonDBTM {
       if (isset($input['headers']) && is_array($input['headers']) && count($input['headers'])) {
          $input["headers"] = exportArrayToDB($input['headers']);
       } else {
-        $input['headers'] = ''; 
+        $input['headers'] = '';
       }
 
       // Force items_id to integer
       if (!isset($input['items_id']) || empty($input['items_id'])) {
          $input['items_id'] = 0;
       }
-      
+
       // Drop existing mails in queue for the same event and item  and recipient
       if (isset($input['itemtype']) && !empty($input['itemtype'])
-         && isset($input['entities_id']) && $input['entities_id']>=0
-         && isset($input['items_id']) && $input['items_id']>=0
-         && isset($input['notificationtemplates_id']) && !empty($input['notificationtemplates_id'])
-         && isset($input['recipient'])) {
+          && isset($input['entities_id']) && ($input['entities_id'] >= 0)
+          && isset($input['items_id']) && ($input['items_id'] >= 0)
+          && isset($input['notificationtemplates_id']) && !empty($input['notificationtemplates_id'])
+          && isset($input['recipient'])) {
          $query = "NOT `is_deleted`
-                  AND `itemtype` = '".$input['itemtype']."'
-                  AND `items_id` = '".$input['items_id']."'
-                  AND `entities_id` = '".$input['entities_id']."'
-                  AND `notificationtemplates_id` = '".$input['notificationtemplates_id']."'
-                  AND `recipient` = '".$input['recipient']."'";
+                   AND `itemtype` = '".$input['itemtype']."'
+                   AND `items_id` = '".$input['items_id']."'
+                   AND `entities_id` = '".$input['entities_id']."'
+                   AND `notificationtemplates_id` = '".$input['notificationtemplates_id']."'
+                   AND `recipient` = '".$input['recipient']."'";
          foreach ($DB->request($this->getTable(),$query) as $data) {
             $this->delete(array('id' => $data['id']),1);
          }
@@ -160,7 +168,8 @@ class QueuedMail extends CommonDBTM {
 
       return $input;
    }
-   
+
+
    function getSearchOptions() {
 
       $tab                       = array();
@@ -177,7 +186,7 @@ class QueuedMail extends CommonDBTM {
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false; // implicit field is id
       $tab[2]['datatype']        = 'number';
-      
+
       $tab[16]['table']           = $this->getTable();
       $tab[16]['field']           = 'create_time';
       $tab[16]['name']            = __('Creation date');
@@ -269,13 +278,13 @@ class QueuedMail extends CommonDBTM {
       $tab[20]['name']           = __('Type');
       $tab[20]['datatype']       = 'itemtype';
       $tab[20]['massiveaction']  = false;
-      
+
       $tab[21]['table']            = $this->getTable();
       $tab[21]['field']            = 'items_id';
       $tab[21]['name']             = __('Associated item ID');
       $tab[21]['massiveaction']    = false;
       $tab[21]['datatype']         = 'integer';
-      
+
       $tab[22]['table']           = 'glpi_notificationtemplates';
       $tab[22]['field']           = 'name';
       $tab[22]['name']            = _n('Notification template', 'Notification templates', 1);
@@ -291,9 +300,8 @@ class QueuedMail extends CommonDBTM {
       return $tab;
    }
 
+
    /**
-    * @since version 0.84
-    *
     * @param $field
     * @param $values
     * @param $options   array
@@ -313,14 +321,13 @@ class QueuedMail extends CommonDBTM {
                }
             }
             return $out;
-            break;            
+            break;
 
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 
-   
    /**
     * Send mai lin queue
     *
@@ -334,14 +341,14 @@ class QueuedMail extends CommonDBTM {
       if ($this->getFromDB($ID)) {
 
          $mmail = new GLPIMailer();
-      
+
          $headers = importArrayFromDB($this->fields['headers']);
          if (is_array($headers) && count($headers)) {
             foreach ($headers as $key => $val) {
                $mmail->AddCustomHeader("$key: $val");
             }
          }
-         
+
       $mmail->SetFrom($this->fields['sender'], $this->fields['sendername']);
 
          if ($this->fields['replyto']) {
@@ -375,9 +382,11 @@ class QueuedMail extends CommonDBTM {
 
          } else {
             //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
-            Toolbox::logInFile("mail", sprintf(__('%1$s: %2$s'),
-                                             sprintf(__('An email was sent to %s'), $this->fields['recipient']),
-                                             $this->fields['name']."\n"));
+            Toolbox::logInFile("mail",
+                               sprintf(__('%1$s: %2$s'),
+                                        sprintf(__('An email was sent to %s'),
+                                                $this->fields['recipient']),
+                                        $this->fields['name']."\n"));
             $mmail->ClearAddresses();
             $this->update(array('id'        => $this->fields['id'],
                                 'sent_time' => $_SESSION['glpi_currenttime']));
@@ -389,6 +398,7 @@ class QueuedMail extends CommonDBTM {
          return false;
       }
    }
+
 
    /**
     * Give cron information
@@ -403,10 +413,11 @@ class QueuedMail extends CommonDBTM {
          case 'queuedmail' :
             return array('description' => __('Send mails in queue'),
                          'parameter'   => __('Maximum emails to send at once'));
+
          case 'queuedmailclean' :
             return array('description' => __('Clean mail queue'),
                          'parameter'   => __('Days to keep sent emails'));
-                         
+
       }
       return array();
    }
@@ -429,14 +440,14 @@ class QueuedMail extends CommonDBTM {
       $query       = "SELECT `glpi_queuedmails`.*
                       FROM `glpi_queuedmails`
                       WHERE NOT `glpi_queuedmails`.`is_deleted`
-                        AND `glpi_queuedmails`.`send_time` < DATE_ADD(NOW(),INTERVAL 1 MINUTE)
+                            AND `glpi_queuedmails`.`send_time` < DATE_ADD(NOW(),INTERVAL 1 MINUTE)
                       ORDER BY `glpi_queuedmails`.`send_time` ASC
                       LIMIT 0, ".$task->fields['param'];
 
       $mail = new self();
       foreach ($DB->request($query) as $data) {
          if ($mail->sendMailById($data['id'])) {
-            $cron_status         = 1;
+            $cron_status = 1;
             if (!is_null($task)) {
                $task->addVolume(1);
             }
@@ -444,6 +455,7 @@ class QueuedMail extends CommonDBTM {
       }
       return $cron_status;
    }
+
 
    /**
     * Cron action on queued mails : clean mail queue
@@ -459,9 +471,9 @@ class QueuedMail extends CommonDBTM {
       if ($task->fields['param'] > 0) {
          $secs      = $task->fields['param'] * DAY_TIMESTAMP;
          $query_exp = "DELETE
-                     FROM `glpi_queuedmails`
-                     WHERE `glpi_queuedmails`.`is_deleted` 
-                        AND UNIX_TIMESTAMP(send_time) < UNIX_TIMESTAMP()-$secs";
+                       FROM `glpi_queuedmails`
+                       WHERE `glpi_queuedmails`.`is_deleted`
+                             AND UNIX_TIMESTAMP(send_time) < UNIX_TIMESTAMP()-$secs";
 
          $DB->query($query_exp);
          $vol = $DB->affected_rows();
@@ -471,23 +483,26 @@ class QueuedMail extends CommonDBTM {
       return ($vol > 0 ? 1 : 0);
    }
 
+
    /**
     * Force sending all mails in queue for a specific item
     *
     * @param $itemtype item type
     * @param $items_id id of the item
-   **/   
+   **/
    static function forceSendFor($itemtype, $items_id) {
       global $DB;
-      if (!empty($itemtype) && !empty($items_id)) {
+
+      if (!empty($itemtype)
+          && !empty($items_id)) {
          // Send mail at least 1 minute after adding in queue to be sure that process on it is finished
-         $query       = "SELECT `glpi_queuedmails`.*
-                        FROM `glpi_queuedmails`
-                        WHERE NOT `glpi_queuedmails`.`is_deleted`
-                           AND `glpi_queuedmails`.`itemtype` = '$itemtype'
-                           AND `glpi_queuedmails`.`items_id` = '$items_id'
-                           AND `glpi_queuedmails`.`send_time` <= NOW()
-                        ORDER BY `glpi_queuedmails`.`send_time` ASC";
+         $query = "SELECT `glpi_queuedmails`.*
+                   FROM `glpi_queuedmails`
+                   WHERE NOT `glpi_queuedmails`.`is_deleted`
+                        AND `glpi_queuedmails`.`itemtype` = '$itemtype'
+                        AND `glpi_queuedmails`.`items_id` = '$items_id'
+                        AND `glpi_queuedmails`.`send_time` <= NOW()
+                   ORDER BY `glpi_queuedmails`.`send_time` ASC";
 
          $mail = new self();
          foreach ($DB->request($query) as $data) {
@@ -495,7 +510,8 @@ class QueuedMail extends CommonDBTM {
          }
       }
    }
-   
+
+
    /**
     * Print the queued mail form
     *
@@ -507,19 +523,18 @@ class QueuedMail extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("queuedmail", "r")) {
+      if (!Session::haveRight("queuedmail", READ)) {
         return false;
       }
 
-      $this->check($ID,'r');
+      $this->check($ID, READ);
       $options['canedit'] = false;
-      
+
       $this->showTabs($options);
       $this->showFormHeader($options);
-//       print_r($this);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Type')."</td>";
-      
+
       echo "<td>";
       if (!($item = getItemForItemtype($this->fields['itemtype']))) {
          echo NOT_AVAILABLE;
@@ -540,7 +555,8 @@ class QueuedMail extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Notification template', 'Notification templates', 1)."</td>";
       echo "<td>";
-      echo Dropdown::getDropdownName('glpi_notificationtemplates', $this->fields['notificationtemplates_id']);
+      echo Dropdown::getDropdownName('glpi_notificationtemplates',
+                                     $this->fields['notificationtemplates_id']);
       echo "</td>";
       echo "<td>&nbsp;</td>";
       echo "<td>&nbsp;</td>";
@@ -551,81 +567,66 @@ class QueuedMail extends CommonDBTM {
       echo "<td>";
       echo Html::convDateTime($this->fields['create_time']);
       echo "</td><td>".__('Expected send date')."</td>";
-      echo "<td>";
-      echo Html::convDateTime($this->fields['send_time']);
-      echo "</td></tr>";
+      echo "<td>".Html::convDateTime($this->fields['send_time'])."</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Send date')."</td>";
-      echo "<td>";
-      echo Html::convDateTime($this->fields['sent_time']);
-      echo "</td>";
-
+      echo "<td>".Html::convDateTime($this->fields['sent_time'])."</td>";
       echo "<td>".__('Number of tries of sent')."</td>";
-      echo "<td>";
-      echo $this->fields['sent_try'];
-      echo "</td></tr>";
+      echo "<td>".$this->fields['sent_try']."</td>";
+      echo "</tr>";
 
       echo "<tr><th colspan='4'>".__('Email')."</th></tr>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Sender email')."</td>";
-      echo "<td>";
-      echo $this->fields['sender'];
-      echo "</td><td>".__('Sender name')."</td>";
-      echo "<td>";
-      echo $this->fields['sendername'];
-      echo "</td></tr>";
-      
+      echo "<td>".$this->fields['sender']."</td>";
+      echo "<td>".__('Sender name')."</td>";
+      echo "<td>".$this->fields['sendername']."</td>";
+      echo "</tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Recipient email')."</td>";
-      echo "<td>";
-      echo $this->fields['recipient'];
-      echo "</td><td>".__('Recipient name')."</td>";
-      echo "<td>";
-      echo $this->fields['recipientname'];
-      echo "</td></tr>";
-      
+      echo "<td>".$this->fields['recipient']."</td>";
+      echo "<td>".__('Recipient name')."</td>";
+      echo "<td>".$this->fields['recipientname']."</td>";
+      echo "</tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Reply-to email')."</td>";
-      echo "<td>";
-      echo $this->fields['replyto'];
-      echo "</td><td>".__('Reply-to name')."</td>";
-      echo "<td>";
-      echo $this->fields['replytoname'];
-      echo "</td></tr>";
-      
+      echo "<td>".$this->fields['replyto']."</td>";
+      echo "<td>".__('Reply-to name')."</td>";
+      echo "<td>".$this->fields['replytoname']."</td>";
+      echo "</tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Message ID')."</td>";
-      echo "<td>";
-      echo $this->fields['messageid'];
-      echo "</td><td>".__('Additional headers')."</td>";
-      echo "<td>";
-      echo self::getSpecificValueToDisplay('headers', $this->fields);
-      echo "</td></tr>";
+      echo "<td>".$this->fields['messageid']."</td>";
+      echo "<td>".__('Additional headers')."</td>";
+      echo "<td>".self::getSpecificValueToDisplay('headers', $this->fields)."</td>";
+      echo "</tr>";
 
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";
-      echo "<td colspan=3>";
-      echo $this->fields['name'];
-      echo "</td></tr>";
-      
+      echo "<td colspan=3>".$this->fields['name']."</td>";
+      echo "</tr>";
+
       echo "<tr><th colspan='2'>".__('Email HTML body')."</th>";
       echo "<th colspan='2'>".__('Email text body')."</th>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>";
-      echo $this->fields['body_html'];
-      echo "</td><td colspan='2'>";
-      echo nl2br($this->fields['body_text']);
-      echo "</td></tr>";
-      
+      echo "<td colspan='2'>".$this->fields['body_html']."</td>";
+      echo "<td colspan='2'>".nl2br($this->fields['body_text'])."</td>";
+      echo "</tr>";
+
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
       return true;
 
    }
+
 }
 ?>

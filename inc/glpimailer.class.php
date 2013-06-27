@@ -38,8 +38,9 @@ require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 
 
 /** GLPIPhpMailer class
-* @since version 0.85
-*/
+ *
+ * @since version 0.85
+**/
 class GLPIMailer extends PHPMailer {
 
    /**

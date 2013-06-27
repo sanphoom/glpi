@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -129,37 +129,38 @@ class NotificationMail implements NotificationInterface {
       }
    }
 
+
    /**
     * @param $options   array
    **/
    function sendNotification($options=array()) {
 
       $data = array();
-      $data['itemtype']    = $options['_itemtype'];
-      $data['items_id']    = $options['_items_id'];
-      $data['notificationtemplates_id'] = $options['_notificationtemplates_id'];
-      $data['entities_id'] = $options['_entities_id'];
+      $data['itemtype']                             = $options['_itemtype'];
+      $data['items_id']                             = $options['_items_id'];
+      $data['notificationtemplates_id']             = $options['_notificationtemplates_id'];
+      $data['entities_id']                          = $options['_entities_id'];
 
-      $data["headers"]['Auto-Submitted']           = "auto-generated";
-      $data["headers"]['X-Auto-Response-Suppress'] = "OOF, DR, NDR, RN, NRN";
+      $data["headers"]['Auto-Submitted']            = "auto-generated";
+      $data["headers"]['X-Auto-Response-Suppress']  = "OOF, DR, NDR, RN, NRN";
 
-      $data['sender']     = $options['from'];
-      $data['sendername'] = $options['fromname'];
+      $data['sender']                               = $options['from'];
+      $data['sendername']                           = $options['fromname'];
 
       if ($options['replyto']) {
-         $data['replyto']     = $options['replyto'];
-         $data['replytoname'] = $options['replytoname'];
+         $data['replyto']       = $options['replyto'];
+         $data['replytoname']   = $options['replytoname'];
       }
 
-      $data['name'] = $options['subject'];
+      $data['name']                                 = $options['subject'];
 
-      $data['body_text'] = $options['content_text'];
+      $data['body_text']                            = $options['content_text'];
       if (!empty($options['content_html'])) {
          $data['body_html'] = $options['content_html'];
       }
 
-      $data['recipient']     = $options['to'];
-      $data['recipientname'] = $options['toname'];
+      $data['recipient']                            = $options['to'];
+      $data['recipientname']                        = $options['toname'];
 
       if (!empty($options['messageid'])) {
          $data['messageid'] = $options['messageid'];
@@ -172,9 +173,11 @@ class NotificationMail implements NotificationInterface {
          Session::addMessageAfterRedirect(__('Error inserting email to queue'), true);
       } else {
          //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
-         Toolbox::logInFile("mail", sprintf(__('%1$s: %2$s'),
-                                            sprintf(__('An email to %s was added to queue'), $options['to']),
-                                            $options['subject']."\n"));
+         Toolbox::logInFile("mail",
+                            sprintf(__('%1$s: %2$s'),
+                                    sprintf(__('An email to %s was added to queue'),
+                                            $options['to']),
+                                    $options['subject']."\n"));
       }
 
       return true;

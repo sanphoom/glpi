@@ -442,7 +442,7 @@ class Entity extends CommonTreeDropdown {
       $tab[14]['name']          = __('Name');
       $tab[14]['datatype']      = 'itemlink';
       $tab[14]['massiveaction'] = false;
-      
+
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'address';
       $tab[3]['name']          = __('Address');
@@ -477,7 +477,7 @@ class Entity extends CommonTreeDropdown {
       $tab[25]['field']         = 'postcode';
       $tab[25]['name']          = __('Postal code');
       $tab[25]['datatype']      = 'string';
-      
+
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'town';
       $tab[11]['name']          = __('City');
@@ -505,9 +505,9 @@ class Entity extends CommonTreeDropdown {
       $tab[28]['field']         = 'notepad';
       $tab[28]['name']          = __('Notes');
       $tab[28]['datatype']      = 'text';
-      
+
       $tab['advanced']         = __('Advanced information');
-      
+
       $tab[7]['table']         = $this->getTable();
       $tab[7]['field']         = 'ldap_dn';
       $tab[7]['name']          = __('LDAP directory information attribute representing the entity');
@@ -537,7 +537,7 @@ class Entity extends CommonTreeDropdown {
       $tab[20]['name']          = __('Mail domain');
       $tab[20]['massiveaction'] = false;
       $tab[20]['datatype']      = 'string';
-      
+
       $tab['notif']             = __('Notification options');
 
       $tab[60]['table']         = $this->getTable();
@@ -674,7 +674,7 @@ class Entity extends CommonTreeDropdown {
       $tab[52]['massiveaction'] = false;
       $tab[52]['nosearch']      = true;
       $tab[52]['datatype']      = 'number';
-      
+
       $tab['helpdesk']          = __('Assistance');
 
       $tab[47]['table']         = $this->getTable();
@@ -683,7 +683,7 @@ class Entity extends CommonTreeDropdown {
       $tab[47]['massiveaction'] = false;
       $tab[47]['nosearch']      = true;
       $tab[47]['datatype']      = 'specific';
-      
+
       $tab[33]['table']         = $this->getTable();
       $tab[33]['field']         = 'autoclose_delay';
       $tab[33]['name']          = __('Automatic closing of solved tickets after');
@@ -727,7 +727,7 @@ class Entity extends CommonTreeDropdown {
       $tab[37]['datatype']      = 'specific';
 
       $tab['helpdesk']          = __('Assets');
-      
+
       $tab[38]['table']         = $this->getTable();
       $tab[38]['field']         = 'autofill_buy_date';
       $tab[38]['name']          = __('Date of purchase');
@@ -1330,8 +1330,7 @@ class Entity extends CommonTreeDropdown {
                                                       'toadd' => $toadd));
 
       if ($entity->fields['delay_send_emails'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('delay_send_emails',
-                                    $entity->getField('entities_id'));
+         $tid = self::getUsedConfig('delay_send_emails', $entity->getField('entities_id'));
          echo "<font class='green'><br>";
          echo $entity->getValueToDisplay('delay_send_emails', $tid, array('html' => true));
          echo "</font>";
