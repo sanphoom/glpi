@@ -368,18 +368,20 @@ class Infocom extends CommonDBChild {
       }
       // Check budgets link validity
       if ((in_array('budgets_id', $this->updates)
-            || in_array('buy_date', $this->updates)) 
-         && $this->fields['budgets_id']
-         && ($budget = getItemForItemtype('Budget'))
-         && $budget->getFromDB($this->fields['budgets_id'])) {
+           || in_array('buy_date', $this->updates))
+          && $this->fields['budgets_id']
+          && ($budget = getItemForItemtype('Budget'))
+          && $budget->getFromDB($this->fields['budgets_id'])) {
+
          if ((!is_null($budget->fields['begin_date'])
-            && $this->fields['buy_date'] < $budget->fields['begin_date'])
-            || (!is_null($budget->fields['end_date'])
-            && $this->fields['buy_date'] > $budget->fields['end_date'])) {
+              && $this->fields['buy_date'] < $budget->fields['begin_date'])
+             || (!is_null($budget->fields['end_date'])
+                 && ($this->fields['buy_date'] > $budget->fields['end_date']))) {
+
             $msg = sprintf(__('Purchase date incompatible with the associated budget. %1$s not in budget period: %2$s / %3$s'),
-                        Html::convDate($this->fields['buy_date']),
-                        Html::convDate($budget->fields['begin_date']),
-                        Html::convDate($budget->fields['end_date']));
+                           Html::convDate($this->fields['buy_date']),
+                           Html::convDate($budget->fields['begin_date']),
+                           Html::convDate($budget->fields['end_date']));
             Session::addMessageAfterRedirect($msg, false, ERROR);
          }
       }

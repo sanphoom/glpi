@@ -61,6 +61,11 @@ class Item_Devices extends CommonDBRelation {
    static $rightname = 'device';
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::getForbiddenStandardMassiveAction()
+   **/
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -69,6 +74,11 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBRelation::getSearchOptions()
+   **/
    function getSearchOptions() {
 
       $tab = parent::getSearchOptions();
@@ -461,7 +471,7 @@ class Item_Devices extends CommonDBRelation {
                                                  => array('update'   => _x('button', 'Update'),
                                                           'unaffect' => __('Dissociate'),
                                                           'purge'    => _x('button',
-                                                                                'Delete permanently')),
+                                                                           'Delete permanently')),
                                          'title' => __('Actions for this kind of device'));
             $content = array(array('function'   => 'Html::showMassiveActions',
                                    'parameters' => array(static::getType(), $massiveactionparams)));
@@ -722,6 +732,15 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @param $item_devices_id
+    * @param $items_id
+    * @param $itemtype
+    *
+    * @return boolean
+   **/
    static function affectItem_Device($item_devices_id, $items_id, $itemtype) {
 
       $link = new static();

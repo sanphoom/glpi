@@ -1047,8 +1047,10 @@ class CommonDBTM extends CommonGLPI {
                      switch ($searchopt['datatype']) {
                         case 'string' :
                         case 'text' :
-                           $ischanged = (strcmp($DB->escape($this->fields[$key]),$this->input[$key])!=0);
+                           $ischanged = (strcmp($DB->escape($this->fields[$key]),
+                                                $this->input[$key]) != 0);
                            break;
+
                         default :
                            $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
                            break;
@@ -2033,21 +2035,19 @@ class CommonDBTM extends CommonGLPI {
                    || $this->useDeletedToLockIfDynamic()) {
                   if ($this->can($ID, PURGE)) {
                      echo Html::submit(_x('button','Delete permanently'),
-                                          array('name'    => 'purge',
-                                                'confirm' => __('Confirm the final deletion?')));
+                                       array('name'    => 'purge',
+                                             'confirm' => __('Confirm the final deletion?')));
                   }
                } else if (!$this->isDeleted()
                           && $this->can($ID, DELETE)) {
-                  echo Html::submit(_x('button','Put in dustbin'),
-                                       array('name' => 'delete'));
+                  echo Html::submit(_x('button','Put in dustbin'), array('name' => 'delete'));
                }
             }
 
          } else {
             if ($this->can($ID, UPDATE)) {
                echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo Html::submit(_x('button','Save'),
-                                    array('name' => 'update'));
+               echo Html::submit(_x('button','Save'), array('name' => 'update'));
             }
          }
          if ($this->isField('date_mod')) {
@@ -3792,8 +3792,11 @@ class CommonDBTM extends CommonGLPI {
       return array();
    }
 
+
    /**
     * Get search options
+    *
+    * @since version 0.85
     *
     * @return then search option array
    **/
@@ -3805,6 +3808,8 @@ class CommonDBTM extends CommonGLPI {
 
       return $this->searchopt;
    }
+
+
    /**
     * Return a search option ID by looking for a value of a specific field and maybe a specific table
     *

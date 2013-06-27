@@ -559,9 +559,7 @@ class Html {
       echo "<div class='center'><table class='tab_glpi'><tr>";
       if ($ref_pic_link!="") {
          $ref_pic_text = self::clean($ref_pic_text);
-         echo "<td>";
-         echo Html::image($ref_pic_link, array('alt' => $ref_pic_text));
-         echo "</td>";
+         echo "<td>".Html::image($ref_pic_link, array('alt' => $ref_pic_text))."</td>";
       }
 
       if ($ref_title != "") {
@@ -606,7 +604,7 @@ class Html {
    **/
    static function displayDebugInfos($with_session=true) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
-      
+
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
@@ -672,7 +670,7 @@ class Html {
             echo "</div>";
 
          }
-         
+
          echo Html::scriptBlock("$('#debugtabs$rand').tabs({
                               collapsible: true,
                               active: false
@@ -740,8 +738,11 @@ class Html {
       return "onclick=\"".Html::getConfirmationOnActionScript($string, $additionalactions)."\"";
    }
 
+
    /**
     * Get confirmation on button or link before action
+    *
+    * @since version 0.85
     *
     * @param $string             string   to display or array of string for using multilines
     * @param $additionalactions  string   additional actions to do on success confirmation
@@ -779,6 +780,7 @@ class Html {
       $out .= $additionalactions.(substr($additionalactions, -1)!=';'?';':'').$close_string;
       return $out;
    }
+
 
    /**
     * Create a Dynamic Progress Bar
@@ -953,7 +955,7 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
 
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
-            
+
       // PLugins jquery
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js");
@@ -1220,8 +1222,8 @@ class Html {
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
       echo Html::link('', $CFG_GLPI["root_doc"]."/front/central.php",
-                        array('accesskey' => '1',
-                              'title' => __('Home')));
+                      array('accesskey' => '1',
+                            'title'     => __('Home')));
       echo "</div>";
 
       /// Prefs / Logout link
@@ -1439,11 +1441,11 @@ class Html {
          echo "<li>";
          if (isset($links['add'])) {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add.png",
-                              array('alt' => __('Add'),
+                             array('alt' => __('Add'),
                                     'url' => $CFG_GLPI["root_doc"].$links['add']));
          } else {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add_off.png",
-                              array('alt' => __('Add')));
+                             array('alt' => __('Add')));
          }
          echo "</li>";
 
@@ -1451,11 +1453,11 @@ class Html {
          echo "<li>";
          if (isset($links['search'])) {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search.png",
-                              array('alt' => __('Add'),
-                                    'url' => $CFG_GLPI["root_doc"].$links['search']));
+                             array('alt' => __('Add'),
+                                   'url' => $CFG_GLPI["root_doc"].$links['search']));
          } else {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search_off.png",
-                              array('alt' => __('Search')));
+                             array('alt' => __('Search')));
          }
          echo "</li>";
         // Links
@@ -1470,39 +1472,37 @@ class Html {
                   case "template" :
                      echo "<li>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
-                                       array('alt' => __('Manage templates...'),
-                                             'url' => $CFG_GLPI["root_doc"].$val));
+                                      array('alt' => __('Manage templates...'),
+                                            'url' => $CFG_GLPI["root_doc"].$val));
                      echo "</li>";
                      break;
 
                   case "showall" :
                      echo "<li>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
-                                       array('alt' => __('Show all'),
-                                             'url' => $CFG_GLPI["root_doc"].$val));
+                                      array('alt' => __('Show all'),
+                                            'url' => $CFG_GLPI["root_doc"].$val));
                      echo "</li>";
                      break;
 
                   case "summary" :
                      echo "<li>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
-                                       array('alt' => __('Summary'),
-                                             'url' => $CFG_GLPI["root_doc"].$val));
+                                      array('alt' => __('Summary'),
+                                            'url' => $CFG_GLPI["root_doc"].$val));
                      echo "</li>";
                      break;
 
                   case "config" :
                      echo "<li>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_config.png",
-                                       array('alt' => __('Setup'),
-                                             'url' => $CFG_GLPI["root_doc"].$val));
+                                      array('alt' => __('Setup'),
+                                            'url' => $CFG_GLPI["root_doc"].$val));
                      echo "</li>";
                      break;
 
                   default :
-                     echo "<li>";
-                     echo Html::link($key, $CFG_GLPI["root_doc"].$val);                     
-                     echo "</li>";
+                     echo "<li>".Html::link($key, $CFG_GLPI["root_doc"].$val)."</li>";
                      break;
                }
             }
@@ -1572,7 +1572,7 @@ class Html {
          autoOpen: false
          });";
       echo Html::scriptEnd();
-         
+
       echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       echo "</li>";
 
@@ -1623,7 +1623,7 @@ class Html {
                });
             });";
       echo Html::scriptEnd();
-            
+
 
       // call static function callcron() every 5min
       CronTask::callCron();
@@ -2229,7 +2229,7 @@ class Html {
       if (count($actions)) {
          foreach ($actions as $name => $label) {
             if (!empty($name)) {
-            
+
                echo "<input type='submit' name='$name' ";
                if (is_array($confirm) && isset($confirm[$name])) {
                   echo self::addConfirmationOnAction($confirm[$name]);
@@ -4045,66 +4045,75 @@ class Html {
       return $output;
    }
 
+
    /**
-   * Creates a formatted IMG element.
-   *
-   * This method will set an empty alt attribute if no alt and no title is not supplied
-   *
-   * @param $path Path to the image file
-   * @param $options Array of HTML attributes
-   *        - `url` If provided an image link will be generated and the link will point at
-   *               `$options['url']`.
-   * @return string completed img tag
-   */
-   static function image($path, $options = array()) {
+    * Creates a formatted IMG element.
+    *
+    * This method will set an empty alt attribute if no alt and no title is not supplied
+    *
+    * @since version 0.85
+    *
+    * @param $path             Path to the image file
+    * @param $options   Array  of HTML attributes
+    *        - `url` If provided an image link will be generated and the link will point at
+    *               `$options['url']`.
+    * @return string completed img tag
+   **/
+   static function image($path, $options=array()) {
+
       if (!isset($options['title'])) {
          $options['title'] = '';
       }
-   
+
       if (!isset($options['alt'])) {
          $options['alt'] = $options['title'];
       }
 
-      if (empty($options['title']) && !empty($options['alt'])) {
+      if (empty($options['title'])
+          && !empty($options['alt'])) {
          $options['title'] = $options['alt'];
       }
 
       $url = false;
       if (!empty($options['url'])) {
-            $url = $options['url'];
-            unset($options['url']);
+         $url = $options['url'];
+         unset($options['url']);
       }
 
       $image = sprintf('<img src="%1$s" %2$s>', $path, Html::parseAttributes($options));
       if ($url) {
-            return Html::link($image, $url);
+         return Html::link($image, $url);
       }
       return $image;
    }
-   
+
+
    /**
-   * Creates an HTML link.
-   *
-   * @param $title The content to be wrapped by <a> tags.
-   * @param $url URL parameter
-   * @param $options Array of HTML attributes.
-   *     - `confirm` JavaScript confirmation message.
-   *     - `confirmaction` optional action to do on confirmation
-   * @return string An `<a />` element.
-   */
-   static function link($title, $url, $options = array()) {
+    * Creates an HTML link.
+    *
+    * @since version 0.85
+    *
+    * @param $title              The content to be wrapped by <a> tags.
+    * @param $url                URL parameter
+    * @param $options   Array    of HTML attributes.
+    *     - `confirm` JavaScript confirmation message.
+    *     - `confirmaction` optional action to do on confirmation
+    * @return string An `<a />` element.
+   **/
+   static function link($title, $url, $options=array()) {
 
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {
             $confirmMessage = $options['confirm'];
-            $confirmAction = '';
+            $confirmAction  = '';
             if (isset($options['confirmaction'])) {
                if (!empty($options['confirmaction'])) {
                   $confirmAction = $options['confirmaction'];
                }
                unset($options['confirmaction']);
             }
-            $options['onclick'] = Html::getConfirmationOnActionScript($options['confirm'], $confirmAction);
+            $options['onclick'] = Html::getConfirmationOnActionScript($options['confirm'],
+                                                                      $confirmAction);
          }
          unset($options['confirm']);
       }
@@ -4113,37 +4122,46 @@ class Html {
          $title = Html::cleanInputText($title);
       }
 
-      
+
       return sprintf('<a href="%1$s" %2$s>%3$s</a>', Html::cleanInputText($url),
                      Html::parseAttributes($options), $title);
    }
 
 
    /**
-   * Creates a hidden input field.
-   *
-   * @param $fieldName Name of a field
-   * @param $options Array of HTML attributes.
-   * @return string A generated hidden input
-   */
-   static function hidden($fieldName, $options = array()) {
+    * Creates a hidden input field.
+    *
+    * @since version 0.85
+    *
+    * @param $fieldName          Name of a field
+    * @param $options    Array   of HTML attributes.
+    *
+    * @return string A generated hidden input
+   **/
+   static function hidden($fieldName, $options=array()) {
+
       return sprintf('<input type="hidden" name="%1$s" %2$s>',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
 
+
    /**
-   * Creates a submit button element. This method will generate `<input />` elements that
-   * can be used to submit, and reset forms by using $options. Image submits can be created by supplying an
-   * image option
-   *
-   * @param $caption caption of the input
-   * @param $options Array of options.
-   *     - image : will use a submit image input
-   *     - `confirm` JavaScript confirmation message.
-   *     - `confirmaction` optional action to do on confirmation
-   * @return string A HTML submit button
-   */
-   static function submit($caption, $options = array()) {
+    * Creates a submit button element. This method will generate `<input />` elements that
+    * can be used to submit, and reset forms by using $options. Image submits can be created by supplying an
+    * image option
+    *
+    * @since version 0.85
+    *
+    * @param $caption          caption of the input
+    * @param $options    Array of options.
+    *     - image : will use a submit image input
+    *     - `confirm` JavaScript confirmation message.
+    *     - `confirmaction` optional action to do on confirmation
+    *
+    * @return string A HTML submit button
+   **/
+   static function submit($caption, $options=array()) {
+
       $image = false;
       if (isset($options['image'])) {
          if (preg_match('/\.(jpg|jpe|jpeg|gif|png|ico)$/', $options['image'])) {
@@ -4151,7 +4169,7 @@ class Html {
          }
          unset($options['image']);
       }
-      
+
       // Set default class to submit
       if (!isset($options['class'])) {
          $options['class'] = 'submit';
@@ -4159,14 +4177,15 @@ class Html {
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {
             $confirmMessage = $options['confirm'];
-            $confirmAction = '';
+            $confirmAction  = '';
             if (isset($options['confirmaction'])) {
                if (!empty($options['confirmaction'])) {
                   $confirmAction = $options['confirmaction'];
                }
                unset($options['confirmaction']);
             }
-            $options['onclick'] = Html::getConfirmationOnActionScript($options['confirm'], $confirmAction);
+            $options['onclick'] = Html::getConfirmationOnActionScript($options['confirm'],
+                                                                      $confirmAction);
          }
          unset($options['confirm']);
       }
@@ -4176,19 +4195,23 @@ class Html {
          $options['alt']   = $caption;
          return sprintf('<input type="image" src="%s" %s>',
                Html::cleanInputText($image), Html::parseAttributes($options));
-      } else {
-         return sprintf('<input type="submit" value="%s" %s>',
-               Html::cleanInputText($caption), Html::parseAttributes($options));
       }
+      return sprintf('<input type="submit" value="%s" %s>',
+                     Html::cleanInputText($caption), Html::parseAttributes($options));
    }
 
+
    /**
-   * Returns a space-delimited string with items of the $options array.
-   *
-   * @param $options Array of options.
-   * @return string Composed attributes.
-   */
-   static function parseAttributes($options = array()) {
+    * Returns a space-delimited string with items of the $options array.
+    *
+    * @since version 0.85
+    *
+    * @param $options Array of options.
+    *
+    * @return string Composed attributes.
+   **/
+   static function parseAttributes($options=array()) {
+
       if (!is_string($options)) {
          $attributes = array();
 
@@ -4201,84 +4224,105 @@ class Html {
       }
       return $out;
    }
-   
+
+
    /**
-   * Formats an individual attribute, and returns the string value of the composed attribute.
-   *
-   * @param $key The name of the attribute to create
-   * @param $value The value of the attribute to create.
-   * @return string The composed attribute.
-   */
+    * Formats an individual attribute, and returns the string value of the composed attribute.
+    *
+    * @since version 0.85
+    *
+    * @param $key       The name of the attribute to create
+    * @param $value     The value of the attribute to create.
+    *
+    * @return string The composed attribute.
+   **/
    static function formatAttribute($key, $value) {
+
       if (is_array($value)) {
-            $value = implode(' ' , $value);
+         $value = implode(' ' , $value);
       }
 
       return sprintf('%1$s="%2$s"', $key, Html::cleanInputText($value));
    }
+
+
    /**
-   * Wrap $script in a script tag.
-   *
-   * @param $script The script to wrap
-   * @return string
-   */
+    * Wrap $script in a script tag.
+    *
+    * @since version 0.85
+    *
+    * @param $script The script to wrap
+    *
+    * @return string
+   **/
    static function scriptBlock($script) {
+
       $script = "\n" . '//<![CDATA[' . "\n" . $script . "\n" . '//]]>' . "\n";
 
       return sprintf('<script type="text/javascript">%s</script>', $script);
    }
 
+
    /**
-   * Begin a script block that captures output until HtmlHelper::scriptEnd()
-   * is called. This capturing block will capture all output between the methods
-   * and create a scriptBlock from it.
-   *
-   * ### Options
-   *
-   * - `safe` Whether the code block should contain a CDATA
-   * - `inline` Should the generated script tag be output inline or in `$scripts_for_layout`
-   *
-   * @param array $options Options for the code block.
-   * @return void
-   */
+    * Begin a script block that captures output until HtmlHelper::scriptEnd()
+    * is called. This capturing block will capture all output between the methods
+    * and create a scriptBlock from it.
+    *
+    * @since version 0.85
+   **/
    static function scriptStart() {
       ob_start();
       return null;
    }
 
+
    /**
-   * End a Buffered section of Javascript capturing.
-   * Generates a script tag inline
-   *
-   * @return mixed depending on the settings of scriptStart() either a script tag or null
-   */
+    * End a Buffered section of Javascript capturing.
+    * Generates a script tag inline
+    *
+    * @since version 0.85
+    *
+    * @return mixed depending on the settings of scriptStart() either a script tag or null
+   **/
    static function scriptEnd() {
+
       $buffer = ob_get_clean();
       return Html::scriptBlock($buffer);
    }
-   
+
+
    /**
-   * Returns one or many `<script>` tags depending on the number of scripts given.
-   *
-   * @param $url String of javascript file to include
-   * @return String of `<script />` tags
-   */
+    * Returns one or many `<script>` tags depending on the number of scripts given.
+    *
+    * @since version 0.85
+    *
+    * @param $url String of javascript file to include
+    *
+    * @return String of `<script />` tags
+   **/
    static function script($url) {
       return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
    }
-   
+
+
    /**
-   * Creates a link element for CSS stylesheets.
-   *
-   * @param $url String of javascript file to include
-   * @param array $options Array of HTML attributes. 
-   * @return string CSS <link /> tag
-   */
-   static function css($url, $options = array()) {
+    * Creates a link element for CSS stylesheets.
+    *
+    * @since version 0.85
+    *
+    * @param $url       String   of javascript file to include
+    * @param $options   Array    of HTML attributes.
+    *
+    * @return string CSS <link /> tag
+   **/
+   static function css($url, $options=array()) {
+
       if (!isset($options['media'])) {
          $options['media'] = 'screen';
       }
-      return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,  Html::parseAttributes($options));
-   }   
+      return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,
+                     Html::parseAttributes($options));
+   }
+
 }
 ?>
