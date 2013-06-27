@@ -3067,6 +3067,35 @@ class CommonDBTM extends CommonGLPI {
                            _sx('button', 'Delete permanently')."'>";
             break;
 
+         case 'unaffect':
+            if ($this instanceof CommonDBRelation) {
+               if ((!static::$mustBeAttached_1) && (!static::$mustBeAttached_2)) {
+                  $values = array();
+                  if ((empty(static::$itemtype_1))
+                      || (preg_match('/^itemtype/', static::$itemtype_1))) {
+                     $values[0] = __('First Item');
+                  } else {
+                     $itemtype_1 = static::$itemtype_1;
+                     $values[0] = $itemtype_1::getTypeName(2);
+                  }
+                  if ((empty(static::$itemtype_2))
+                      || (preg_match('/^itemtype/', static::$itemtype_2))) {
+                     $values[1] = __('Second Item');
+                  } else {
+                     $itemtype_2 = static::$itemtype_2;
+                     $values[1] = $itemtype_2::getTypeName(2);
+                  }
+                  Dropdown::showFromArray('peer', $values);
+               } elseif (!static::$mustBeAttached_1) {
+                  echo "<input type='hidden' name='peer' value='0'>";
+               } elseif (!static::$mustBeAttached_2) {
+                  echo "<input type='hidden' name='peer' value='1'>";
+               }
+            }
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           __('Dissociate')."'>";
+            break;
+
          case "update" :
             // Specific options for update fields
             if (!isset($input['options'])) {
@@ -3170,6 +3199,7 @@ class CommonDBTM extends CommonGLPI {
     * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
    **/
    function executeMassiveActions($input = array()) {
+
       if (!isset($input["item"]) || (count($input["item"]) == 0)) {
          return false;
       }
@@ -3303,6 +3333,33 @@ class CommonDBTM extends CommonGLPI {
                      } else {
                         $res['ko']++;
                         $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                     }
+                  } else {
+                     $res['noright']++;
+                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                  }
+               }
+            }
+            break;
+
+         case 'unaffect' :
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($this->can($key, UPDATE)) {
+                     if ($this instanceof CommonDBRelation) {
+                        if ($this->affectRelation($key, $input['peer'])) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                        }
+                     } elseif ($this instanceof CommonDBChild) {
+                        if ($this->affectChild($key)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                        }
                      }
                   } else {
                      $res['noright']++;
@@ -3590,6 +3647,18 @@ class CommonDBTM extends CommonGLPI {
              && Infocom::canCreate()) {
             $actions['activate_infocoms'] = __('Enable the financial and administrative information');
          }
+
+         if ($this instanceof CommonDBChild) {
+            if (!static::$mustBeAttached) {
+               $actions['unaffect'] = __('Dissociate');
+            }
+         }
+         if ($this instanceof CommonDBRelation) {
+            if ((!static::$mustBeAttached_1) || (!static::$mustBeAttached_2)) {
+               $actions['unaffect'] = __('Dissociate');
+            }
+         }
+
          // do not take into account is_deleted if items may be dynamic
          if ($this->maybeDeleted()
              && !$this->useDeletedToLockIfDynamic()) {

@@ -69,69 +69,6 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      foreach ($input["item"] as $itemtype => $items) {
-         $itemtype = 'Item_'.$itemtype;
-         $link = new $itemtype();
-         if ($link instanceof $input['itemtype']) {
-            foreach ($items as $key => $val) {
-               if ($val == 1) {
-                  switch ($input['action']) {
-                     case 'unaffect' :
-                     case 'update_device':
-                        if ($link->can($key,'w')) {
-                           $update_input = array('id' => $key);
-                           if ($input['action'] == 'unaffect') {
-                              $update_input['itemtype'] = '';
-                              $update_input['items_id'] = 0;
-                           } else { // update_device
-                              $update_input[$input['field']] = $input[$input['field']];
-                           }
-                           if ($link->update($update_input)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                        }
-                        break;
-                     case 'purge_device' :
-                        if ($link->can($key, PURGE)) {
-                           $force = 1;
-                           // Only mark deletion for
-                           if ($link->maybeDeleted()
-                               && $link->useDeletedToLockIfDynamic()
-                               && $link->isDynamic()) {
-                              $force = 0;
-                           }
-                           if ($link->delete(array("id" => $key), $force)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
-                        }
-                        break;
-                  }
-               }
-            }
-         }
-      }
-      return $res;
-   }
-
-
    function getSearchOptions() {
 
       $tab = parent::getSearchOptions();
@@ -144,77 +81,6 @@ class Item_Devices extends CommonDBRelation {
       }
 
       return $tab;
-   }
-
-
-   function showSpecificMassiveActionsParameters($input=array()) {
-      global $CFG_GLPI;
-
-      switch ($input['action']) {
-         case 'update_device':
-            // Specific options for update fields
-            if (!isset($input['options'])) {
-               $input['options'] = array();
-            }
-            $group          = "";
-            $show_all       = true;
-            $show_infocoms  = true;
-
-            $searchopt = Search::getCleanedOptions($input["itemtype"], 'w');
-
-            $values = array(0 => Dropdown::EMPTY_VALUE);
-
-            foreach ($searchopt as $key => $val) {
-               if (!is_array($val)) {
-                  $group = $val;
-               } else {
-                  // No id and no entities_id massive action and no first item
-                  if (($val["field"] != 'id')
-                      && ($key != 1)
-                     // Permit entities_id is explicitly activate
-                      && (($val["linkfield"] != 'entities_id')
-                          || (isset($val['massiveaction']) && $val['massiveaction']))) {
-
-                     if (!isset($val['massiveaction']) || $val['massiveaction']) {
-
-                        if ($show_all) {
-                           $values[$group][$key] = $val["name"];
-                        } else {
-                           // Do not show infocom items
-                           if (($show_infocoms
-                                && Search::isInfocomOption($input["itemtype"], $key))
-                               || (!$show_infocoms
-                                   && !Search::isInfocomOption($input["itemtype"], $key))) {
-                              $values[$group][$key] = $val["name"];
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-
-            $rand = Dropdown::showFromArray('id_field', $values);
-
-            $paramsmassaction = array('id_field' => '__VALUE__',
-                                      'itemtype' => $input["itemtype"],
-                                      'options'  => $input['options']);
-
-            foreach ($input as $key => $val) {
-               if (preg_match("/extra_/",$key,$regs)) {
-                  $paramsmassaction[$key] = $val;
-               }
-            }
-            Ajax::updateItemOnSelectEvent("dropdown_id_field$rand", "show_massiveaction_field",
-                                          $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
-                                          $paramsmassaction);
-
-            echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
-            return true;
-            break;
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
    }
 
 
@@ -422,15 +288,9 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($canedit) {
-         $massiveactionparams = array('container'
-                                              => 'form_device_action'.$rand,
-                                      'fixed' => false,
-                                      'display_arrow'
-                                              => false,
-                                      'specific_actions'
-                                              => array('unaffect' => __('Dissociate'),
-                                                       'purge_device' => _x('button',
-                                                                            'Delete permanently')));
+         $massiveactionparams = array('container'     => 'form_device_action'.$rand,
+                                      'fixed'         => false,
+                                      'display_arrow' => false);
          if ($is_device) {
             $class = 'Item_'.$item->getType();
             $massiveactionparams['specific_actions']['update_device'] = _x('button', 'Update');
@@ -590,15 +450,17 @@ class Item_Devices extends CommonDBRelation {
          if ($item instanceof CommonDevice) {
             $content = '&nbsp;';
          } else {
+            // TODO: filter to only apply the updaze to the given itemtype (example of "serial"
+            //       field that is defines for memory, disk ...
             $massiveactionparams = array('container'
                                                  => 'form_device_action'.$options['rand'],
                                          'fixed' => false,
                                          'display_arrow'
                                                  => false,
                                          'specific_actions'
-                                                 => array('update_device' => _x('button', 'Update'),
-                                                          'unaffect'      => __('Dissociate'),
-                                                          'purge_device'  => _x('button',
+                                                 => array('update'   => _x('button', 'Update'),
+                                                          'unaffect' => __('Dissociate'),
+                                                          'purge'    => _x('button',
                                                                                 'Delete permanently')),
                                          'title' => __('Actions for this kind of device'));
             $content = array(array('function'   => 'Html::showMassiveActions',
@@ -680,17 +542,7 @@ class Item_Devices extends CommonDBRelation {
          }
 
          if ($options['canedit']) {
-            $sel = "";
-            if (isset($_SESSION['glpimassiveactionselected'][$peer_type][$link['id']])) {
-               $sel = "checked";
-            }
-            if ($is_device) {
-               $typename_field = static::getDeviceType();
-            } else {
-               $typename_field = $peer_type;
-            }
-            $cell_value   = "<input type='checkbox' name='item[" . $typename_field . "][" .
-                            $link['id'] . "]' value='1' id='massaction_item_".mt_rand()."' $sel>";
+            $cell_value = Html::getMassiveActionCheckBox(static::getType(), $link['id']);
             $current_row->addCell($delete_one, $cell_value, $previous_cell);
          }
       }

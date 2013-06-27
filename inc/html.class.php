@@ -2381,7 +2381,7 @@ class Html {
       global $CFG_GLPI;
 
       /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
-      
+
       $p['ontop']             = true;
       $p['num_displayed']     = -1;
       $p['fixed']             = true;

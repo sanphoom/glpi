@@ -804,5 +804,25 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
    }
 
+   /**
+    * Affect a CommonDBChild to a given item. By default, unaffect it
+    *
+    * @param $id       the id of the CommonDBChild to affect
+    * @param $items_id the id of the new item
+    * @param $itemtype the type of the new item
+    *
+    * @return boolean : true on success
+   **/
+   function affectChild($id, $items_id=0, $itemtype='') {
+
+      $input = array(static::getIndexName() => $id,
+                     static::$items_id      => $items_id);
+
+      if (preg_match('/^itemtype/', static::$itemtype)) {
+         $input[static::$itemtype] = $itemtype;
+      }
+
+      return $this->update($input);
+   }
 }
 ?>

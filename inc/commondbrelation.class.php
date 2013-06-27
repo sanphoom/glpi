@@ -1034,5 +1034,38 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       }
    }
 
+
+   /**
+    * Affect a CommonDBRelation to a given item. By default, unaffect it
+    *
+    * @param $id       the id of the CommonDBRelation to affect
+    * @param $peer     the number of the peer (ie.: 0 or 1)
+    * @param $items_id the id of the new item
+    * @param $itemtype the type of the new item
+    *
+    * @return boolean : true on success
+   **/
+   function affectRelation($id, $peer, $items_id=0, $itemtype='') {
+
+      $input = array(static::getIndexName() => $id);
+
+      if ($peer == 0) {
+         $input[static::$items_id_1] = $items_id;
+
+         if (preg_match('/^itemtype/', static::$itemtype_1)) {
+            $input[static::$itemtype_1] = $itemtype;
+         }
+
+      } else {
+
+         $input[static::$items_id_2] = $items_id;
+         if (preg_match('/^itemtype/', static::$itemtype_2)) {
+            $input[static::$itemtype_2] = $itemtype;
+         }
+
+      }
+
+      return $this->update($input);
+   }
 }
 ?>
