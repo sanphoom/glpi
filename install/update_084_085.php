@@ -745,7 +745,7 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . TicketValidation::CREATEREQUEST ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'validaton'";
+                       AND `name` = 'validation'";
       $DB->queryOrDie($query, "0.85 update validation with create_request_validation right");
    }
    $query = "DELETE
@@ -760,7 +760,7 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . TicketValidation::CREATEINCIDENT ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'validaton'";
+                       AND `name` = 'validation'";
       $DB->queryOrDie($query, "0.85 update validation with create_incident_validation right");
    }
    $query = "DELETE
@@ -775,7 +775,7 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . TicketValidation::VALIDATEREQUEST ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'validaton'";
+                       AND `name` = 'validation'";
       $DB->queryOrDie($query, "0.85 update validation with validate_request right");
    }
    $query = "DELETE
@@ -790,7 +790,7 @@ function update084to085() {
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . TicketValidation::VALIDATEINCIDENT ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'validaton'";
+                       AND `name` = 'validation'";
       $DB->queryOrDie($query, "0.85 update validation with validate_incident right");
    }
    $query = "DELETE
@@ -1516,7 +1516,7 @@ function update084to085() {
 
    Config::setConfigurationValues('core', array('maintenance_mode' => 0));
    Config::setConfigurationValues('core', array('maintenance_text' => ''));
-   
+
    $query = "SELECT *
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'MailCollector'";
@@ -1571,7 +1571,7 @@ function update084to085() {
    }
 
    $migration->addField('glpi_documents', 'is_blacklisted', 'bool');
-   
+
    if (!TableExists("glpi_blacklistedmailcontents")) {
       $query = "CREATE TABLE IF NOT EXISTS `glpi_blacklistedmailcontents` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
