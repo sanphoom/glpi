@@ -159,8 +159,8 @@ class ProfileRight extends CommonDBChild {
       }
       if (count($profiles)) {
          $query = "UPDATE `glpi_profilerights`
-                   SET `right` = '$value'
-                   WHERE `name`='$right'
+                   SET `rights` = = `rights` | " . $value ."
+                   WHERE `name` = '$right'
                          AND `profiles_id` IN ('".implode("', '",$profiles)."')";
          if (!$DB->query($query)) {
             $ok = false;
@@ -168,6 +168,7 @@ class ProfileRight extends CommonDBChild {
       }
       return $ok;
    }
+
 
    /**
     * @param $initialright
@@ -193,7 +194,7 @@ class ProfileRight extends CommonDBChild {
          foreach ($profiles as $key => $val) {
             $query = "UPDATE `glpi_profilerights`
                       SET `rights` = '$val'
-                      WHERE `name`='$newright'
+                      WHERE `name` = '$newright'
                            AND `profiles_id` = '$key'";
             if (!$DB->query($query)) {
                $ok = false;
@@ -202,7 +203,7 @@ class ProfileRight extends CommonDBChild {
       }
       return $ok;
    }
-   
+
    /**
     * @param $profiles_id
    **/

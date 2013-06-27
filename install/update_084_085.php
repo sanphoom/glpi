@@ -163,16 +163,15 @@ function update084to085() {
       $migration->migrationOneTable('glpi_profiles');
       $migration->dropTable('origin_glpi_profiles');
 
-      /// TODO : review change right system
-      ProfileRight::addProfileRights(array('show_my_change', 'show_all_change', 'edit_all_change'));
+      ProfileRight::addProfileRights(array('change'));
 
-      ProfileRight::updateProfileRightAsOtherRight('show_my_change', '1',
-                                                   "`name` = 'own_ticket' AND `right`='1'");
-      ProfileRight::updateProfileRightAsOtherRight('show_all_change', '1',
-                                                   "`name` = 'show_all_ticket' AND `right`='1'");
-      ProfileRight::updateProfileRightAsOtherRight('edit_all_change', '1',
-                                                   "`name` = 'update_ticket' AND `right`='1'");
-
+      ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY,
+                                                   "`name` = 'ticket' AND `rights` = ". Ticket::OWN);
+      ProfileRight::updateProfileRightAsOtherRight('change', Change::READALL,
+                                                   "`name` = 'ticket' AND `rights` = ".Ticket::READALL);
+      ProfileRight::updateProfileRightAsOtherRight('change',
+                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
+                                                   "`name` = 'ticket' AND `rights` = ".UPDATE);
    }
 
    // New system of profiles
@@ -812,7 +811,7 @@ function update084to085() {
 
    // delete show_group_planning
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'planning' AND `right` = '1'") as $profrights) {
+                         "`name` = 'show_group_planning' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . Planning::READGROUP  ."
@@ -828,7 +827,7 @@ function update084to085() {
 
    // delete show_all_planning
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'planning' AND `right` = '1'") as $profrights) {
+                         "`name` = 'show_all_planning' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . Planning::READALL  ."
@@ -855,7 +854,7 @@ function update084to085() {
 
    // delete show_all_problem
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'problem' AND `right` = '1'") as $profrights) {
+                         "`name` = 'show_all_problem' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . Problem::READALL  ."
@@ -871,7 +870,7 @@ function update084to085() {
 
    // delete edit_all_problem
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'problem' AND `right` = '1'") as $profrights) {
+                         "`name` = 'edit_all_problem' AND `right` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE ."
@@ -883,49 +882,6 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'edit_all_problem'";
    $DB->queryOrDie($query, "0.85 delete edit_all_problem right");
-
-
-   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
-   if (countElementsInTable("glpi_profilerights", "`name` = 'change'") == 0) {
-      // rename show_my_change
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `name` = 'change'
-                 WHERE `name` = 'show_my_change'";
-      $DB->queryOrDie($query, "0.85 rename show_my_change to change");
-
-      // READMY = 1 => do update needed
-   }
-
-   // delete show_all_change
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'change' AND `right` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Change::READALL  ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'change'";
-      $DB->queryOrDie($query, "0.85 update change with show_all_change right");
-   }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'show_all_change'";
-   $DB->queryOrDie($query, "0.85 delete show_all_change right");
-
-
-   // delete edit_all_change
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'change' AND `right` = '1'") as $profrights) {
-
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                      AND `name` = 'change'";
-      $DB->queryOrDie($query, "0.85 update change with edit_all_change right");
-   }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'edit_all_change'";
-   $DB->queryOrDie($query, "0.85 delete edit_all_change right");
 
 
    // update search_config
@@ -1035,10 +991,13 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for queuemail");
    }
 
-   if ($migration->addField("glpi_entities", "delay_send_emails", "integer", array('value' => -2))) {
+   if ($migration->addField("glpi_entities", "delay_send_emails", "integer",
+                            array('value' => -2))) {
       $migration->migrationOneTable('glpi_entities');
       // Set directly to root entity
-      $query = 'UPDATE `glpi_entities` SET `delay_send_emails` = 0 WHERE `id`=0;';
+      $query = 'UPDATE `glpi_entities`
+                SET `delay_send_emails` = 0
+                WHERE `id` = 0';
       $DB->queryOrDie($query, "0.85 default value for delay_send_emails for root entity");
    }
    ProfileRight::addProfileRights(array('queuedmail'));
