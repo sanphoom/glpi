@@ -163,15 +163,20 @@ function update084to085() {
       $migration->migrationOneTable('glpi_profiles');
       $migration->dropTable('origin_glpi_profiles');
 
-      ProfileRight::addProfileRights(array('change'));
+      // pour que la procédure soit ré-entrante
+      if (countElementsInTable("glpi_profilerights", "`name` = 'change'") == 0) {
+         ProfileRight::addProfileRights(array('change'));
 
-      ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY,
-                                                   "`name` = 'ticket' AND `rights` = ". Ticket::OWN);
-      ProfileRight::updateProfileRightAsOtherRight('change', Change::READALL,
-                                                   "`name` = 'ticket' AND `rights` = ".Ticket::READALL);
-      ProfileRight::updateProfileRightAsOtherRight('change',
-                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
-                                                   "`name` = 'ticket' AND `rights` = ".UPDATE);
+         ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY,
+                                                      "`name` = 'ticket'
+                                                        AND `rights` = ". Ticket::OWN);
+         ProfileRight::updateProfileRightAsOtherRight('change', Change::READALL,
+                                                      "`name` = 'ticket'
+                                                        AND `rights` = ".Ticket::READALL);
+         ProfileRight::updateProfileRightAsOtherRight('change',
+                                                      CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
+                                                      "`name` = 'ticket' AND `rights` = ".UPDATE);
+      }
    }
 
    // New system of profiles
