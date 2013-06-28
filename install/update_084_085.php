@@ -1005,9 +1005,14 @@ function update084to085() {
                 WHERE `id` = 0';
       $DB->queryOrDie($query, "0.85 default value for delay_send_emails for root entity");
    }
-   ProfileRight::addProfileRights(array('queuedmail'));
 
-   ProfileRight::updateProfileRightsAsOtherRights('queuedmail', 'notification');
+   // pour que la procédure soit ré-entrante
+   if (countElementsInTable("glpi_profilerights", "`name` = 'queuedmail'") == 0) {
+      ProfileRight::addProfileRights(array('queuedmail'));
+
+      ProfileRight::updateProfileRightsAsOtherRights('queuedmail', 'notification');
+   }
+
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
 
