@@ -1416,15 +1416,79 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Dropdown', 'Dropdowns', 2)."</td><td>";
+      echo "<td>"._n('Global dropdown', 'Global dropdowns', 2)."</td><td>";
       $tab = CommonDBTM::getRights();
       unset($tab[DELETE]);
       self::dropdownRights($tab, "_dropdown", $this->fields["dropdown"]);
-      echo "</td>";
-      echo "<td class='tab_bg_2'>".__('Entity dropdowns')."</td>";
-      echo "<td class='tab_bg_2'>";
-      self::dropdownRight("entity_dropdown", array('value' => $this->fields["entity_dropdown"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class=' b'>".__('Entity dropdowns')." :</td>";
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Domain', 'Domains', 2)."</td>";
+      echo "<td>";
+      self::dropdownRights(Profile::getRightsFor('domain'), "_domain", $this->fields["domain"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Location', 'Locations', 2)."</td>";
+      echo "<td>";
+      self::dropdownRights(Profile::getRightsFor('location'), "_location",
+                           $this->fields["location"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Category of ticket', 'Categories of tickets', 2)."</td>";
+      echo "<td>";
+      self::dropdownRights(Profile::getRightsFor('itilcategory'), "_itilcategory",
+                           $this->fields["itilcategory"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Knowledge base category', 'Knowledge base categories', 2);
+      echo "</td>";
+      echo "<td>";
+      self::dropdownRights(Profile::getRightsFor('knowbaseitemcategory'), "_knowbasecategory",
+                           $this->fields["knowbasecategory"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Network outlet', 'Network outlets', 2)."</td>";
+      echo "<td>";
+      self::dropdownRights(Profile::getRightsFor('netpoint'), "_netpoint",
+                           $this->fields["netpoint"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Tasks category','Tasks categories', 2)."</td>";
+      echo "<td>";
+      self::dropdownRights(Profile::getRightsFor('taskcategory'), "_taskcategory",
+                           $this->fields["taskcategory"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='tab_bg_2'>&nbsp;&nbsp;&nbsp;"._n('Status of items', 'Statuses of items', 2);
+      echo "</td>";
+      echo "<td class='tab_bg_2'>";
+      self::dropdownRights(Profile::getRightsFor('state'), "_state", $this->fields["state"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Solution template', 'Solution templates', 2)."</td>";
+      echo "<td>";
+      self::dropdownRights(Profile::getRightsFor('solutiontemplate'), "_solutiontemplate",
+                           $this->fields["solutiontemplate"]);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Calendar', 'Calendars', 2)."</td><td colspan='5'>";
+      self::dropdownRights(Profile::getRightsFor('Calendar'), "_calendar",
+                           $this->fields["calendar"]);
+      echo "</td></tr>\n";
+
+
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Document type')."</td><td colspan='5'>";
@@ -1448,11 +1512,6 @@ class Profile extends CommonDBTM {
       self::dropdownRights(Profile::getRightsFor('SLA'), "_sla", $this->fields["sla"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Calendar', 'Calendars', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Calendar'), "_calendar",
-                           $this->fields["calendar"]);
-      echo "</td></tr>\n";
 
       if ($canedit
           && $closeform) {
@@ -1673,14 +1732,14 @@ class Profile extends CommonDBTM {
       $tab[42]['datatype']       = 'right';
       $tab[42]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'dropdown'");
-
+/*
       $tab[43]['table']          = 'glpi_profilerights';
       $tab[43]['field']          = 'right';
       $tab[43]['name']           = __('Entity dropdowns');
       $tab[43]['datatype']       = 'right';
       $tab[43]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'entity_dropdown'");
-
+*/
       $tab[44]['table']          = 'glpi_profilerights';
       $tab[44]['field']          = 'right';
       $tab[44]['name']           = _n('Component', 'Components', 2);

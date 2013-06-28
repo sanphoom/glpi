@@ -40,26 +40,13 @@ class Domain extends CommonDropdown {
 
    var $can_be_translated = true;
 
+   static $rightname = 'domain';
+
+
+
    static function getTypeName($nb=0) {
       return _n('Domain', 'Domains', $nb);
    }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
-   }
-
 
 }
 ?>

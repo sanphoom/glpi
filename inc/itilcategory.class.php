@@ -35,22 +35,17 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// ITILCategory class
+/**
+ * ITILCategory class
+**/
 class ITILCategory extends CommonTreeDropdown {
 
    // From CommonDBTM
-   public $dohistory = true;
-   var $can_be_translated = true;
+   public $dohistory       = true;
+   var $can_be_translated  = true;
 
+   static $rightname       = 'itilcategory';
 
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
-   }
 
 
    function getAdditionalFields() {
@@ -236,7 +231,7 @@ class ITILCategory extends CommonTreeDropdown {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (Session::haveRight("entity_dropdown","r")) {
+      if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
             case 'TicketTemplate' :
                $ong[1] = $this->getTypeName(2);

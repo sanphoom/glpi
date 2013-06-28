@@ -41,6 +41,9 @@ class Netpoint extends CommonDropdown {
    // From CommonDBTM
    public $dohistory = true;
 
+   static $rightname = 'netpoint';
+
+
 
    function getAdditionalFields() {
 
@@ -53,16 +56,6 @@ class Netpoint extends CommonDropdown {
 
    static function getTypeName($nb=0) {
       return _n('Network outlet', 'Network outlets', $nb);
-   }
-
-
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
    }
 
 

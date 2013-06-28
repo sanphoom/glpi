@@ -933,6 +933,55 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete check_update right");
 
 
+   // entity_dropdown => right by object
+
+   // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
+   if (countElementsInTable("glpi_profilerights", "`name` = 'domain'") == 0) {
+      ProfileRight::addProfileRights(array('domain'));
+      ProfileRight::updateProfileRightAsOtherRights('domain', 'entity_dropdown');
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'location'") == 0) {
+      ProfileRight::addProfileRights(array('location'));
+      ProfileRight::updateProfileRightsAsOtherRights('location', 'entity_dropdown');
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'itilcategory'") == 0) {
+      ProfileRight::addProfileRights(array('itilcategory'));
+      ProfileRight::updateProfileRightsAsOtherRights('itilcategory', 'entity_dropdown');
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'knowbasecategory'") == 0) {
+      ProfileRight::addProfileRights(array('knowbasecategory'));
+      ProfileRight::updateProfileRightsAsOtherRights('knowbasecategory', 'entity_dropdown');
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'netpoint'") == 0) {
+      ProfileRight::addProfileRights(array('netpoint'));
+      ProfileRight::updateProfileRightsAsOtherRights('netpoint', 'entity_dropdown');
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'taskcategory'") == 0) {
+      ProfileRight::addProfileRights(array('taskcategory'));
+      ProfileRight::updateProfileRightsAsOtherRights('taskcategory', 'entity_dropdown');
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'state'") == 0) {
+      ProfileRight::addProfileRights(array('state'));
+      ProfileRight::updateProfileRightsAsOtherRights('state', 'entity_dropdown');
+   }
+
+   if (countElementsInTable("glpi_profilerights", "`name` = 'solutiontemplate'") == 0) {
+      ProfileRight::addProfileRights(array('solutiontemplate'));
+      ProfileRight::updateProfileRightsAsOtherRights('solutiontemplate', 'entity_dropdown');
+   }
+
+//   $query = "DELETE
+//             FROM `glpi_profilerights`
+//             WHERE `name` = 'entity_dropdown'";
+//   $DB->queryOrDie($query, "0.85 delete entity_dropdown right");
+
+
    // don't drop column right  - be done later
    //$migration->dropField("glpi_profilerights", 'right');
 

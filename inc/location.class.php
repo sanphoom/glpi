@@ -39,18 +39,11 @@ if (!defined('GLPI_ROOT')) {
 class Location extends CommonTreeDropdown {
 
    // From CommonDBTM
-   public $dohistory = true;
-   var $can_be_translated = true;
+   public $dohistory       = true;
+   var $can_be_translated  = true;
 
+   static $rightname       = 'location';
 
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
-   }
 
 
    function getAdditionalFields() {

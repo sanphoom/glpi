@@ -171,9 +171,11 @@ class ProfileRight extends CommonDBChild {
 
 
    /**
-    * @param $initialright
-    * @param $newright
-    * @param $condition
+    * @since version 0.85
+    *
+    * @param $newright      string   new right name
+    * @param $initialright  string   right name to check
+    * @param $condition              (default '')
     *
     * @return boolean
    **/

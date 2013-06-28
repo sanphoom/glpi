@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class State
+/**
+ * State Class
+**/
 class State extends CommonTreeDropdown {
 
    protected $visibility_fields = array('Computer'         => 'is_visible_computer',
@@ -45,26 +47,14 @@ class State extends CommonTreeDropdown {
                                         'Peripheral'       => 'is_visible_peripheral',
                                         'Phone'            => 'is_visible_phone',
                                         'NetworkEquipment' => 'is_visible_networkequipment');
-   var $can_be_translated = true;
+   var $can_be_translated       = true;
+
+   static $rightname            = 'state';
+
+
 
    static function getTypeName($nb=0) {
       return _n('Status of items', 'Statuses of items', $nb);
-   }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canCreate() {
-      return Session::haveRight('entity_dropdown', 'w');
-   }
-
-
-   /**
-    * @since version 0.85
-   **/
-   static function canView() {
-      return Session::haveRight('entity_dropdown', 'r');
    }
 
 
