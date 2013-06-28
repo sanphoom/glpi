@@ -130,7 +130,7 @@ class Calendar extends CommonDropdown {
                      if ($this->getFromDB($key)) {
                         if (!$this->isEntityAssign()
                             || ($input['entities_id'] != $this->getEntityID())) {
-                           if ($this->can(-1,'w',$options)) {
+                           if ($this->can(-1, CREATE, $options)) {
                               if ($this->duplicate($options)) {
                                  $res['ok']++;
                               } else {

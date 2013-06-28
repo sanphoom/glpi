@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 if (!Session::haveRightsOr('reservation', array(CREATE, UPDATE, DELETE, PURGE))) {
-   self::redirectIfNotLoggedIn();
+   Session::redirectIfNotLoggedIn();
    Html::displayRightError();
 }
 

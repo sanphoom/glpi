@@ -34,7 +34,7 @@
 include ('../inc/includes.php');
 
 if (!Session::haveRightsOr('reservation', array(READ, ReservationItem::RESERVEANITEM))) {
-   self::redirectIfNotLoggedIn();
+   Session::redirectIfNotLoggedIn();
    Html::displayRightError();
 }
 

@@ -2162,7 +2162,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      if ($this->can($ID,'w')) {
+      if ($this->canEdit($ID)) {
          echo "<form name='form' method='post' action='".$params['target']."' ".
                 $params['formoptions'].">";
 
@@ -3116,7 +3116,7 @@ class CommonDBTM extends CommonGLPI {
                $show_all      = false;
                $show_infocoms = Infocom::canUpdate();
             }
-            $searchopt = Search::getCleanedOptions($input["itemtype"], 'w');
+            $searchopt = Search::getCleanedOptions($input["itemtype"], UPDATE);
 
             $values = array(0 => Dropdown::EMPTY_VALUE);
 
@@ -3393,7 +3393,7 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          case "update" :
-            $searchopt = Search::getCleanedOptions($input["itemtype"],'w');
+            $searchopt = Search::getCleanedOptions($input["itemtype"], UPDATE);
             if (isset($searchopt[$input["id_field"]])) {
                /// Infocoms case
                if (!isPluginItemType($input["itemtype"])
@@ -3419,7 +3419,7 @@ class CommonDBTM extends CommonGLPI {
                               $input2["items_id"] = $key;
                               $input2["itemtype"] = $input["itemtype"];
 
-                              if ($ic->can(-1,'w',$input2)) {
+                              if ($ic->can(-1, CREATE, $input2)) {
                                  // Add infocom if not exists
                                  if (!$ic->getFromDBforDevice($input["itemtype"],$key)) {
                                     $input2["items_id"] = $key;
@@ -3484,7 +3484,7 @@ class CommonDBTM extends CommonGLPI {
 
                   foreach ($input["item"] as $key => $val) {
                      if ($val == 1) {
-                        if ($this->can($key,'w')
+                        if ($this->canEdit($key)
                            && $this->canMassiveAction($input['action'], $input['field'],
                                                       $input[$input["field"]])) {
                            if ((count($link_entity_type) == 0)
@@ -3518,17 +3518,17 @@ class CommonDBTM extends CommonGLPI {
                      $input = array('itemtype' => $input['itemtype'],
                                     'items_id' => $key);
                      if (!$ic->getFromDBforDevice($input['itemtype'], $key)) {
-                           if ($ic->can(-1,'w',$input)) {
-                              if ($ic->add($input)) {
-                                 $res['ok']++;
-                              } else {
-                                 $res['ko']++;
-                                 $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                              }
+                        if ($ic->can(-1, CREATE, $input)) {
+                           if ($ic->add($input)) {
+                              $res['ok']++;
                            } else {
-                              $res['noright']++;
-                              $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                              $res['ko']++;
+                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                            }
+                        } else {
+                           $res['noright']++;
+                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                        }
                      } else {
                         $res['ko']++;
                         $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);

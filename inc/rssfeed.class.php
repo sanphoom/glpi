@@ -952,7 +952,7 @@ class RSSFeed extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $this->fields['id'];
-      $canedit = $this->can($ID,'w');
+      $canedit = $this->canEdit($ID);
 
       echo "<div class='center'>";
 

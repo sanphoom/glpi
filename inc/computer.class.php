@@ -690,7 +690,7 @@ class Computer extends CommonDBTM {
                      if ($this->getFromDB($key)) {
                         $input2 = array('computers_id'        => $key,
                                         'softwareversions_id' => $input['softwareversions_id']);
-                        if ($inst->can(-1, 'w', $input2)) {
+                        if ($inst->can(-1, CREATE, $input2)) {
                            if ($inst->add($input2)) {
                               $res['ok']++;
                            } else {

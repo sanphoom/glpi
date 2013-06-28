@@ -601,7 +601,7 @@ class Group_User extends CommonDBRelation{
                      && $user->getFromDB($input2['users_id'])) {
                      if ($updateifnotfound
                         && $this->getFromDBForItems($user, $group)) {
-                        if ($this->can($this->getID(),'w')) {
+                        if ($this->can($this->getID(), UPDATE)) {
                            $input2['id'] = $this->getID();
                            if ($this->update($input2)) {
                               $res['ok']++;
@@ -614,7 +614,7 @@ class Group_User extends CommonDBRelation{
                            $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
                         }
                      } else {
-                        if ($this->can(-1,'w',$input2)) {
+                        if ($this->can(-1, CREATE, $input2)) {
                            if ($this->add($input2)) {
                               $res['ok']++;
                            } else {

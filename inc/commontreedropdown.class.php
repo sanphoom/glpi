@@ -531,7 +531,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                if ($parent->getFromDB($input['parent'])) {
                   foreach ($input["item"] as $key => $val) {
                      if (($val == 1)
-                         && $this->can($key,'w')) {
+                         && $this->can($key, UPDATE)) {
                         // Check if parent is not a child of the original one
                         if (!in_array($parent->getID(), getSonsOf($this->getTable(),
                                       $this->getID()))) {

@@ -64,7 +64,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       // Super admin
       Session::changeProfile(4);
       $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
-      $this->assertEquals('w', $_SESSION['glpiactiveprofile']['printer']);
+      $this->assertEquals(31, $_SESSION['glpiactiveprofile']['printer']);
 
       // See all
       $this->assertTrue(Session::changeActiveEntities("all"));
@@ -134,7 +134,7 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       // Super admin
       Session::changeProfile(4);
       $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
-      $this->assertEquals('w', $_SESSION['glpiactiveprofile']['contact_enterprise']);
+      $this->assertEquals(31, $_SESSION['glpiactiveprofile']['contact_enterprise']);
 
       // See all
       $this->assertTrue(Session::changeActiveEntities("all"));
@@ -383,26 +383,28 @@ class Framework_CommonDBTM_CanCheck extends PHPUnit_Framework_TestCase {
       $this->assertFalse($entity->canEdit(99999), "Fail: can write not existing entity");
 
       $input=array('entities_id' => $ent1);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in root");
+      $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in root");
       $input=array('entities_id' => $ent2);
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2");
       $input=array('entities_id' => $ent3);
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2.1");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2.1");
       $input=array('entities_id' => 99999);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+      $this->assertFalse($entity->can(-1, CREATE, $input),
+                         "Fail: can create entity in not existing entity");
       $input=array('entities_id' => -1);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in not existing entity");
+      $this->assertFalse($entity->can(-1, CREATE, $input),
+                         "Fail: can create entity in not existing entity");
 
       $this->assertTrue(Session::changeActiveEntities($ent2,false));
       $input=array('entities_id' => $ent1);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in root");
+      $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in root");
       $input=array('entities_id' => $ent2);
       // next should be false (or not).... but check is done on glpiactiveprofile
       // will require to save current state in session - this is probably acceptable
       // this allow creation when no child defined yet (no way to select tree in this case)
-      $this->assertTrue($entity->can(-1,'w',$input), "Fail: can't create entity in 2");
+      $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2");
       $input=array('entities_id' => $ent3);
-      $this->assertFalse($entity->can(-1,'w',$input), "Fail: can create entity in 2.1");
+      $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in 2.1");
    }
 }
 ?>

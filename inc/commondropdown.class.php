@@ -437,7 +437,7 @@ abstract class CommonDropdown extends CommonDBTM {
             $fk = $this->getForeignKeyField();
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'w')) {
+                  if ($this->can($key, UPDATE)) {
                      if ($this->getEntityID() == $_SESSION['glpiactive_entity']) {
                         if ($this->update(array('id'           => $key,
                                                 'is_recursive' => 1))) {

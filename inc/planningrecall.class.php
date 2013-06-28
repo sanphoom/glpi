@@ -142,19 +142,21 @@ class PlanningRecall extends CommonDBChild {
 
          if ($data['before_time'] != $pr->fields['before_time']) {
             // Recall exists and is different : update datas and clean alert
-            if ($pr->can($pr->fields['id'],'w')) {
-               if ($item = getItemForItemtype($data['itemtype'])) {
-                  if ($item->getFromDB($data['items_id'])
-                      && isset($item->fields[$data['field']])
-                      && !empty($item->fields[$data['field']])) {
+            if ($item = getItemForItemtype($data['itemtype'])) {
+               if ($item->getFromDB($data['items_id'])
+                   && isset($item->fields[$data['field']])
+                   && !empty($item->fields[$data['field']])) {
 
-                     $when = date("Y-m-d H:i:s",
-                                  strtotime($item->fields[$data['field']]) - $data['before_time']);
-                     if ($data['before_time'] >= 0) {
+                  $when = date("Y-m-d H:i:s",
+                               strtotime($item->fields[$data['field']]) - $data['before_time']);
+                  if ($data['before_time'] >= 0) {
+                     if ($pr->can($pr->fields['id'], UPDATE)) {
                         $pr->update(array('id'          => $pr->fields['id'],
                                           'before_time' => $data['before_time'],
                                           'when'        => $when));
-                     } else {
+                     }
+                  } else {
+                     if ($pr->can($pr->fields['id'], PURGE)) {
                         $pr->delete(array('id' => $pr->fields['id']));
                      }
                   }
@@ -164,7 +166,7 @@ class PlanningRecall extends CommonDBChild {
 
       } else {
          // Recall does not exists : create it
-         if ($pr->can(-1,'w',$data)) {
+         if ($pr->can(-1, CREATE, $data)) {
                if ($item = getItemForItemtype($data['itemtype'])) {
                   $item->getFromDB($data['items_id']);
                   if ($item->getFromDB($data['items_id'])

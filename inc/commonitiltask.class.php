@@ -845,7 +845,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate=false) {
       global $DB, $CFG_GLPI;
 
-      $canedit = $this->can($this->fields['id'],'w');
+      $canedit = $this->canEdit($this->fields['id']);
 
       echo "<tr class='tab_bg_";
       if ($this->maybePrivate()
@@ -1123,7 +1123,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $showprivate = $this->canViewPrivates();
       $caneditall  = $this->canEditAll();
       $tmp         = array($item->getForeignKeyField() => $tID);
-      $canadd      = $this->can(-1, 'w', $tmp);
+      $canadd      = $this->can(-1, CREATE, $tmp);
 
       $RESTRICT = "";
       if ($this->maybePrivate() && !$showprivate) {

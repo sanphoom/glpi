@@ -868,7 +868,7 @@ class Ticket extends CommonITILObject {
       if (isset($input['_link'])) {
          $ticket_ticket = new Ticket_Ticket();
          if (!empty($input['_link']['tickets_id_2'])) {
-            if ($ticket_ticket->can(-1, 'w', $input['_link'])) {
+            if ($ticket_ticket->can(-1, CREATE, $input['_link'])) {
                if ($ticket_ticket->add($input['_link'])) {
                   $input['_forcenotif'] = true;
                }
@@ -913,7 +913,7 @@ class Ticket extends CommonITILObject {
          $values['users_id_validate'] = $this->input["_add_validation"];
 
          if (Session::isCron()
-             || $validation->can(-1, 'w', $values)) { // cron or allowed user
+             || $validation->can(-1, CREATE, $values)) { // cron or allowed user
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
@@ -1418,7 +1418,7 @@ class Ticket extends CommonITILObject {
          $this->input['_link']['tickets_id_1'] = $this->fields['id'];
          // message if ticket's ID doesn't exist
          if (!empty($this->input['_link']['tickets_id_2'])) {
-            if ($ticket_ticket->can(-1, 'w', $this->input['_link'])) {
+            if ($ticket_ticket->can(-1, CREATE, $this->input['_link'])) {
                $ticket_ticket->add($this->input['_link']);
             } else {
                Session::addMessageAfterRedirect(__('Unknown ticket'), false, ERROR);
@@ -1513,7 +1513,7 @@ class Ticket extends CommonITILObject {
                if (Session::isCron()
                    || isset($this->input["_auto_import"])
                    || isset($this->input["_rule_process"])
-                   || $validation->can(-1, 'w', $values)) { // cron or allowed user
+                   || $validation->can(-1, CREATE, $values)) { // cron or allowed user
                   $validation->add($values);
                   Event::log($this->fields['id'], "ticket", 4, "tracking",
                              sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
@@ -1863,7 +1863,7 @@ class Ticket extends CommonITILObject {
                         $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
                         $input2['_link']['link']         = $input['link'];
                         $input2['_link']['tickets_id_2'] = $key;
-                        if ($this->can($input['tickets_id_1'],'w')) {
+                        if ($this->can($input['tickets_id_1'], UPDATE)) {
                            if ($this->update($input2)) {
                               $res['ok']++;
                            } else {
@@ -1889,7 +1889,7 @@ class Ticket extends CommonITILObject {
                      $input2 = array('tickets_id'         => $key,
                                     'users_id_validate'  => $input['users_id_validate'],
                                     'comment_submission' => $input['comment_submission']);
-                     if ($valid->can(-1,'w',$input2)) {
+                     if ($valid->can(-1, CREATE, $input2)) {
                         if ($valid->add($input2)) {
                            $res['ok']++;
                         } else {
@@ -1918,7 +1918,7 @@ class Ticket extends CommonITILObject {
                                     'is_private'      => $input['is_private'],
                                     'requesttypes_id' => $input['requesttypes_id'],
                                     'content'         => $input['content']);
-                     if ($fup->can(-1,'w',$input2)) {
+                     if ($fup->can(-1, CREATE, $input2)) {
                         if ($fup->add($input2)) {
                            $res['ok']++;
                         } else {

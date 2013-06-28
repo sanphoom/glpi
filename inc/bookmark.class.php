@@ -606,7 +606,7 @@ class Bookmark extends CommonDBTM {
                      $current_type_name = $item->getTypeName(1);
                   }
                }
-               $canedit = $this->can($this->fields["id"],"w");
+               $canedit = $this->canEdit($this->fields["id"]);
 
                echo "<tr class='tab_bg_1'>";
                echo "<td width='10px'>";

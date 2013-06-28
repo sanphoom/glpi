@@ -364,19 +364,15 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".__('Management type')."</td>";
       echo "<td>";
-      if ($this->can($ID,'w')) {
-         Dropdown::showGlobalSwitch($this->fields["id"],
-                                    array('withtemplate' => $withtemplate,
-                                          'value'        => $this->fields["is_global"],
-                                          'management_restrict'
-                                                         => $CFG_GLPI["printers_management_restrict"],
-                                          'target'       => $target));
-      } else {
-         Dropdown::showGlobalSwitch($this->fields["id"],
-                                    array('withtemplate' => $withtemplate,
-                                          'value'        => $this->fields["is_global"],
-                                          'target'       => $target));
+      $globalitem = array();
+      $globalitem['withtemplate'] = $withtemplate;
+      $globalitem['value']        = $this->fields["is_global"];
+      $globalitem['target']       = $target;
+
+      if ($this->can($ID, UPDATE)) {
+         $globalitem['management_restrict'] = $CFG_GLPI["printers_management_restrict"];
       }
+      Dropdown::showGlobalSwitch($this->fields["id"], $globalitem);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

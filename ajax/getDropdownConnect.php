@@ -46,7 +46,7 @@ if (!isset($_GET['fromtype']) || !($fromitem = getItemForItemtype($_GET['fromtyp
    exit();
 }
 
-$fromitem->checkGlobal('w');
+$fromitem->checkGlobal(UPDATE);
 $used = array();
 if (isset( $_GET["used"])) {
    $used = $_GET["used"];

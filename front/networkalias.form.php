@@ -43,7 +43,7 @@ if (empty($_GET["networknames_id"])) {
 }
 
 if (isset($_POST["add"])) {
-   $alias->check(-1,'w',$_POST);
+   $alias->check(-1, CREATE, $_POST);
 
    if ($newID=$alias->add($_POST)) {
       Event::log($newID, $alias->getType(), 4, "setup",
@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["update"])) {
-   $alias->check($_POST["id"],'w');
+   $alias->check($_POST["id"], UPDATE);
    $alias->update($_POST);
 
    Event::log($_POST["id"], $alias->getType(), 4, "setup",

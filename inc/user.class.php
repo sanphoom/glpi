@@ -2489,7 +2489,7 @@ class User extends CommonDBTM {
                   if ($val == 1) {
                      $input2['users_id'] = $key;
                      $this->getFromDB($input2['users_id']);
-                     if ($right->can(-1,'w',$input2)) {
+                     if ($right->can(-1, CREATE, $input2)) {
                         if ($right->add($input2)) {
                            $res['ok']++;
                         } else {

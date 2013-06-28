@@ -903,7 +903,7 @@ class Infocom extends CommonDBChild {
                            'items_id'    => $dev_ID,
                            'entities_id' => $item->getEntityID());
 
-            if ($ic->can(-1,"w",$input)
+            if ($ic->can(-1, CREATE, $input)
                 && ($withtemplate != 2)) {
                echo "<div class='spaced b'>";
                echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><th>";
@@ -918,7 +918,7 @@ class Infocom extends CommonDBChild {
             }
 
          } else { // getFromDBforDevice
-            $canedit = ($ic->can($ic->fields['id'], "w") && ($withtemplate != 2));
+            $canedit = ($ic->canEdit($ic->fields['id']) && ($withtemplate != 2));
             if ($canedit) {
                echo "<form name='form_ic' method='post' action='".$CFG_GLPI["root_doc"].
                      "/front/infocom.form.php'>";

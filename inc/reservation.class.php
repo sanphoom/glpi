@@ -982,7 +982,7 @@ class Reservation extends CommonDBChild {
 
                $rand  = mt_rand();
                $modif = $modif_end = "";
-               if ($resa->can($row['id'],"w")) {
+               if ($resa->canEdit($row['id'])) {
                   $modif      = "<a id='content_".$ID.$rand."'
                                   href='reservation.form.php?id=".$row['id']."'>";
                   $modif_end  = "</a>";

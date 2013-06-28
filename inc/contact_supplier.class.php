@@ -93,7 +93,7 @@ class Contact_Supplier extends CommonDBRelation{
                   return false;
                }
 
-               if ($contactsupplier->can(-1, 'w', $input)) {
+               if ($contactsupplier->can(-1, CREATE, $input)) {
                   if ($contactsupplier->add($input)) {
                      $res['ok']++;
                   } else {

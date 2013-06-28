@@ -597,7 +597,7 @@ class TicketFollowup  extends CommonDBTM {
       $showprivate   = Session::haveRight(self::$rightname, self::SEEPRIVATE);
       $caneditall    = Session::haveRight(self::$rightname, self::UPDATEALL);
       $tmp           = array('tickets_id' => $tID);
-      $canadd        = $this->can(-1, 'w', $tmp);
+      $canadd        = $this->can(-1, CREATE, $tmp);
 
       $RESTRICT = "";
       if (!$showprivate) {

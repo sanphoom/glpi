@@ -34,7 +34,7 @@
 include ('../inc/includes.php');
 
 if (!Session::haveRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ))) {
-   self::redirectIfNotLoggedIn();
+   Session::redirectIfNotLoggedIn();
    Html::displayRightError();
 }
 

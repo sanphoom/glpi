@@ -390,7 +390,7 @@ class Group extends CommonTreeDropdown {
                foreach ($input['item'] as $type => $ids) {
                   if ($item = getItemForItemtype($type)) {
                      foreach ($ids as $id => $val) {
-                        if ($val && $item->can($id, 'w')) {
+                        if ($val && $item->can($id, UPDATE)) {
                            if ($item->update(array('id'      => $id,
                                              $input["field"] => $input["groups_id"]))) {
                               $res['ok']++;
@@ -731,7 +731,7 @@ class Group extends CommonTreeDropdown {
                continue;
             }
             echo "<tr class='tab_bg_1'><td>";
-            if ($item->can($data['items_id'], 'w')) {
+            if ($item->canEdit($data['items_id'])) {
                echo "<input type='checkbox' name='item[".$data['itemtype']."][".$data['items_id']."]'
                       value='1'>";
             }

@@ -148,7 +148,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    function showUserNotificationForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      $this->check($ID,'w');
+      $this->check($ID, UPDATE);
 
       if (!isset($this->fields['users_id'])) {
          return false;

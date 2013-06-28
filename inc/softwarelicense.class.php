@@ -663,7 +663,7 @@ class SoftwareLicense extends CommonDBTM {
                }
                echo "<tr class='tab_bg_2".($expired?'_2':'')."'>";
 
-               if ($license->can($data['id'], "w")) {
+               if ($license->canEdit($data['id'])) {
                   echo "<td>".Html::getMassiveActionCheckBox(__CLASS__, $data["id"])."</td>";
                } else {
                   echo "<td>&nbsp;</td>";

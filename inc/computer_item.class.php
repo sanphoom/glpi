@@ -334,7 +334,7 @@ class Computer_Item extends CommonDBRelation{
                   } else {
                      return false;
                   }
-                  if ($this->can(-1, 'w', $input2)) {
+                  if ($this->can(-1, CREATE, $input2)) {
                      if ($this->add($input2)) {
                         $res['ok']++;
                      } else {
@@ -397,7 +397,7 @@ class Computer_Item extends CommonDBRelation{
          if ($DB->numrows($result) > 0) {
             $ok = true;
             while ($data = $DB->fetch_assoc($result)) {
-               if ($this->can($data["id"],'w')) {
+               if ($this->can($data["id"],UPDATE)) {
                   $ok &= $this->delete($data);
                }
             }

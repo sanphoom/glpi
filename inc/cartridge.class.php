@@ -167,7 +167,7 @@ class Cartridge extends CommonDBChild {
          case "uninstall" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'w')) {
+                  if ($this->can($key, UPDATE)) {
                      if ($this->uninstall($key)) {
                         $res['ok']++;
                      } else {
@@ -186,7 +186,7 @@ class Cartridge extends CommonDBChild {
             if (isset($input['pages'])) {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
-                     if ($this->can($key,'w')) {
+                     if ($this->can($key, UPDATE)) {
                         if ($this->update(array('id' => $key,
                                                 'pages' => $input['pages']))) {
                            $res['ok']++;
@@ -932,7 +932,7 @@ class Cartridge extends CommonDBChild {
       $printer->check($this->getField('printers_id'), UPDATE);
 
       $cartitem = new CartridgeItem;
-      $cartitem->getFromDB($this->getField('cartridgeitems_id'),'w');
+      $cartitem->getFromDB($this->getField('cartridgeitems_id'));
 
       $is_old  = !empty($this->fields['date_out']);
       $is_used = !empty($this->fields['date_use']);

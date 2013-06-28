@@ -92,7 +92,7 @@ class Netpoint extends CommonDropdown {
    **/
    function executeAddMulti(array $input) {
 
-      $this->check(-1, 'w', $input);
+      $this->check(-1, CREATE, $input);
       for ($i=$input["_from"] ; $i<=$input["_to"] ; $i++) {
          $input["name"] = $input["_before"].$i.$input["_after"];
          $this->add($input);

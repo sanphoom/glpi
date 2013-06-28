@@ -202,7 +202,7 @@ class Software extends CommonDBTM {
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
-      $canedit = $this->can($ID,'w');
+      $canedit = $this->canEdit($ID);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Name') . "</td>";
@@ -344,7 +344,7 @@ class Software extends CommonDBTM {
             if (isset($input["id"])
                 && isset($input["item"]) && is_array($input["item"]) && count($input["item"])) {
 
-               if ($this->can($_POST["id"],'w')) {
+               if ($this->can($_POST["id"], UPDATE)) {
                   if ($this->merge($_POST["item"])) {
                      $res['ok']++;
                   } else {
@@ -366,7 +366,7 @@ class Software extends CommonDBTM {
                if ($val == 1) {
                   $params = array();
                   //Get software name and manufacturer
-                  if ($this->can($key,'w')) {
+                  if ($this->can($key, UPDATE)) {
                      $params["name"]             = $this->fields["name"];
                      $params["manufacturers_id"] = $this->fields["manufacturers_id"];
                      $params["comment"]          = $this->fields["comment"];
@@ -396,7 +396,7 @@ class Software extends CommonDBTM {
             $ids                = array();
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key,'w')) {
+                  if ($this->can($key, UPDATE)) {
                      $ids[] = $key;
                   } else {
                      $res['noright']++;
@@ -574,7 +574,7 @@ class Software extends CommonDBTM {
                                          'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
                                                                                    '', '', true).
                                                          " AND (NEWTABLE.`expire` IS NULL
-                                                              OR NEWTABLE.`expire` > NOW())");      
+                                                              OR NEWTABLE.`expire` > NOW())");
       $tab[160]['table']         = 'glpi_softwarelicenses';
       $tab[160]['field']         = 'name';
       $tab[160]['name']          = __('License name');
@@ -874,7 +874,7 @@ class Software extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID   = $this->getField('id');
-      $this->check($ID,"w");
+      $this->check($ID, UPDATE);
       $rand = mt_rand();
 
       echo "<div class='center'>";

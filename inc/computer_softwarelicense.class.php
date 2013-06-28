@@ -126,7 +126,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      //Get software name and manufacturer
-                     if ($this->can($key,'w')) {
+                     if ($this->can($key, UPDATE)) {
                         //Process rules
                         if ($this->update(array('id'  => $key,
                                                 'softwarelicenses_id'
@@ -167,7 +167,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                            $params = array('computers_id'        => $csl->fields['computers_id'],
                                            'softwareversions_id' => $version);
                            //Get software name and manufacturer
-                           if ($csv->can(-1,'w', $params)) {
+                           if ($csv->can(-1, CREATE, $params)) {
                               //Process rules
                               if ($csv->add($params)) {
                                  $res['ok']++;

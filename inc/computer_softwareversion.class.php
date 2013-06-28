@@ -143,7 +143,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      //Get software name and manufacturer
-                     if ($this->can($key,'w')) {
+                     if ($this->can($key, UPDATE)) {
                         //Process rules
                         if ($this->update(array('id' => $key,
                                                 'softwareversions_id'

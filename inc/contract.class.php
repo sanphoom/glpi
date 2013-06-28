@@ -187,7 +187,7 @@ class Contract extends CommonDBTM {
                } else {
                   return false;
                }
-               if ($contractitem->can(-1, 'w', $input2)) {
+               if ($contractitem->can(-1, CREATE, $input2)) {
                if ($contractitem->add($input2)) {
                      $res['ok']++;
                   } else {
@@ -221,7 +221,7 @@ class Contract extends CommonDBTM {
                   }
                }
                $contractitem = new Contract_Item();
-               if ($contractitem->can(-1, 'w', $input2)) {
+               if ($contractitem->can(-1, CREATE, $input2)) {
                   if ($item = getItemForItemtype($input2["itemtype"])) {
                      if ($item->getFromDB($input2['items_id'])) {
                         $contract = new self();

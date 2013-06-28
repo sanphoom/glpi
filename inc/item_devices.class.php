@@ -576,7 +576,7 @@ class Item_Devices extends CommonDBRelation {
                      'items_id'                    => $items_id,
                      static::getDeviceForeignKey() => $devices_id);
 
-      $this->check(-1, 'w', $input);
+      $this->check(-1, CREATE, $input);
 
       $device_type = static::getDeviceType();
       $device      = new $device_type();
@@ -652,7 +652,7 @@ class Item_Devices extends CommonDBRelation {
       if (!$item = getItemForItemtype($itemtype)) {
          Html::displayNotFoundError();
       }
-      $item->check($input['items_id'], 'w', $_POST);
+      $item->check($input['items_id'], UPDATE, $_POST);
 
       $is_device = ($item instanceof CommonDevice);
       if ($is_device) {

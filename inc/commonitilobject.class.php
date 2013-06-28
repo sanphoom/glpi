@@ -566,7 +566,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                         $useractors = new $this->userlinkclass();
                         if (isset($input['_auto_update'])
-                            || $useractors->can(-1,'w',$input['_itil_requester'])) {
+                            || $useractors->can(-1, CREATE, $input['_itil_requester'])) {
                            $input['_itil_requester']['_from_object'] = true;
                            $useractors->add($input['_itil_requester']);
                            $input['_forcenotif']                     = true;
@@ -580,7 +580,7 @@ abstract class CommonITILObject extends CommonDBTM {
                       && ($input['_itil_requester']['groups_id'] > 0)) {
                      $groupactors = new $this->grouplinkclass();
                      if (isset($input['_auto_update'])
-                         || $groupactors->can(-1,'w',$input['_itil_requester'])) {
+                         || $groupactors->can(-1, CREATE, $input['_itil_requester'])) {
                         $input['_itil_requester']['_from_object'] = true;
                         $groupactors->add($input['_itil_requester']);
                         $input['_forcenotif']                     = true;
@@ -611,7 +611,7 @@ abstract class CommonITILObject extends CommonDBTM {
                          || ($input['_itil_observer']['users_id'] > 0)) {
                         $useractors = new $this->userlinkclass();
                         if (isset($input['_auto_update'])
-                           || $useractors->can(-1,'w',$input['_itil_observer'])) {
+                           || $useractors->can(-1, CREATE, $input['_itil_observer'])) {
                            $input['_itil_observer']['_from_object'] = true;
                            $useractors->add($input['_itil_observer']);
                            $input['_forcenotif']                    = true;
@@ -625,7 +625,7 @@ abstract class CommonITILObject extends CommonDBTM {
                        && ($input['_itil_observer']['groups_id'] > 0)) {
                      $groupactors = new $this->grouplinkclass();
                      if (isset($input['_auto_update'])
-                         || $groupactors->can(-1,'w',$input['_itil_observer'])) {
+                         || $groupactors->can(-1, CREATE, $input['_itil_observer'])) {
                         $input['_itil_observer']['_from_object'] = true;
                         $groupactors->add($input['_itil_observer']);
                         $input['_forcenotif']                    = true;
@@ -647,7 +647,7 @@ abstract class CommonITILObject extends CommonDBTM {
                       && ($input['_itil_assign']['users_id'] > 0)) {
                      $useractors = new $this->userlinkclass();
                      if (isset($input['_auto_update'])
-                         || $useractors->can(-1,'w',$input['_itil_assign'])) {
+                         || $useractors->can(-1, CREATE, $input['_itil_assign'])) {
                         $input['_itil_assign']['_from_object'] = true;
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
@@ -667,7 +667,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $groupactors = new $this->grouplinkclass();
 
                      if (isset($input['_auto_update'])
-                         || $groupactors->can(-1,'w',$input['_itil_assign'])) {
+                         || $groupactors->can(-1, CREATE, $input['_itil_assign'])) {
                         $input['_itil_assign']['_from_object'] = true;
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
@@ -686,7 +686,7 @@ abstract class CommonITILObject extends CommonDBTM {
                       && ($input['_itil_assign']['suppliers_id'] > 0)) {
                      $supplieractors = new $this->supplierlinkclass();
                      if (isset($input['_auto_update'])
-                         || $supplieractors->can(-1,'w',$input['_itil_assign'])) {
+                         || $supplieractors->can(-1, CREATE, $input['_itil_assign'])) {
                         $input['_itil_assign']['_from_object'] = true;
                         $supplieractors->add($input['_itil_assign']);
                         $input['_forcenotif']                  = true;
@@ -1457,7 +1457,7 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($_FILES['filename'])
              && (count($_FILES['filename']) > 0)
              && ($_FILES['filename']["size"] > 0)) {
-             
+
             $docID = 0;
             // Check for duplicate
             if ($doc->getFromDBbyContent($this->fields["entities_id"],
@@ -2205,7 +2205,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (isset($input['_itil_assign'])) {
                      $input2['_itil_assign'] = $input['_itil_assign'];
                   }
-                  if ($item->can($key,'w')) {
+                  if ($item->can($key, UPDATE)) {
                      if ($item->update($input2)) {
                         $res['ok']++;
                      } else {
@@ -2234,7 +2234,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      $input2 = array($field              => $key,
                                     'taskcategories_id' => $input['taskcategories_id'],
                                     'content'           => $input['content']);
-                     if ($task->can(-1,'w',$input2)) {
+                     if ($task->can(-1, CREATE, $input2)) {
                         if ($task->add($input2)) {
                            $res['ok']++;
                         } else {

@@ -317,7 +317,7 @@ class Document extends CommonDBTM {
       echo "<td>";
       DocumentCategory::dropdown(array('value' => $this->fields["documentcategories_id"]));
       echo "</td></tr>";
-      
+
       if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Current file')."</td>";
@@ -354,14 +354,14 @@ class Document extends CommonDBTM {
          echo "<td>".$this->fields["sha1sum"];
       }
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Blacklisted for import')."</td>";
       echo "<td>";
       Dropdown::showYesNo("is_blacklisted", $this->fields["is_blacklisted"]);
       echo "</td></tr>";
 
-      
+
       $this->showFormButtons($options);
 
       return true;
@@ -742,7 +742,7 @@ class Document extends CommonDBTM {
                   return false;
                }
 
-               if ($documentitem->can(-1, 'w', $input2)) {
+               if ($documentitem->can(-1, CREATE, $input2)) {
                   if ($documentitem->add($input2)) {
                      $res['ok']++;
                   } else {
@@ -784,7 +784,7 @@ class Document extends CommonDBTM {
                }
 
                $docitem = new Document_Item();
-               if ($docitem->can(-1, 'w', $input2)) {
+               if ($docitem->can(-1, CREATE, $input2)) {
                   if ($item = getItemForItemtype($input2["itemtype"])) {
                      if ($item->getFromDB($input2['items_id'])) {
                         $doc = new self();

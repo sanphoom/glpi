@@ -449,7 +449,7 @@ class NetworkPort extends CommonDBChild {
       if ($itemtype == 'NetworkPort') {
          $canedit = false;
       } else {
-         $canedit = $item->can($items_id, 'w');
+         $canedit = $item->canEdit($items_id);
       }
       $showmassiveactions = false;
       if ($withtemplate != 2) {
@@ -967,7 +967,7 @@ class NetworkPort extends CommonDBChild {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($networkport->getFromDB($key)) {
-                        if ($this->can($key,'w')) {
+                        if ($this->can($key, UPDATE)) {
                            if ($networkportvlan->assignVlan($key, $input["vlans_id"],
                                                             (isset($input['tagged']) ? '1' : '0'))) {
                               $res['ok']++;
@@ -997,7 +997,7 @@ class NetworkPort extends CommonDBChild {
                foreach ($input["item"] as $key => $val) {
                   if ($networkport->getFromDB($key)) {
                      if ($val == 1) {
-                        if ($this->can($key,'w')) {
+                        if ($this->can($key, UPDATE)) {
                            if ($networkportvlan->unassignVlan($key, $input["vlans_id"])) {
                               $res['ok']++;
                            } else {
@@ -1029,7 +1029,7 @@ class NetworkPort extends CommonDBChild {
                         $input2['id']       = $key;
                         $input2['items_id'] = $input["items_id"];
                         $input2['itemtype'] = 'NetworkEquipment';
-                        if ($this->can($input2['id'],'w')) {
+                        if ($this->can($input2['id'], UPDATE)) {
                            if ($this->update($input2)) {
                               $res['ok']++;
                            } else {

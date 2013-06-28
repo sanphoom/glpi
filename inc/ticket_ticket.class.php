@@ -229,7 +229,7 @@ class Ticket_Ticket extends CommonDBRelation {
          if (count($tickets)) {
             foreach ($tickets as $data) {
                $input['id'] = $data['tickets_id'];
-               if ($ticket->can($input['id'],'w')
+               if ($ticket->can($input['id'], UPDATE)
                    && ($data['link'] == self::DUPLICATE_WITH)
                    && ($ticket->fields['status'] != CommonITILObject::SOLVED)
                    && ($ticket->fields['status'] != CommonITILObject::CLOSED)) {
