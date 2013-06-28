@@ -159,7 +159,7 @@ class ProfileRight extends CommonDBChild {
       }
       if (count($profiles)) {
          $query = "UPDATE `glpi_profilerights`
-                   SET `rights` = = `rights` | " . $value ."
+                   SET `rights` = `rights` | " . $value ."
                    WHERE `name` = '$right'
                          AND `profiles_id` IN ('".implode("', '",$profiles)."')";
          if (!$DB->query($query)) {
