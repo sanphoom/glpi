@@ -96,30 +96,27 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $menu = array();
       if (get_called_class() == 'CommonDropdown') {
-         if (Session::haveRight("dropdown", READ)
-             || Session::haveRight("entity_dropdown","r")
-             || Session::haveRight("internet", READ)) {
-            $menu['title']             = static::getTypeName(2);
-            $menu['shortcut']          = 'n';
-            $menu['page']              = '/front/dropdown.php';
-            $menu['config']['default'] = '/front/dropdown.php';
+         $menu['title']             = static::getTypeName(2);
+         $menu['shortcut']          = 'n';
+         $menu['page']              = '/front/dropdown.php';
+         $menu['config']['default'] = '/front/dropdown.php';
 
-            $dps = Dropdown::getStandardDropdownItemTypes();
+         $dps = Dropdown::getStandardDropdownItemTypes();
+         $menu['options'] = array();
 
-            foreach ($dps as $tab) {
-               foreach ($tab as $key => $val) {
-                  if ($tmp = getItemForItemtype($key)) {
-                     $menu['options'][$key]['title']           = $val;
-                     $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
-                     $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
-                     if ($tmp->canCreate()) {
-                        $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
-                     }
+         foreach ($dps as $tab) {
+            foreach ($tab as $key => $val) {
+               if ($tmp = getItemForItemtype($key)) {
+                  $menu['options'][$key]['title']           = $val;
+                  $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
+                  $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
+                  if ($tmp->canCreate()) {
+                     $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
                   }
                }
             }
          }
-         if (count($menu)) {
+         if (count($menu['options'])) {
             return $menu;
          }
       } else {
