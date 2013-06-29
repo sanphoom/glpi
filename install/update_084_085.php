@@ -938,7 +938,7 @@ function update084to085() {
    // pour que la procédure soit ré-entrante et ne pas perdre les sélections dans le profile
    if (countElementsInTable("glpi_profilerights", "`name` = 'domain'") == 0) {
       ProfileRight::addProfileRights(array('domain'));
-      ProfileRight::updateProfileRightAsOtherRights('domain', 'entity_dropdown');
+      ProfileRight::updateProfileRightsAsOtherRights('domain', 'entity_dropdown');
    }
 
    if (countElementsInTable("glpi_profilerights", "`name` = 'location'") == 0) {
