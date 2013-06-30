@@ -43,10 +43,15 @@ class AuthLdapReplicate extends CommonDBTM {
       return static::canUpdate();
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function canPurge() {
       return static::canUpdate();
    }
-  
+
+
    /**
     * @since version 0.84
     *

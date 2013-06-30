@@ -101,7 +101,7 @@ class Config extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
-      
+
       // Update only an item
       if (isset($input['context'])) {
          return $input;
@@ -215,10 +215,10 @@ class Config extends CommonDBTM {
          $_SESSION['glpiskipMaintenace'] = 1;
          $url = $CFG_GLPI['root_doc']."/index.php?skipMaintenance=1";
          Session::addMessageAfterRedirect(sprintf(__('Maintenance mode activated. Backdoor using: %s'),
-                                                   "<a href='$url'>$url</a>")
-                              , false, WARNING);
+                                                  "<a href='$url'>$url</a>"),
+                                          false, WARNING);
       }
-      
+
       $this->setConfigurationValues('core', $input);
 
       return false;
@@ -1309,12 +1309,11 @@ class Config extends CommonDBTM {
       echo "</td>";
       //TRANS: Proxy port
       echo "<td>" . __('Maintenance text') . "</td>";
-      
       echo "<td>";
-      echo "<textarea cols='70' rows='4' name='maintenance_text'>".$CFG_GLPI["maintenance_text"]."</textarea>";
-      echo "</td>";
-      echo "</tr>";
-      
+      echo "<textarea cols='70' rows='4' name='maintenance_text'>".$CFG_GLPI["maintenance_text"];
+      echo "</textarea>";
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4' class='center b'>".__('Proxy configuration for upgrade check');
       echo "</td></tr>";

@@ -3203,7 +3203,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
    **/
-   function executeMassiveActions($input = array()) {
+   function executeMassiveActions($input=array()) {
 
       if (!isset($input["item"]) || (count($input["item"]) == 0)) {
          return false;
@@ -3213,7 +3213,7 @@ class CommonDBTM extends CommonGLPI {
                    'ko'      => 0,
                    'noright' => 0);
 
-      $items = $input['item'];
+      $items        = $input['item'];
       $inititemtype = $input['itemtype'];
       foreach ($items as $itemtype => $data) {
          $input['itemtype'] = $itemtype;
@@ -3251,6 +3251,7 @@ class CommonDBTM extends CommonGLPI {
       }
    }
 
+
    /**
     * Do the standard massive actions
     *
@@ -3259,7 +3260,8 @@ class CommonDBTM extends CommonGLPI {
     * This must not be overloaded in Class
     * @param $input array of input datas
     *
-    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
+    * @return an array of results (ok, ko, noright counts,
+    *                              may include REDIRECT field to set REDIRECT page)
    **/
    function doMassiveActions($input=array()) {
       global $CFG_GLPI;
@@ -3325,8 +3327,8 @@ class CommonDBTM extends CommonGLPI {
                      $force = 1;
                      // Only mark deletion for
                      if ($this->maybeDeleted()
-                        && $this->useDeletedToLockIfDynamic()
-                        && $this->isDynamic()) {
+                         && $this->useDeletedToLockIfDynamic()
+                         && $this->isDynamic()) {
                         $force = 0;
                      }
                      $delete_array = array('id' => $key);
@@ -3397,9 +3399,9 @@ class CommonDBTM extends CommonGLPI {
             if (isset($searchopt[$input["id_field"]])) {
                /// Infocoms case
                if (!isPluginItemType($input["itemtype"])
-                  && Search::isInfocomOption($input["itemtype"], $input["id_field"])) {
+                   && Search::isInfocomOption($input["itemtype"], $input["id_field"])) {
 
-                  $ic = new Infocom();
+                  $ic               = new Infocom();
                   $link_entity_type = -1;
                   /// Specific entity item
                   if ($searchopt[$input["id_field"]]["table"] == "glpi_suppliers") {
@@ -3412,10 +3414,10 @@ class CommonDBTM extends CommonGLPI {
                      if ($val == 1) {
                         if ($this->getFromDB($key)) {
                            if (($link_entity_type < 0)
-                              || ($link_entity_type == $this->getEntityID())
-                              || ($ent->fields["is_recursive"]
-                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",
-                                             $this->getEntityID())))) {
+                               || ($link_entity_type == $this->getEntityID())
+                               || ($ent->fields["is_recursive"]
+                                   && in_array($link_entity_type, getAncestorsOf("glpi_entities",
+                                               $this->getEntityID())))) {
                               $input2["items_id"] = $key;
                               $input2["itemtype"] = $input["itemtype"];
 
@@ -3431,8 +3433,8 @@ class CommonDBTM extends CommonGLPI {
                                  $id = $ic->fields["id"];
                                  unset($ic->fields);
                                  if ($ic->update(array('id'   => $id,
-                                                      $input["field"]
-                                                            => $input[$input["field"]]))) {
+                                                       $input["field"]
+                                                              => $input[$input["field"]]))) {
                                     $res['ok']++;
                                  } else {
                                     $res['ko']++;
@@ -3463,15 +3465,15 @@ class CommonDBTM extends CommonGLPI {
                   if ($item2 = getItemForItemtype($itemtype2)) {
 
                      if (($input["id_field"] != 80) // No entities_id fields
-                        && ($searchopt[$input["id_field"]]["table"] != $itemtable)
-                        && $item2->isEntityAssign()
-                        && $this->isEntityAssign()) {
+                         && ($searchopt[$input["id_field"]]["table"] != $itemtable)
+                         && $item2->isEntityAssign()
+                         && $this->isEntityAssign()) {
                         if ($item2->getFromDB($input[$input["field"]])) {
                            if (isset($item2->fields["entities_id"])
-                              && ($item2->fields["entities_id"] >= 0)) {
+                               && ($item2->fields["entities_id"] >= 0)) {
 
                               if (isset($item2->fields["is_recursive"])
-                                 && $item2->fields["is_recursive"]) {
+                                  && $item2->fields["is_recursive"]) {
                                  $link_entity_type = getSonsOf("glpi_entities",
                                                                $item2->fields["entities_id"]);
                               } else {
@@ -3485,13 +3487,13 @@ class CommonDBTM extends CommonGLPI {
                   foreach ($input["item"] as $key => $val) {
                      if ($val == 1) {
                         if ($this->canEdit($key)
-                           && $this->canMassiveAction($input['action'], $input['field'],
-                                                      $input[$input["field"]])) {
+                            && $this->canMassiveAction($input['action'], $input['field'],
+                                                       $input[$input["field"]])) {
                            if ((count($link_entity_type) == 0)
-                              || in_array($this->fields["entities_id"], $link_entity_type)) {
+                               || in_array($this->fields["entities_id"], $link_entity_type)) {
                               if ($this->update(array('id'   => $key,
                                                       $input["field"]
-                                                            => $input[$input["field"]]))) {
+                                                             => $input[$input["field"]]))) {
                                  $res['ok']++;
                               } else {
                                  $res['ko']++;

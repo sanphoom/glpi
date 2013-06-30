@@ -41,19 +41,25 @@ class SsoVariable extends CommonDropdown {
 
    static $rightname = 'config';
 
+
    static function getTypeName($nb=0) {
 
       return _n('Field storage of the login in the HTTP request',
                 'Fields storage of the login in the HTTP request', $nb);
    }
 
+
    static function canCreate() {
       return static::canUpdate();
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function canPurge() {
       return static::canUpdate();
-   }   
+   }
 
 }
 ?>

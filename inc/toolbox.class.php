@@ -2285,32 +2285,40 @@ class Toolbox {
       }
       return false;
    }
-   
+
+
    /**
     * Prepare array passed on an input form
     *
-    * @param $value array: passed array
+    * @param $value array   passed array
+    *
     * @since version 0.83.91
+    *
     * @return string encoded array
    **/
-   static function prepareArrayForInput($value) {
+   static function prepareArrayForInput(array $value) {
       return base64_encode(json_encode($value));
    }
+
 
    /**
     * Decode array passed on an input form
     *
-    * @param $value string: encoded value
+    * @param $value string   encoded value
+    *
     * @since version 0.83.91
+    *
     * @return string decoded array
    **/
    static function decodeArrayFromInput($value) {
+
       if ($dec = base64_decode($value)) {
          if ($ret = json_decode($dec,true)) {
             return $ret;
          }
       }
       return array();
-   }   
+   }
+
 }
 ?>

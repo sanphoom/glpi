@@ -476,6 +476,7 @@ class User extends CommonDBTM {
 
    function prepareInputForAdd($input) {
       global $DB;
+
       if (isset($input['_stop_import'])) {
          return false;
       }

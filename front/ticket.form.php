@@ -187,13 +187,13 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    if (isset($_GET['_sol_to_kb'])) {
       Ajax::createIframeModalWindow('savetokb',
                                     $CFG_GLPI["root_doc"].
-                                    "/front/knowbaseitem.form.php?_in_modal=1&item_itemtype=Ticket&item_items_id=".
-                                    $_GET["id"],
+                                     "/front/knowbaseitem.form.php?_in_modal=1&item_itemtype=Ticket&item_items_id=".
+                                     $_GET["id"],
                                     array('title'         => __('Save solution to the knowledge base'),
                                           'reloadonclose' => false));
       echo Html::scriptBlock(Html::jsGetElementbyID('savetokb').".dialog('open');");
    }
-   
+
 } else {
    Html::header(__('New ticket'),'',"helpdesk","ticket");
 

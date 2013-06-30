@@ -673,7 +673,7 @@ class Dropdown {
                                  'Manufacturer'    => _n('Manufacturer', 'Manufacturers', 2),
                                  'Blacklist'       => _n('Blacklist','Blacklists',2),
                                  'BlacklistedMailContent' => __('Blacklisted mail content')
-                                 ),
+                                ),
 
                     __('Assistance')
                         => array('ITILCategory'     =>  _n('Category of ticket',
@@ -708,7 +708,7 @@ class Dropdown {
                                  'PhonePowerSupply'     => _n('Phone power supply type',
                                                               'Phones power supply types', 2),
                                  'Filesystem'           => _n('File system', 'File systems', 2)
-                                 ),
+                                ),
 
                     __('Model')
                         => array('ComputerModel'         => _n('Computer model',
@@ -720,7 +720,7 @@ class Dropdown {
                                  'PeripheralModel'       => _n('Peripheral model',
                                                                'Peripheral models', 2),
                                  'PhoneModel'            =>  _n('Phone model', 'Phone models', 2)
-                                 ),
+                                ),
 
                     _n('Virtual machine', 'Virtual machines', 2)
                         => array('VirtualMachineType'   => _n('Virtualization model',
@@ -755,7 +755,7 @@ class Dropdown {
                                  'OperatingSystemServicePack'
                                                       => _n('Service pack', 'Service packs', 2),
                                  'AutoUpdateSystem'   => _n('Update source', 'Update sources', 2)
-                                 ),
+                                ),
 
                     __('Networking')
                         => array('NetworkInterface'         => _n('Network interface',
@@ -766,14 +766,14 @@ class Dropdown {
                                  'Domain'                   => _n('Domain', 'Domains', 2),
                                  'Network'                  => _n('Network', 'Networks', 2),
                                  'Vlan'                     => __('VLAN')
-                                 ),
+                                ),
 
                     __('Internet')
                         => array('IPNetwork'    => _n('IP network', 'IP networks', 2),
                                  'FQDN'         => _n('Internet domain', 'Internet domains', 2),
                                  'WifiNetwork'  => _n('Wifi network', 'Wifi networks', 2),
                                  'NetworkName'  => _n('Network name', 'Network names', 2)
-                                 ),
+                                ),
 
                     _n('Software', 'Software', 1)
                         => array('SoftwareCategory' => _n('Software category',
@@ -786,7 +786,8 @@ class Dropdown {
                                 ),
 
                     __('Authorizations assignment rules')
-                        => array('RuleRightParameter' => _n('LDAP criterion', 'LDAP criteria', 2)),
+                        => array('RuleRightParameter' => _n('LDAP criterion', 'LDAP criteria', 2)
+                                ),
 
                     __('Fields unicity')
                         => array('Fieldblacklist' => _n('Ignored value for the unicity',

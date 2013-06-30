@@ -83,8 +83,7 @@ CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'],$_GET["withtemplate"], 
 
 if (isset($_POST['full_page_tab'])) {
    echo "<div class='center' id='debugajax'>";
-   Html::showSimpleForm($_SERVER['REQUEST_URI'], 'full_page_tab',
-                        'Reload this tab', $_POST);
+   Html::showSimpleForm($_SERVER['REQUEST_URI'], 'full_page_tab', 'Reload this tab', $_POST);
    echo "</div>";
 
    Html::footer();

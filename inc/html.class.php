@@ -2032,13 +2032,13 @@ class Html {
 
       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
          echo "<div id='debug-float'>";
-         echo "<a href='#see_debug'>GLPI MODE TRANSLATION</a>";
+         echo "<a href='#see_debug'>GLPI TRANSLATION MODE</a>";
          echo "</div>";
       }
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<div id='debug-float'>";
-         echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
+         echo "<a href='#see_debug'>GLPI DEBUG MODE</a>";
          echo "</div>";
       }
       self::displayDebugInfos();
@@ -2298,7 +2298,8 @@ class Html {
       if (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id])) {
          $sel = "checked";
       }
-      return "<input type='checkbox' id='massaction_item_".$itemtype."_$id' name=\"item[$itemtype][".$id."]\" value='1' $sel>";
+      return "<input type='checkbox' id='massaction_item_".$itemtype."_$id' ".
+               "name=\"item[$itemtype][".$id."]\" value='1' $sel>";
    }
 
 
@@ -3574,7 +3575,8 @@ class Html {
          echo Html::hidden('item_type', array('value' => $item_type_output));
 
          if ($item_type_output_param != 0) {
-            echo Html::hidden('item_type_param', array('value' => Toolbox::prepareArrayForInput($item_type_output_param)));
+            echo Html::hidden('item_type_param',
+                              array('value' => Toolbox::prepareArrayForInput($item_type_output_param)));
          }
          $split = explode("&amp;",$parameters);
 

@@ -804,12 +804,13 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
    }
 
+
    /**
     * Affect a CommonDBChild to a given item. By default, unaffect it
     *
-    * @param $id       the id of the CommonDBChild to affect
-    * @param $items_id the id of the new item
-    * @param $itemtype the type of the new item
+    * @param $id          integer   the id of the CommonDBChild to affect
+    * @param $items_id    integer   the id of the new item (default 0)
+    * @param $itemtype    string    the type of the new item (default '')
     *
     * @return boolean : true on success
    **/
@@ -824,5 +825,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       return $this->update($input);
    }
+
 }
 ?>

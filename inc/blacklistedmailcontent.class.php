@@ -37,6 +37,8 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * BlacklistedMailContent Class
+ *
+ * @since version 0.85
 **/
 class BlacklistedMailContent extends CommonDropdown {
 
@@ -50,20 +52,26 @@ class BlacklistedMailContent extends CommonDropdown {
       return __('Blacklisted mail content');
    }
 
+
    static function canCreate() {
       return static::canUpdate();
    }
 
+
    static function canPurge() {
       return static::canUpdate();
    }
+
+
    function getAdditionalFields() {
+
       return array(array('name'  => 'content',
                          'label' => __('Content'),
                          'type'  => 'textarea',
                          'rows'  => 20,
                          'list'  => true));
    }
+
 
    /**
     * Get search function for the class
@@ -81,6 +89,7 @@ class BlacklistedMailContent extends CommonDropdown {
       $tab[11]['massiveactoin'] = false;
 
       return $tab;
-   } 
+   }
+
 }
 ?>

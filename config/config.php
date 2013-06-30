@@ -186,9 +186,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             _e('Service is down for maintenance. It will be back up shortly.');
             echo "</p>";
             if (isset($CFG_GLPI["maintenance_text"]) && !empty($CFG_GLPI["maintenance_text"])) {
-               echo "<p>";
-               echo $CFG_GLPI["maintenance_text"];
-               echo "</p>";
+               echo "<p>".$CFG_GLPI["maintenance_text"]."</p>";
             }
             echo "</div>";
             Html::nullFooter();
@@ -196,7 +194,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          exit();
       }
    }
-   // Check version 
+   // Check version
    if ((!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) != GLPI_VERSION))
        && !isset($_GET["donotcheckversion"])) {
 

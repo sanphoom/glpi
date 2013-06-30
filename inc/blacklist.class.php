@@ -35,8 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Blacklist class
-/// @since version 0.84
+/**
+ * Blacklist Class
+ *
+ * @since version 0.84
+**/
 class Blacklist extends CommonDropdown {
 
    // From CommonDBTM
@@ -50,14 +53,20 @@ class Blacklist extends CommonDropdown {
    const UUID   = 4;
    const EMAIL  = 5;
 
+
    static function canCreate() {
       return static::canUpdate();
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function canPurge() {
       return static::canUpdate();
    }
-   
+
+
    function getAdditionalFields() {
 
       return array(array('name'  => 'value',

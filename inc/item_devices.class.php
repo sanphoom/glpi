@@ -764,7 +764,7 @@ class Item_Devices extends CommonDBRelation {
                $query = "SELECT `id`
                          FROM `".$link->getTable()."`
                          WHERE `itemtype` = '$itemtype'
-                           AND `items_id` = '$items_id'";
+                               AND `items_id` = '$items_id'";
                $input = array('items_id' => 0,
                               'itemtype' => '');
                foreach ($DB->request($query) as $data) {

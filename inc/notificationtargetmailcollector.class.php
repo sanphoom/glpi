@@ -35,7 +35,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+/**
+ * NotificationTarget Class
+ *
+ * @since version 0.85
+**/
 class NotificationTargetMailCollector extends NotificationTarget {
 
 
@@ -52,20 +56,20 @@ class NotificationTargetMailCollector extends NotificationTarget {
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
-      
-      $events                             = $this->getEvents();
+
+      $events                                  = $this->getEvents();
       $this->datas['##mailcollector.action##'] = $events[$event];
 
 
       foreach ($options['items'] as $id => $mailcollector) {
-         $tmp                        = array();
+         $tmp                             = array();
          $tmp['##mailcollector.name##']   = $mailcollector['name'];
-         $tmp['##mailcollector.errors##']   = $mailcollector['errors'];
-         $tmp['##mailcollector.url##']         = urldecode($CFG_GLPI["url_base"].
-                                                          "/index.php?redirect=MailCollector_".$id);
+         $tmp['##mailcollector.errors##'] = $mailcollector['errors'];
+         $tmp['##mailcollector.url##']    = urldecode($CFG_GLPI["url_base"].
+                                                      "/index.php?redirect=MailCollector_".$id);
          $this->datas['mailcollectors'][] = $tmp;
       }
-      
+
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
          if (!isset($this->datas[$tag])) {
@@ -77,10 +81,9 @@ class NotificationTargetMailCollector extends NotificationTarget {
 
    function getTags() {
 
-      $tags = array('mailcollector.action'       => _n('Event', 'Events', 1),
-                    'mailcollector.name'         => __('Name'),
-                    'mailcollector.errors'       => __('Connection errors'),
-                    );
+      $tags = array('mailcollector.action' => _n('Event', 'Events', 1),
+                    'mailcollector.name'   => __('Name'),
+                    'mailcollector.errors' => __('Connection errors'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -88,7 +91,8 @@ class NotificationTargetMailCollector extends NotificationTarget {
                                    'value' => true));
       }
 
-      $tags = array('mailcollector.url' => sprintf(__('%1$s: %2$s'), _n('Receiver', 'Receivers', 1), __('URL')));
+      $tags = array('mailcollector.url' => sprintf(__('%1$s: %2$s'), _n('Receiver', 'Receivers', 1),
+                                                   __('URL')));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -98,7 +102,7 @@ class NotificationTargetMailCollector extends NotificationTarget {
       }
 
       //Foreach global tags
-      $tags = array('mailcollectors'     => _n('Receiver', 'Receivers', 2));
+      $tags = array('mailcollectors' => _n('Receiver', 'Receivers', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -106,7 +110,7 @@ class NotificationTargetMailCollector extends NotificationTarget {
                                    'value'   => false,
                                    'foreach' => true));
       }
-      
+
       asort($this->tag_descriptions);
       return $this->tag_descriptions;
    }

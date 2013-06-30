@@ -596,14 +596,14 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Content')."</td>";
       echo "<td colspan='3'>";
-      
+
       $cols = 100;
       $rows = 30;
       if (isset($options['_in_modal']) && $options['_in_modal']) {
-         $rows=15;
+         $rows = 15;
          echo Html::hidden('_in_modal', array('value' => 1));
       }
-      
+
       echo "<textarea cols='$cols' rows='$rows' id='answer' name='answer'>".$this->fields["answer"];
       echo "</textarea>";
       echo "</td>";
@@ -1472,8 +1472,8 @@ class KnowbaseItem extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('delete'
-                                                         => _x('button', 'Delete permanently')) );
+                           'specific_actions' => array('delete' => _x('button',
+                                                                      'Delete permanently')) );
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm']

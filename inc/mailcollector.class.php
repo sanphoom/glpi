@@ -82,14 +82,20 @@ class MailCollector  extends CommonDBTM {
       return _n('Receiver', 'Receivers', $nb);
    }
 
+
    static function canCreate() {
       return static::canUpdate();
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function canPurge() {
       return static::canUpdate();
    }
-   
+
+
    /**
     * @see CommonGLPI::getAdditionalMenuOptions()
     *
@@ -737,7 +743,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['content'] = $this->cleanMailContent($tkt['content']);
-      
+
       $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
@@ -886,25 +892,28 @@ class MailCollector  extends CommonDBTM {
 
    /** Clean mail content : HTML + XSS + blacklisted content
     *
+    * @since version 0.85
+    *
     * @param $string text to clean
     *
     * @return cleaned text
-   **/   
+   **/
    function cleanMailContent($string) {
       global $DB;
+
       // First clean HTML and XSS
       $string = Toolbox::clean_cross_side_scripting_deep(Html::clean($string));
 
-      $rand = mt_rand();
+      $rand   = mt_rand();
       // Move line breaks to special CHARS
       $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
-      
+
       // Wrap content for blacklisted items
       $itemstoclean = array();
       foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
          $toclean = trim($data['content']);
          if (!empty($toclean)) {
-            $toclean = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $toclean);
+            $toclean        = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $toclean);
             $itemstoclean[] = $toclean;
          }
       }
@@ -914,6 +923,7 @@ class MailCollector  extends CommonDBTM {
       $string = str_replace("==$rand==", "\r\n", $string);
       return $string;
    }
+
 
    /** function textCleaner - Strip out unwanted/unprintable characters from the subject.
     *
@@ -1309,8 +1319,8 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
          //try to avoid conflict between inline image and attachment
-         $i = 2;            
-         while(!empty($this->files['filename']['tmp_name']) 
+         $i = 2;
+         while(!empty($this->files['filename']['tmp_name'])
                && in_array($path.$filename, $this->files['filename']['tmp_name'])) {
             //replace filename with name_(num).EXT by name_(num+1).EXT
             $new_filename = preg_replace("/(.*)_([0-9])*(\.[a-zA-Z0-9]*)$/", "$1_".$i."$3", $filename);
@@ -1319,11 +1329,11 @@ class MailCollector  extends CommonDBTM {
             } else {
                //the previous regex didn't found _num pattern, so add it with this one
                $filename = preg_replace("/(.*)(\.[a-zA-Z0-9]*)$/", "$1_".$i."$2", $filename);
-            } 
+            }
             $i++;
          }
 
-         
+
          $filename = $this->decodeMimeString($filename);
 
          if ($structure->bytes > $maxsize) {
@@ -1423,6 +1433,7 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($mid, $folder='') {
+
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
@@ -1449,15 +1460,14 @@ class MailCollector  extends CommonDBTM {
     * @param $name
    **/
    static function cronInfo($name) {
+
       switch($name) {
          case 'mailgate' :
             return array('description' => __('Retrieve email (Mails receivers)'),
-                        'parameter'   => __('Number of emails to retrieve'));
-            break;
+                         'parameter'   => __('Number of emails to retrieve'));
 
          case 'mailgateerror' :
             return array('description' => __('Send alarms on receiver errors'));
-            break;
       }
    }
 
@@ -1508,8 +1518,11 @@ class MailCollector  extends CommonDBTM {
       return 0;
    }
 
+
    /**
     * Send Alarms on mailgate errors
+    *
+    * @since version 0.85
     *
     * @param $task for log
    **/
@@ -1522,9 +1535,9 @@ class MailCollector  extends CommonDBTM {
       $cron_status   = 0;
 
       $query = "SELECT `glpi_mailcollectors`.*
-                  FROM `glpi_mailcollectors`
-                  WHERE `glpi_mailcollectors`.`errors`  > 0
-                     AND `glpi_mailcollectors`.`is_active`";
+                FROM `glpi_mailcollectors`
+                WHERE `glpi_mailcollectors`.`errors`  > 0
+                      AND `glpi_mailcollectors`.`is_active`";
 
       $items = array();
       foreach ($DB->request($query) as $data) {
@@ -1532,8 +1545,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (count($items)) {
-         if (NotificationEvent::raiseEvent('error', new self(),
-                                             array('items' => $items))) {
+         if (NotificationEvent::raiseEvent('error', new self(), array('items' => $items))) {
             $cron_status = 1;
             if ($task) {
                $task->setVolume(count($items));
@@ -1542,6 +1554,8 @@ class MailCollector  extends CommonDBTM {
       }
       return $cron_status;
    }
+
+
    /**
     * @param $width
    **/

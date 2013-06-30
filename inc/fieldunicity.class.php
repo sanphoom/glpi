@@ -52,14 +52,20 @@ class FieldUnicity extends CommonDropdown {
       return __('Fields unicity');
    }
 
+
    static function canCreate() {
       return static::canUpdate();
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function canPurge() {
       return static::canUpdate();
    }
-   
+
+
    function getAdditionalFields() {
 
       return array(array('name'  => 'is_active',
