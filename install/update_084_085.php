@@ -973,9 +973,6 @@ function update084to085() {
 //   $DB->queryOrDie($query, "0.85 delete entity_dropdown right");
 
 
-   // don't drop column right  - be done later
-   //$migration->dropField("glpi_profilerights", 'right');
-
 
 
    $migration->displayTitle('Update for mailqueue');
