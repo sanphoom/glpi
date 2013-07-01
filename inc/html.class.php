@@ -3983,7 +3983,12 @@ class Html {
                            data: function (term, page) {
                               return { ";
       foreach ($params as $key => $val) {
-         $js .= "$key: ".json_encode($val).",\n";
+         // Specific boolean case
+         if (is_bool($val)) {
+            $js .= "$key: ".($val?1:0).",\n";
+         } else {
+            $js .= "$key: ".json_encode($val).",\n";
+         }
       }
 
       $js .= "               searchText: term,
