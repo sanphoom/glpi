@@ -967,10 +967,10 @@ function update084to085() {
       ProfileRight::updateProfileRightsAsOtherRights('solutiontemplate', 'entity_dropdown');
    }
 
-//   $query = "DELETE
-//             FROM `glpi_profilerights`
-//             WHERE `name` = 'entity_dropdown'";
-//   $DB->queryOrDie($query, "0.85 delete entity_dropdown right");
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'entity_dropdown'";
+   $DB->queryOrDie($query, "0.85 delete entity_dropdown right");
 
 
 
