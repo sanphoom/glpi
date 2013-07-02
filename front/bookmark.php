@@ -56,6 +56,7 @@ if (!isset($_GET["action"])) {
 
 $bookmark = new Bookmark();
 
+
 if (isset($_POST["add"])) {
    $bookmark->check(-1, CREATE, $_POST);
 
@@ -84,6 +85,11 @@ if (isset($_POST["add"])) {
            && isset($_GET["id"]) && ($_GET["id"] > 0)) {
    $bookmark->check($_GET["id"], READ);
    $bookmark->load($_GET["id"]);
+   $_GET["action"] = "";
+} else if (($_POST["action"] == "up")  || ($_POST["action"] == "down")) {
+
+   Session::checkLoginUser();
+   $bookmark->changeBookmarkOrder($_POST['id'], $_POST["private"], $_POST["action"]);
    $_GET["action"] = "";
 } else if (isset($_POST["purge"])) {
    $bookmark->check($_POST["id"], PURGE);

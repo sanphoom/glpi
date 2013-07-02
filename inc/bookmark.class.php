@@ -572,94 +572,207 @@ class Bookmark extends CommonDBTM {
 
       $query .= " ORDER BY `itemtype`, `name`";
 
+      // get personal order
+      $user = new User();
+      $personalorderfield = 'publicbookmarkorder';
+      if ($is_private) {
+         $personalorderfield = 'privatebookmarkorder';
+      }
+      if ($user->getFromDB(Session::getLoginUserID())) {
+         $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
+      }
+      if (!is_array($personalorder)) {
+         $personalorder = array();
+      }
+      print_r($personalorder);
+      // get bookmarks
+      $bookmarks = array();
       if ($result = $DB->query($query)) {
-         $rand = mt_rand();
-         $numrows = $DB->numrows($result);
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         if ($numrows = $DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $bookmarks[$data['id']] = $data;
+            }
+         }
+      }
+//       print_r($bookmarks);
+      $ordered_bookmarks = array();
+      // Add bookmarks on personalorder
+      if (count($personalorder)) {
+         foreach ($personalorder as $val) {
+            if (isset($bookmarks[$val])) {
+               $ordered_bookmarks[$val] = $bookmarks[$val];
+               unset($bookmarks[$val]);
+            }
+         }
+      }
+      // Add unsaved in order bookmarks
+      if (count($bookmarks)) {
+         foreach ($bookmarks as $key => $val) {
+            $ordered_bookmarks[$key] = $val;
+         }
+         // New bookmark : save order
+         $store_bookmark = array_keys($ordered_bookmarks);
+         $user->update(array('id' => Session::getLoginUserID(),
+                             $personalorderfield => exportArrayToDB($store_bookmark)));
+      }
+      $rand = mt_rand();
+      $numrows = $DB->numrows($result);
+      Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
-         echo "<div class='center' id='tabsbody' >";
-         $massiveactionparams = array('num_displayed'  => $numrows,
-                                      'container'      => 'mass'.__CLASS__.$rand,
-                                      'width'          => 600,
-                                      'height'         => 200);
+      echo "<div class='center' id='tabsbody' >";
+      $massiveactionparams = array('num_displayed'  => $numrows,
+                                    'container'      => 'mass'.__CLASS__.$rand,
+                                    'width'          => 600,
+                                    'height'         => 200);
 
 //          Html::showMassiveActions(__CLASS__, $massiveactionparams);
 
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr>";
-         echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         echo "<th class='center' colspan='2'>".__('Bookmarks')."</th>";
-         echo "<th width='20px'>&nbsp;</th>";
-         echo "<th>".__('Default view')."</th></tr>";
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr>";
+      echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+      echo "<th class='center' colspan='2'>".__('Bookmarks')."</th>";
+      echo "<th width='20px'>&nbsp;</th>";
+      echo "<th>".__('Default view')."</th>";
+      echo "<th colspan='2'>&nbsp;</th></tr>";
 
-         if ($numrows) {
-            $current_type      = -1;
-            $current_type_name = NOT_AVAILABLE;
-            while ($this->fields = $DB->fetch_assoc($result)) {
-               if ($current_type != $this->fields['itemtype']) {
-                  $current_type      = $this->fields['itemtype'];
-                  $current_type_name = NOT_AVAILABLE;
+      if ($totalcount = count($ordered_bookmarks)) {
+         $current_type      = -1;
+         $number            = 0;
+         $current_type_name = NOT_AVAILABLE;
+         foreach ($ordered_bookmarks as $key => $this->fields) {
+            $number ++;
+            if ($current_type != $this->fields['itemtype']) {
+               $current_type      = $this->fields['itemtype'];
+               $current_type_name = NOT_AVAILABLE;
 
-                  if ($current_type == "AllAssets") {
-                     $current_type_name = __('Global');
-                  } else if ($item = getItemForItemtype($current_type)) {
-                     $current_type_name = $item->getTypeName(1);
-                  }
+               if ($current_type == "AllAssets") {
+                  $current_type_name = __('Global');
+               } else if ($item = getItemForItemtype($current_type)) {
+                  $current_type_name = $item->getTypeName(1);
                }
-               $canedit = $this->canEdit($this->fields["id"]);
-
-               echo "<tr class='tab_bg_1'>";
-               echo "<td width='10px'>";
-               if ($canedit) {
-                  Html::showMassiveActionCheckBox(__CLASS__, $this->fields["id"]);
-               } else {
-                  echo "&nbsp;";
-               }
-               echo "</td>";
-               echo "<td>$current_type_name</td>";
-               echo "<td>";
-               if ($canedit) {
-                  echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;id=".
-                           $this->fields["id"]."\" alt='".__s('Update')."'>".
-                           $this->fields["name"]."</a>";
-               } else {
-                  echo $this->fields["name"];
-               }
-               echo "</td>";
-
-               echo "<td><a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=load&amp;id=".
-                           $this->fields["id"]."\" class='vsubmit'>".__('Load')."</a>";
-               echo "</td>";
-               echo "<td class='center'>";
-               if ($this->fields['type'] == self::SEARCH) {
-                  if (is_null($this->fields['IS_DEFAULT'])) {
-                     echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
-                            "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
-                            __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
-                            "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\"></a>";
-                  } else {
-                     echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
-                            "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
-                            __s('Default search')."\" title=\"".__s('Default search')."\">".
-                            "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\"></a>";
-                  }
-               }
-               echo "</td></tr>";
             }
-            echo "</table></div>";
+            $canedit = $this->canEdit($this->fields["id"]);
 
-            $massiveactionparams['ontop']       = false;
-            $massiveactionparams['forcecreate'] = true;
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
-         } else {
-            echo "<tr class='tab_bg_1'><td colspan='5'>";
-            _e('You have not recorded any bookmarks yet');
-            echo "</td></tr></table>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td width='10px'>";
+            if ($canedit) {
+               Html::showMassiveActionCheckBox(__CLASS__, $this->fields["id"]);
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td>";
+            echo "<td>$current_type_name</td>";
+            echo "<td>";
+            if ($canedit) {
+               echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;id=".
+                        $this->fields["id"]."\" alt='".__s('Update')."'>".
+                        $this->fields["name"]."</a>";
+            } else {
+               echo $this->fields["name"];
+            }
+            echo "</td>";
+
+            echo "<td><a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=load&amp;id=".
+                        $this->fields["id"]."\" class='vsubmit'>".__('Load')."</a>";
+            echo "</td>";
+            echo "<td class='center'>";
+            if ($this->fields['type'] == self::SEARCH) {
+               if (is_null($this->fields['IS_DEFAULT'])) {
+                  echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
+                           "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
+                           __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
+                           "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\"></a>";
+               } else {
+                  echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
+                           "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
+                           __s('Default search')."\" title=\"".__s('Default search')."\">".
+                           "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\"></a>";
+               }
+            }
+            echo "</td>";
+            if ($number!=1) {
+               echo "<td>";
+               Html::showSimpleForm($this->getSearchURL(), array('action' => 'up'), '',
+                                    array('private' => $is_private,
+                                          'id'      => $this->fields["id"]),
+                                    $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+               echo "</td>";
+            } else {
+               echo "<td>&nbsp;</td>";
+            }
+
+            if ($number != $totalcount) {
+               echo "<td>";
+               Html::showSimpleForm($this->getSearchURL(), array('action' => 'down'), '',
+                                    array('private' => $is_private,
+                                          'id'      => $this->fields["id"]),
+                                    $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+               echo "</td>";
+            } else {
+               echo "<td>&nbsp;</td>";
+            }
+
+            echo "</tr>";
+            $first = false;
          }
-         Html::closeForm();
+         echo "</table></div>";
+
+         $massiveactionparams['ontop']       = false;
+         $massiveactionparams['forcecreate'] = true;
+         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      } else {
+         echo "<tr class='tab_bg_1'><td colspan='5'>";
+         _e('You have not recorded any bookmarks yet');
+         echo "</td></tr></table>";
+      }
+      Html::closeForm();
+
+   }
+   
+   /**
+    * Modify rule's ranking and automatically reorder all rules
+    *
+    * @param $ID     the rule ID whose ranking must be modified
+    * @param $action up or down
+    * @param $type personal or public
+   **/
+   function changeBookmarkOrder($ID, $type, $action) {
+
+      $user = new User();
+      $personalorderfield = 'privatebookmarkorder';
+      if ($is_private) {
+         $personalorderfield = 'publicbookmarkorder';
+      }
+      if ($user->getFromDB(Session::getLoginUserID())) {
+         $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
+      }
+//       exit();
+      if (!is_array($personalorder)) {
+         $personalorder = array();
+      }
+
+      if (in_array($ID, $personalorder)) {
+         $pos = array_search($ID, $personalorder);
+         switch($action) {
+            case 'up' :
+               if (isset($personalorder[$pos-1])) {
+                  $personalorder[$pos] = $personalorder[$pos-1];
+                  $personalorder[$pos-1] = $ID;
+               }
+               break;
+            case 'down' :
+               if (isset($personalorder[$pos+1])) {
+                  $personalorder[$pos] = $personalorder[$pos+1];
+                  $personalorder[$pos+1] = $ID;
+               }
+
+               break;
+         }
+         $user->update(array('id' => Session::getLoginUserID(),
+                             $personalorderfield => exportArrayToDB($personalorder)));
       }
    }
-
+   
 
    /**
     * Display bookmark buttons
