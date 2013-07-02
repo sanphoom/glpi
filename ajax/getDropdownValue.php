@@ -171,10 +171,15 @@ if ($item instanceof CommonTreeDropdown) {
          }
 
       } else {
-         $where .= getEntitiesRestrictRequest(" AND ", $table, '', '', $recur);
+         // If private item do not use entity
+         if (!$item->maybePrivate()) {
+            $where .= getEntitiesRestrictRequest(" AND ", $table, '', '', $recur);
 
-         if (count($_SESSION['glpiactiveentities']) > 1) {
-            $multi = true;
+            if (count($_SESSION['glpiactiveentities']) > 1) {
+               $multi = true;
+            }
+         } else {
+            $multi = false;
          }
       }
 
@@ -403,7 +408,6 @@ if ($item instanceof CommonTreeDropdown) {
    
 } else { // Not a dropdowntree
    $multi = false;
-
    // No multi if get one item
    if ($item->isEntityAssign()
        && ($one_item < 0)) {
@@ -418,10 +422,15 @@ if ($item instanceof CommonTreeDropdown) {
          }
 
       } else {
-         $where .= getEntitiesRestrictRequest("AND", $table, '', '', $multi);
+         // Do not use entity if may be private
+         if (!$item->maybePrivate()) {
+            $where .= getEntitiesRestrictRequest("AND", $table, '', '', $multi);
 
-         if (count($_SESSION['glpiactiveentities'])>1) {
-            $multi = true;
+            if (count($_SESSION['glpiactiveentities'])>1) {
+               $multi = true;
+            }
+         } else {
+            $multi = false;
          }
       }
    }
@@ -499,7 +508,6 @@ if ($item instanceof CommonTreeDropdown) {
       $query .= " ORDER BY `$table`.`$field`
                  $LIMIT";
    }
-//   Toolbox::logDebug($query);
    if ($result = $DB->query($query)) {
 
       // Display first if no search
@@ -608,5 +616,5 @@ if (($one_item >= 0) && isset($datas[0])) {
    $ret['count']   = $count;
    echo json_encode($ret);
 }
-// Toolbox::LogDebug($ret);
+
 ?>

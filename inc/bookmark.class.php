@@ -66,7 +66,81 @@ class Bookmark extends CommonDBTM {
       return $forbidden;
    }
 
+   /**
+    * @see CommonDBTM::getSpecificMassiveActions()
+   **/
+   function getSpecificMassiveActions($checkitem=NULL) {
 
+      $actions['move_bookmark'] = __('Move');
+
+      return $actions;
+   }
+
+
+   /**
+    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+   **/
+   function showSpecificMassiveActionsParameters($input=array()) {
+
+      switch ($input['action']) {
+         case "move_bookmark" :
+            $values = array('after'  => __('After'),
+                            'before' => __('Before'));
+            Dropdown::showFromArray('move_type', $values, array('width' => '20%'));
+
+            $param = array('name'            => "bookmarks_id_ref",
+                           'width'           => '50%');
+            if ($input['is_private']) {
+               $param['condition'] = "(`is_private`='1' AND `users_id`='".Session::getLoginUserID()."') ";
+               $param['entity']    = -1;
+            } else {
+               $param['condition'] = "`is_private`='0'";
+               $param['entity']    = -1;
+            }
+            Bookmark::dropdown($param);
+            echo "<input type='hidden' name='is_private' value='".$input['is_private']."'>";
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Move')."'>\n";
+            return true;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+
+      }
+      return false;
+   }
+
+   /**
+    * @see CommonDBTM::doSpecificMassiveActions()
+   **/
+   function doSpecificMassiveActions($input=array()) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($input['action']) {
+         case "move_bookmark" :
+            $items = array();
+            foreach ($input["item"] as $key => $val) {
+               if ($val) {
+                  $items[$key] = $key;
+               }
+            }
+            if ($this->moveBookmark($items, $input['bookmarks_id_ref'],
+                                    $input['is_private'], $input['move_type'])) {
+               $res['ok']+=count($items);
+            } else {
+               $res['ko']+=count($items);
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    /**
     * Special case: a private bookmark has entities_id==-1 => we cannot check it
     * @see CommonDBTM::canCreateItem()
@@ -578,13 +652,13 @@ class Bookmark extends CommonDBTM {
       if ($is_private) {
          $personalorderfield = 'privatebookmarkorder';
       }
+      
       if ($user->getFromDB(Session::getLoginUserID())) {
          $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
       }
       if (!is_array($personalorder)) {
          $personalorder = array();
       }
-      print_r($personalorder);
       // get bookmarks
       $bookmarks = array();
       if ($result = $DB->query($query)) {
@@ -594,7 +668,7 @@ class Bookmark extends CommonDBTM {
             }
          }
       }
-//       print_r($bookmarks);
+
       $ordered_bookmarks = array();
       // Add bookmarks on personalorder
       if (count($personalorder)) {
@@ -623,6 +697,7 @@ class Bookmark extends CommonDBTM {
       $massiveactionparams = array('num_displayed'  => $numrows,
                                     'container'      => 'mass'.__CLASS__.$rand,
                                     'width'          => 600,
+                                    'extraparams'    => array('is_private' => $is_private),
                                     'height'         => 200);
 
 //          Html::showMassiveActions(__CLASS__, $massiveactionparams);
@@ -733,20 +808,19 @@ class Bookmark extends CommonDBTM {
     * Modify rule's ranking and automatically reorder all rules
     *
     * @param $ID     the rule ID whose ranking must be modified
+    * @param $is_private bool : personal or public
     * @param $action up or down
-    * @param $type personal or public
    **/
-   function changeBookmarkOrder($ID, $type, $action) {
+   function changeBookmarkOrder($ID, $is_private, $action) {
 
       $user = new User();
-      $personalorderfield = 'privatebookmarkorder';
+      $personalorderfield = 'publicbookmarkorder';
       if ($is_private) {
-         $personalorderfield = 'publicbookmarkorder';
+         $personalorderfield = 'privatebookmarkorder';
       }
       if ($user->getFromDB(Session::getLoginUserID())) {
          $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
       }
-//       exit();
       if (!is_array($personalorder)) {
          $personalorder = array();
       }
@@ -773,7 +847,62 @@ class Bookmark extends CommonDBTM {
       }
    }
    
+   /**
+    * Move a bookmark in an ordered collection
+    *
+    * @param $items       array of the rules ID to move
+    * @param $ref_ID    of the rule position  (0 means all, so before all or after all)
+    * @param $is_private      bool : personal or public
+    * @param $action      of move : after or before ( default 'after')
+    *
+    * @return true if all ok
+   **/
+   function moveBookmark($items, $ref_ID, $is_private, $action='after') {
+      global $DB;
 
+      if (count($items)) {
+         // Clean IDS : drop ref_ID
+         if (isset($items[$ref_ID])) {
+            unset($items[$ref_ID]);
+         }
+
+         // Get personal
+         $user = new User();
+         $personalorderfield = 'publicbookmarkorder';
+         if ($is_private) {
+            $personalorderfield = 'privatebookmarkorder';
+         }
+         if ($user->getFromDB(Session::getLoginUserID())) {
+            $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
+         }
+         if (!is_array($personalorder)) {
+            return false;
+         }
+
+         $newpersonalorder = array();
+         foreach ($personalorder as $val) {
+            // Found item
+            if ($val == $ref_ID) {
+               // Add after so add ref ID
+               if ($action == 'after') {
+                  $newpersonalorder[] = $ref_ID;
+               }
+               foreach ($items as $val2) {
+                  $newpersonalorder[] = $val2;
+               }
+               if ($action == 'before') {
+                  $newpersonalorder[] = $ref_ID;
+               }
+            } else if (!isset($items[$val])) {
+               $newpersonalorder[] = $val;
+            }
+         }
+         $user->update(array('id' => Session::getLoginUserID(),
+                             $personalorderfield => exportArrayToDB($newpersonalorder)));
+      }
+      return false;
+   }
+   
    /**
     * Display bookmark buttons
     *

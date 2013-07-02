@@ -389,7 +389,7 @@ class RuleCollection extends CommonDBTM {
 
       if ($canedit && $nb) {
          $massiveactionparams = array('num_displayed' => min($p['limit'], $nb),
-                                      'extraparams'   => array('entity_restrict' => $this->entity),
+                                      'extraparams'   => array('entity' => $this->entity),
                                       'container'     => 'mass'.__CLASS__.$rand);
 
          Html::showMassiveActions($this->getRuleClassName(), $massiveactionparams);

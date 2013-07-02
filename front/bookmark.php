@@ -86,8 +86,8 @@ if (isset($_POST["add"])) {
    $bookmark->check($_GET["id"], READ);
    $bookmark->load($_GET["id"]);
    $_GET["action"] = "";
-} else if (($_POST["action"] == "up")  || ($_POST["action"] == "down")) {
-
+} else if (isset($_POST["action"])
+         && (($_POST["action"] == "up")  || ($_POST["action"] == "down"))) {
    Session::checkLoginUser();
    $bookmark->changeBookmarkOrder($_POST['id'], $_POST["private"], $_POST["action"]);
    $_GET["action"] = "";

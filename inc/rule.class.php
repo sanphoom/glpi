@@ -515,14 +515,15 @@ class Rule extends CommonDBTM {
                             'before' => __('Before'));
             Dropdown::showFromArray('move_type', $values, array('width' => '20%'));
 
-            if (isset($input['entity_restrict'])) {
-               $condition = $input['entity_restrict'];
+            if (isset($input['entity'])) {
+               $condition = $input['entity'];
             } else {
                $condition = "";
             }
+            
             Rule::dropdown(array('sub_type'        => $input['itemtype'],
                                  'name'            => "ranking",
-                                 'entity_restrict' => $condition,
+                                 'entity'          => $condition,
                                  'width'           => '50%'));
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
@@ -2323,7 +2324,7 @@ class Rule extends CommonDBTM {
 
       $p['sub_type']        = '';
       $p['name']            = 'rules_id';
-      $p['entity_restrict'] = '';
+      $p['entity'] = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2336,7 +2337,7 @@ class Rule extends CommonDBTM {
       }
 
       $p['condition'] = "`sub_type` = '".$p['sub_type']."'";
-      return Dropdown::show('Rule',$p);
+      return Dropdown::show($p['sub_type'],$p);
    }
 
 
