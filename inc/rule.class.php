@@ -1019,53 +1019,6 @@ class Rule extends CommonDBTM {
    }
 
 
-   /**
-    * Display the add criteria form
-    *
-    * @param $rules_id rule ID
-   **/
-   function addCriteriaForm($rules_id) {
-      // CFG_GLPI needed by rulecriteria.php
-      global $CFG_GLPI;
-
-      echo "<div class='firstbloc'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . _n('Criterion', 'Criteria', 1) . "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>"._n('Criterion', 'Criteria', 1) . "</td><td>";
-      $rand   = $this->dropdownCriteria();
-      $params = array('criteria' => '__VALUE__',
-                      'rand'     => $rand,
-                      'sub_type' => $this->getType());
-
-      Ajax::updateItemOnSelectEvent("dropdown_criteria$rand", "criteria_span",
-                                    $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php", $params);
-
-      if ($this->specific_parameters) {
-         $itemtype = get_class($this).'Parameter';
-         echo "<img alt='' title=\"".__s('Add a criterion')."\" src='".$CFG_GLPI["root_doc"].
-                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                onClick=\"".Html::jsGetElementbyID('addcriterion'.$rand).".dialog('open');\">";
-         Ajax::createIframeModalWindow('addcriterion'.$rand,
-                                       Toolbox::getItemTypeFormURL($itemtype),
-                                       array('reloadonclose' => true));
-      }
-
-      echo "</td><td class='left'><span id='criteria_span'>\n";
-/*      $_POST["sub_type"] = $this->getType();
-      $_POST["criteria"] = $val;
-      include (GLPI_ROOT."/ajax/rulecriteria.php");*/
-      echo "</span></td>\n";
-      echo "<td class='tab_bg_2' width='80px'>";
-      echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
-      echo "<input type='submit' name='add_criteria' value=\""._sx('button','Add')."\"
-             class='submit'>";
-      echo "</td></tr>\n";
-      echo "</table></div>";
-   }
-
-
    function maybeRecursive() {
       return false;
    }
@@ -1078,7 +1031,8 @@ class Rule extends CommonDBTM {
     * @param $options   array of options : may be readonly
    **/
    function showCriteriasList($rules_id, $options=array()) {
-
+      global $CFG_GLPI;
+      
       $rand = mt_rand();
       $p['readonly'] = false;
 
@@ -1097,10 +1051,22 @@ class Rule extends CommonDBTM {
       }
 
       if ($canedit) {
-         echo "<form name='criteriasaddform' method='post' action='".
-                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
-         $this->addCriteriaForm($rules_id);
-         Html::closeForm();
+         echo "<div id='viewcriteria" . $rules_id . "$rand'></div>\n";
+      }
+      if ($canedit) {
+         echo "<script type='text/javascript' >\n";
+         echo "function viewAddCriteria" . $rules_id . "$rand() {\n";
+         $params = array('type'       => 'RuleCriteria',
+                         'parenttype' => $this->getType(),
+                         'rules_id'   => $rules_id,
+                         'id'         => -1);
+         Ajax::updateItemJsCode("viewcriteria" . $rules_id . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";
+         echo "<div class='center firstbloc'>".
+               "<a class='vsubmit' href='javascript:viewAddCriteria".$rules_id."$rand();'>";
+         echo __('Add a new criteria')."</a></div>\n";
       }
 
       echo "<div class='spaced'>";
@@ -1131,7 +1097,7 @@ class Rule extends CommonDBTM {
 
 
       foreach ($this->criterias as $criteria) {
-         $this->showMinimalCriteriaForm($criteria->fields, $canedit);
+         $this->showMinimalCriteriaForm($criteria->fields, $canedit, $rand);
       }
       echo "</table>\n";
 
@@ -1893,13 +1859,27 @@ class Rule extends CommonDBTM {
     *
     * @param $fields    datas used to display the criteria
     * @param $canedit   can edit the criterias rule ?
+    * @param $rand      random value of the form
    **/
-   function showMinimalCriteriaForm($fields, $canedit) {
-
-      echo "<tr class='tab_bg_1'>";
+   function showMinimalCriteriaForm($fields, $canedit, $rand) {
+      global $CFG_GLPI;
+      
+      echo "<tr class='tab_bg_1' ".($canedit ? "style='cursor:pointer' onClick=\"viewEditCriteria".
+                         $fields['rules_id'].$fields["id"]."$rand();\""
+                       : '').">";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->rulecriteriaclass, $fields["id"]);
+         echo "\n<script type='text/javascript' >\n";
+         echo "function viewEditCriteria". $fields['rules_id'].$fields["id"]."$rand() {\n";
+         $params = array('type'      => 'RuleCriteria',
+                        'parenttype' => $this->getType(),
+                        'rules_id'   => $fields['rules_id'],
+                        'id'         => $fields["id"]);
+         Ajax::updateItemJsCode("viewcriteria" . $fields['rules_id'] . "$rand",
+                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";
          echo "</td>";
       }
 
@@ -2062,7 +2042,6 @@ class Rule extends CommonDBTM {
                if (isset($crit['condition'])) {
                   $param['condition'] = $crit['condition'];
                }
-
                Dropdown::show(getItemTypeForTable($crit['table']), $param);
 
                $display = true;

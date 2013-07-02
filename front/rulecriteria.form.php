@@ -30,26 +30,27 @@
 /** @file
 * @brief
 */
+include ('../inc/includes.php');
 
-// Direct access to file
-if (strstr($_SERVER['PHP_SELF'],"rulecriteriavalue.php")) {
-   include ('../inc/includes.php');
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
+
+$criteria = new RuleCriteria ();
+
+if (isset($_POST["add"])) {
+   $criteria->check(-1, CREATE, $_POST);
+   $criteria->add($_POST);
+
+   Html::back();
+
+} else if (isset($_POST["update"])) {
+   $criteria->check($_POST['id'], UPDATE);
+   $criteria->update($_POST);
+
+   Html::back();
+} else if (isset($_POST["purge"])) {
+   $criteria->check($_POST['id'], PURGE);
+   $criteria->delete($_POST, 1);
+
+   Html::back();
 }
 
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
-}
-
-Session::checkLoginUser();
-
-// Non define case
-if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {
-   $value = '';
-   if (isset($_POST['value'])) {
-      $value = $_POST['value'];
-   }
-   $rule->displayCriteriaSelectPattern("pattern", $_POST["criteria"], $_POST['condition'], $value);
-}
 ?>

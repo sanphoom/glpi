@@ -543,5 +543,66 @@ class RuleCriteria extends CommonDBChild {
       return Dropdown::showFromArray($p['name'], $elements, array('value' => $p['value']));
    }
 
+
+   /** form for rule criteria
+    *
+    *@param $ID      integer : Id of the criterai
+    *@param $options array of possible options:
+    *     - rule Object : the rule
+   **/
+   function showForm($ID, $options=array()) {
+      // CFG_GLPI needed by rulecriteria.php
+      global $CFG_GLPI;
+
+      if (isset($options['parent']) && !empty($options['parent'])) {
+         $rule = $options['parent'];
+      }
+
+      if ($ID > 0) {
+         $this->check($ID, READ);
+      } else {
+         // Create item
+         $options['rules_id'] = $rule->getField('id');
+         $this->check(-1, CREATE, $options);
+      }
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='center'>"._n('Criterion', 'Criteria', 1) . "</td><td>";
+      echo "<input type='hidden' name='rules_id' value='".$this->fields["rules_id"]."'>";
+      
+      $rand   = $rule->dropdownCriteria(array('value' => $this->fields['criteria']));
+      $params = array('criteria' => '__VALUE__',
+                      'rand'     => $rand,
+                      'sub_type' => $rule->getType());
+
+      Ajax::updateItemOnSelectEvent("dropdown_criteria$rand", "criteria_span",
+                                    $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php", $params);
+
+      if (isset($this->fields['criteria']) && !empty($this->fields['criteria'])) {
+         $params['criteria']  = $this->fields['criteria'];
+         $params['condition'] = $this->fields['condition'];
+         $params['pattern']   = $this->fields['pattern'];
+         echo "<script type='text/javascript' >\n";
+         Ajax::updateItemJsCode("criteria_span",
+                                 $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",
+                                 $params);
+         echo '</script>';
+      }
+      
+      if ($rule->specific_parameters) {
+         $itemtype = get_class($rule).'Parameter';
+         echo "<img alt='' title=\"".__s('Add a criterion')."\" src='".$CFG_GLPI["root_doc"].
+                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                onClick=\"".Html::jsGetElementbyID('addcriterion'.$rand).".dialog('open');\">";
+         Ajax::createIframeModalWindow('addcriterion'.$rand,
+                                       Toolbox::getItemTypeFormURL($itemtype),
+                                       array('reloadonclose' => true));
+      }
+
+      echo "</td><td class='left'><span id='criteria_span'>\n";
+      echo "</span></td></tr>\n";
+      $this->showFormButtons($options);
+   }   
 }
 ?>

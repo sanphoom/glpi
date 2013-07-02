@@ -44,13 +44,7 @@ if (!isset($_GET["id"])) {
 $rulecriteria = new RuleCriteria(get_class($rule));
 $ruleaction   = new RuleAction(get_class($rule));
 
-if (isset($_POST["add_criteria"])) {
-   $rulecollection->checkGlobal(CREATE);
-   $rulecriteria->add($_POST);
-
-   Html::back();
-
-} else if (isset($_POST["add_action"])) {
+if (isset($_POST["add_action"])) {
    $rulecollection->checkGlobal(CREATE);
    $ruleaction->add($_POST);
 
