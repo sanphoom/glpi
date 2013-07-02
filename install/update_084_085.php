@@ -1615,7 +1615,11 @@ function update084to085() {
    $query = "UPDATE `glpi_events` SET `type` = 'cartridgeitems' WHERE `type` = 'cartridges';";
    $DB->queryOrDie($query, "0.85 fix events for cartridges");
 
-   
+
+   // Bookmark order :
+   $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
+   $migration->addField('glpi_users', 'publicbookmarkorder', 'longtext');
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
