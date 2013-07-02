@@ -55,6 +55,8 @@ class Search {
    const LBBR = '#LBBR#';
    const LBHR = '#LBHR#';
 
+   const NULLVALUE = '__NULL__';
+
    /**
     * Display search engine for an type
     *
@@ -2500,7 +2502,7 @@ class Search {
             $TRANS = ", '$$', $tocomputetrans";
 
          }
-         return " GROUP_CONCAT(DISTINCT CONCAT($tocompute $TRANS,'$$',$tocomputeid) SEPARATOR '$$$$')
+         return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."') $TRANS,'$$',$tocomputeid) SEPARATOR '$$$$')
                               AS ".$NAME."_$num,
                   $ADDITONALFIELDS";
       }
@@ -4535,7 +4537,12 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':self::LBBR).Html::convDate($val);
+                  $split2 = self::explodeWithID("$$", $val);
+                  if (is_null($split2[0]) && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
+                     $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
+                  } else {
+                     $out .= (empty($out)?'':self::LBBR).Html::convDate($split2[0]);
+                  }
                }
                return $out;
 
@@ -4543,7 +4550,12 @@ class Search {
                $split = explode("$$$$", $data[$NAME.$num]);
                $out   = '';
                foreach ($split as $val) {
-                  $out .= (empty($out)?'':self::LBBR).Html::convDateTime($val);
+                  $split2 = self::explodeWithID("$$", $val);
+                  if (is_null($split2[0]) && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
+                     $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
+                  } else {                  
+                     $out .= (empty($out)?'':self::LBBR).Html::convDateTime($split2[0]);
+                  }
                }
                return $out;
 
@@ -6015,7 +6027,10 @@ class Search {
             }
          }
       }
-
+      // Manage NULL value
+      if ($tab[0] == self::NULLVALUE) {
+         $tab[0] = NULL;
+      }
       return $tab;
    }
 

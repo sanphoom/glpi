@@ -631,6 +631,7 @@ class Software extends CommonDBTM {
       $tab[166]['name']          = __('Expiration');
       $tab[166]['forcegroupby']  = true;
       $tab[166]['datatype']      = 'date';
+      $tab[166]['emptylabel']    = __('Never expire');
       $tab[166]['massiveaction'] = false;
       $tab[166]['joinparams']    = $licjoin;
 
