@@ -189,4 +189,12 @@ if (!defined('GLPI_HTMLAWED')) {
    # if htmLawed available in system, use (in config_path.php)
    # define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
 }
+
+// Default path to password_compat
+if (!defined('GLPI_PASSWORD_COMPAT')) {
+   define('GLPI_PASSWORD_COMPAT', GLPI_ROOT.'/lib/password_compat/password.php');
+
+   # if password_compat available in system, use (in config_path.php)
+   # define('GLPI_PASSWORD_COMPAT', '/usr/share/php/password_compat/password.php');
+}
 ?>

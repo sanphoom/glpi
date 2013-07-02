@@ -1589,6 +1589,9 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_blacklistedmailcontents");
    }
 
+   // increase password length
+   $migration->changeField('glpi_users', 'password', 'password', 'string');
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

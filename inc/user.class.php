@@ -507,7 +507,7 @@ class User extends CommonDBTM {
             if ($input["password"] == $input["password2"]) {
                if (Config::validatePassword($input["password"])) {
                   $input["password"]
-                     = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
                } else {
                   unset($input["password"]);
                }
@@ -685,7 +685,7 @@ class User extends CommonDBTM {
                                -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)
                            && $this->isEmail($input['email'])))) {
                   $input["password"]
-                     = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+                     = Auth::getPasswordHash(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 
                } else {
                   unset($input["password"]);
@@ -3945,25 +3945,24 @@ class User extends CommonDBTM {
     * @return array of login using default passwords
    **/
    static function checkDefaultPasswords() {
+      global $DB;
 
       $passwords = array('glpi'      => 'glpi',
                          'tech'      => 'tech',
                          'normal'    => 'normal',
                          'post-only' => 'postonly');
       $default_password_set = array();
-      foreach ($passwords as $login => $password) {
-         if (countElementsInTable("glpi_users",
-                                  "`name`='$login' " .
-                                       "AND (`password` = SHA1('$password') " .
-                                             "OR `password` = MD5('$password'))
-                                        AND `is_active` = '1'
-                                        AND (`glpi_users`.`begin_date` IS NULL
-                                             OR `glpi_users`.`begin_date` < NOW())
-                                        AND (`glpi_users`.`end_date` IS NULL
-                                             OR `glpi_users`.`end_date` > NOW())")) {
-            $default_password_set[] = $login;
+
+      $crit = array('FIELDS'    => array('name', 'password'),
+                    'is_active' => 1,
+                    'name'      => array_keys($passwords));
+
+      foreach($DB->request('glpi_users', $crit) as $data) {
+         if (Auth::checkPassword($passwords[$data['name']], $data['password'])) {
+            $default_password_set[] = $data['name'];
          }
       }
+
       return $default_password_set;
    }
 

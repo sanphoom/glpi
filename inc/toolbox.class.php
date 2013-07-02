@@ -1021,6 +1021,22 @@ class Toolbox {
       }
       echo "</tr>";
 
+      // Test for Cryptographic extension.
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Cryptography test')."</td>";
+
+      if (Auth::isCryptOk()) {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
+                     __s('The functionality is found - Perfect!'). "\" title=\"".
+                     __s('The functionality is found - Perfect!')."\"></td>";
+      } else {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png' alt=\"".
+                     __s('PHP >= 5.3.7 recommended'). "\" title=\"".
+                     __s('PHP >= 5.3.7 recommended')."\"></td>";
+         $error = 1;
+
+      }
+      echo "</tr>";
+
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
 
