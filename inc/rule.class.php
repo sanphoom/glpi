@@ -2782,8 +2782,10 @@ class Rule extends CommonDBTM {
 
             default:
                if ($item instanceof Rule) {
-                  return sprintf(__('%1$s / %2$s'), _n('Criterion', 'Criteria', 2),
-                                 _n('Action', 'Actions', 2));
+                  $ong = array();
+                  $ong[1] = _n('Criterion', 'Criteria', 2);
+                  $ong[2] = _n('Action', 'Actions', 2);
+                  return $ong;
                }
          }
       }
@@ -2827,8 +2829,14 @@ class Rule extends CommonDBTM {
 
       } else if ($item instanceof Rule) {
          $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
-         $item->showCriteriasList($item->getID());
-         $item->showActionsList($item->getID());
+         switch ($tabnum) {
+            case 1 :
+               $item->showCriteriasList($item->getID());
+               break;
+            case 2 :
+               $item->showActionsList($item->getID());
+               break;
+         }
       }
 
       return true;
