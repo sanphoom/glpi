@@ -199,7 +199,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (isset($input["plan"])) {
          $input["begin"]         = $input['plan']["begin"];
          $input["end"]           = $input['plan']["end"];
-         $input["users_id_tech"] = $input['plan']["users_id"];
 
          $timestart              = strtotime($input["begin"]);
          $timeend                = strtotime($input["end"]);
@@ -298,7 +297,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (isset($input["plan"])) {
          $input["begin"]         = $input['plan']["begin"];
          $input["end"]           = $input['plan']["end"];
-         $input["users_id_tech"] = $input['plan']["users_id"];
 
          $timestart              = strtotime($input["begin"]);
          $timeend                = strtotime($input["end"]);
@@ -961,14 +959,11 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $this->showFormHeader($options);
 
-      $rowspan = 5 ;
+      $rowspan = 4 ;
       if ($this->maybePrivate()) {
          $rowspan++;
       }
-      // Recall
-      if (!empty($this->fields["begin"])) {
-         $rowspan++;
-      }
+
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='$rowspan' class='middle right'>".__('Description')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>".
@@ -1026,6 +1021,22 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('By')."</td>";
+      echo "<td class='center'>";
+      $rand_user = mt_rand();      
+      $params = array('name'   => "users_id_tech",
+                     'value'  => $this->fields["users_id_tech"],
+                     'right'  => "own_ticket",
+                     'rand'   => $rand_user,
+                     'entity' => $item->fields["entities_id"]);
+
+      $params['toupdate'] = array('value_fieldname' => 'users_id',
+                                 'to_update'        => "user_available$rand_user",
+                                 'url'              => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
+
+
+      User::dropdown($params);
+      echo "</td>\n";
       echo "<td>".__('Planning')."</td>";
       echo "<td>";
 
@@ -1035,14 +1046,15 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "<script type='text/javascript' >\n";
             echo "function showPlan".$ID."() {\n";
             echo Html::jsHide('plan');
-            $params = array('form'     => 'followups',
-                            'users_id' => $this->fields["users_id_tech"],
-                            'id'       => $this->fields["id"],
-                            'begin'    => $this->fields["begin"],
-                            'end'      => $this->fields["end"],
-                            'entity'   => $item->fields["entities_id"],
-                            'itemtype' => $this->getType(),
-                            'items_id' => $this->getID());
+            $params = array('form'      => 'followups',
+                            'users_id'  => $this->fields["users_id_tech"],
+                            'id'        => $this->fields["id"],
+                            'begin'     => $this->fields["begin"],
+                            'end'       => $this->fields["end"],
+                            'rand_user' => $rand_user,
+                            'entity'    => $item->fields["entities_id"],
+                            'itemtype'  => $this->getType(),
+                            'items_id'  => $this->getID());
             Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php",
                                    $params);
             echo "}";
