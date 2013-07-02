@@ -911,7 +911,8 @@ class Rule extends CommonDBTM {
     * @param $options   array of options : may be readonly
    **/
    function showActionsList($rules_id, $options=array()) {
-
+      global $CFG_GLPI;
+      
       $rand = mt_rand();
       $p['readonly'] = false;
 
@@ -930,14 +931,25 @@ class Rule extends CommonDBTM {
       }
       $this->getTitleAction();
 
+
       if ($canedit
           && (($this->maxActionsCount() == 0)
               || (sizeof($this->actions) < $this->maxActionsCount()))) {
+         echo "<div id='viewaction" . $rules_id . "$rand'></div>\n";
 
-         echo "<form name='actionsaddform' method='post' action='".
-                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
-         $this->addActionForm($rules_id);
-         Html::closeForm();
+         echo "<script type='text/javascript' >\n";
+         echo "function viewAddAction" . $rules_id . "$rand() {\n";
+         $params = array('type'       => 'RuleAction',
+                         'parenttype' => $this->getType(),
+                         'rules_id'   => $rules_id,
+                         'id'         => -1);
+         Ajax::updateItemJsCode("viewaction" . $rules_id . "$rand",
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";
+         echo "<div class='center firstbloc'>".
+               "<a class='vsubmit' href='javascript:viewAddAction".$rules_id."$rand();'>";
+         echo __('Add a new action')."</a></div>\n";
       }
 
       $nb = count($this->actions);
@@ -968,7 +980,7 @@ class Rule extends CommonDBTM {
 
 
       foreach ($this->actions as $action) {
-         $this->showMinimalActionForm($action->fields, $canedit);
+         $this->showMinimalActionForm($action->fields, $canedit, $rand);
       }
       echo "</table>\n";
 
@@ -978,44 +990,6 @@ class Rule extends CommonDBTM {
          Html::closeForm();
       }
       echo "</div>";
-   }
-
-
-   /**
-    * Display the add action form
-    *
-    * @param $rules_id rule ID
-   **/
-   function addActionForm($rules_id) {
-      // CFG_GLPI needed by ruleaction.php
-      global $CFG_GLPI;
-
-      if ($ra = getItemForItemtype($this->ruleactionclass)) {
-         echo "<div class='firstbloc'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>" . _n('Action', 'Actions', 1) . "</tr>";
-
-         echo "<tr class='tab_bg_1 center'>";
-         echo "<td>"._n('Action', 'Actions', 1) . "</td><td>";
-         $rand   = $this->dropdownActions(array('used' => $ra->getAlreadyUsedForRuleID($rules_id, $this->getType())));
-         $params = array('field'               => '__VALUE__',
-                         'sub_type'            => $this->getType(),
-                         $this->rules_id_field => $rules_id);
-
-         Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
-                                       $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
-
-
-         echo "</td><td class='left' width='30%'><span id='action_span'>\n";
-         echo "</span></td>\n";
-         echo "<td class='tab_bg_2 left' width='80px'>";
-         echo "<input type='hidden' name='".$this->rules_id_field."' value='".
-                $this->fields["id"]."'>";
-         echo "<input type='submit' name='add_action' value=\""._sx('button','Add')."\"
-                class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table></div>";
-      }
    }
 
 
@@ -1052,8 +1026,7 @@ class Rule extends CommonDBTM {
 
       if ($canedit) {
          echo "<div id='viewcriteria" . $rules_id . "$rand'></div>\n";
-      }
-      if ($canedit) {
+
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCriteria" . $rules_id . "$rand() {\n";
          $params = array('type'       => 'RuleCriteria',
@@ -1215,8 +1188,6 @@ class Rule extends CommonDBTM {
             $value = $ID;
          }
       }
-      asort($items);
-
       return Dropdown::showFromArray($p['name'], $items, $p);
    }
 
@@ -1750,13 +1721,27 @@ class Rule extends CommonDBTM {
     *
     * @param $fields    datas used to display the action
     * @param $canedit   can edit the actions rule ?
+    * @param $rand      random value of the form
    **/
-   function showMinimalActionForm($fields, $canedit) {
-
-      echo "<tr class='tab_bg_1'>";
+   function showMinimalActionForm($fields, $canedit, $rand) {
+      global $CFG_GLPI;
+      
+      echo "<tr class='tab_bg_1' ".($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
+                         $fields['rules_id'].$fields["id"]."$rand();\""
+                       : '').">";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
+         echo "\n<script type='text/javascript' >\n";
+         echo "function viewEditAction". $fields['rules_id'].$fields["id"]."$rand() {\n";
+         $params = array('type'      => 'RuleAction',
+                        'parenttype' => $this->getType(),
+                        'rules_id'   => $fields['rules_id'],
+                        'id'         => $fields["id"]);
+         Ajax::updateItemJsCode("viewaction" . $fields['rules_id'] . "$rand",
+                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo "};";
+         echo "</script>\n";         
          echo "</td>";
       }
       echo $this->getMinimalActionText($fields);
@@ -2627,8 +2612,9 @@ class Rule extends CommonDBTM {
 
    /**
     * @param $action array
+    * @param $value value to display
    **/
-   function displayAdditionalRuleAction(array $action) {
+   function displayAdditionalRuleAction(array $action, $value = '') {
       return false;
    }
 
@@ -2800,12 +2786,6 @@ class Rule extends CommonDBTM {
       } else if ($item->getType() == 'SLA') {
          $rule = new RuleTicket();
          $rule->showAndAddRuleForm($item);
-
-//       } else if ($item->getType() == 'SlaLevel') {
-//          $rule = new RuleTicket();
-//          $item->getRuleWithCriteriasAndActions($item->getID(), 0, 1);
-//          $item->showActionsList($item->getID());
-
       } else if ($item instanceof Rule) {
          $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
          switch ($tabnum) {

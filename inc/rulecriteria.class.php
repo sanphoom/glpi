@@ -546,12 +546,11 @@ class RuleCriteria extends CommonDBChild {
 
    /** form for rule criteria
     *
-    *@param $ID      integer : Id of the criterai
+    *@param $ID      integer : Id of the criteria
     *@param $options array of possible options:
     *     - rule Object : the rule
    **/
    function showForm($ID, $options=array()) {
-      // CFG_GLPI needed by rulecriteria.php
       global $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -569,7 +568,7 @@ class RuleCriteria extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>"._n('Criterion', 'Criteria', 1) . "</td><td colspan='3'>";
-      echo "<input type='hidden' name='rules_id' value='".$this->fields["rules_id"]."'>";
+      echo "<input type='hidden' name='".$rule->getRuleIdField()."' value='".$this->fields["rules_id"]."'>";
       
       $rand   = $rule->dropdownCriteria(array('value' => $this->fields['criteria']));
       $params = array('criteria' => '__VALUE__',
@@ -601,7 +600,7 @@ class RuleCriteria extends CommonDBChild {
       }
 
       echo "</td></tr>";
-      echo "<tr><td class='left'  colspan='4'><span id='criteria_span'>\n";
+      echo "<tr><td colspan='4'><span id='criteria_span'>\n";
       echo "</span></td></tr>\n";
       $this->showFormButtons($options);
    }   

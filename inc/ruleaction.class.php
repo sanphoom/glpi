@@ -310,27 +310,27 @@ class RuleAction extends CommonDBChild {
     *
     * @param $sub_type
     * @param $name
+    * @param $field
     * @param $value           (default '')
     * @param $already_used    (default false)
     * @param $display         (true by default)
    **/
-   static function dropdownActions($sub_type, $name, $value='', $already_used=false,
+   static function dropdownActions($sub_type, $name, $field, $value='', $already_used=false,
                                    $display=true) {
 
       if ($rule = getItemForItemtype($sub_type)) {
          $actions_options = $rule->getAllActions();
-
          $actions         = array("assign");
          // Manage permit several.
          if ($already_used) {
-            if (!isset($actions_options[$value]['permitseveral'])) {
+            if (!isset($actions_options[$field]['permitseveral'])) {
                return false;
             }
-            $actions = $actions_options[$value]['permitseveral'];
+            $actions = $actions_options[$field]['permitseveral'];
 
          } else {
-            if (isset($actions_options[$value]['force_actions'])) {
-               $actions = $actions_options[$value]['force_actions'];
+            if (isset($actions_options[$field]['force_actions'])) {
+               $actions = $actions_options[$field]['force_actions'];
             }
          }
 
@@ -338,7 +338,7 @@ class RuleAction extends CommonDBChild {
          foreach ($actions as $action) {
             $elements[$action] = self::getActionByID($action);
          }
-
+   
          return Dropdown::showFromArray($name, $elements, array('value'   => $value,
                                                                 'display' => $display));
       }
@@ -428,16 +428,21 @@ class RuleAction extends CommonDBChild {
 
       $display = false;
 
-      switch ($_POST["action_type"]) {
+      $param['value'] = '';
+      if (isset($options['value'])) {
+         $param['value'] = $options['value'];
+      }
+      
+      switch ($options["action_type"]) {
          //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :
          case "append_regex_result" :
-            Html::autocompletionTextField($this, "value");
+            Html::autocompletionTextField($this, "value", $param);
             break;
 
          case 'fromuser' :
          case 'fromitem' :
-            Dropdown::showYesNo("value", 0, 0);
+            Dropdown::showYesNo("value", $param['value'], 0);
             $display = true;
             break;
 
@@ -448,7 +453,7 @@ class RuleAction extends CommonDBChild {
                switch($actions[$options["field"]]['type']) {
                   case "dropdown" :
                      $table   = $actions[$options["field"]]['table'];
-                     $param = array('name' => "value");
+                     $param['name'] = "value";
                      if (isset($actions[$options["field"]]['condition'])) {
                         $param['condition'] = $actions[$options["field"]]['condition'];
                      }
@@ -457,80 +462,145 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_tickettype" :
-                     Ticket::dropdownType('value');
+                     Ticket::dropdownType('value', $param);
                      $display = true;
                      break;
 
                   case "dropdown_assign" :
-                     User::dropdown(array('name'  => 'value',
-                                          'right' => 'own_ticket'));
+                     $param['name']  = 'value';
+                     $param['right'] = 'own_ticket';
+                     User::dropdown($param);
                      $display = true;
                      break;
 
                   case "dropdown_users" :
-                     User::dropdown(array('name'  => 'value',
-                                          'right' => 'all'));
+                     $param['name']  = 'value';
+                     $param['right'] = 'all';
+                     User::dropdown($param);
                      $display = true;
                      break;
 
                   case "dropdown_urgency" :
-                     Ticket::dropdownUrgency(array('name' => 'value'));
+                     $param['name']  = 'value';
+                     Ticket::dropdownUrgency($param);
                      $display = true;
                      break;
 
                   case "dropdown_impact" :
-                     Ticket::dropdownImpact(array('name' => 'value'));
+                     $param['name']  = 'value';
+                     Ticket::dropdownImpact($param);
                      $display = true;
                      break;
 
                   case "dropdown_priority" :
                      if ($_POST["action_type"] != 'compute') {
-                        Ticket::dropdownPriority(array('name' => 'value'));
+                        $param['name']  = 'value';
+                        Ticket::dropdownPriority($param);
                      }
                      $display = true;
                      break;
 
                   case "dropdown_status" :
-                     Ticket::dropdownStatus(array('name' => "value"));
+                     $param['name']  = 'value';
+                     Ticket::dropdownStatus($param);
                      $display = true;
                      break;
 
                   case "yesonly" :
-                     Dropdown::showYesNo("value",0,0);
+                     Dropdown::showYesNo("value",$param['value'],0);
                      $display = true;
                      break;
 
                   case "yesno" :
-                     Dropdown::showYesNo("value");
+                     Dropdown::showYesNo("value", $param['value']);
                      $display = true;
                      break;
 
                   case "dropdown_management":
-                     Dropdown::showGlobalSwitch(0, array('name'                => 'value',
-                                                         'management_restrict' => 2,
-                                                         'withtemplate'        => false));
+                     $param['name']                 = 'value';
+                     $param['management_restrict']  = 2;
+                     $param['withtemplate']         = false;
+                     Dropdown::showGlobalSwitch(0, $param);
                      $display = true;
                      break;
 
                   case "dropdown_users_validate" :
-                     User::dropdown(array('name'   => "value",
-                                          'right'  => array('validate_incident', 'validate_request')));
+                     $param['name']  = 'value';
+                     $param['right'] = array('validate_incident', 'validate_request');
+
+                     User::dropdown($param);
                      $display = true;
                      break;
 
                   default :
                      if ($rule = getItemForItemtype($options["sub_type"])) {
-                        $display = $rule->displayAdditionalRuleAction($actions[$options["field"]]);
+                        $display = $rule->displayAdditionalRuleAction($actions[$options["field"]], $param['value']);
                      }
                      break;
                }
             }
 
             if (!$display) {
-               Html::autocompletionTextField($this, "value");
+               Html::autocompletionTextField($this, "value", $param['value']);
             }
       }
    }
 
+   /** form for rule action
+    *
+    *@param $ID      integer : Id of the action
+    *@param $options array of possible options:
+    *     - rule Object : the rule
+   **/
+   function showForm($ID, $options=array()) {
+      global $CFG_GLPI;
+
+      if (isset($options['parent']) && !empty($options['parent'])) {
+         $rule = $options['parent'];
+      }
+
+      if ($ID > 0) {
+         $this->check($ID, READ);
+      } else {
+         // Create item
+         $options['rules_id'] = $rule->getField('id');
+         $this->check(-1, CREATE, $options);
+      }
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_1 center'>";
+      echo "<td>"._n('Action', 'Actions', 1) . "</td><td colspan='3'>";
+      echo "<input type='hidden' name='".$rule->getRuleIdField()."' value='".$this->fields["rules_id"]."'>";
+      $used = $this->getAlreadyUsedForRuleID($this->fields["rules_id"], $rule->getType());
+      // On edit : unset selected value
+      if ($ID && isset($used[$this->fields['field']])) {
+         unset($used[$this->fields['field']]);
+      }
+      $rand   = $rule->dropdownActions(array('value' => $this->fields['field'],
+                                             'used'  => $used));
+      $params = array('field'                 => '__VALUE__',
+                      'sub_type'              => $rule->getType(),
+                      'ruleactions_id'        => $this->getID(),
+                      $rule->getRuleIdField() => $this->fields["rules_id"]);
+
+      Ajax::updateItemOnSelectEvent("dropdown_field$rand", "action_span",
+                                    $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
+
+      if (isset($this->fields['field']) && !empty($this->fields['field'])) {
+         $params['field']       = $this->fields['field'];
+         $params['action_type'] = $this->fields['action_type'];
+         $params['value']       = $this->fields['value'];
+         echo "<script type='text/javascript' >\n";
+         Ajax::updateItemJsCode("action_span",
+                                 $CFG_GLPI["root_doc"]."/ajax/ruleaction.php",
+                                 $params);
+         echo '</script>';
+      }
+      echo "</td></tr>";
+      echo "<tr><td colspan='4'><span id='action_span'>\n";
+      echo "</span></td>\n";
+      echo "</tr>\n";
+      $this->showFormButtons($options);
+   }   
 }
 ?>

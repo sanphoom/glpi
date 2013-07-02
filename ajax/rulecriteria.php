@@ -64,7 +64,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
       if (isset($_POST['condition'])) {
          $condparam['value'] = $_POST['condition'];
       }
-      echo "<table width='100%'><tr><td>";
+      echo "<table width='100%'><tr><td width='30%'>";
       $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"], $condparam);
 
       echo "</td><td>";
