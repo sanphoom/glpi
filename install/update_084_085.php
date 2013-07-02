@@ -188,6 +188,7 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
 
 
+   /// TODO Why entity_rule_ticket : other rules as rule_XXX
    // delete rule_ticket
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'rule_ticket' AND `rights` = '1'") as $profrights) {
