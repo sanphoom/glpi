@@ -1592,6 +1592,16 @@ function update084to085() {
    // increase password length
    $migration->changeField('glpi_users', 'password', 'password', 'string');
 
+   // Hierarchical software category
+   $migration->addField('glpi_softwarecategories', 'softwarecategories_id', 'integer');
+   $migration->addField("glpi_softwarecategories", 'completename', "text");
+   $migration->addField("glpi_softwarecategories", 'level', "integer");
+   $migration->addField("glpi_softwarecategories", 'ancestors_cache', "longtext");
+   $migration->addField("glpi_softwarecategories", 'sons_cache', "longtext");
+   $migration->migrationOneTable('glpi_softwarecategories');   
+   $migration->addKey('glpi_softwarecategories', 'softwarecategories_id');
+   regenerateTreeCompleteName("glpi_softwarecategories");
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

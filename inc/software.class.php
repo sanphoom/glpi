@@ -450,7 +450,7 @@ class Software extends CommonDBTM {
       $tab[90]['datatype']       = 'text';
 
       $tab[62]['table']          = 'glpi_softwarecategories';
-      $tab[62]['field']          = 'name';
+      $tab[62]['field']          = 'completename';
       $tab[62]['name']           = __('Category');
       $tab[62]['datatype']       = 'dropdown';
 

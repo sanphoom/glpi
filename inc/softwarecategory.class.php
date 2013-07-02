@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class SoftwareCategory
-class SoftwareCategory extends CommonDropdown {
+class SoftwareCategory extends CommonTreeDropdown {
    
    var $can_be_translated = true;
 

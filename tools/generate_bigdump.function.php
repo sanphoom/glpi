@@ -925,16 +925,24 @@ function generateGlobalDropdowns() {
 
    $items = array('Bureautique', 'Calcul', "logiciel d'antivirus", 'Multimédia');
    $dp    = new SoftwareCategory();
-   for ($i=0 ; $i<$MAX['softwarecategory'] ; $i++) {
+   for ($i=0 ; $i<max(1,pow($MAX['softwarecategory'],1/2)) ; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
       } else {
-         $val = "category ' $i";
+         $val = "category $i";
       }
-      $dp->add(toolbox::addslashes_deep(array('name'    => $val,
-                                              'comment' => "comment $val")));
-   }
+      $newID = $dp->add(toolbox::addslashes_deep(array('name'    => $val,
+                                                       'comment' => "comment $val")));
 
+      for ($j=0 ; $j<mt_rand(0,pow($MAX['softwarecategory'],1/2)) ; $j++) {
+         $newID2 = $dp->add(toolbox::addslashes_deep(
+                            array('name'                        => "s-category '$j",
+                                  'comment'                     => "comment d' $val s-category $j",
+                                  'softwarecategories_id'       => $newID)));
+      }
+   }
+   $MAX['rubdocs'] = getMaxItem('glpi_softwarecategories');
+   
    $dp = new SoftwareLicenseType();
    for ($i=0 ; $i<$MAX['licensetype'] ; $i++) {
       $val = "type ' $i";
