@@ -1601,6 +1601,20 @@ function update084to085() {
    $migration->migrationOneTable('glpi_softwarecategories');   
    $migration->addKey('glpi_softwarecategories', 'softwarecategories_id');
    regenerateTreeCompleteName("glpi_softwarecategories");
+
+   // glpi_cartridgeitems  glpi_consumableitems by entity
+   $migration->addField('glpi_consumableitems', 'is_recursive', 'bool',
+                                                array('update' => '1',
+                                                      'after'  => 'entities_id'));
+   $migration->addField('glpi_cartridgeitems', 'is_recursive', 'bool',
+                                                array('update' => '1',
+                                                      'after'  => 'entities_id'));
+   // Fix events
+   $query = "UPDATE `glpi_events` SET `type` = 'consumableitems' WHERE `type` = 'consumables';";
+   $DB->queryOrDie($query, "0.85 fix events for consumables");
+   $query = "UPDATE `glpi_events` SET `type` = 'cartridgeitems' WHERE `type` = 'cartridges';";
+   $DB->queryOrDie($query, "0.85 fix events for cartridges");
+
    
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

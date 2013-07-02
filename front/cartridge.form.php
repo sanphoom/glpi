@@ -45,7 +45,7 @@ if (isset($_POST["add"])) {
       unset($cart->fields["id"]);
       $cart->add($_POST);
    }
-   Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
+   Event::log($_POST["cartridgeitems_id"], "cartridgeitems", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s adds cartridges'), $_SESSION["glpiname"]));
    Html::back();
@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["cartridgeitems_id"], PURGE);
 
    if ($cart->delete($_POST, 1)) {
-      Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
+      Event::log($_POST["cartridgeitems_id"], "cartridgeitems", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges a cartridge'), $_SESSION["glpiname"]));
    }

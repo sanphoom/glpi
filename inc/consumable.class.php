@@ -206,9 +206,9 @@ class Consumable extends CommonDBTM {
                    'ko'      => 0,
                    'noright' => 0);
 
-//             print_r($input);exit();
       switch ($input['action']) {
          case "give" :
+         
             if (($input["give_items_id"] > 0)
                && !empty($input['give_itemtype'])) {
                foreach ($input["item"] as $key => $val) {
@@ -226,12 +226,9 @@ class Consumable extends CommonDBTM {
                      }
                   }
                }
-               if ($item = getItemForItemtype($input['give_itemtype'])) {
-                  $item->getFromDB($input["give_items_id"]);
-                  Event::log($input["consumableitems_id"], "consumables", 5, "inventory",
-                           //TRANS: %s is the user login
-                           sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
-               }
+               Event::log($this->fields['consumableitems_id'], "consumables", 5, "inventory",
+                        //TRANS: %s is the user login
+                        sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
             } else {
                $res['ko']++;
             }
@@ -475,10 +472,14 @@ class Consumable extends CommonDBTM {
          } else {
             $actions['give'] = _x('button', 'Give');
          }
+         $entparam = array('entities_id' => $consitem->getEntityID());
+         if ($consitem->isRecursive()) {
+            $entparam = array('entities_id' => getSonsOf('glpi_entities', $consitem->getEntityID()));
+         }
          $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'extraparams'      => array('entities_id' => $consitem->getEntityID()));
+                           'extraparams'      => $entparam);
          Html::showMassiveActions(__CLASS__, $paramsma);
          echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
       }

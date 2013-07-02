@@ -46,7 +46,7 @@ if (isset($_POST["add"])) {
    $constype->check(-1, CREATE, $_POST);
 
    if ($newID = $constype->add($_POST)) {
-      Event::log($newID, "consumables", 4, "inventory",
+      Event::log($newID, "consumableitems", 4, "inventory",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
    $constype->check($_POST["id"], DELETE);
 
    if ($constype->delete($_POST)) {
-      Event::log($_POST["id"], "consumables", 4, "inventory",
+      Event::log($_POST["id"], "consumableitems", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    }
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $constype->check($_POST["id"], PURGE);
 
    if ($constype->restore($_POST)) {
-      Event::log($_POST["id"], "consumables", 4, "inventory",
+      Event::log($_POST["id"], "consumableitems", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    $constype->check($_POST["id"], PURGE);
 
    if ($constype->delete($_POST,1)) {
-      Event::log($_POST["id"], "consumables", 4, "inventory",
+      Event::log($_POST["id"], "consumableitems", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
    $constype->check($_POST["id"], UPDATE);
 
    if ($constype->update($_POST)) {
-      Event::log($_POST["id"], "consumables", 4, "inventory",
+      Event::log($_POST["id"], "consumableitems", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    }

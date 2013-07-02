@@ -2124,6 +2124,7 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['type_of_consumables'] ; $i++) {
       $consID = $ci->add(toolbox::addslashes_deep(
                          array('entities_id'             => $ID_entity,
+                               'is_recursive'            => mt_rand(0,1),
                                'name'                    => "consumable type' $i",
                                'ref'                     => "ref d' $i",
                                'locations_id'            => mt_rand($FIRST["locations"],
@@ -2182,6 +2183,7 @@ function generate_entity($ID_entity) {
    for ($i=0 ; $i<$MAX['type_of_cartridges'] ; $i++) {
       $cartID = $ct->add(toolbox::addslashes_deep(
                          array('entities_id'       => $ID_entity,
+                               'is_recursive'      => mt_rand(0,1),
                                'name'              => "cartridge ' type $i",
                                'ref'               => "ref '$i",
                                'locations_id'      => mt_rand($FIRST["locations"], $LAST['locations']),

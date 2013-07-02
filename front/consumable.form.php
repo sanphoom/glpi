@@ -45,7 +45,7 @@ if (isset($_POST["add_several"])) {
       unset($con->fields["id"]);
       $con->add($_POST);
    }
-   Event::log($_POST["consumableitems_id"], "consumables", 4, "inventory",
+   Event::log($_POST["consumableitems_id"], "consumableitems", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s adds consumables'), $_SESSION["glpiname"]));
 

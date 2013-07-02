@@ -754,7 +754,7 @@ class Cartridge extends CommonDBChild {
          $cpt = '';
          if (CartridgeItem::dropdownForPrinter($printer)) {
             //TRANS : multiplier
-            echo "&nbsp;".__('x')."&nbsp;";
+            echo "</td><td>".__('x')."&nbsp;";
             Dropdown::showNumber("nbcart", array('value' => 1,
                                                  'min'   => 1,
                                                  'max'   => 5));
