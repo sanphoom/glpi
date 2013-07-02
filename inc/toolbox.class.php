@@ -1030,8 +1030,8 @@ class Toolbox {
                      __s('The functionality is found - Perfect!')."\"></td>";
       } else {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png' alt=\"".
-                     __s('PHP >= 5.3.7 recommended'). "\" title=\"".
-                     __s('PHP >= 5.3.7 recommended')."\"></td>";
+                     __s('PHP >= 5.3.7 recommended, with crypt extension'). "\" title=\"".
+                     __s('PHP >= 5.3.7 recommended, with crypt extension')."\"></td>";
          $error = 1;
 
       }
