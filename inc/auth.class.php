@@ -275,9 +275,13 @@ class Auth extends CommonGLPI {
       static $pass = NULL;
 
       if (is_null($pass)) {
-         $hash = '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG';
-         $test = crypt("password", $hash);
-         $pass = ($test == $hash);
+         if (function_exists('crypt')) {
+            $hash = '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG';
+            $test = crypt("password", $hash);
+            $pass = ($test == $hash);
+         } else {
+            $pass = false;
+         }
       }
       return $pass;
    }
