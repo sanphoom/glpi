@@ -166,7 +166,12 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[78]['forcegroupby']  = true;
       $tab[78]['massiveaction'] = false;
       $tab[78]['joinparams']    = array('jointype' => 'child');
-
+      
+      $tab[79]['table']         = 'glpi_knowbaseitemcategories';
+      $tab[79]['field']         = 'name';
+      $tab[79]['name']          = __('Knowledge base');
+      $tab[79]['datatype']      = 'dropdown';
+      
       return $tab;
    }
 
