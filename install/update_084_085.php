@@ -39,9 +39,9 @@
 function update084to085() {
    global $DB, $migration;
 
-   $updateresult     = true;
-   $ADDTODISPLAYPREF = array();
-   $DELTODISPLAYPREF = array();
+   $updateresult       = true;
+   $ADDTODISPLAYPREF   = array();
+   $DELFROMDISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.85'));
@@ -992,10 +992,9 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete entity_dropdown right");
 
 
-   $DELTODISPLAYPREF = array('Profile' => array(29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70,
-                                                71, 72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94,
-                                                95, 96, 97, 98, 99, 104, 113, 114, 116, 117, 121,
-                                                122, 123));
+   $DELFROMDISPLAYPREF['Profile'] = array(29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70, 71,
+                                          72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94, 95, 96,
+                                          97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123));
 
 
    $migration->displayTitle('Update for mailqueue');
@@ -1643,64 +1642,13 @@ function update084to085() {
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
    $migration->addField('glpi_users', 'publicbookmarkorder', 'longtext');
 
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $query = "SELECT DISTINCT `users_id`
-                FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$type'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query = "SELECT MAX(`rank`)
-                         FROM `glpi_displaypreferences`
-                         WHERE `users_id` = '".$data['users_id']."'
-                               AND `itemtype` = '$type'";
-               $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
-               $rank++;
-
-               foreach ($tab as $newval) {
-                  $query = "SELECT *
-                            FROM `glpi_displaypreferences`
-                            WHERE `users_id` = '".$data['users_id']."'
-                                  AND `num` = '$newval'
-                                  AND `itemtype` = '$type'";
-                  if ($result2=$DB->query($query)) {
-                     if ($DB->numrows($result2)==0) {
-                        $query = "INSERT INTO `glpi_displaypreferences`
-                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                  VALUES ('$type', '$newval', '".$rank++."',
-                                          '".$data['users_id']."')";
-                        $DB->query($query);
-                     }
-                  }
-               }
-            }
-
-         } else { // Add for default user
-            $rank = 1;
-            foreach ($tab as $newval) {
-               $query = "INSERT INTO `glpi_displaypreferences`
-                                (`itemtype` ,`num` ,`rank` ,`users_id`)
-                         VALUES ('$type', '$newval', '".$rank++."', '0')";
-               $DB->query($query);
-            }
-         }
-      }
-   }
-
-   // delete display preferences
-   foreach ($DELTODISPLAYPREF as $type => $tab) {
-      $query = "DELETE
-                FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$type'
-                       AND `num` IN (".implode(',', $tab).")";
-      $DB->query($query);
-   }
+   $migration->cleanDisplay($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
 
 
