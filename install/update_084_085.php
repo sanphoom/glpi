@@ -41,6 +41,7 @@ function update084to085() {
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
+   $DELTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
    $migration->displayTitle(sprintf(__('Update to %s'), '0.85'));
@@ -991,6 +992,10 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete entity_dropdown right");
 
 
+   $DELTODISPLAYPREF = array('Profile' => array(29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70,
+                                                71, 72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94,
+                                                95, 96, 97, 98, 99, 104, 113, 114, 116, 117, 121,
+                                                122, 123));
 
 
    $migration->displayTitle('Update for mailqueue');
@@ -1687,6 +1692,18 @@ function update084to085() {
          }
       }
    }
+
+   // delete display preferences
+   foreach ($DELTODISPLAYPREF as $type => $tab) {
+      $query = "DELETE
+                FROM `glpi_displaypreferences`
+                WHERE `itemtype` = '$type'
+                       AND `num` IN (".implode(',', $tab).")";
+      $DB->query($query);
+   }
+
+
+
 
    // must always be at the end
    $migration->executeMigration();

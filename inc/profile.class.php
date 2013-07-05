@@ -2007,6 +2007,13 @@ class Profile extends CommonDBTM {
 
       $tab['other']              = __('Other');
 
+      $tab[4]['table']           = 'glpi_profilerights';
+      $tab[4]['field']           = 'right';
+      $tab[4]['name']            = __('Update password');
+      $tab[4]['datatype']        = 'bool';
+      $tab[4]['joinparams']     = array('jointype' => 'child',
+                                        'condition' => "AND `NEWTABLE`.`name`= 'password_update'");
+
       $tab[63]['table']          = 'glpi_profilerights';
       $tab[63]['field']          = 'rights';
       $tab[63]['name']           = _n('Public reminder', 'Public reminders', 2);
