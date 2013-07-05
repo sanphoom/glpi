@@ -93,6 +93,7 @@ class Rule extends CommonDBTM {
    const OR_MATCHING             = "OR";
 
 
+
    // Temproray hack for this class
    static function getTable() {
       return 'glpi_rules';
@@ -520,7 +521,7 @@ class Rule extends CommonDBTM {
             } else {
                $condition = "";
             }
-            
+
             Rule::dropdown(array('sub_type'        => $input['itemtype'],
                                  'name'            => "ranking",
                                  'entity'          => $condition,
@@ -746,7 +747,7 @@ class Rule extends CommonDBTM {
          $this->checkGlobal(UPDATE);
       }
 
-      $canedit = $this->can(static::$rightname, UPDATE);
+      $canedit = $this->canEdit(static::$rightname);
       $rand = mt_rand();
       $this->showFormHeader($options);
 
@@ -913,7 +914,7 @@ class Rule extends CommonDBTM {
    **/
    function showActionsList($rules_id, $options=array()) {
       global $CFG_GLPI;
-      
+
       $rand = mt_rand();
       $p['readonly'] = false;
 
@@ -923,7 +924,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, UPDATE);
+      $canedit = $this->canEdit($rules_id);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -1007,7 +1008,7 @@ class Rule extends CommonDBTM {
    **/
    function showCriteriasList($rules_id, $options=array()) {
       global $CFG_GLPI;
-      
+
       $rand = mt_rand();
       $p['readonly'] = false;
 
@@ -1017,7 +1018,7 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $canedit = $this->can($rules_id, UPDATE);
+      $canedit = $this->canEdit($rules_id);
       $style   = "class='tab_cadre_fixe'";
 
       if ($p['readonly']) {
@@ -1726,7 +1727,7 @@ class Rule extends CommonDBTM {
    **/
    function showMinimalActionForm($fields, $canedit, $rand) {
       global $CFG_GLPI;
-      
+
       echo "<tr class='tab_bg_1' ".($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
                          $fields['rules_id'].$fields["id"]."$rand();\""
                        : '').">";
@@ -1742,7 +1743,7 @@ class Rule extends CommonDBTM {
          Ajax::updateItemJsCode("viewaction" . $fields['rules_id'] . "$rand",
                               $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
-         echo "</script>\n";         
+         echo "</script>\n";
          echo "</td>";
       }
       echo $this->getMinimalActionText($fields);
@@ -1849,7 +1850,7 @@ class Rule extends CommonDBTM {
    **/
    function showMinimalCriteriaForm($fields, $canedit, $rand) {
       global $CFG_GLPI;
-      
+
       echo "<tr class='tab_bg_1' ".($canedit ? "style='cursor:pointer' onClick=\"viewEditCriteria".
                          $fields['rules_id'].$fields["id"]."$rand();\""
                        : '').">";

@@ -1328,8 +1328,8 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_4'>";
       echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
       echo "<td class='tab_bg_1' colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('RuleTicket'), "_entity_rule_ticket",
-                           $this->fields["entity_rule_ticket"]);
+      self::dropdownRights(Profile::getRightsFor('RuleTicket'), "_rule_ticket",
+                           $this->fields["rule_ticket"]);
       echo"</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Dictionary', 'Dictionaries', 2)."</th></tr>\n";

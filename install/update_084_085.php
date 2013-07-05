@@ -188,21 +188,38 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete import_externalauth_users right");
 
 
-   /// TODO Why entity_rule_ticket : other rules as rule_XXX
-   // delete rule_ticket
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'rule_ticket' AND `rights` = '1'") as $profrights) {
+   // save value of rule_ticket to root_rule_ticket
+   $query  = "UPDATE `glpi_profilerights`
+              SET `name` = 'root_rule_ticket'
+              WHERE `name` = 'rule_ticket'";
+   $DB->queryOrDie($query, "0.85 rename rule_ticket to root_rule_ticket");
 
-      $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . RuleTicket::RULETICKET ."
-                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                       AND `name` = 'entity_rule_ticket'";
-      $DB->queryOrDie($query, "0.85 update entity_rule_ticket with rule_ticket right");
-   }
+   // rename entity_rule_ticket to rule_ticket
+   $query  = "UPDATE `glpi_profilerights`
+              SET `name` = 'rule_ticket'
+              WHERE `name` = 'entity_rule_ticket'";
+   $DB->queryOrDie($query, "0.85 rename entity_rule_ticket to rule_ticket");
+
    $query = "DELETE
              FROM `glpi_profilerights`
-             WHERE `name` = 'rule_ticket'";
-   $DB->queryOrDie($query, "0.85 delete rule_ticket right");
+             WHERE `name` = '_entity_rule_ticket'";
+   $DB->queryOrDie($query, "0.85 delete entity_rule_ticket right");
+
+   // delete root_rule_ticket
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'root_rule_ticket' AND `rights` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` =  `rights` | " . READ ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'rule_ticket'";;
+      $DB->queryOrDie($query, "0.85 update new rule_ticket with old rule_ticket right");
+   }
+
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'root_rule_ticket'";
+   $DB->queryOrDie($query, "0.85 delete old rule_ticket right");
 
 
    // delete knowbase_admin
@@ -1599,7 +1616,7 @@ function update084to085() {
    $migration->addField("glpi_softwarecategories", 'level', "integer");
    $migration->addField("glpi_softwarecategories", 'ancestors_cache', "longtext");
    $migration->addField("glpi_softwarecategories", 'sons_cache', "longtext");
-   $migration->migrationOneTable('glpi_softwarecategories');   
+   $migration->migrationOneTable('glpi_softwarecategories');
    $migration->addKey('glpi_softwarecategories', 'softwarecategories_id');
    regenerateTreeCompleteName("glpi_softwarecategories");
 

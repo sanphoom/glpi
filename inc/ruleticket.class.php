@@ -38,11 +38,10 @@ if (!defined('GLPI_ROOT')) {
 class RuleTicket extends Rule {
 
    // From Rule
-   static $rightname = 'entity_rule_ticket';
+   static $rightname = 'rule_ticket';
    public $can_sort  = true;
 
-   const RULETICKET  = 1024;
-
+   const ROOTENTITY  = 1024;
 
 
    function getTitle() {
@@ -483,7 +482,7 @@ class RuleTicket extends Rule {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      $values[self::RULETICKET] = __('Business rules for ticket (entity parent)');
+      $values[self::ROOTENTITY] = __('Business rules for ticket (entity parent)');
 
       return $values;
    }

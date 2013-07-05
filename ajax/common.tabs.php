@@ -62,9 +62,15 @@ if (!isset($_GET["withtemplate"])) {
 
 if ($item = getItemForItemtype($_GET['_itemtype'])) {
    if ($item->get_item_to_display_tab) {
-      if (!isset($_GET["id"])
-          || ($item->isNewID($_GET["id"]) && !$item->can(-1, CREATE, $_GET))) {
-         exit();
+      // No id if ruleCollection but check right
+      if ($item instanceof RuleCollection) {
+         if (!$item->canList()) {
+            exit();
+         }
+      } else if (!isset($_GET["id"])|| $item->isNewID($_GET["id"])) {
+         if (!$item->can(-1, CREATE, $_GET)) {
+            exit();
+         }
       } else if (!$item->can($_GET["id"], READ)){
          exit();
       }
