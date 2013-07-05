@@ -890,15 +890,10 @@ class Session {
 
       //If GLPI is using the slave DB -> read only mode
       if ($DB->isSlave()
-          && ($right == "w")) {
+          && ($right & (CREATE | UPDATE | DELETE | PURGE))) {
          return false;
       }
 
-      if (($right == 'r')) {
-         $right = READ;
-      } else if ($right == 'w') {
-         $right = ALLSTANDARDRIGHT;
-      }
       if (isset($_SESSION["glpiactiveprofile"][$module])) {
          return intval($_SESSION["glpiactiveprofile"][$module]) & $right;
       }

@@ -3127,10 +3127,10 @@ class Search {
                return self::makeTextCriteria($date_computation, $val, $nott, $link);
 
             case "right" :
-               if (($val == 'NULL') || ($val == 'null')) {
-                  return $link." $tocompute IS ".($nott?'NOT':'')." NULL ";
+               if ($searchtype == 'notequals') {
+                  $nott = !$nott;
                }
-               return $link." $tocompute = '$val' ";
+               return $link. ($nott?' NOT':'')." ($tocompute & '$val') ";
 
             case "bool" :
                if (!is_numeric($val)) {
@@ -4553,7 +4553,7 @@ class Search {
                   $split2 = self::explodeWithID("$$", $val);
                   if (is_null($split2[0]) && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
                      $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
-                  } else {                  
+                  } else {
                      $out .= (empty($out)?'':self::LBBR).Html::convDateTime($split2[0]);
                   }
                }

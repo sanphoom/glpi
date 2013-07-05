@@ -651,7 +651,7 @@ class ReservationItem extends CommonDBChild {
       if ($interface == 'central') {
          $values = parent::getRights();
       }
-      $values[self::RESERVEANITEM] = __('Make de reservation');
+      $values[self::RESERVEANITEM] = __('Make a reservation');
 
       return $values;
    }

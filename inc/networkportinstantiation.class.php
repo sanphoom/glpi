@@ -774,7 +774,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                                                        $device2->getEntityID()) .")";
             }
 
-            // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
+            // write rights on dev1 + READ on dev2 OR READ on dev1 + write rights on dev2
             if ($canedit
                 || $device2->canEdit($device2->fields["id"])) {
                echo "&nbsp;";

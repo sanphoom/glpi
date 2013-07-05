@@ -1563,6 +1563,7 @@ class CommonDBTM extends CommonGLPI {
     * @return booleen
    **/
    static function canCreate() {
+
       if (static::$rightname) {
          return Session::haveRight(static::$rightname, CREATE);
       }
@@ -2354,7 +2355,6 @@ class CommonDBTM extends CommonGLPI {
          }
       }
       switch ($right) {
-         case 'r' :
          case READ :
             // Personnal item
             if ($this->isPrivate()
@@ -2363,7 +2363,6 @@ class CommonDBTM extends CommonGLPI {
             }
             return (static::canView() && $this->canViewItem());
 
-         case 'w' :
          case UPDATE :
             // Personnal item
             if ($this->isPrivate()
@@ -2372,7 +2371,6 @@ class CommonDBTM extends CommonGLPI {
             }
             return (static::canUpdate() && $this->canUpdateItem());
 
-         case 'd' :
          case DELETE :
             // Personnal item
             if ($this->isPrivate()
@@ -2470,19 +2468,15 @@ class CommonDBTM extends CommonGLPI {
    function canGlobal($right) {
 
       switch ($right) {
-         case 'r' :
          case READ :
             return static::canView();
 
-         case 'w' :
          case UPDATE :
             return static::canUpdate();
 
-         case 'c' :
          case CREATE :
             return static::canCreate();
 
-         case 'd' :
          case DELETE :
             return static::canDelete();
 
@@ -4707,14 +4701,9 @@ class CommonDBTM extends CommonGLPI {
                return $itemtype::dropdown($options);
 
             case "right" :
-               $copytooption     = array('nonone', 'noread', 'nowrite');
-               $options['value'] = $value;
-               foreach ($copytooption as $key) {
-                  if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                     $options[$key] = $searchoptions[$key];
-                  }
-               }
-               return Profile::dropdownRight($name, $options);
+                return Profile::dropdownRights(Profile::getRightsFor($searchoptions['rightclass']),
+                                               $name, $value, array('multiple' => false,
+                                                                    'display'  => false));
 
             case "itemtypename" :
                if (isset($searchoptions['itemtype_list'])) {
