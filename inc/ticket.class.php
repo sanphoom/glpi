@@ -1143,6 +1143,12 @@ class Ticket extends CommonITILObject {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
+                     // For due_date : check also slas_id
+                     if ($key == 'due_date'
+                           && isset($input['slas_id']) && ($input['slas_id'] > 0)
+                           && isset($mandatory_missing['due_date'])) {
+                        unset($mandatory_missing['due_date']);
+                     }
                   }
                   if (count($mandatory_missing)) {
                      //TRANS: %s are the fields concerned
