@@ -994,7 +994,7 @@ function update084to085() {
 
    $DELFROMDISPLAYPREF['Profile'] = array(29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70, 71,
                                           72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94, 95, 96,
-                                          97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123));
+                                          97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123);
 
 
    $migration->displayTitle('Update for mailqueue');
@@ -1648,7 +1648,7 @@ function update084to085() {
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
-   $migration->cleanDisplay($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
+   $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
 
 
