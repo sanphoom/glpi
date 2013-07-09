@@ -4374,40 +4374,38 @@ class Html {
       if ($p['onlyimages']) {
          $script .= "acceptFileTypes: '/(\.|\/)(gif|jpe?g|png)$/i',";
       }
-      $script .= " progressall: function (e, data) {
+      $script .= "  progressall: function (e, data) {
                   var progress = parseInt(data.loaded / data.total * 100, 10);
-                  $('#progress .uploadbar').css(
+                  $('#progress$randupload .uploadbar').css(
                         'width',
                         progress + '%'
                   );
-                  $('#progress .uploadbar').text(progress + '%');
+                  $('#progress$randupload .uploadbar').text(progress + '%');
                },
             done: function (e, data) {
                   $.each(data.result.".$p['name'].", function (index, file) {
-                     if (file.error == undefined) {";
+                     if (file.error == undefined) {\n";
       if ($p['multiple']) {
-         $script.= "$('<p/>').text(file.name).appendTo('#filedata');
-                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata');
-                    fileindex$randupload = fileindex$randupload+1;";
+         $script.= "$('<p/>').text(file.name).appendTo('#filedata$randupload');\n
+                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata$randupload');\n
+                    fileindex$randupload = fileindex$randupload+1;\n";
       } else {
-         $script.= "$('#filedata').text(file.name);
-                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata');";
+         $script.= "$('#filedata$randupload').text(file.name);\n
+                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata$randupload');\n";
       }
 
-      $script.="        $('#progress .uploadbar').text('".__('Upload successful')."');
-                        $('#progress .uploadbar').css('width', '100%');
-                     } else {
-                        $('#progress .uploadbar').text('".__('Upload error')."');
-                        $('#progress .uploadbar').css(
-                              'width', '100%');
+      $script.="        $('#progress$randupload .uploadbar').text('".__('Upload successful')."');\n
+                        $('#progress$randupload .uploadbar').css('width', '100%');\n
+                     } else {\n
+                        $('#progress$randupload .uploadbar').text('".__('Upload error')."');\n
+                        $('#progress$randupload .uploadbar').css('width', '100%');\n
                      }
                   });
             }
          });";
       $out .= Html::scriptBlock($script);
-      $out .=  "<div id='filedata'><div id='progress'>
-                <div class='uploadbar' style='width: 0%;'></div>
-                </div></div>";
+      $out .=  "<div id='progress$randupload'><div class='uploadbar' style='width: 0%;'></div></div>
+               <div id='filedata$randupload'></div>";
       return $out;
    }
    
