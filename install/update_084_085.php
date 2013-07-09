@@ -154,9 +154,9 @@ function update084to085() {
             } else {
                if (($profile[$right] == 'r')
                    || ($profile[$right] == '1')) {
-                  $new_right = 1;
+                  $new_right = READ;
                } else if ($profile[$right] == 'w') {
-                  $new_right = 31;
+                  $new_right = ALLSTANDARDRIGHT;
                }
             }
 
@@ -175,7 +175,7 @@ function update084to085() {
 
 // delete import_externalauth_users
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'import_externalauth_users' AND `rights` = '31'") as $profrights) {
+                         "`name` = 'import_externalauth_users' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . User::IMPORTEXTAUTHUSERS ."
@@ -240,7 +240,7 @@ function update084to085() {
 
 
    // delete notes
-   $tables = array('budget', 'cartridge', 'change', 'computer', 'consumable', 'contact_enterprise',
+   $tables = array('budget', 'cartridge', 'computer', 'consumable', 'contact_enterprise',
                    'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
                    'phone', 'printer', 'problem', 'software');
 
@@ -256,7 +256,7 @@ function update084to085() {
       }
    }
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'notes' AND `rights` = '31'") as $profrights) {
+                         "`name` = 'notes' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
       foreach ($tables as $table) {
          $query  = "UPDATE `glpi_profilerights`
@@ -283,7 +283,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 update knowbase with read faq right");
    }
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'faq' AND `rights` = '31'") as $profrights) {
+                         "`name` = 'faq' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . KnowbaseItem::READFAQ ." | ".KnowbaseItem::PUBLISHFAQ."
@@ -309,7 +309,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 update user with read user_authtype right");
    }
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'user_authtype' AND `rights` = '31'") as $profrights) {
+                         "`name` = 'user_authtype' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . User::READAUTHENT ." | ".User::UPDATEAUTHENT."
@@ -335,7 +335,7 @@ function update084to085() {
          $DB->queryOrDie($query, "0.85 update entity with read entity_helpdesk right");
    }
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'entity_helpdesk' AND `rights` = '31'") as $profrights) {
+                         "`name` = 'entity_helpdesk' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . Entity::READHELPDESK ." | ".Entity::UPDATEHELPDESK."
@@ -523,13 +523,13 @@ function update084to085() {
 
       ProfileRight::updateProfileRightAsOtherRight('change', Change::READMY,
                                                    "`name` = 'ticket'
-                                                     AND `rights` = ". Ticket::OWN);
+                                                     AND `rights` & ". Ticket::OWN);
       ProfileRight::updateProfileRightAsOtherRight('change', Change::READALL,
                                                    "`name` = 'ticket'
-                                                     AND `rights` = ".Ticket::READALL);
+                                                     AND `rights` & ".Ticket::READALL);
       ProfileRight::updateProfileRightAsOtherRight('change',
-                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
-                                                    "`name` = 'ticket' AND `rights` = ".UPDATE);
+                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE." | ". READNOTE." | ". UPDATENOTE,
+                                                    "`name` = 'ticket' AND `rights` & ".UPDATE);
    }
 
 
@@ -901,7 +901,7 @@ function update084to085() {
 
    // update search_config
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'search_config' AND `rights` = '31'") as $profrights) {
+                         "`name` = 'search_config' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . DisplayPreference::PERSONAL ."
@@ -913,7 +913,7 @@ function update084to085() {
 
    // delete search_config_global
    foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'search_config_global' AND `rights` = '31'") as $profrights) {
+                         "`name` = 'search_config_global' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
                  SET `rights` = `rights` | " . DisplayPreference::GENERAL ."
