@@ -76,7 +76,6 @@ class Bookmark extends CommonDBTM {
       return $actions;
    }
 
-
    /**
     * @see CommonDBTM::showSpecificMassiveActionsParameters()
    **/
@@ -90,15 +89,9 @@ class Bookmark extends CommonDBTM {
 
             $param = array('name'            => "bookmarks_id_ref",
                            'width'           => '50%');
-            if ($input['is_private']) {
-               $param['condition'] = "(`is_private`='1' AND `users_id`='".Session::getLoginUserID()."') ";
-               $param['entity']    = -1;
-            } else {
-               $param['condition'] = "`is_private`='0'";
-               $param['entity']    = -1;
-            }
+            $param['condition'] = "(`is_private`='1' AND `users_id`='".Session::getLoginUserID()."') ";
+            $param['entity']    = -1;
             Bookmark::dropdown($param);
-            echo "<input type='hidden' name='is_private' value='".$input['is_private']."'>";
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Move')."'>\n";
             return true;
@@ -128,7 +121,7 @@ class Bookmark extends CommonDBTM {
                }
             }
             if ($this->moveBookmark($items, $input['bookmarks_id_ref'],
-                                    $input['is_private'], $input['move_type'])) {
+                                    $input['move_type'])) {
                $res['ok']+=count($items);
             } else {
                $res['ko']+=count($items);
@@ -646,19 +639,6 @@ class Bookmark extends CommonDBTM {
 
       $query .= " ORDER BY `itemtype`, `name`";
 
-      // get personal order
-      $user = new User();
-      $personalorderfield = 'publicbookmarkorder';
-      if ($is_private) {
-         $personalorderfield = 'privatebookmarkorder';
-      }
-      
-      if ($user->getFromDB(Session::getLoginUserID())) {
-         $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
-      }
-      if (!is_array($personalorder)) {
-         $personalorder = array();
-      }
       // get bookmarks
       $bookmarks = array();
       if ($result = $DB->query($query)) {
@@ -670,12 +650,26 @@ class Bookmark extends CommonDBTM {
       }
 
       $ordered_bookmarks = array();
-      // Add bookmarks on personalorder
-      if (count($personalorder)) {
-         foreach ($personalorder as $val) {
-            if (isset($bookmarks[$val])) {
-               $ordered_bookmarks[$val] = $bookmarks[$val];
-               unset($bookmarks[$val]);
+
+      // get personal order
+      if ($is_private) {
+         $user = new User();
+         $personalorderfield = 'privatebookmarkorder';
+      
+         if ($user->getFromDB(Session::getLoginUserID())) {
+            $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
+         }
+         if (!is_array($personalorder)) {
+            $personalorder = array();
+         }
+
+         // Add bookmarks on personalorder
+         if (count($personalorder)) {
+            foreach ($personalorder as $val) {
+               if (isset($bookmarks[$val])) {
+                  $ordered_bookmarks[$val] = $bookmarks[$val];
+                  unset($bookmarks[$val]);
+               }
             }
          }
       }
@@ -684,21 +678,29 @@ class Bookmark extends CommonDBTM {
          foreach ($bookmarks as $key => $val) {
             $ordered_bookmarks[$key] = $val;
          }
+      }
+      if ($is_private) {
          // New bookmark : save order
          $store_bookmark = array_keys($ordered_bookmarks);
          $user->update(array('id' => Session::getLoginUserID(),
-                             $personalorderfield => exportArrayToDB($store_bookmark)));
+                           $personalorderfield => exportArrayToDB($store_bookmark)));
       }
+
       $rand = mt_rand();
       $numrows = $DB->numrows($result);
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
       echo "<div class='center' id='tabsbody' >";
-      $massiveactionparams = array('num_displayed'  => $numrows,
-                                    'container'      => 'mass'.__CLASS__.$rand,
-                                    'width'          => 600,
-                                    'extraparams'    => array('is_private' => $is_private),
-                                    'height'         => 200);
+      $maactions = array('purge' => _x('button', 'Delete permanently'));
+      if ($is_private) {
+         $maactions['move_bookmark'] = __('Move');
+      }
+      $massiveactionparams = array('num_displayed'     => $numrows,
+                                    'container'        => 'mass'.__CLASS__.$rand,
+                                    'width'            => 600,
+                                    'extraparams'      => array('is_private' => $is_private),
+                                    'height'           => 200,
+                                    'specific_actions' => $maactions);
 
 //          Html::showMassiveActions(__CLASS__, $massiveactionparams);
 
@@ -708,7 +710,12 @@ class Bookmark extends CommonDBTM {
       echo "<th class='center' colspan='2'>".__('Bookmarks')."</th>";
       echo "<th width='20px'>&nbsp;</th>";
       echo "<th>".__('Default view')."</th>";
-      echo "<th colspan='2'>&nbsp;</th></tr>";
+      $colspan = 5;
+      if ($is_private) {
+         $colspan+=2;
+         echo "<th colspan='2'>&nbsp;</th>";
+      }
+      echo "</tr>";
 
       if ($totalcount = count($ordered_bookmarks)) {
          $current_type      = -1;
@@ -765,28 +772,27 @@ class Bookmark extends CommonDBTM {
                }
             }
             echo "</td>";
-            if ($number!=1) {
-               echo "<td>";
-               Html::showSimpleForm($this->getSearchURL(), array('action' => 'up'), '',
-                                    array('private' => $is_private,
-                                          'id'      => $this->fields["id"]),
-                                    $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
-               echo "</td>";
-            } else {
-               echo "<td>&nbsp;</td>";
-            }
+            if ($is_private) {
+               if ($number!=1) {
+                  echo "<td>";
+                  Html::showSimpleForm($this->getSearchURL(), array('action' => 'up'), '',
+                                       array('id'      => $this->fields["id"]),
+                                       $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+                  echo "</td>";
+               } else {
+                  echo "<td>&nbsp;</td>";
+               }
 
-            if ($number != $totalcount) {
-               echo "<td>";
-               Html::showSimpleForm($this->getSearchURL(), array('action' => 'down'), '',
-                                    array('private' => $is_private,
-                                          'id'      => $this->fields["id"]),
-                                    $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
-               echo "</td>";
-            } else {
-               echo "<td>&nbsp;</td>";
+               if ($number != $totalcount) {
+                  echo "<td>";
+                  Html::showSimpleForm($this->getSearchURL(), array('action' => 'down'), '',
+                                       array('id'      => $this->fields["id"]),
+                                       $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+                  echo "</td>";
+               } else {
+                  echo "<td>&nbsp;</td>";
+               }
             }
-
             echo "</tr>";
             $first = false;
          }
@@ -796,7 +802,7 @@ class Bookmark extends CommonDBTM {
          $massiveactionparams['forcecreate'] = true;
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       } else {
-         echo "<tr class='tab_bg_1'><td colspan='5'>";
+         echo "<tr class='tab_bg_1'><td colspan='$colspan'>";
          _e('You have not recorded any bookmarks yet');
          echo "</td></tr></table>";
       }
@@ -808,16 +814,12 @@ class Bookmark extends CommonDBTM {
     * Modify rule's ranking and automatically reorder all rules
     *
     * @param $ID     the rule ID whose ranking must be modified
-    * @param $is_private bool : personal or public
     * @param $action up or down
    **/
-   function changeBookmarkOrder($ID, $is_private, $action) {
+   function changeBookmarkOrder($ID, $action) {
 
       $user = new User();
-      $personalorderfield = 'publicbookmarkorder';
-      if ($is_private) {
-         $personalorderfield = 'privatebookmarkorder';
-      }
+      $personalorderfield = 'privatebookmarkorder';
       if ($user->getFromDB(Session::getLoginUserID())) {
          $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
       }
@@ -843,7 +845,7 @@ class Bookmark extends CommonDBTM {
                break;
          }
          $user->update(array('id' => Session::getLoginUserID(),
-                             $personalorderfield => exportArrayToDB($personalorder)));
+                           $personalorderfield => exportArrayToDB($personalorder)));
       }
    }
    
@@ -852,12 +854,11 @@ class Bookmark extends CommonDBTM {
     *
     * @param $items       array of the rules ID to move
     * @param $ref_ID    of the rule position  (0 means all, so before all or after all)
-    * @param $is_private      bool : personal or public
     * @param $action      of move : after or before ( default 'after')
     *
     * @return true if all ok
    **/
-   function moveBookmark($items, $ref_ID, $is_private, $action='after') {
+   function moveBookmark($items, $ref_ID, $action='after') {
       global $DB;
 
       if (count($items)) {
@@ -866,12 +867,8 @@ class Bookmark extends CommonDBTM {
             unset($items[$ref_ID]);
          }
 
-         // Get personal
          $user = new User();
-         $personalorderfield = 'publicbookmarkorder';
-         if ($is_private) {
-            $personalorderfield = 'privatebookmarkorder';
-         }
+         $personalorderfield = 'privatebookmarkorder';
          if ($user->getFromDB(Session::getLoginUserID())) {
             $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
          }
@@ -898,7 +895,8 @@ class Bookmark extends CommonDBTM {
             }
          }
          $user->update(array('id' => Session::getLoginUserID(),
-                             $personalorderfield => exportArrayToDB($newpersonalorder)));
+                           $personalorderfield => exportArrayToDB($newpersonalorder)));
+         return true;
       }
       return false;
    }

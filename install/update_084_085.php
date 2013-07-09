@@ -1638,7 +1638,6 @@ function update084to085() {
 
    // Bookmark order :
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
-   $migration->addField('glpi_users', 'publicbookmarkorder', 'longtext');
 
 
 
