@@ -52,7 +52,7 @@ class ChangeTask extends CommonITILTask {
 
 
    static function canView() {
-      return Session::haveRightsOr('change', array(self::READALL, self::READMY));
+      return Session::haveRightsOr('change', array(Change::READALL, Change::READMY));
    }
 
 

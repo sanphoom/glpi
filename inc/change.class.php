@@ -229,7 +229,7 @@ class Change extends CommonITILObject {
 
 
    function defineTabs($options=array()) {
-
+      $ong = array();
       // show related tickets and changes
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
