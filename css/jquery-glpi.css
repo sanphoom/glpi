@@ -199,3 +199,10 @@ html .ui-autocomplete {
 input.submit {
    font-size : 12px;
 }
+
+.uploadbar {
+   height: 18px;
+   text-align: center;
+   font-weight:bold;
+   background-image: url('../pics/jquery/pbar-ani.gif');
+}

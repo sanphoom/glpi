@@ -161,12 +161,13 @@ class Document extends CommonDBTM {
                                                        200));
          $create_from_item = true;
       }
-
-      if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
+      
+      if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
+         $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+      } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          // Move doc from upload dir
          $this->moveUploadedDocument($input, $input["upload_file"]);
-
-      } else if (isset($_FILES) && isset($_FILES['filename'])) {
+      } /*else if (isset($_FILES) && isset($_FILES['filename'])) {
          // Move doc send with form
          $upload_result = $this->uploadDocument($input, $_FILES['filename']);
          // Upload failed : do not create document
@@ -175,7 +176,7 @@ class Document extends CommonDBTM {
          }
          // Document is moved, so $_FILES is no more useful
          unset($_FILES['filename']);
-      }
+      }*/
 
       // Default document name
       if ((!isset($input['name']) || empty($input['name']))
@@ -250,18 +251,22 @@ class Document extends CommonDBTM {
       }
 
       if (isset($input['current_filepath'])) {
-         if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
+         if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
+            $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+         } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
+            // Move doc from upload dir
             $this->moveUploadedDocument($input, $input["upload_file"]);
-         } else if (isset($_FILES['filename'])) {
-            $this->uploadDocument($input, $_FILES['filename']);
-            // Document is moved, so $_FILES is no more useful
-            unset($_FILES['filename']);
          }
+//          else if (isset($_FILES['filename'])) {
+//             $this->uploadDocument($input, $_FILES['filename']);
+//             // Document is moved, so $_FILES is no more useful
+//             unset($_FILES['filename']);
+//          }
       }
 
-      if (empty($input['filename'])) {
-         unset($input['filename']);
-      }
+//       if (empty($input['filename'])) {
+//          unset($input['filename']);
+//       }
       unset($input['current_filepath']);
       unset($input['current_filename']);
 
@@ -283,7 +288,7 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
-      $options['formoptions'] = " enctype='multipart/form-data'";
+//       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
       if ($ID > 0) {
@@ -328,8 +333,11 @@ class Document extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
+//       echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
+//       echo "<td><input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
-      echo "<td><input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
+      echo "<td>";
+      echo Html::file('filename', false);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -973,8 +981,8 @@ class Document extends CommonDBTM {
                                              $input['current_filepath'])."'") <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
-            Session::addMessageAfterRedirectsprintf(__('Succesful deletion of the file %s'),
-                                                    $input['current_filename']);
+            Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
+                                                    $input['current_filename']));
          } else {
             // TRANS: %1$s is the curent filename, %2$s is its directory
             Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1$s (%2$s)'),
@@ -1022,6 +1030,94 @@ class Document extends CommonDBTM {
       return true;
    }
 
+   /**
+    * Move a document (files in GLPI_DOC_DIR."/_tmp" dir)
+    *
+    * @param $input     array of datas used in adding process (need current_filepath)
+    * @param $filename        filename to move
+    *
+    * @return boolean for success / $input array is updated
+   **/
+   static function moveDocument(array &$input, $filename) {
+      global $CFG_GLPI;
+
+      $fullpath = GLPI_DOC_DIR."/_tmp/".$filename;
+      if (!is_dir(GLPI_DOC_DIR."/_tmp")) {
+         Session::addMessageAfterRedirect(__("Temporary directory doesn't exist"), false, ERROR);
+         return false;
+      }
+
+      if (!is_file($fullpath)) {
+         Session::addMessageAfterRedirect(sprintf(__('File %s not found.'), $fullpath),
+                                          false, ERROR);
+         return false;
+      }
+      $sha1sum  = sha1_file($fullpath);
+      $dir      = self::isValidDoc($filename);
+      $new_path = self::getUploadFileValidLocationName($dir, $sha1sum);
+
+      if (!$sha1sum || !$dir || !$new_path) {
+         return false;
+      }
+
+      // Delete old file (if not used by another doc)
+      if (isset($input['current_filepath'])
+          && !empty($input['current_filepath'])
+          && is_file(GLPI_DOC_DIR."/".$input['current_filepath'])
+          && (countElementsInTable('glpi_documents',
+                                   "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
+                                             $input['current_filepath'])."'") <= 1)) {
+
+         if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
+            Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
+                                                    $input['current_filename']));
+         } else {
+            // TRANS: %1$s is the curent filename, %2$s is its directory
+            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1$s (%2$s)'),
+                                                     $input['current_filename'],
+                                                     GLPI_DOC_DIR."/".$input['current_filepath']),
+                                             false, ERROR);
+         }
+      }
+
+      // Local file : try to detect mime type
+      if (function_exists('finfo_open')
+          && ($finfo = finfo_open(FILEINFO_MIME))) {
+         $input['mime'] = finfo_file($finfo, $fullpath);
+         finfo_close($finfo);
+
+      } else if (function_exists('mime_content_type')) {
+         $input['mime'] = mime_content_type($fullpath);
+      }
+
+      if (is_writable(GLPI_DOC_DIR."/_tmp/")
+          && is_writable ($fullpath)) { // Move if allowed
+
+         if (self::renameForce($fullpath, GLPI_DOC_DIR."/".$new_path)) {
+            Session::addMessageAfterRedirect(__('Document move succeeded.'));
+         } else {
+            Session::addMessageAfterRedirect(__('File move failed.'), false, ERROR);
+            return false;
+         }
+
+      } else { // Copy (will overwrite dest file is present)
+         if (copy($fullpath, GLPI_DOC_DIR."/".$new_path)) {
+            Session::addMessageAfterRedirect(__('Document copy succeeded.'));
+         } else {
+            Session::addMessageAfterRedirect(__('File move failed'), false, ERROR);
+            return false;
+         }
+      }
+
+      // For display
+      $input['filename'] = addslashes($filename);
+      // Storage path
+      $input['filepath'] = $new_path;
+      // Checksum
+      $input['sha1sum']  = $sha1sum;
+      return true;
+   }
+   
 
    /**
     * Upload a new file

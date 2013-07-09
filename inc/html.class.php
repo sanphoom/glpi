@@ -963,7 +963,11 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js");
 
+               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
+            "</script>\n";      
       if (isset($_SESSION['glpilanguage'])) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
@@ -4308,7 +4312,7 @@ class Html {
     * @return String of `<script />` tags
    **/
    static function script($url) {
-      return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
+      return sprintf('<script ty$namepe="text/javascript" src="%1$s"></script>', $url);
    }
 
 
@@ -4330,6 +4334,66 @@ class Html {
       return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,
                      Html::parseAttributes($options));
    }
-
+   
+   /**
+    * Creates an input file field. Send file names in _$name field as array.
+    * Files are uploaded in files/_tmp/ directory
+    *
+    * @since version 0.85
+    *
+    * @param $name          string Name of a field
+    * @param $multiple      boolean Permit to upload several files ?
+    *
+    * @return string input file field
+   **/
+   static function file($name = 'filename', $multiple = false) {
+      global $CFG_GLPI;
+      $randupload = mt_rand();
+      //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
+      $out = "<input id='fileupload$randupload' type='file' name='".$name."[]' data-url='".
+               $CFG_GLPI["root_doc"]."/front/fileupload.php?name=$name'>";
+      
+      $script = "var fileindex$randupload = 0;
+         $('#fileupload$randupload').fileupload({
+            dataType: 'json',
+//             forceIframeTransport: true,
+//             replaceFileInput: false,
+            progressall: function (e, data) {
+                  var progress = parseInt(data.loaded / data.total * 100, 10);
+                  $('#progress .uploadbar').css(
+                        'width',
+                        progress + '%'
+                  );
+                  $('#progress .uploadbar').text(progress + '%');
+               },
+            done: function (e, data) {
+                  $.each(data.result.$name, function (index, file) {
+                     if (file.error == undefined) {";
+      if ($multiple) {
+         $script.= "$('<p/>').text(file.name).appendTo('#filedata');
+                    $('<input/>').attr('type', 'hidden').attr('name', '_".$name."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata');
+                    fileindex$randupload = fileindex$randupload+1;";
+      } else {
+         $script.= "$('#filedata').text(file.name);
+                    $('<input/>').attr('type', 'hidden').attr('name', '_".$name."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata');";
+      }
+                     
+          $script.="    $('#progress .uploadbar').text('".__('Upload successful')."');
+                        $('#progress .uploadbar').css('width', '100%');
+                     } else {
+                        $('#progress .uploadbar').text('".__('Upload error')."');
+                        $('#progress .uploadbar').css(
+                              'width', '100%');
+                     }
+                  });
+            }
+         });";
+      $out .= Html::scriptBlock($script);
+      $out .=  "<div id='filedata'><div id='progress'>
+                <div class='uploadbar' style='width: 0%;'></div>
+                </div></div>";
+      return $out;
+   }
+   
 }
 ?>
