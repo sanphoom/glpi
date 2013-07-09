@@ -1379,7 +1379,38 @@ class CronTask extends CommonDBTM{
       return 0;
    }
 
+   /**
+    * Garbage collector for cleaning tmp files
+    *
+    * @param $task for log
+   **/
+   static function cronTemp($task) {
+      global $CFG_GLPI;
 
+      // max time to keep the file session
+      $maxlifetime = HOUR_TIMESTAMP;
+      $nb          = 0;
+      foreach (glob(GLPI_TMP_DIR."/*") as $filename) {
+         if ((filemtime($filename) + $maxlifetime) < time()) {
+            // Delete session file if not delete before
+            if (@unlink($filename)) {
+               $nb++;
+            }
+         }
+      }
+
+      $task->setVolume($nb);
+      if ($nb) {
+         $task->log(sprintf(_n('Clean %1$d temporary file created since more than %2$s seconds',
+                               'Clean %1$d temporary files created since more than %2$s seconds',
+                               $nb)."\n",
+                            $nb, $maxlifetime));
+         return 1;
+      }
+
+      return 0;
+   }
+   
    /**
     * Clean log cron function
     *
@@ -1493,6 +1524,9 @@ class CronTask extends CommonDBTM{
          case 'graph' :
             return array('description' => __('Clean generated graphics'));
 
+         case 'temp' :
+            return array('description' => __('Clean temporary files'));
+            
          case 'watcher' :
             return array('description' => __('Monitoring of automatic actions'));
       }

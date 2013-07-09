@@ -1053,6 +1053,16 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for queuemail");
    }
 
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='Crontask' AND `name`='temp'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('Crontask', 'temp', 3600, NULL, 1, 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for clean temporary files");
+   }
+   
    if ($migration->addField("glpi_entities", "delay_send_emails", "integer",
                             array('value' => -2))) {
       $migration->migrationOneTable('glpi_entities');
