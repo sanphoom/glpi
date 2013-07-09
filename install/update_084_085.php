@@ -238,40 +238,6 @@ function update084to085() {
              WHERE `name` = 'knowbase_admin'";
    $DB->queryOrDie($query, "0.85 delete knowbase_admin right");
 
-
-   // delete notes
-   $tables = array('budget', 'cartridge', 'computer', 'consumable', 'contact_enterprise',
-                   'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
-                   'phone', 'printer', 'problem', 'software');
-
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'notes' AND `rights` = '1'") as $profrights) {
-
-      foreach ($tables as $table) {
-         $query  = "UPDATE `glpi_profilerights`
-                    SET `rights` = `rights` | " . READNOTE ."
-                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                          AND `name` = '$table'";
-         $DB->queryOrDie($query, "0.85 update $table with read notes right");
-      }
-   }
-   foreach ($DB->request("glpi_profilerights",
-                         "`name` = 'notes' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
-
-      foreach ($tables as $table) {
-         $query  = "UPDATE `glpi_profilerights`
-                    SET `rights` = `rights` | " . READNOTE ." | ".UPDATENOTE ."
-                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
-                          AND `name` = '$table'";
-         $DB->queryOrDie($query, "0.85 update $table with update notes right");
-      }
-   }
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = 'notes'";
-   $DB->queryOrDie($query, "0.85 delete notes right");
-
-
    // delete faq
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'faq' AND `rights` = '1'") as $profrights) {
@@ -528,7 +494,7 @@ function update084to085() {
                                                    "`name` = 'ticket'
                                                      AND `rights` & ".Ticket::READALL);
       ProfileRight::updateProfileRightAsOtherRight('change',
-                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE." | ". READNOTE." | ". UPDATENOTE,
+                                                    CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE,
                                                     "`name` = 'ticket' AND `rights` & ".UPDATE);
    }
 
@@ -992,6 +958,38 @@ function update084to085() {
    $DB->queryOrDie($query, "0.85 delete entity_dropdown right");
 
 
+   // delete notes
+   $tables = array('budget', 'cartridge', 'change','computer', 'consumable', 'contact_enterprise',
+                   'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
+                   'phone', 'printer', 'problem', 'software');
+
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'notes' AND `rights` = '1'") as $profrights) {
+
+      foreach ($tables as $table) {
+         $query  = "UPDATE `glpi_profilerights`
+                    SET `rights` = `rights` | " . READNOTE ."
+                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                          AND `name` = '$table'";
+         $DB->queryOrDie($query, "0.85 update $table with read notes right");
+      }
+   }
+   foreach ($DB->request("glpi_profilerights",
+                         "`name` = 'notes' AND `rights` = '".ALLSTANDARDRIGHT."'") as $profrights) {
+
+      foreach ($tables as $table) {
+         $query  = "UPDATE `glpi_profilerights`
+                    SET `rights` = `rights` | " . READNOTE ." | ".UPDATENOTE ."
+                    WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                          AND `name` = '$table'";
+         $DB->queryOrDie($query, "0.85 update $table with update notes right");
+      }
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'notes'";
+   $DB->queryOrDie($query, "0.85 delete notes right");
+   
    $DELFROMDISPLAYPREF['Profile'] = array(29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70, 71,
                                           72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94, 95, 96,
                                           97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123);
