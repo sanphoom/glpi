@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["action"])
          && (($_POST["action"] == "up")  || ($_POST["action"] == "down"))) {
    Session::checkLoginUser();
-   $bookmark->changeBookmarkOrder($_POST['id'], $_POST["private"], $_POST["action"]);
+   $bookmark->changeBookmarkOrder($_POST['id'], $_POST["action"]);
    $_GET["action"] = "";
 } else if (isset($_POST["purge"])) {
    $bookmark->check($_POST["id"], PURGE);
