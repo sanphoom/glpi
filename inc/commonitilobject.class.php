@@ -515,7 +515,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required
       if (!isset($input['_donotadddocs']) || !$input['_donotadddocs']) {
-         $docadded = $this->addFiles($input["id"]);
+         $docadded = $this->addFiles();
       }
 
       if (isset($input["document"]) && ($input["document"] > 0)) {
@@ -1134,7 +1134,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function post_addItem() {
 
       // Add document if needed, without notification
-      $this->addFiles($this->fields['id'], 0);
+      $this->addFiles(0);
 
       // Add default document if set in template
       if (isset($this->input['_documents_id'])
@@ -1418,88 +1418,61 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * add files (from $_FILES) to an ITIL object
+    * add files (from $this->input['_filename']) to an ITIL object
     * create document if needed
     * create link from document to ITIL object
     *
-    * @param $id        Integer  ID of the ITIL object
     * @param $donotif   Boolean  if we want to raise notification (default 1)
     *
     * @return array of doc added name
    **/
-   function addFiles($id, $donotif=1) {
+   function addFiles($donotif=1) {
       global $CFG_GLPI;
-
-      if (!isset($_FILES) || !isset($_FILES['filename'])) {
+      if (!isset($this->input['_filename']) || count($this->input['_filename'])==0) {
          return array();
       }
       $docadded = array();
       $doc      = new Document();
       $docitem  = new Document_Item();
 
-      // if multiple files are uploaded
-      $TMPFILE = array();
-      if (is_array($_FILES['filename']['name'])) {
-         foreach ($_FILES['filename']['name'] as $key => $filename) {
-            if (!empty($filename)) {
-               $TMPFILE[$key]['filename']['name']     = $filename;
-               $TMPFILE[$key]['filename']['type']     = $_FILES['filename']['type'][$key];
-               $TMPFILE[$key]['filename']['tmp_name'] = $_FILES['filename']['tmp_name'][$key];
-               $TMPFILE[$key]['filename']['error']    = $_FILES['filename']['error'][$key];
-               $TMPFILE[$key]['filename']['size']     = $_FILES['filename']['size'][$key];
+      foreach ($this->input['_filename'] as $file) {
+         $docID = 0;
+         $filename = GLPI_DOC_DIR."/_tmp/".$file;
+         // Check for duplicate
+         if ($doc->getFromDBbyContent($this->fields["entities_id"],
+                                      $filename)) {
+            if (!$doc->fields['is_blacklisted']) {
+               $docID = $doc->fields["id"];
             }
+         } else {
+            $input2         = array();
+            //TRANS: Default document to files attached to tickets : %d is the ticket id
+            $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
+
+            if ($this->getType() == 'Ticket') {
+               $input2["tickets_id"]           = $this->getID();
+            }
+            $input2["entities_id"]             = $this->fields["entities_id"];
+            $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
+            $input2["_only_if_upload_succeed"] = 1;
+            $input2["entities_id"]             = $this->fields["entities_id"];
+            $input2["_filename"]               = array($file);
+            $docID = $doc->add($input2);
          }
-      } else {
-         $TMPFILE = array( $_FILES );
-      }
 
-      foreach ($TMPFILE as $_FILES) {
-         if (isset($_FILES['filename'])
-             && (count($_FILES['filename']) > 0)
-             && ($_FILES['filename']["size"] > 0)) {
-
-            $docID = 0;
-            // Check for duplicate
-            if ($doc->getFromDBbyContent($this->fields["entities_id"],
-                                         $_FILES['filename']['tmp_name'])) {
-               if (!$doc->fields['is_blacklisted']) {
-                  $docID = $doc->fields["id"];
-               }
-            } else {
-               $input2         = array();
-               //TRANS: Default document to files attached to tickets : %d is the ticket id
-               $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $id));
-
-               if ($this->getType() == 'Ticket') {
-                  $input2["tickets_id"]           = $id;
-               }
-               $input2["entities_id"]             = $this->fields["entities_id"];
-               $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
-               $input2["_only_if_upload_succeed"] = 1;
-               $input2["entities_id"]             = $this->fields["entities_id"];
-               $docID = $doc->add($input2);
+         if ($docID > 0) {
+            if ($docitem->add(array('documents_id' => $docID,
+                                    '_do_notif'    => $donotif,
+                                    'itemtype'     => $this->getType(),
+                                    'items_id'     => $this->getID()))) {
+               $docadded[] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]),
+                                       stripslashes($doc->fields["filename"]));
             }
-
-            if ($docID > 0) {
-               if ($docitem->add(array('documents_id' => $docID,
-                                       '_do_notif'    => $donotif,
-                                       'itemtype'     => $this->getType(),
-                                       'items_id'     => $id))) {
-                  $docadded[] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]),
-                                        stripslashes($doc->fields["filename"]));
-               }
-            }
-
-         } else if (!empty($_FILES['filename']['name'])
-                    && isset($_FILES['filename']['error'])
-                    && $_FILES['filename']['error']) {
-            Session::addMessageAfterRedirect(__('Failed to send the file (probably too large)'),
-                                             false, ERROR);
          }
          // Only notification for the first New doc
          $donotif = 0;
       }
-      unset ($_FILES);
+
       return $docadded;
    }
 

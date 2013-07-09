@@ -167,16 +167,7 @@ class Document extends CommonDBTM {
       } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          // Move doc from upload dir
          $this->moveUploadedDocument($input, $input["upload_file"]);
-      } /*else if (isset($_FILES) && isset($_FILES['filename'])) {
-         // Move doc send with form
-         $upload_result = $this->uploadDocument($input, $_FILES['filename']);
-         // Upload failed : do not create document
-         if ($create_from_item && !$upload_result) {
-            return false;
-         }
-         // Document is moved, so $_FILES is no more useful
-         unset($_FILES['filename']);
-      }*/
+      }
 
       // Default document name
       if ((!isset($input['name']) || empty($input['name']))
@@ -246,10 +237,6 @@ class Document extends CommonDBTM {
       // security (don't accept filename from $_POST)
       unset($input['filename']);
 
-      if (isset($_FILES['filename']['type']) && !empty($_FILES['filename']['type'])) {
-         $input['mime'] = $_FILES['filename']['type'];
-      }
-
       if (isset($input['current_filepath'])) {
          if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
             $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
@@ -257,16 +244,8 @@ class Document extends CommonDBTM {
             // Move doc from upload dir
             $this->moveUploadedDocument($input, $input["upload_file"]);
          }
-//          else if (isset($_FILES['filename'])) {
-//             $this->uploadDocument($input, $_FILES['filename']);
-//             // Document is moved, so $_FILES is no more useful
-//             unset($_FILES['filename']);
-//          }
       }
 
-//       if (empty($input['filename'])) {
-//          unset($input['filename']);
-//       }
       unset($input['current_filepath']);
       unset($input['current_filename']);
 
@@ -333,11 +312,9 @@ class Document extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-//       echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
-//       echo "<td><input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
       echo "<td>";
-      echo Html::file('filename', false);
+      echo Html::file();
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

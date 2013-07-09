@@ -3512,14 +3512,16 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), Document::getMaxUploadSize());
+      echo "<td class='top'>".sprintf(__('%1$s (%2$s)'), __('File'), Document::getMaxUploadSize());
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt='".
              __s('Help')."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
              "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
-      echo "&nbsp;";
-      self::showDocumentAddButton(60);
+//       echo "&nbsp;";
+//       self::showDocumentAddButton(60);
       echo "</td>";
-      echo "<td><div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
+      echo "<td>";
+      echo Html::file(array('multiple' => true));
+//       "<div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
       echo "</td></tr>";
 
       if (!$ticket_template) {
@@ -4493,14 +4495,14 @@ class Ticket extends CommonITILObject {
                   __s('Help')."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                   "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,".
                   "height=800')\">";
-            echo "&nbsp;";
-            self::showDocumentAddButton();
+//             echo "&nbsp;";
+//             self::showDocumentAddButton();
          }
          echo $tt->getEndHiddenFieldText('_documents_id');
          echo "</th>";
-         echo "<tr><td width='$colsize2%'>";
+         echo "<td width='$colsize2%'>";
          echo $tt->getBeginHiddenFieldValue('_documents_id');
-         echo "<div id='uploadfiles'><input type='file' name='filename[]' size='20'></div>";
+         echo Html::file(array('multiple' => true));
          // Do not set values
          echo $tt->getEndHiddenFieldValue('_documents_id');
          if ($tt->isPredefinedField('_documents_id')) {
@@ -4519,7 +4521,7 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         echo "</tr></td>";
+         echo "</td>";
 
       } else {
          echo "<th colspan='2'>";

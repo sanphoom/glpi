@@ -4341,24 +4341,40 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $name          string Name of a field
-    * @param $multiple      boolean Permit to upload several files ?
+    * @param $options       array of options
+    *    - name       : string  : field name (default filename)
+    *    - multiple   : boolean : allow multiple file upload (default false)
+    *    - onlyimages : boolean :  restrict to image files (default false)
     *
     * @return string input file field
    **/
-   static function file($name = 'filename', $multiple = false) {
+   static function file($options = array()) {
       global $CFG_GLPI;
+
+      $p['name']       = 'filename';
+      $p['multiple']   = false;
+      $p['onlyimages'] = false;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      
       $randupload = mt_rand();
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
-      $out = "<input id='fileupload$randupload' type='file' name='".$name."[]' data-url='".
-               $CFG_GLPI["root_doc"]."/front/fileupload.php?name=$name'>";
+      $out = "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
+               $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name']."'>";
       
       $script = "var fileindex$randupload = 0;
          $('#fileupload$randupload').fileupload({
-            dataType: 'json',
 //             forceIframeTransport: true,
 //             replaceFileInput: false,
-            progressall: function (e, data) {
+            dataType: 'json',";
+      if ($p['onlyimages']) {
+         $script .= "acceptFileTypes: '/(\.|\/)(gif|jpe?g|png)$/i',";
+      }
+      $script .= " progressall: function (e, data) {
                   var progress = parseInt(data.loaded / data.total * 100, 10);
                   $('#progress .uploadbar').css(
                         'width',
@@ -4367,18 +4383,18 @@ class Html {
                   $('#progress .uploadbar').text(progress + '%');
                },
             done: function (e, data) {
-                  $.each(data.result.$name, function (index, file) {
+                  $.each(data.result.".$p['name'].", function (index, file) {
                      if (file.error == undefined) {";
-      if ($multiple) {
+      if ($p['multiple']) {
          $script.= "$('<p/>').text(file.name).appendTo('#filedata');
-                    $('<input/>').attr('type', 'hidden').attr('name', '_".$name."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata');
+                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata');
                     fileindex$randupload = fileindex$randupload+1;";
       } else {
          $script.= "$('#filedata').text(file.name);
-                    $('<input/>').attr('type', 'hidden').attr('name', '_".$name."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata');";
+                    $('<input/>').attr('type', 'hidden').attr('name', '_".$p['name']."['+fileindex$randupload+']').attr('value',file.name).appendTo('#filedata');";
       }
-                     
-          $script.="    $('#progress .uploadbar').text('".__('Upload successful')."');
+
+      $script.="        $('#progress .uploadbar').text('".__('Upload successful')."');
                         $('#progress .uploadbar').css('width', '100%');
                      } else {
                         $('#progress .uploadbar').text('".__('Upload error')."');

@@ -661,7 +661,7 @@ class MailCollector  extends CommonDBTM {
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max'] > 0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
-            $_FILES = $this->getAttached($i, GLPI_DOC_DIR."/_tmp/", $this->fields['filesize_max']);
+            $tkt['_filename'] = $this->getAttached($i, GLPI_DOC_DIR."/_tmp/", $this->fields['filesize_max']);
          } else {
             //TRANS: %s is a directory
             Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'),
@@ -1320,8 +1320,7 @@ class MailCollector  extends CommonDBTM {
          }
          //try to avoid conflict between inline image and attachment
          $i = 2;
-         while(!empty($this->files['filename']['tmp_name'])
-               && in_array($path.$filename, $this->files['filename']['tmp_name'])) {
+         while(in_array($filename, $this->files)) {
             //replace filename with name_(num).EXT by name_(num+1).EXT
             $new_filename = preg_replace("/(.*)_([0-9])*(\.[a-zA-Z0-9]*)$/", "$1_".$i."$3", $filename);
             if ($new_filename !== $filename) {
@@ -1371,11 +1370,7 @@ class MailCollector  extends CommonDBTM {
             }
 
             if (file_put_contents($path.$filename, $message)) {
-               $this->files['filename']['size'][]     = $structure->bytes;
-               $this->files['filename']['name'][]     = $filename;
-               $this->files['filename']['tmp_name'][] = $path.$filename;
-               $this->files['filename']['type'][]     = $this->get_mime_type($structure);
-               $this->files['filename']['error'][]    = 0;
+               $this->files[] = $filename;
             }
          } // fetchbody
       } // Single part
@@ -1389,7 +1384,7 @@ class MailCollector  extends CommonDBTM {
     * @param $path      temporary path
     * @param $maxsize   of document to be retrieved
     *
-    * @return array like $_FILES
+    * @return array containing extracted filenames in file/_tmp
    **/
    function getAttached($mid, $path, $maxsize) {
 

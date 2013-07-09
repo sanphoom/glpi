@@ -278,7 +278,7 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       // Manage File attached (from mailgate)
-      $docadded = $input["_job"]->addFiles($input["tickets_id"]);
+      $docadded = $input["_job"]->addFiles();
       if (count($docadded) > 0) {
          $input['content'] .= "\n";
          foreach ($docadded as $name) {
