@@ -237,8 +237,12 @@ class RuleAction extends CommonDBChild {
             if (isset($values['rules_id'])
                 && !empty($values['rules_id'])
                 && $generic_rule->getFromDB($values['rules_id'])) {
-               return self::dropdownActions($generic_rule->fields["sub_type"], $name,
-                                            $values[$field], false, false);
+               // TODO missing 'value'
+               return self::dropdownActions(array('subtype'     => $generic_rule->fields["sub_type"],
+                                                  'name'        => $name,
+                                                  'field'       => $values[$field],
+                                                  'alreadyused' => false,
+                                                  'display'     => false));
             }
             break;
 
@@ -308,21 +312,35 @@ class RuleAction extends CommonDBChild {
    /**
     * Display a dropdown with all the possible actions
     *
-    * @param $sub_type
-    * @param $name
-    * @param $field
-    * @param $value           (default '')
-    * @param $already_used    (default false)
-    * @param $display         (true by default)
+    * @param $options   array of possible options:
+    *    - subtype
+    *    - name
+    *    - field
+    *    - value
+    *    - alreadyused
+    *    - display
    **/
-   static function dropdownActions($sub_type, $name, $field, $value='', $already_used=false,
-                                   $display=true) {
+   static function dropdownActions($options=array()) {
 
-      if ($rule = getItemForItemtype($sub_type)) {
+      $p['subtype']     = '';
+      $p['name']        = '';
+      $p['field']       = '';
+      $p['value']       = '';
+      $p['alreadyused'] = false;
+      $p['display']     = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      if ($rule = getItemForItemtype($p['subtype'])) {
          $actions_options = $rule->getAllActions();
          $actions         = array("assign");
          // Manage permit several.
-         if ($already_used) {
+         $field = $p['field'];
+         if ($p['alreadyused']) {
             if (!isset($actions_options[$field]['permitseveral'])) {
                return false;
             }
@@ -338,9 +356,9 @@ class RuleAction extends CommonDBChild {
          foreach ($actions as $action) {
             $elements[$action] = self::getActionByID($action);
          }
-   
-         return Dropdown::showFromArray($name, $elements, array('value'   => $value,
-                                                                'display' => $display));
+
+         return Dropdown::showFromArray($p['name'], $elements, array('value'   => $p['value'],
+                                                                     'display' => $p['display']));
       }
    }
 
@@ -432,7 +450,7 @@ class RuleAction extends CommonDBChild {
       if (isset($options['value'])) {
          $param['value'] = $options['value'];
       }
-      
+
       switch ($options["action_type"]) {
          //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :
@@ -601,6 +619,6 @@ class RuleAction extends CommonDBChild {
       echo "</span></td>\n";
       echo "</tr>\n";
       $this->showFormButtons($options);
-   }   
+   }
 }
 ?>
