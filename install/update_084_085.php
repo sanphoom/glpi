@@ -201,17 +201,12 @@ function update084to085() {
               WHERE `name` = 'entity_rule_ticket'";
    $DB->queryOrDie($query, "0.85 rename entity_rule_ticket to rule_ticket");
 
-   $query = "DELETE
-             FROM `glpi_profilerights`
-             WHERE `name` = '_entity_rule_ticket'";
-   $DB->queryOrDie($query, "0.85 delete entity_rule_ticket right");
-
    // delete root_rule_ticket
    foreach ($DB->request("glpi_profilerights",
                          "`name` = 'root_rule_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` =  `rights` | " . READ ."
+                 SET `rights` =  `rights` | " . PARENT ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'rule_ticket'";;
       $DB->queryOrDie($query, "0.85 update new rule_ticket with old rule_ticket right");

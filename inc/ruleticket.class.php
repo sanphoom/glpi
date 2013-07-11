@@ -41,7 +41,7 @@ class RuleTicket extends Rule {
    static $rightname = 'rule_ticket';
    public $can_sort  = true;
 
-   const ROOTENTITY  = 1024;
+   const PARENT  = 1024;
 
 
    function getTitle() {
@@ -482,7 +482,7 @@ class RuleTicket extends Rule {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      $values[self::ROOTENTITY] = __('Business rules for ticket (entity parent)');
+      $values[self::PARENT] = __('Business rules for ticket (entity parent)');
 
       return $values;
    }

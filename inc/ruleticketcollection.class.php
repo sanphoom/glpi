@@ -54,7 +54,7 @@ class RuleTicketCollection extends RuleCollection {
     * @since version 0.84
     **/
    static function canView() {
-      return Session::haveRightsOr(self::$rightname, array(READ, RuleTicket::ROOTENTITY));
+      return Session::haveRightsOr(self::$rightname, array(READ, RuleTicket::PARENT));
    }
 
 
@@ -82,7 +82,7 @@ class RuleTicketCollection extends RuleCollection {
     * @see RuleCollection::showInheritedTab()
    **/
    function showInheritedTab() {
-      return (Session::haveRight(self::$rightname, RuleTicket::ROOTENTITY) && ($this->entity));
+      return (Session::haveRight(self::$rightname, RuleTicket::PARENT) && ($this->entity));
    }
 
 
