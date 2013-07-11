@@ -1728,10 +1728,10 @@ class Rule extends CommonDBTM {
    function showMinimalActionForm($fields, $canedit, $rand) {
       global $CFG_GLPI;
 
-      echo "<tr class='tab_bg_1' ".
-            ($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
+      $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
                          $fields['rules_id'].$fields["id"]."$rand();\""
-                      : '').">";
+                      : '');
+      echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
@@ -1747,7 +1747,7 @@ class Rule extends CommonDBTM {
          echo "</script>\n";
          echo "</td>";
       }
-      echo $this->getMinimalActionText($fields);
+      echo $this->getMinimalActionText($fields, $edit);
       echo "</tr>\n";
    }
 
@@ -1852,9 +1852,10 @@ class Rule extends CommonDBTM {
    function showMinimalCriteriaForm($fields, $canedit, $rand) {
       global $CFG_GLPI;
 
-      echo "<tr class='tab_bg_1' ".($canedit ? "style='cursor:pointer' onClick=\"viewEditCriteria".
+      $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditCriteria".
                          $fields['rules_id'].$fields["id"]."$rand();\""
-                       : '').">";
+                       : '');
+      echo "<tr class='tab_bg_1' >";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->rulecriteriaclass, $fields["id"]);
@@ -1871,20 +1872,21 @@ class Rule extends CommonDBTM {
          echo "</td>";
       }
 
-      echo $this->getMinimalCriteriaText($fields);
+      echo $this->getMinimalCriteriaText($fields, $edit);
       echo "</tr>\n";
    }
 
 
    /**
     * @param $fields
+    * @param $addtotd
    **/
-   function getMinimalCriteriaText($fields) {
+   function getMinimalCriteriaText($fields, $addtotd='') {
 
-      $text  = "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-      $text .= "<td>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this),
+      $text  = "<td $addtotd>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
+      $text .= "<td $addtotd>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this),
                                                        $fields["criteria"])."</td>";
-      $text .= "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"],
+      $text .= "<td $addtotd>" . $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"],
                                                          $fields["pattern"]) . "</td>";
       return $text;
    }
@@ -1892,13 +1894,18 @@ class Rule extends CommonDBTM {
 
    /**
     * @param $fields
+    * @param $addtotd
    **/
-   function getMinimalActionText($fields) {
+   function getMinimalActionText($fields, $addtotd = '') {
 
-      $text  = "<td>" . $this->getActionName($fields["field"]) . "</td>";
-      $text .= "<td>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
-      $text .= "<td>" . $this->getActionValue($fields["field"], $fields['action_type'],
-                                              $fields["value"]) . "</td>";
+      $text  = "<td $addtotd>" . $this->getActionName($fields["field"]) . "</td>";
+      $text .= "<td $addtotd>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
+      if (isset($fields["value"])) {
+         $text .= "<td $addtotd>" . $this->getActionValue($fields["field"], $fields['action_type'],
+                                                $fields["value"]) . "</td>";
+      } else {
+         $text .= "<td $addtotd>&nbsp;</td>";
+      }
       return $text;
    }
 

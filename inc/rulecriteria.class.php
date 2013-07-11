@@ -38,8 +38,10 @@ if (!defined('GLPI_ROOT')) {
 class RuleCriteria extends CommonDBChild {
 
    // From CommonDBChild
-   static public $items_id  = 'rules_id';
-   public $dohistory = true;
+   static public $items_id        = 'rules_id';
+   public $dohistory              = true;
+   public $auto_message_on_action = false;
+
 
 
    /**
