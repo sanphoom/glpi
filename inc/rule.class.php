@@ -2615,12 +2615,11 @@ class Rule extends CommonDBTM {
 
    /**
     * @param $action array
-    * @param $value value to display
+    * @param $value          value to display (default '')
    **/
-   function displayAdditionalRuleAction(array $action, $value = '') {
+   function displayAdditionalRuleAction(array $action, $value='') {
       return false;
    }
-
 
 
    /**

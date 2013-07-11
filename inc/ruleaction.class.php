@@ -566,8 +566,10 @@ class RuleAction extends CommonDBChild {
 
    /** form for rule action
     *
-    *@param $ID      integer : Id of the action
-    *@param $options array of possible options:
+    * @since version 0.85
+    *
+    * @param $ID      integer : Id of the action
+    * @param $options array of possible options:
     *     - rule Object : the rule
    **/
    function showForm($ID, $options=array()) {
@@ -588,10 +590,12 @@ class RuleAction extends CommonDBChild {
 
       echo "<tr class='tab_bg_1 center'>";
       echo "<td>"._n('Action', 'Actions', 1) . "</td><td colspan='3'>";
-      echo "<input type='hidden' name='".$rule->getRuleIdField()."' value='".$this->fields["rules_id"]."'>";
+      echo "<input type='hidden' name='".$rule->getRuleIdField()."' value='".
+             $this->fields["rules_id"]."'>";
       $used = $this->getAlreadyUsedForRuleID($this->fields["rules_id"], $rule->getType());
       // On edit : unset selected value
-      if ($ID && isset($used[$this->fields['field']])) {
+      if ($ID
+          && isset($used[$this->fields['field']])) {
          unset($used[$this->fields['field']]);
       }
       $rand   = $rule->dropdownActions(array('value' => $this->fields['field'],
@@ -620,5 +624,6 @@ class RuleAction extends CommonDBChild {
       echo "</tr>\n";
       $this->showFormButtons($options);
    }
+
 }
 ?>

@@ -1023,16 +1023,17 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By')."</td>";
       echo "<td class='center'>";
-      $rand_user = mt_rand();      
-      $params = array('name'   => "users_id_tech",
-                     'value'  => $this->fields["users_id_tech"],
-                     'right'  => "own_ticket",
-                     'rand'   => $rand_user,
-                     'entity' => $item->fields["entities_id"]);
+      $rand_user          = mt_rand();
+      $params             = array('name'   => "users_id_tech",
+                                  'value'  => $this->fields["users_id_tech"],
+                                  'right'  => "own_ticket",
+                                  'rand'   => $rand_user,
+                                  'entity' => $item->fields["entities_id"]);
 
-      $params['toupdate'] = array('value_fieldname' => 'users_id',
-                                 'to_update'        => "user_available$rand_user",
-                                 'url'              => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
+      $params['toupdate'] = array('value_fieldname'
+                                              => 'users_id',
+                                  'to_update' => "user_available$rand_user",
+                                  'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
 
 
       User::dropdown($params);

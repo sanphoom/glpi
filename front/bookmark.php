@@ -86,16 +86,17 @@ if (isset($_POST["add"])) {
    $bookmark->check($_GET["id"], READ);
    $bookmark->load($_GET["id"]);
    $_GET["action"] = "";
+
 } else if (isset($_POST["action"])
-         && (($_POST["action"] == "up")  || ($_POST["action"] == "down"))) {
+           && (($_POST["action"] == "up") || ($_POST["action"] == "down"))) {
    Session::checkLoginUser();
    $bookmark->changeBookmarkOrder($_POST['id'], $_POST["action"]);
    $_GET["action"] = "";
+
 } else if (isset($_POST["purge"])) {
    $bookmark->check($_POST["id"], PURGE);
    $bookmark->delete($_POST, 1);
    $_GET["action"] = "";
-
 }
 
 if ($_GET["action"] == "edit") {
