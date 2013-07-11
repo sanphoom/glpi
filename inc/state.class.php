@@ -268,12 +268,14 @@ class State extends CommonTreeDropdown {
    /**
     * Get search function for the class
     *
+    * @since version 0.85
+    *
     * @return array of search option
    **/
    function getSearchOptions() {
 
       $tab                 = parent::getSearchOptions();
-                                        
+
       $tab[21]['table']    = $this->getTable();
       $tab[21]['field']    = 'is_visible_computer';
       $tab[21]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Computer::getTypeName(2));
@@ -281,7 +283,8 @@ class State extends CommonTreeDropdown {
 
       $tab[22]['table']    = $this->getTable();
       $tab[22]['field']    = 'is_visible_softwareversion';
-      $tab[22]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), SoftwareVersion::getTypeName(2));
+      $tab[22]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'),
+                                     SoftwareVersion::getTypeName(2));
       $tab[22]['datatype'] = 'bool';
 
       $tab[23]['table']    = $this->getTable();
@@ -306,10 +309,12 @@ class State extends CommonTreeDropdown {
 
       $tab[27]['table']    = $this->getTable();
       $tab[27]['field']    = 'is_visible_networkequipment';
-      $tab[27]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), NetworkEquipment::getTypeName(2));
+      $tab[27]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'),
+                                     NetworkEquipment::getTypeName(2));
       $tab[27]['datatype'] = 'bool';
-      
+
       return $tab;
-   }   
+   }
+
 }
 ?>

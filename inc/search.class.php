@@ -126,7 +126,7 @@ class Search {
          Html::displayRightError();
       }
 
-      // Manage defautll seachtype value : for bookmark compatibility
+      // Manage default seachtype value : for bookmark compatibility
       if (count($p['contains'])) {
          foreach ($p['contains'] as $key => $val) {
             if (!isset($p['searchtype'][$key])) {
@@ -2502,7 +2502,8 @@ class Search {
             $TRANS = ", '$$', $tocomputetrans";
 
          }
-         return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."') $TRANS,'$$',$tocomputeid) SEPARATOR '$$$$')
+         return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."') $TRANS,
+                                               '$$',$tocomputeid) SEPARATOR '$$$$')
                               AS ".$NAME."_$num,
                   $ADDITONALFIELDS";
       }
@@ -4538,7 +4539,8 @@ class Search {
                $out   = '';
                foreach ($split as $val) {
                   $split2 = self::explodeWithID("$$", $val);
-                  if (is_null($split2[0]) && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
+                  if (is_null($split2[0])
+                      && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
                      $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
                   } else {
                      $out .= (empty($out)?'':self::LBBR).Html::convDate($split2[0]);
@@ -4551,7 +4553,8 @@ class Search {
                $out   = '';
                foreach ($split as $val) {
                   $split2 = self::explodeWithID("$$", $val);
-                  if (is_null($split2[0]) && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
+                  if (is_null($split2[0])
+                      && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
                      $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
                   } else {
                      $out .= (empty($out)?'':self::LBBR).Html::convDateTime($split2[0]);

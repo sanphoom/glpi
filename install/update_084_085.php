@@ -989,7 +989,7 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'notes'";
    $DB->queryOrDie($query, "0.85 delete notes right");
-   
+
    $DELFROMDISPLAYPREF['Profile'] = array(29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70, 71,
                                           72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94, 95, 96,
                                           97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123);
@@ -1062,7 +1062,7 @@ function update084to085() {
                         0, 24, 30, NULL, NULL, NULL)";
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for clean temporary files");
    }
-   
+
    if ($migration->addField("glpi_entities", "delay_send_emails", "integer",
                             array('value' => -2))) {
       $migration->migrationOneTable('glpi_entities');
@@ -1634,15 +1634,20 @@ function update084to085() {
 
    // glpi_cartridgeitems  glpi_consumableitems by entity
    $migration->addField('glpi_consumableitems', 'is_recursive', 'bool',
-                                                array('update' => '1',
-                                                      'after'  => 'entities_id'));
+                         array('update' => '1',
+                               'after'  => 'entities_id'));
    $migration->addField('glpi_cartridgeitems', 'is_recursive', 'bool',
-                                                array('update' => '1',
-                                                      'after'  => 'entities_id'));
+                        array('update' => '1',
+                              'after'  => 'entities_id'));
    // Fix events
-   $query = "UPDATE `glpi_events` SET `type` = 'consumableitems' WHERE `type` = 'consumables';";
+   $query = "UPDATE `glpi_events`
+             SET `type` = 'consumableitems'
+             WHERE `type` = 'consumables'";
    $DB->queryOrDie($query, "0.85 fix events for consumables");
-   $query = "UPDATE `glpi_events` SET `type` = 'cartridgeitems' WHERE `type` = 'cartridges';";
+
+   $query = "UPDATE `glpi_events`
+             SET `type` = 'cartridgeitems'
+             WHERE `type` = 'cartridges';";
    $DB->queryOrDie($query, "0.85 fix events for cartridges");
 
 

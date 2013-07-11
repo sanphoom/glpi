@@ -208,9 +208,8 @@ class Consumable extends CommonDBTM {
 
       switch ($input['action']) {
          case "give" :
-         
             if (($input["give_items_id"] > 0)
-               && !empty($input['give_itemtype'])) {
+                && !empty($input['give_itemtype'])) {
                foreach ($input["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($this->can($key, UPDATE)) {
@@ -227,8 +226,8 @@ class Consumable extends CommonDBTM {
                   }
                }
                Event::log($this->fields['consumableitems_id'], "consumables", 5, "inventory",
-                        //TRANS: %s is the user login
-                        sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
+                          //TRANS: %s is the user login
+                          sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
             } else {
                $res['ko']++;
             }

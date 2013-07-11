@@ -92,6 +92,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @since version 0.84
    **/
    static function canCreate() {
+
       if ((static::$rightname) && (!Session::haveRight(static::$rightname, CREATE))) {
          return false;
       }

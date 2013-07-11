@@ -29,11 +29,12 @@
 
 /** @file
 * @brief
+* @since version 0.85
 */
 include ('../inc/includes.php');
 
 
-$criteria = new RuleCriteria ();
+$criteria = new RuleCriteria();
 
 if (isset($_POST["add"])) {
    $criteria->check(-1, CREATE, $_POST);
@@ -46,11 +47,11 @@ if (isset($_POST["add"])) {
    $criteria->update($_POST);
 
    Html::back();
+
 } else if (isset($_POST["purge"])) {
    $criteria->check($_POST['id'], PURGE);
    $criteria->delete($_POST, 1);
 
    Html::back();
 }
-
 ?>

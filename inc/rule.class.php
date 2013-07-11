@@ -1728,20 +1728,21 @@ class Rule extends CommonDBTM {
    function showMinimalActionForm($fields, $canedit, $rand) {
       global $CFG_GLPI;
 
-      echo "<tr class='tab_bg_1' ".($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
+      echo "<tr class='tab_bg_1' ".
+            ($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
                          $fields['rules_id'].$fields["id"]."$rand();\""
-                       : '').">";
+                      : '').">";
       if ($canedit) {
          echo "<td width='10'>";
          Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditAction". $fields['rules_id'].$fields["id"]."$rand() {\n";
-         $params = array('type'      => 'RuleAction',
-                        'parenttype' => $this->getType(),
-                        'rules_id'   => $fields['rules_id'],
-                        'id'         => $fields["id"]);
+         $params = array('type'       => 'RuleAction',
+                         'parenttype' => $this->getType(),
+                         'rules_id'   => $fields['rules_id'],
+                         'id'         => $fields["id"]);
          Ajax::updateItemJsCode("viewaction" . $fields['rules_id'] . "$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
          echo "};";
          echo "</script>\n";
          echo "</td>";
@@ -2749,7 +2750,7 @@ class Rule extends CommonDBTM {
 
             default:
                if ($item instanceof Rule) {
-                  $ong = array();
+                  $ong    = array();
                   $ong[1] = _n('Criterion', 'Criteria', 2);
                   $ong[2] = _n('Action', 'Actions', 2);
                   return $ong;
@@ -2794,6 +2795,7 @@ class Rule extends CommonDBTM {
             case 1 :
                $item->showCriteriasList($item->getID());
                break;
+
             case 2 :
                $item->showActionsList($item->getID());
                break;

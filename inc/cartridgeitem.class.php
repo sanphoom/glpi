@@ -470,7 +470,8 @@ class CartridgeItem extends CommonDBTM {
                      ON (`glpi_locations`.`id` = `glpi_cartridgeitems`.`locations_id`)
                 WHERE `glpi_cartridgeitems_printermodels`.`printermodels_id`
                            = '".$printer->fields["printermodels_id"]."'
-                      ".getEntitiesRestrictRequest('AND', 'glpi_cartridgeitems', '', $printer->fields["entities_id"], true)."
+                      ".getEntitiesRestrictRequest('AND', 'glpi_cartridgeitems', '',
+                                                   $printer->fields["entities_id"], true)."
                 GROUP BY tID
                 ORDER BY `name`, `ref`";
       $datas = array();

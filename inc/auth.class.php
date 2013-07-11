@@ -270,7 +270,7 @@ class Auth extends CommonGLPI {
     * @since version 0.85
     *
     * @return boolean
-    */
+   **/
    static function isCryptOk() {
       static $pass = NULL;
 
@@ -296,7 +296,7 @@ class Auth extends CommonGLPI {
     * @param $hash string
     *
     * @return boolean
-    */
+   **/
    static function checkPassword($pass, $hash) {
 
       $tmp = NULL;
@@ -330,7 +330,7 @@ class Auth extends CommonGLPI {
     * @param $hash string
     *
     * @return boolean
-    */
+   **/
    static function needRehash($hash) {
 
       if (self::isCryptOk()) {
@@ -349,7 +349,7 @@ class Auth extends CommonGLPI {
     * @param $pass string
     *
     * @return string
-    */
+   **/
    static function getPasswordHash($pass) {
 
       if (self::isCryptOk()) {
