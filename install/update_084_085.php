@@ -150,7 +150,7 @@ function update084to085() {
          $profiles_id = $profile['id'];
          foreach ($rights as $right) {
             if ($profile[$right] == NULL) {
-               $new_right = '';
+               $new_right = 0;
             } else {
                if (($profile[$right] == 'r')
                    || ($profile[$right] == '1')) {
@@ -206,7 +206,7 @@ function update084to085() {
                          "`name` = 'root_rule_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` =  `rights` | " . PARENT ."
+                 SET `rights` =  `rights` | " . RuleTicket::PARENT ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'rule_ticket'";;
       $DB->queryOrDie($query, "0.85 update new rule_ticket with old rule_ticket right");
