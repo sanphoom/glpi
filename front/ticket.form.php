@@ -51,8 +51,12 @@ if (isset($_POST["add"])) {
          $_POST["items_id"] = $splitter[1];
       }
    }
-   $track->add($_POST);
-   Html::back();
+   $id = $track->add($_POST);
+   if ($_SESSION['glpibackcreated']) {
+      Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$id);
+   } else {
+      Html::back();
+   }
 
 } else if (isset($_POST['update'])) {
    $track->check($_POST['id'], UPDATE);

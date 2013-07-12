@@ -979,6 +979,12 @@ class Config extends CommonDBTM {
                                                            'toadd' => array(0 => __('Never'))));
          echo "</td>";
          echo "</tr>";
+
+         echo "<tr class='tab_bg_2'><td>".__('Back to created ticket after create')."</td>";
+         echo "<td>";
+         Dropdown::showYesNo("backcreated", $data["backcreated"]);
+         echo "</td></tr>";
+
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Priority colors') . "</td>";
          echo "<td colspan='3'>";

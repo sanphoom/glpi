@@ -1649,6 +1649,8 @@ function update084to085() {
    // Bookmark order :
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
 
+   // Pref to comme back ticket created
+   $migration->addField('glpi_users', 'backcreated', 'bool');
 
 
    // ************ Keep it at the end **************

@@ -5977,6 +5977,7 @@ CREATE TABLE `glpi_users` (
   `end_date` datetime DEFAULT NULL,
   `keep_devices_when_purging_item` tinyint(1) DEFAULT NULL,
   `privatebookmarkorder` longtext COLLATE utf8_unicode_ci,
+  `backcreated` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),

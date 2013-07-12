@@ -270,7 +270,8 @@ $CFG_GLPI["debug_sql"] = $CFG_GLPI["debug_vars"] = $CFG_GLPI["debug_lang"] = 1;
 
 
 // User Prefs fields which override $CFG_GLPI config
-$CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_requesttypes_id',
+$CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter',
+                                     'date_format', 'default_requesttypes_id',
                                      'display_count_on_home', 'dropdown_chars_limit',
                                      'duedatecritical_color', 'duedatecritical_less',
                                      'duedatecritical_unit', 'duedateok_color',
