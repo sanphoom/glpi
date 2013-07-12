@@ -50,10 +50,14 @@ if (isset($_POST["disconnect"])) {
 } else if (isset($_POST["add"])) {
    if (isset($_POST["items_id"]) && ($_POST["items_id"] > 0)) {
       $conn->check(-1, CREATE, $_POST);
-      $conn->add($_POST);
-      Event::log($_POST["computers_id"], "computers", 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s connects an item'), $_SESSION["glpiname"]));
+      if ($newID = $conn->add($_POST)) {
+         Event::log($_POST["computers_id"], "computers", 5, "inventory",
+                    //TRANS: %s is the user login
+                    sprintf(__('%s connects an item'), $_SESSION["glpiname"]));
+         if ($_SESSION['glpibackcreated']) {
+            Html::redirect($conn->getFormURL()."?id=".$newID);
+         }
+      }
    }
    Html::back();
 

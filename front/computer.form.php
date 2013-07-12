@@ -50,6 +50,10 @@ if (isset($_POST["add"])) {
    if ($newID = $computer->add($_POST)) {
       Event::log($newID, "computers", 4, "inventory",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($computer->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 

@@ -49,7 +49,10 @@ if (isset($_POST["update"])) {
 } else if (isset($_POST["add"])) {
    //If no name has been given to this configuration, then go back to the page without adding
    if ($_POST["name"] != "") {
-      $newID = $config_mail->add($_POST);
+      if (($newID = $config_mail->add($_POST))
+          && $_SESSION['glpibackcreated']) {
+         Html::redirect($config_mail->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 

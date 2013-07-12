@@ -980,7 +980,7 @@ class Config extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
 
-         echo "<tr class='tab_bg_2'><td>".__('Back to created ticket after create')."</td>";
+         echo "<tr class='tab_bg_2'><td>".__('Back to created item after create')."</td>";
          echo "<td>";
          Dropdown::showYesNo("backcreated", $data["backcreated"]);
          echo "</td></tr>";

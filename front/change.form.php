@@ -47,7 +47,11 @@ if (isset($_POST["add"])) {
    Event::log($newID, "change", 4, "maintain",
               //TRANS: %1$s is the user login, %2$s is the name of the item
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
-   Html::back();
+   if ($_SESSION['glpibackcreated']) {
+      Html::redirect($cipm->getFormURL()."?id=".$newID);
+   } else {
+      Html::back();
+   }
 
 } else if (isset($_POST["delete"])) {
    $change->check($_POST["id"], DELETE);

@@ -51,6 +51,9 @@ if (isset($_POST["add"])) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a volume'), $_SESSION["glpiname"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($disk->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 

@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
    }
    $id = $track->add($_POST);
    if ($_SESSION['glpibackcreated']) {
-      Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$id);
+      Html::redirect($track->getFormURL()."?id=".$id);
    } else {
       Html::back();
    }
