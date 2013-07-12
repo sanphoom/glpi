@@ -582,7 +582,8 @@ class Log extends CommonDBTM {
                   break;
                }
             }
-            if ($itemtable == $tablename) {
+            if (($itemtable == $tablename)
+                || ($tmp['datatype'] == 'right')) {
                switch ($tmp['datatype']) {
                   // specific case for text field
                   case 'text' :

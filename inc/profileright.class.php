@@ -280,18 +280,20 @@ class ProfileRight extends CommonDBChild {
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       $itemtype = $options['searchopt']['rightclass'];
-      $item = new $itemtype();
-      $rights = '';
-      $prem = true;
+      $item     = new $itemtype();
+      $rights   = '';
+      $prem     = true;
       foreach ($item->getRights() as $val => $name) {
-         if ($prem) {
-            $prem = false;
-         } else {
-            $rights .= ", ";
+         if ($values['rights'] & $val) {
+            if ($prem) {
+               $prem = false;
+            } else {
+               $rights .= ", ";
+            }
+            $rights .= $name;
          }
-         $rights .= $name;
       }
-      return $rights;
+      return ($rights ? $rights : __('None'));
    }
 
 

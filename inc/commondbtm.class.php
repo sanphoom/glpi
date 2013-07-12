@@ -4492,18 +4492,7 @@ class CommonDBTM extends CommonGLPI {
                                                                     array('display' => false));
                   }
                   return Dropdown::getDropdownName($searchoptions['table'], $value);
-/*
-               case "right" :
-                  $options['searchopt'] = $searchoptions;
 
-                  return Profile::getRightValue($value);
-//                  foreach (Profile::getRightsFor($searchoptions['rightclass']) as $name => $val) {
-
-  //                }
-//                  return Profile::dropdownRights(Profile::getRightsFor($searchoptions['rightclass']),
-//                        $name, $value, array('multiple' => false,
-//                              'display'  => false));
-*/
                case "itemtypename" :
                   if ($obj = getItemForItemtype($value)) {
                      return $obj->getTypeName(1);
