@@ -118,7 +118,6 @@ class Log extends CommonDBTM {
       // needed to have  $SEARCHOPTION
       list($real_type, $real_id) = $item->getLogTypeID();
       $searchopt                 = Search::getOptions($real_type);
-
       if (!is_array($searchopt)) {
          return false;
       }
@@ -135,8 +134,19 @@ class Log extends CommonDBTM {
                // skip sub-title
                continue;
             }
+            // specific for profile
+            if (($item->getType() == 'ProfileRight')
+                && ($key == 'rights')) {
+               if (isset($val2['rightname'])
+                   && ($val2['rightname'] == $item->fields['name'])) {
+
+                  $id_search_option = $key2;
+                  Toolbox::logDebug("idsoptNEW", $id_search_option, $searchopt[$key2]);
+                  $changes =  array($id_search_option, addslashes($oldval), $values[$key]);
+               }
+
             // Linkfield or standard field not massive action enable
-            if (($val2['linkfield'] == $key)
+            } else if (($val2['linkfield'] == $key)
                 || (($key == $val2['field'])
                     && ($val2['table'] == $item->getTable()))) {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
@@ -159,8 +169,9 @@ class Log extends CommonDBTM {
                }
                break;
             }
-         }
+            //
 
+         }
          if (count($changes)) {
             $result = self::history($real_id, $real_type, $changes);
          }

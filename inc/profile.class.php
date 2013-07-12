@@ -1566,6 +1566,7 @@ class Profile extends CommonDBTM {
       $tab[20]['name']           = _n('Computer', 'Computers', 2);
       $tab[20]['datatype']       = 'right';
       $tab[20]['rightclass']     = 'Computer';
+      $tab[20]['rightname']      = 'computer';
       $tab[20]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'computer'");
 
@@ -1574,6 +1575,7 @@ class Profile extends CommonDBTM {
       $tab[21]['name']           = _n('Monitor', 'Monitors', 2);
       $tab[21]['datatype']       = 'right';
       $tab[21]['rightclass']     = 'Monitor';
+      $tab[21]['rightname']      = 'monitor';
       $tab[21]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'monitor'");
 
@@ -1582,6 +1584,7 @@ class Profile extends CommonDBTM {
       $tab[22]['name']           = _n('Software', 'Software', 2);
       $tab[22]['datatype']       = 'right';
       $tab[22]['rightclass']     = 'Software';
+      $tab[22]['rightname']      = 'software';
       $tab[22]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'software'");
 
@@ -1590,6 +1593,7 @@ class Profile extends CommonDBTM {
       $tab[23]['name']           = _n('Network', 'Networks', 2);
       $tab[23]['datatype']       = 'right';
       $tab[23]['rightclass']     = 'Networking';
+      $tab[23]['rightname']      = 'networking';
       $tab[23]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'networking'");
 
@@ -1598,6 +1602,7 @@ class Profile extends CommonDBTM {
       $tab[24]['name']           = _n('Printer', 'Printers',2);
       $tab[24]['datatype']       = 'right';
       $tab[24]['rightclass']     = 'Printer';
+      $tab[24]['rightname']      = 'printer';
       $tab[24]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'printer'");
 
@@ -1606,6 +1611,7 @@ class Profile extends CommonDBTM {
       $tab[25]['name']           = _n('Device', 'Devices', 2);
       $tab[25]['datatype']       = 'right';
       $tab[25]['rightclass']     = 'Peripheral';
+      $tab[25]['rightname']      = 'peripheral';
       $tab[25]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'peripheral'");
 
@@ -1614,6 +1620,7 @@ class Profile extends CommonDBTM {
       $tab[26]['name']           = _n('Cartridge', 'Cartridges', 2);
       $tab[26]['datatype']       = 'right';
       $tab[26]['rightclass']     = 'Cartridge';
+      $tab[26]['rightname']      = 'cartridge';
       $tab[26]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'cartridge'");
 
@@ -1622,6 +1629,7 @@ class Profile extends CommonDBTM {
       $tab[27]['name']           = _n('Consumable', 'Consumables', 2);
       $tab[27]['datatype']       = 'right';
       $tab[27]['rightclass']     = 'Consumable';
+      $tab[27]['rightname']      = 'consumable';
       $tab[27]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'consumable'");
 
@@ -1630,6 +1638,7 @@ class Profile extends CommonDBTM {
       $tab[28]['name']           = _n('Phone', 'Phones', 2);
       $tab[28]['datatype']       = 'right';
       $tab[28]['rightclass']     = 'Phone';
+      $tab[28]['rightname']      = 'phone';
       $tab[28]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'phone'");
 
@@ -1637,7 +1646,8 @@ class Profile extends CommonDBTM {
       $tab[129]['field']         = 'rights';
       $tab[129]['name']          = __('Internet');
       $tab[129]['datatype']      = 'right';
-      $tab[129]['rightclass']     = 'NetworkName';
+      $tab[129]['rightclass']    = 'NetworkName';
+      $tab[129]['rightname']     = 'internet';
       $tab[129]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'internet'");
 
@@ -1648,6 +1658,7 @@ class Profile extends CommonDBTM {
       $tab[30]['name']           = __('Contact')." / ".__('Supplier');
       $tab[30]['datatype']       = 'right';
       $tab[30]['rightclass']     = 'Contact';
+      $tab[30]['rightname']      = 'contact_entreprise';
       $tab[30]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'contact_enterprise'");
 
@@ -1656,6 +1667,7 @@ class Profile extends CommonDBTM {
       $tab[31]['name']           = _n('Document', 'Documents', 2);
       $tab[31]['datatype']       = 'right';
       $tab[31]['rightclass']     = 'Document';
+      $tab[31]['rightname']      = 'document';
       $tab[31]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'document'");
 
@@ -1664,6 +1676,7 @@ class Profile extends CommonDBTM {
       $tab[32]['name']           = _n('Contract', 'Contracts', 2);
       $tab[32]['datatype']       = 'right';
       $tab[32]['rightclass']     = 'Contract';
+      $tab[32]['rightname']      = 'contract';
       $tab[32]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'contract'");
 
@@ -1672,6 +1685,7 @@ class Profile extends CommonDBTM {
       $tab[33]['name']           = __('Financial and administratives information');
       $tab[33]['datatype']       = 'right';
       $tab[33]['rightclass']     = 'Infocom';
+      $tab[33]['rightname']      = 'infocom';
       $tab[33]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'infocom'");
 
@@ -1680,6 +1694,7 @@ class Profile extends CommonDBTM {
       $tab[101]['name']          = __('Budget');
       $tab[101]['datatype']      = 'right';
       $tab[101]['rightclass']    = 'Budget';
+      $tab[101]['rightname']     = 'budget';
       $tab[101]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'budget'");
 
@@ -1690,6 +1705,7 @@ class Profile extends CommonDBTM {
       $tab[34]['name']           = __('Knowledge base');
       $tab[34]['datatype']       = 'right';
       $tab[34]['rightclass']     = 'KnowbaseItem';
+      $tab[34]['rightname']      = 'knowbase';
       $tab[34]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'knowbase'");
 
@@ -1698,6 +1714,7 @@ class Profile extends CommonDBTM {
       $tab[36]['name']           = _n('Reservation', 'Reservations', 2);
       $tab[36]['datatype']       = 'right';
       $tab[36]['rightclass']     = 'ReservationItem';
+      $tab[36]['rightname']      = 'reservation';
       $tab[36]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'reservation'");
 
@@ -1706,16 +1723,19 @@ class Profile extends CommonDBTM {
       $tab[38]['name']           = _n('Report', 'Reports', 2);
       $tab[38]['datatype']       = 'right';
       $tab[38]['rightclass']     = 'Report';
+      $tab[38]['rightname']      = 'reports';
       $tab[38]['nowrite']        = true;
       $tab[38]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'reports'");
 
       $tab['config']             = __('Setup');
-      // TODO find class to associate
+
       $tab[42]['table']          = 'glpi_profilerights';
       $tab[42]['field']          = 'rights';
       $tab[42]['name']           = _n('Dropdown', 'Dropdowns', 2);
       $tab[42]['datatype']       = 'right';
+      $tab[42]['rightclass']     = 'DropdownTranslation';
+      $tab[42]['rightname']      = 'dropdown';
       $tab[42]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'dropdown'");
 
@@ -1724,6 +1744,7 @@ class Profile extends CommonDBTM {
       $tab[44]['name']           = _n('Component', 'Components', 2);
       $tab[44]['datatype']       = 'right';
       $tab[44]['rightclass']     = 'Item_Devices';
+      $tab[44]['rightname']      = 'device';
       $tab[44]['noread']         = true;
       $tab[44]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'device'");
@@ -1733,6 +1754,7 @@ class Profile extends CommonDBTM {
       $tab[106]['name']          = _n('Notification', 'Notifications',2);
       $tab[106]['datatype']      = 'right';
       $tab[106]['rightclass']    = 'Notification';
+      $tab[106]['rightname']     = 'notification';
       $tab[106]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'notification'");
 
@@ -1741,6 +1763,7 @@ class Profile extends CommonDBTM {
       $tab[45]['name']           = __('Document type');
       $tab[45]['datatype']       = 'right';
       $tab[45]['rightclass']     = 'DocumentType';
+      $tab[45]['rightname']      = 'typedoc';
       $tab[45]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'typedoc'");
 
@@ -1749,6 +1772,7 @@ class Profile extends CommonDBTM {
       $tab[46]['name']           = _n('External link', 'External links',2);
       $tab[46]['datatype']       = 'right';
       $tab[46]['rightclass']     = 'Link';
+      $tab[46]['rightname']      = 'link';
       $tab[46]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'link'");
 
@@ -1757,6 +1781,7 @@ class Profile extends CommonDBTM {
       $tab[47]['name']           = __('General setup');
       $tab[47]['datatype']       = 'right';
       $tab[47]['rightclass']     = 'Config';
+      $tab[47]['rightname']      = 'config';
       $tab[47]['noread']         = true;
       $tab[47]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'config'");
@@ -1766,6 +1791,7 @@ class Profile extends CommonDBTM {
       $tab[52]['name']           = __('Search result user display');
       $tab[52]['datatype']       = 'right';
       $tab[52]['rightclass']     = 'DisplayPreference';
+      $tab[52]['rightname']      = 'search_config';
       $tab[52]['noread']         = true;
       $tab[52]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'search_config'");
@@ -1775,6 +1801,7 @@ class Profile extends CommonDBTM {
       $tab[107]['name']          = _n('Calendar', 'Calendars', 2);
       $tab[107]['datatype']      = 'right';
       $tab[107]['rightclass']    = 'Calendar';
+      $tab[107]['rightname']     = 'calendar';
       $tab[107]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'calendar'");
 
@@ -1785,6 +1812,7 @@ class Profile extends CommonDBTM {
       $tab[48]['name']           = __('Business rules for tickets');
       $tab[48]['datatype']       = 'right';
       $tab[48]['rightclass']     = 'RuleTicket';
+      $tab[48]['rightname']      = 'rule_ticket';
       $tab[48]['nowrite']        = true;
       $tab[48]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'rule_ticket'");
@@ -1794,6 +1822,7 @@ class Profile extends CommonDBTM {
       $tab[105]['name']          = __('Rules for assigning a ticket created through a mails receiver');
       $tab[105]['datatype']      = 'right';
       $tab[105]['rightclass']    = 'RuleMailCollector';
+      $tab[105]['rightname']     = 'rule_mailcollector';
       $tab[105]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'rule_mailcollector'");
 
@@ -1802,6 +1831,7 @@ class Profile extends CommonDBTM {
       $tab[49]['name']           = __('Rules for assigning a computer to an entity');
       $tab[49]['datatype']       = 'right';
       $tab[49]['rightclass']     = 'RuleImportComputer';
+      $tab[49]['rightname']      = 'rule_import';
       $tab[49]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'rule_import'");
 
@@ -1810,6 +1840,7 @@ class Profile extends CommonDBTM {
       $tab[50]['name']           = __('Authorizations assignment rules');
       $tab[50]['datatype']       = 'right';
       $tab[50]['rightclass']     = 'Rule';
+      $tab[50]['rightname']      = 'rule_ldap';
       $tab[50]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'rule_ldap'");
 
@@ -1818,6 +1849,7 @@ class Profile extends CommonDBTM {
       $tab[51]['name']           = __('Rules for assigning a category to a software');
       $tab[51]['datatype']       = 'right';
       $tab[51]['rightclass']     = 'RuleSoftwareCategory';
+      $tab[51]['rightname']      = 'rule_softwarecategories';
       $tab[51]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'rule_softwarecategories'");
 
@@ -1826,6 +1858,7 @@ class Profile extends CommonDBTM {
       $tab[90]['name']           = __('Software dictionary');
       $tab[90]['datatype']       = 'right';
       $tab[90]['rightclass']     = 'RuleDictionnarySoftware';
+      $tab[90]['rightname']      = 'rule_dictionnary_software';
       $tab[90]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'rule_dictionnary_software'");
 
@@ -1834,6 +1867,7 @@ class Profile extends CommonDBTM {
       $tab[91]['name']           =__('Dropdowns dictionary');
       $tab[91]['datatype']       = 'right';
       $tab[91]['rightclass']     = 'RuleDictionnaryDropdown';
+      $tab[91]['rightname']      = 'rule_dictionnary_dropdown';
       $tab[91]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'rule_dictionnary_dropdown'");
 
@@ -1842,6 +1876,7 @@ class Profile extends CommonDBTM {
       $tab[55]['name']           = self::getTypeName(2);
       $tab[55]['datatype']       = 'right';
       $tab[55]['rightclass']     = 'Profile';
+      $tab[55]['rightname']      = 'profile';
       $tab[55]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'profile'");
 
@@ -1850,6 +1885,7 @@ class Profile extends CommonDBTM {
       $tab[56]['name']           = _n('User', 'Users', 2);
       $tab[56]['datatype']       = 'right';
       $tab[56]['rightclass']     = 'User';
+      $tab[56]['rightname']      = 'user';
       $tab[56]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'user'");
 
@@ -1858,6 +1894,7 @@ class Profile extends CommonDBTM {
       $tab[58]['name']           = _n('Group', 'Groups', 2);
       $tab[58]['datatype']       = 'right';
       $tab[58]['rightclass']     = 'Group';
+      $tab[58]['rightname']      = 'group';
       $tab[58]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'group'");
 
@@ -1866,6 +1903,7 @@ class Profile extends CommonDBTM {
       $tab[59]['name']           = _n('Entity', 'Entities', 2);
       $tab[59]['datatype']       = 'right';
       $tab[59]['rightclass']     = 'Entity';
+      $tab[59]['rightname']      = 'entity';
       $tab[59]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'entity'");
 
@@ -1874,6 +1912,7 @@ class Profile extends CommonDBTM {
       $tab[60]['name']           = __('Transfer');
       $tab[60]['datatype']       = 'right';
       $tab[60]['rightclass']     = 'Transfer';
+      $tab[60]['rightname']      = 'transfer';
       $tab[60]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'transfer'");
 
@@ -1882,6 +1921,7 @@ class Profile extends CommonDBTM {
       $tab[61]['name']           = _n('Log', 'Logs', 2);
       $tab[61]['datatype']       = 'right';
       $tab[61]['rightclass']     = 'Log';
+      $tab[61]['rightname']      = 'logs';
       $tab[61]['nowrite']        = true;
       $tab[61]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'logs'");
@@ -1891,6 +1931,7 @@ class Profile extends CommonDBTM {
       $tab[62]['name']           = __('Maintenance');
       $tab[62]['datatype']       = 'right';
       $tab[62]['rightclass']     = 'Backup';
+      $tab[62]['rightname']      = 'backup';
       $tab[62]['noread']         = true;
       $tab[62]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'backup'");
@@ -1902,6 +1943,7 @@ class Profile extends CommonDBTM {
       $tab[102]['name']          = __('Create a ticket');
       $tab[102]['datatype']      = 'right';
       $tab[102]['rightclass']    = 'Ticket';
+      $tab[102]['rightname']     = 'ticket';
       $tab[102]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'ticket'");
 
@@ -1920,6 +1962,7 @@ class Profile extends CommonDBTM {
       $tab[103]['name']          = _n('Ticket template', 'Ticket templates', 2);
       $tab[103]['datatype']      = 'right';
       $tab[103]['rightclass']    = 'TicketTemplate';
+      $tab[103]['rightname']     = 'tickettemplate';
       $tab[103]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'tickettemplate'");
 
@@ -1928,6 +1971,7 @@ class Profile extends CommonDBTM {
       $tab[79]['name']           = __('Plannings');
       $tab[79]['datatype']       = 'right';
       $tab[79]['rightclass']     = 'Planning';
+      $tab[79]['rightname']      = 'planning';
       $tab[79]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'planning'");
 
@@ -1936,6 +1980,7 @@ class Profile extends CommonDBTM {
       $tab[85]['name']           = __('Statistics');
       $tab[85]['datatype']       = 'right';
       $tab[85]['rightclass']     = 'Stat';
+      $tab[85]['rightname']      = 'statistic';
       $tab[85]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'statistic'");
 
@@ -1944,6 +1989,7 @@ class Profile extends CommonDBTM {
       $tab[119]['name']          = _n('Ticket cost', 'Ticket costs', 2);
       $tab[119]['datatype']      = 'right';
       $tab[119]['rightclass']    = 'TicketCost';
+      $tab[119]['rightname']     = 'ticketcost';
       $tab[119]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'ticketcost'");
 
@@ -1985,8 +2031,9 @@ class Profile extends CommonDBTM {
       $tab[112]['name']          = _n('Problem', 'Problems', 2);
       $tab[112]['datatype']      = 'right';
       $tab[112]['rightclass']    = 'Problem';
+      $tab[112]['rightname']     = 'problem';
       $tab[112]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'show_my_problem'");
+                                         'condition' => "AND `NEWTABLE`.`name`= 'problem'");
 
 
       $tab[111]['table']         = $this->getTable();
@@ -2001,8 +2048,9 @@ class Profile extends CommonDBTM {
       $tab[115]['name']          =_n('Change', 'Changes', 2);
       $tab[115]['datatype']      = 'right';
       $tab[115]['rightclass']    = 'Change';
+      $tab[115]['rightname']     = 'change';
       $tab[115]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'show_my_change'");
+                                         'condition' => "AND `NEWTABLE`.`name`= 'change'");
 
 
       $tab['other']              = __('Other');
@@ -2019,6 +2067,7 @@ class Profile extends CommonDBTM {
       $tab[63]['name']           = _n('Public reminder', 'Public reminders', 2);
       $tab[63]['datatype']       = 'right';
       $tab[63]['rightclass']     = 'Reminder';
+      $tab[63]['rightname']      = 'reminder_public';
       $tab[63]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'reminder_public'");
 
@@ -2027,6 +2076,7 @@ class Profile extends CommonDBTM {
       $tab[64]['name']           = _n('Public bookmark', 'Public bookmarks', 2);
       $tab[64]['datatype']       = 'right';
       $tab[64]['rightclass']     = 'Bookmark';
+      $tab[64]['rightname']      = 'bookmark_public';
       $tab[64]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'bookmark_public'");
 
@@ -2035,6 +2085,7 @@ class Profile extends CommonDBTM {
       $tab[120]['name']           = _n('Public RSS feed', 'Public RSS feeds', 2);
       $tab[120]['datatype']       = 'right';
       $tab[120]['rightclass']     = 'RSSFeed';
+      $tab[120]['rightname']      = 'rssfeed_public';
       $tab[120]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'rssfeed_public'");
 

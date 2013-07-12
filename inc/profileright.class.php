@@ -45,6 +45,7 @@ class ProfileRight extends CommonDBChild {
    // From CommonDBChild:
    static public $itemtype = 'Profile';
    static public $items_id = 'profiles_id'; // Field name
+   public $dohistory       = true;
 
 
 
@@ -291,6 +292,16 @@ class ProfileRight extends CommonDBChild {
          $rights .= $name;
       }
       return $rights;
+   }
+
+
+   /**
+    * @since version 0.858
+    *
+    * @see CommonDBTM::getLogTypeID()
+   **/
+   function getLogTypeID() {
+      return array('Profile', $this->fields['profiles_id']);
    }
 
 }

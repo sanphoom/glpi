@@ -667,7 +667,7 @@ class CommonDBTM extends CommonGLPI {
          if (TableExists('glpi_networkportmigrations')) {
             $networkPortMigObject = new NetworkPortMigration();
             $networkPortMigObject->cleanDBonItemDelete($this->getType(), $this->getID());
-         }         
+         }
       }
 
       // If this type is RESERVABLE clean one associated to purged item
@@ -4492,10 +4492,18 @@ class CommonDBTM extends CommonGLPI {
                                                                     array('display' => false));
                   }
                   return Dropdown::getDropdownName($searchoptions['table'], $value);
-
+/*
                case "right" :
-                  return Profile::getRightValue($value);
+                  $options['searchopt'] = $searchoptions;
 
+                  return Profile::getRightValue($value);
+//                  foreach (Profile::getRightsFor($searchoptions['rightclass']) as $name => $val) {
+
+  //                }
+//                  return Profile::dropdownRights(Profile::getRightsFor($searchoptions['rightclass']),
+//                        $name, $value, array('multiple' => false,
+//                              'display'  => false));
+*/
                case "itemtypename" :
                   if ($obj = getItemForItemtype($value)) {
                      return $obj->getTypeName(1);
@@ -4513,6 +4521,7 @@ class CommonDBTM extends CommonGLPI {
          // Get specific display if available
          $itemtype = getItemTypeForTable($searchoptions['table']);
          if ($item = getItemForItemtype($itemtype)) {
+            $options['searchopt'] = $searchoptions;
             $specific = $item->getSpecificValueToDisplay($field, $values, $options);
             if (!empty($specific)) {
                return $specific;
