@@ -2320,27 +2320,6 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * @param $value
-   **/
-   static function getRightValue($value) {
-
-      switch ($value) {
-         case '' :
-            return __('No access');
-
-         case 'r' :
-            return __('Read');
-
-         case 'w' :
-            return __('Write');
-
-         default :
-            return '';
-      }
-   }
-
-
-   /**
     * @since version 0.84
    **/
    static function getInterfaces() {

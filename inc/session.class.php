@@ -1052,9 +1052,9 @@ class Session {
    static function isReadOnlyAccount() {
 
       foreach ($_SESSION['glpiactiveprofile'] as $name => $val) {
-         if (is_string($val)
+         if (is_numeric($val)
              && ($name != 'search_config')
-             && ($val == 'w')) {
+             && ($val & ~READ)) {
             return false;
          }
       }

@@ -878,7 +878,7 @@ class Entity extends CommonTreeDropdown {
    **/
    function executeAddRule($input) {
 
-      $this->check($_POST["affectentity"], 'w');
+      $this->check($_POST["affectentity"], UPDATE);
 
       $collection = RuleCollection::getClassByType($_POST['sub_type']);
       $rule       = $collection->getRuleClass($_POST['sub_type']);
