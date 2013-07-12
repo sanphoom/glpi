@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a virtual machine'), $_SESSION["glpiname"]));
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect($disk>getFormURL()."?id=".$newID);
+         Html::redirect(Toolbox::getItemTypeFormURL('ComputerVirtualMachine')."?id=".$newID);
       }
    }
    Html::back();

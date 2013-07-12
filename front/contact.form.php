@@ -55,6 +55,9 @@ if (isset($_GET['getvcard'])) {
    if ($newID = $contact->add($_POST)) {
       Event::log($newID, "contacts", 4, "financial",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($contact->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 

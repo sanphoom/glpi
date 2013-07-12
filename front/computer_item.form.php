@@ -54,9 +54,6 @@ if (isset($_POST["disconnect"])) {
          Event::log($_POST["computers_id"], "computers", 5, "inventory",
                     //TRANS: %s is the user login
                     sprintf(__('%s connects an item'), $_SESSION["glpiname"]));
-         if ($_SESSION['glpibackcreated']) {
-            Html::redirect($conn->getFormURL()."?id=".$newID);
-         }
       }
    }
    Html::back();

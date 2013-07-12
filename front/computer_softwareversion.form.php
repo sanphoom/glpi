@@ -48,10 +48,7 @@ if (isset($_POST["add"])) {
          Event::log($_POST["computers_id"], "computers", 5, "inventory",
                     //TRANS: %s is the user login
                     sprintf(__('%s installs software'), $_SESSION["glpiname"]));
-         if ($_SESSION['glpibackcreated']) {
-            Html::redirect($inst->getFormURL()."?id=".$newID);
-         }
-   }
+      }
    }
    Html::back();
 

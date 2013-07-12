@@ -41,9 +41,6 @@ if (isset($_POST["add"])) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s associates a type'), $_SESSION["glpiname"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($cipm->getFormURL()."?id=".$newID);
-      }
    }
    Html::back();
 

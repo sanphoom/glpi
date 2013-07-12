@@ -44,9 +44,6 @@ if (isset($_POST["add"])) {
       Event::log($_POST["calendars_id"], "calendars", 4, "setup",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-      if ($_SESSION['glpibackcreated']) {
-         Html::redirect($item->getFormURL()."?id=".$newID);
-      }
    }
    Html::back();
 }

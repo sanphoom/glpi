@@ -43,9 +43,6 @@ if (isset($_POST["add"])) {
          Event::log($_POST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
                     //TRANS: %s is the user login
                     sprintf(__('%s associates a computer and a license'), $_SESSION["glpiname"]));
-         if ($_SESSION['glpibackcreated']) {
-            Html::redirect($csl->getFormURL()."?id=".$newID);
-         }
       }
    }
    Html::back();

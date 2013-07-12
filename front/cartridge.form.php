@@ -48,11 +48,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST["cartridgeitems_id"], "cartridgeitems", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s adds cartridges'), $_SESSION["glpiname"]));
-   if ($_SESSION['glpibackcreated']) {
-      Html::redirect($cart->getFormURL()."?id=".$newID);
-   } else {
-      Html::back();
-   }
+   Html::back();
 
 } else if (isset($_POST["purge"])) {
    $cartype->check($_POST["cartridgeitems_id"], PURGE);
