@@ -4678,9 +4678,6 @@ class Search {
                }
                return Dropdown::getValueWithUnit(Dropdown::getYesNo($data[$NAME.$num]),$unit);
 
-            case "right":
-               return Profile::getRightValue($data[$NAME.$num]);
-
             case "itemtypename":
                if ($obj = getItemForItemtype($data[$NAME.$num])) {
                   return $obj->getTypeName();
@@ -4728,7 +4725,10 @@ class Search {
                   $tmpdata[$key] = $data[$NAME.$num.'_'.$key];
                }
             }
-            $specific = $item->getSpecificValueToDisplay($field, $tmpdata, array('html' => true));
+            $specific = $item->getSpecificValueToDisplay($field, $tmpdata,
+                                                         array('html'      => true,
+                                                               'searchopt' => $searchopt[$ID]));
+
             if (!empty($specific)) {
                return $specific;
             }
