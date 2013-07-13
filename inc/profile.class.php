@@ -274,11 +274,15 @@ class Profile extends CommonDBTM {
       $this->profileRight = array();
       foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
          if (isset($input['_'.$right])) {
-            $this->profileRight[$right] = array_sum($input['_'.$right]);
+            $newvalue = array_sum($input['_'.$right]);
+            // Update rights only if changed
+            if (!isset($this->fields[$right]) || ($this->fields[$right] != $newvalue)) {
+               $this->profileRight[$right] = $newvalue;
+            }
             unset($input['_'.$right]);
          }
       }
-
+      
       // check if right if the last write profile on Profile object
       if (($this->fields['profile'] & UPDATE)
           && isset($input['profile']) && !($input['profile'] & UPDATE)
