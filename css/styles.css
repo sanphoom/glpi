@@ -253,14 +253,13 @@ select {
    background-color: white;
    line-height: 19px; /* do not set height because using multiple select*/
   border: 1px solid #bbb;
-}}
+}
 
 textarea, input {
    background-color:#FAFAFA;
    color: black;
    border: 1px solid #888888;
    font-size: 11px;
-   
 }
 
 input {
