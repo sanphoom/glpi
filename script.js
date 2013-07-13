@@ -694,3 +694,25 @@ function selectAll(id) {
 function deselectAll(id) {
    $('#'+id).val('').trigger('change');
 }
+
+/**
+ * @since version 0.85
+ * 
+ * @param checkbox the object of the checkbox
+ * @param id the identifier of the HTML hidden field
+ * @param readonly 
+**/
+function updateYesNoCheckBox(checkbox, id, readonly) {
+    if (readonly) {
+        checkbox.checked = !checkbox.checked;
+    } else {
+        var e = document.getElementById(id);
+        if (e) {
+            if (checkbox.checked) {
+                e.value = 1;
+            } else {
+		e.value = 0;
+            }
+        }
+    }
+}

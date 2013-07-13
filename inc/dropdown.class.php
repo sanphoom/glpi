@@ -584,7 +584,8 @@ class Dropdown {
 
 
    /**
-    * Make a select box for a boolean choice (Yes/No)
+    * Make a select box for a boolean choice (Yes/No) or display a checkbox. Add a
+    * 'use_checkbox' = true to the $params array to display a checkbox instead a select box
     *
     * @param $name               select name
     * @param $value              preselected value. (default 0)
@@ -594,6 +595,37 @@ class Dropdown {
     * @return rand value
    **/
    static function showYesNo($name, $value=0, $restrict_to=-1, $params=array()) {
+
+      // TODO: switch to (!array_hey_exists(...) || $params['use_checkbox'] == true) when ready
+      if ((array_key_exists ('use_checkbox', $params))
+          && ($params['use_checkbox'] === true)) {
+         switch ($restrict_to) {
+            case 0:
+               $value    = 0;
+               $readonly = 'true';
+               break;
+            case 1:
+               $value    = 1;
+               $readonly = 'true';
+               break;
+            default:
+               $value = ($value ? 1 : 0);
+               $readonly = 'false';
+               break;
+         }
+
+         $rand = mt_rand();
+
+         echo Html::hidden($name, array('id' => $rand, 'value' => $value));
+
+         echo "<input type='checkbox'";
+         if ($value == 1) {
+            echo " checked";
+         }
+         echo " onClick=\"updateYesNoCheckBox(this, $rand, $readonly)\">";
+
+         return $rand;
+      }
 
       if ($restrict_to != 0) {
          $options[0] = __('No');
