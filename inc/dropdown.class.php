@@ -596,9 +596,11 @@ class Dropdown {
    **/
    static function showYesNo($name, $value=0, $restrict_to=-1, $params=array()) {
 
-      // TODO: switch to (!array_hey_exists(...) || $params['use_checkbox'] == true) when ready
-      if ((array_key_exists ('use_checkbox', $params))
-          && ($params['use_checkbox'] === true)) {
+     if (!array_key_exists ('use_checkbox', $params)) {
+        // TODO: switch to true when this method is validated
+        $params['use_checkbox'] = false;
+      }
+      if ($params['use_checkbox']) {
          switch ($restrict_to) {
             case 0:
                $value    = 0;
