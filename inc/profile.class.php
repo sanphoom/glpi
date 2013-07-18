@@ -42,6 +42,15 @@ class Profile extends CommonDBTM {
 
    // Specific ones
 
+   // Transitional: the fields that are managed through the new checkbox matrix framework
+   static $checkbox_profiles = array('user', 'entity', 'group', 'profile', 'queuedmail',
+                                     'backup', 'logs', 'transfer', 'rule_ldap', 'rule_import',
+                                     'rule_mailcollector', 'rule_softwarecategories',
+                                     'rule_ticket', 'rule_dictionnary_dropdown',
+                                     'rule_dictionnary_software', 'rule_dictionnary_printer',
+                                     'computer', 'monitor', 'software', 'networking', 'printer',
+                                     'cartridge', 'consumable', 'phone', 'peripheral', 'internet');
+
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights = array('create_ticket_on_login', 'followup',
                                           'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
@@ -229,7 +238,7 @@ class Profile extends CommonDBTM {
          }
       }
 
-      if (isset($input["_cycles_ticket"])) {
+      if (isset($input["_cycle_ticket"])) {
          $tab   = Ticket::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
@@ -243,7 +252,7 @@ class Profile extends CommonDBTM {
          $input["ticket_status"] = exportArrayToDB($cycle);
       }
 
-      if (isset($input["_cycles_problem"])) {
+      if (isset($input["_cycle_problem"])) {
          $tab   = Problem::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
@@ -257,7 +266,7 @@ class Profile extends CommonDBTM {
          $input["problem_status"] = exportArrayToDB($cycle);
       }
 
-      if (isset($input["_cycles_change"])) {
+      if (isset($input["_cycle_change"])) {
          $tab   = Change::getAllStatusArray();
          $cycle = array();
          foreach ($tab as $from => $label) {
@@ -274,7 +283,16 @@ class Profile extends CommonDBTM {
       $this->profileRight = array();
       foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
          if (isset($input['_'.$right])) {
-            $newvalue = array_sum($input['_'.$right]);
+            if (in_array($right, self::$checkbox_profiles)) {
+               $newvalue = 0;
+               foreach ($input['_'.$right] as $value => $valid) {
+                  if ($valid) {
+                     $newvalue += $value;
+                  }
+               }
+            } else {
+               $newvalue = array_sum($input['_'.$right]);
+            }
             // Update rights only if changed
             if (!isset($this->fields[$right]) || ($this->fields[$right] != $newvalue)) {
                $this->profileRight[$right] = $newvalue;
@@ -282,7 +300,7 @@ class Profile extends CommonDBTM {
             unset($input['_'.$right]);
          }
       }
-      
+
       // check if right if the last write profile on Profile object
       if (($this->fields['profile'] & UPDATE)
           && isset($input['profile']) && !($input['profile'] & UPDATE)
@@ -753,90 +771,60 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
+
+      // TODO: uniformize the class of forms ?
+      echo "<div class='firstbloc'>";
       if (($canedit = Session::haveRightsOr(self::$rightname, array(UPDATE, CREATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      echo "<div class='spaced'>";
-      echo "<table class='tab_cadre_fixe'>";
+      $matrix_options = array('canedit'       => $canedit,
+                              'default_class' => 'tab_bg_2',
+                              'title'         => __('Assets'));
 
-      // Inventory
-      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assets')."</th></tr>\n";
+      $rights = array(array('itemtype'  => 'Computer',
+                            'label'     => _n('Computer', 'Computers', 2),
+                            'field'     => 'computer'),
+                      array('itemtype'  => 'Monitor',
+                            'label'     => _n('Monitor', 'Monitors', 2),
+                            'field'     => 'monitor'),
+                      array('itemtype'  => 'Software',
+                            'label'     => _n('Software', 'Software', 2),
+                            'field'     => 'software'),
+                      array('itemtype'  => 'NetworkEquipment',
+                            'label'     => _n('Network', 'Networks', 2),
+                            'field'     => 'networking'),
+                      array('itemtype'  => 'Printer',
+                            'label'     => _n('Printer', 'Printers', 2),
+                            'field'     => 'printer'),
+                      array('itemtype'  => 'Cartridge',
+                            'label'     => _n('Cartridge', 'Cartridges', 2),
+                            'field'     => 'cartridge'),
+                      array('itemtype'  => 'Consumable',
+                            'label'     => _n('Consumable', 'Consumables', 2),
+                            'field'     => 'consumable'),
+                      array('itemtype'  => 'Phone',
+                            'label'     => _n('Phone', 'Phones', 2),
+                            'field'     => 'phone'),
+                      array('itemtype'  => 'Peripheral',
+                            'label'     => _n('Device', 'Devices', 2),
+                            'field'     => 'peripheral'),
+                      array('itemtype'  => 'NetworkName',
+                            'label'     => __('Internet'),
+                            'field'     => 'internet'));
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Computer', 'Computers', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Computer'), "_computer",
-                           $this->fields["computer"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Monitor', 'Monitors', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Monitor'), "_monitor",
-                           $this->fields["monitor"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Software', 'Software', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Software'), "_software",
-                           $this->fields["software"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Network', 'Networks', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('NetworkEquipment'), "_networking",
-                           $this->fields["networking"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Printer', 'Printers', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Printer'), "_printer",
-                           $this->fields["printer"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Cartridge', 'Cartridges', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Cartridge'), "_cartridge",
-                           $this->fields["cartridge"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Consumable', 'Consumables', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Consumable'), "_consumable",
-                           $this->fields["consumable"]);
-
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Phone', 'Phones', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Phone'), "_phone", $this->fields["phone"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Device', 'Devices', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Peripheral'), "_peripheral",
-                           $this->fields["peripheral"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Internet')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('NetworkName'), "_internet",
-                           $this->fields["internet"]);
-      echo "</td>\n";
-      echo "<td colspan='4'>&nbsp;</td></tr>";
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       if ($canedit
           && $closeform) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='6' class='center'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
+         echo "</div>\n";
          Html::closeForm();
-      } else {
-         echo "</table>\n";
       }
+
       echo "</div>";
    }
 
@@ -1105,6 +1093,46 @@ class Profile extends CommonDBTM {
 
 
    /**
+    * Display the matrix of the elements lifecycle of the elements
+    *
+    * @since 0.85
+    *
+    * @param $title the kind of lifecycle
+    * @param $html_field field that is sent to _POST
+    * @param $db_field field inside the DB (to get current state)
+    * @param $statuses all available statuses for the given cycle (obj::getAllStatusArray())
+    * @param $canedit can we edit the elements ?
+    *
+    * @return nothing
+   **/
+   function displayLifeCycleMatrix($title, $html_field, $db_field, $statuses, $canedit) {
+
+      $columns  = array();
+      $rows     = array();
+
+      foreach ($statuses as $index_1 => $status_1) {
+         $columns[$index_1] = $status_1;
+         $row               = array('label'      => $status_1,
+                                    'columns'    => array());
+         foreach ($statuses as $index_2 => $status_2) {
+            $content = array('value' => true);
+            if (isset($this->fields[$db_field][$index_1][$index_2])) {
+               $content['value'] = $this->fields[$db_field][$index_1][$index_2];
+            }
+            if (($index_1 == $index_2) || (!$canedit)) {
+               $content['readonly'] = true;
+            }
+            $row['columns'][$index_2] = $content;
+         }
+         $rows[$html_field."[$index_1]"] = $row;
+      }
+      Html::showCheckboxMatrix($columns, $rows,
+                               array('title'      => $title,
+                                     'first_cell' => '<b>'.__("From \ To").'</b>'));
+   }
+
+
+   /**
    * Print the Life Cycles form for the current profile
    *
    * @param $openform   boolean  open the form (true by default)
@@ -1116,109 +1144,30 @@ class Profile extends CommonDBTM {
          return false;
       }
 
+      // TODO: uniformize the class of forms ?
+      echo "<div class='spaced'>";
+
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      echo "<div class='spaced'>";
+      $this->displayLifeCycleMatrix(__('Life cycle of tickets'), '_cycle_ticket', 'ticket_status',
+                                    Ticket::getAllStatusArray(), $canedit);
 
-      echo "<table class='tab_cadre_fixe'>";
-      $tabstatus = Ticket::getAllStatusArray();
+      $this->displayLifeCycleMatrix(__('Life cycle of problems'), '_cycle_problem',
+                                    'problem_status', Problem::getAllStatusArray(), $canedit);
 
-      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of tickets')."</th>";
-      //TRANS: \ to split row heading (From) and colums headin (To) for life cycles
-      echo "<tr class='tab_bg_1'><td class='b center'>".__("From \ To");
-      echo "<input type='hidden' name='_cycles_ticket' value='1'</td>";
-      foreach ($tabstatus as $label) {
-         echo "<td class='rotate4cb'>$label</td>";
-      }
-      echo "</tr>\n";
-
-      foreach ($tabstatus as $from => $label) {
-         echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
-         foreach ($tabstatus as $dest => $label) {
-            echo "<td class='center'>";
-            if ($dest == $from) {
-               echo Dropdown::getYesNo(1);
-            } else {
-               Dropdown::showYesNo("_cycle_ticket[$from][$dest]",
-                                   (!isset($this->fields['ticket_status'][$from][$dest])
-                                    || $this->fields['ticket_status'][$from][$dest]));
-            }
-            echo "</td>";
-         }
-         echo "</tr>\n";
-      }
-      echo "</table>";
-
-      echo "<table class='tab_cadre_fixe'>";
-      $tabstatus = Problem::getAllStatusArray();
-
-      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of problems')."</th>";
-      echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
-      echo "<input type='hidden' name='_cycles_problem' value='1'</td>";
-      foreach ($tabstatus as $label) {
-         echo "<td class='center' width='11%'>$label</td>";
-      }
-      echo "</tr>\n";
-
-      foreach ($tabstatus as $from => $label) {
-         echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
-         foreach ($tabstatus as $dest => $label) {
-            echo "<td class='center'>";
-            if ($dest == $from) {
-               echo Dropdown::getYesNo(1);
-            } else {
-               Dropdown::showYesNo("_cycle_problem[$from][$dest]",
-                                   (!isset($this->fields['problem_status'][$from][$dest])
-                                    || $this->fields['problem_status'][$from][$dest]));
-            }
-            echo "</td>";
-         }
-         echo "</tr>\n";
-      }
-
-      echo "</table>";
-
-      echo "<table class='tab_cadre_fixe'>";
-      $tabstatus = Change::getAllStatusArray();
-
-      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of changes')."</th>";
-      echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
-      echo "<input type='hidden' name='_cycles_change' value='1'</td>";
-      foreach ($tabstatus as $label) {
-         echo "<td class='center' width='9%'>$label</td>";
-      }
-      echo "</tr>\n";
-
-      foreach ($tabstatus as $from => $label) {
-         echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
-         foreach ($tabstatus as $dest => $label) {
-            echo "<td class='center'>";
-            if ($dest == $from) {
-               echo Dropdown::getYesNo(1);
-            } else {
-               Dropdown::showYesNo("_cycle_change[$from][$dest]",
-                                   (!isset($this->fields['change_status'][$from][$dest])
-                                    || $this->fields['change_status'][$from][$dest]));
-            }
-            echo "</td>";
-         }
-         echo "</tr>\n";
-      }
+      $this->displayLifeCycleMatrix(__('Life cycle of changes'), '_cycle_change', 'change_status',
+                                    Change::getAllStatusArray(), $canedit);
 
       if ($canedit
           && $closeform) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='".(count($tabstatus)+1)."' class='center'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
+         echo "</div>\n";
          Html::closeForm();
-      } else {
-         echo "</table>\n";
       }
       echo "</div>";
    }
@@ -1237,130 +1186,83 @@ class Profile extends CommonDBTM {
          return false;
       }
 
+      // TODO: uniformize the class of forms ?
       echo "<div class='firstbloc'>";
+
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      echo "<table class='tab_cadre_fixe'>";
+      $matrix_options = array('canedit'       => $canedit,
+                              'default_class' => 'tab_bg_4');
 
-      // Administration
-      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Administration')."</th></tr>\n";
+      $rights = array(array('itemtype'  => 'User',
+                            'label'     => _n('User', 'Users', 2),
+                            'field'     => 'user',
+                            'row_class' => 'tab_bg_2'),
+                      array('itemtype'  => 'Entity',
+                            'label'     => _n('Entity', 'Entities', 2),
+                            'field'     => 'entity'),
+                      array('itemtype'  => 'Group',
+                            'label'     => _n('Group', 'Groups', 2),
+                            'field'     => 'group'),
+                      array('itemtype'  => 'Profile',
+                            'label'     => _n('Profile', 'Profiles', 2),
+                            'field'     => 'profile'),
+                      array('itemtype'  => 'QueuedMail',
+                            'label'     => __('Mail queue'),
+                            'field'     => 'queuedmail'),
+                      array('itemtype'  => 'Backup',
+                            'label'     => __('Maintenance'),
+                            'field'     => 'backup'),
+                      array('itemtype'  => 'Log',
+                            'label'     => _n('Log', 'Logs', 2),
+                            'field'     => 'logs'),
+                      array('itemtype'  => 'Transfer',
+                            'label'     => __('Transfer'),
+                            'field'     => 'transfer'));
+      $matrix_options['title'] = __('Administration');
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('User', 'Users', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('User'), "_user", $this->fields["user"]);
-      echo "</td></tr>\n";
+      $rights = array(array('itemtype'  => 'Rule',
+                            'label'     => __('Authorizations assignment rules'),
+                            'field'     => 'rule_ldap'),
+                      array('itemtype'  => 'RuleImportComputer',
+                            'label'     => __('Rules for assigning a computer to an entity'),
+                            'field'     => 'rule_import'),
+                      array('itemtype'  => 'RuleMailCollector',
+                            'label'     => __('Rules for assigning a ticket created through a mails receiver'),
+                            'field'     => 'rule_mailcollector'),
+                      array('itemtype'  => 'RuleSoftwareCategory',
+                            'label'     => __('Rules for assigning a category to a software'),
+                            'field'     => 'rule_softwarecategories'),
+                      array('itemtype'  => 'RuleTicket',
+                            'label'     => __('Business rules for tickets (entity)'),
+                            'field'     => 'rule_ticket',
+                            'row_class' => 'tab_bg_2'));
+      $matrix_options['title'] = _n('Rule', 'Rules', 2);
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Entity', 'Entities', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Entity'), "_entity", $this->fields["entity"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Group', 'Groups', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Group'), "_group", $this->fields["group"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".self::getTypeName(2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Profile'), "_profile",
-                           $this->fields["profile"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Mail queue')."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('QueuedMail'), "_queuedmail",
-                           $this->fields["queuedmail"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Maintenance')."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('Backup'), "_backup", $this->fields["backup"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Log', 'Logs', 2)."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('Log'), "_logs", $this->fields["logs"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Transfer')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Transfer'), "_transfer",
-                           $this->fields["transfer"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Rule', 'Rules', 2)."</th>";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Authorizations assignment rules')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Rule'), "_rule_ldap",
-                           $this->fields["rule_ldap"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Rules for assigning a computer to an entity')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('RuleImportComputer'), "_rule_import",
-                           $this->fields["rule_import"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Rules for assigning a ticket created through a mails receiver')."</td>";
-      echo "<td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('RuleMailCollector'), "_rule_mailcollector",
-                           $this->fields["rule_mailcollector"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Rules for assigning a category to a software')."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('RuleSoftwareCategory'),
-                           "_rule_softwarecategories", $this->fields["rule_softwarecategories"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
-      echo "<td class='tab_bg_1' colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('RuleTicket'), "_rule_ticket",
-                           $this->fields["rule_ticket"]);
-      echo"</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Dictionary', 'Dictionaries', 2)."</th></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Dropdowns dictionary')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('RuleDictionnaryDropdown'),
-                           "_rule_dictionnary_dropdown",
-                           $this->fields["rule_dictionnary_dropdown"]);
-      echo"</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      //TRANS: software in plural
-      echo "<td>".__('Software dictionary')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('RuleDictionnarySoftware'),
-                           "_rule_dictionnary_software",
-                           $this->fields["rule_dictionnary_software"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Printers dictionnary')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('RuleDictionnaryPrinter'),
-                           "_rule_dictionnary_printer",
-                           $this->fields["rule_dictionnary_printer"]);
-      echo "</td></tr>";
-
+      $rights = array(array('itemtype'  => 'RuleDictionnaryDropdown',
+                            'label'     => __('Dropdowns dictionary'),
+                            'field'     => 'rule_dictionnary_dropdown'),
+                      array('itemtype'  => 'RuleDictionnarySoftware',
+                            'label'     => __('Software dictionary'),
+                            'field'     => 'rule_dictionnary_software'),
+                      array('itemtype'  => 'RuleDictionnaryPrinter',
+                            'label'     => __('Printers dictionnary'),
+                            'field'     => 'rule_dictionnary_printer'));
+      $matrix_options['title'] = __('Dropdowns dictionary');
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       if ($canedit
           && $closeform) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='6' class='center'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
+         echo "</div>\n";
          Html::closeForm();
-      } else {
-         echo "</table>\n";
       }
       echo "</div>";
 
@@ -2461,6 +2363,75 @@ class Profile extends CommonDBTM {
          return $item->getRights($interface);
       }
       return false;
+   }
+
+
+   /**
+    * Display rights choice matrix
+    *
+    * @since version 0.85
+    *
+    * @param $rights array :
+    *             'itemtype' => the type of the item to check (as passed to self::getRightsFor())
+    *             'label'    => the label for the right
+    *             'field'    => the name of the field inside the DB and HTML form (prefixed by '_')
+    * @param $options array
+    *                 'title' : the title of the 
+    *
+    * @return rights
+   **/
+   function displayRightsChoiceMatrix(array $rights, array $options = array()) {
+
+      $param = array();
+      $param['title']         = '';
+      $param['canedit']       = true;
+      $param['default_class'] = '';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+
+      $columns = array();
+      $rows = array();
+
+      foreach ($rights as $info) {
+
+         if (is_string($info)) {
+            $rows[] = $info;
+            continue;
+         }
+
+         if (is_array($info) && (!empty($info['itemtype']))
+             && (!empty($info['label'])) && (!empty($info['field']))) {
+
+            $row = array('label'   => $info['label'],
+                         'columns' => array());
+            if (!empty($info['row_class'])) {
+               $row['class'] = $info['row_class'];
+            } else {
+               $row['class'] = $param['default_class'];
+            }
+            $profile_right = $this->fields[$info['field']];
+            $rights = self::getRightsFor($info['itemtype']);
+
+            foreach ($rights as $right => $label) {
+               $columns[$right] = $label;
+               $value = ((($profile_right & $right) == $right) ? 1 : 0);
+               $row['columns'][$right] = array('value' => $value);
+               if (!$param['canedit']) {
+                  $row['columns'][$right]['restrict_to'] = $value;
+               }
+            }
+            $rows['_'.$info['field']] = $row;
+         }
+      }
+
+      ksort($columns);
+
+      Html::showCheckboxMatrix($columns, $rows, array('title'         => $param['title'],
+                                                         'row_check_all' => true));
    }
 
 }

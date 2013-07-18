@@ -597,36 +597,27 @@ class Dropdown {
    static function showYesNo($name, $value=0, $restrict_to=-1, $params=array()) {
 
      if (!array_key_exists ('use_checkbox', $params)) {
-        // TODO: switch to true when this method is validated
+        // TODO: switch to true when Html::showCheckbox() is validated
         $params['use_checkbox'] = false;
       }
       if ($params['use_checkbox']) {
+         $options = array();
          switch ($restrict_to) {
             case 0:
-               $value    = 0;
-               $readonly = 'true';
+               $options['value']    = false;
+               $options['readonly'] = true;
                break;
             case 1:
-               $value    = 1;
-               $readonly = 'true';
+               $options['value']    = true;
+               $options['readonly'] = true;
                break;
             default:
-               $value = ($value ? 1 : 0);
-               $readonly = 'false';
+               $options['value']    = ($value ? 1 : 0);
+               $options['readonly'] = false;
                break;
          }
 
-         $rand = mt_rand();
-
-         echo Html::hidden($name, array('id' => $rand, 'value' => $value));
-
-         echo "<input type='checkbox'";
-         if ($value == 1) {
-            echo " checked";
-         }
-         echo " onClick=\"updateYesNoCheckBox(this, $rand, $readonly)\">";
-
-         return $rand;
+         return Html::showCheckbox($name, $options);
       }
 
       if ($restrict_to != 0) {

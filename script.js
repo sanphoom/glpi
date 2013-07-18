@@ -388,6 +388,7 @@ function markCheckboxes(container_id) {
       if (checkbox && (checkbox.type == 'checkbox')) {
          if (checkbox.disabled == false ) {
             checkbox.checked = true;
+            updateHiddenFieldOfCheckbox(checkbox);
          }
       }
    }
@@ -408,6 +409,7 @@ function unMarkCheckboxes(container_id) {
       checkbox = checkboxes[j];
       if (checkbox && (checkbox.type == 'checkbox')) {
          checkbox.checked = false;
+         updateHiddenFieldOfCheckbox(checkbox);
       }
    }
    return true;
@@ -432,6 +434,7 @@ function toggleCheckboxes( container_id ) {
                } else {
                   checkbox.checked = false;
                }
+               updateHiddenFieldOfCheckbox(checkbox);
             }
          }
    }
@@ -477,6 +480,7 @@ function checkAsCheckboxes( reference_id, container_id ) {
       if (checkbox && (checkbox.type == 'checkbox')) {
          if (checkbox.disabled == false) {
             checkbox.checked = ref.checked;
+            updateHiddenFieldOfCheckbox(checkbox);
          }
       }
    }
@@ -675,7 +679,7 @@ function submitGetLink(target,fields) {
 
 /**
  * @since version 0.85
- * 
+ *
  * @param id
 **/
 function selectAll(id) {
@@ -688,7 +692,7 @@ function selectAll(id) {
 
 /**
  * @since version 0.85
- * 
+ *
  * @param id
 **/
 function deselectAll(id) {
@@ -697,21 +701,18 @@ function deselectAll(id) {
 
 /**
  * @since version 0.85
- * 
+ *
  * @param checkbox the object of the checkbox
- * @param id the identifier of the HTML hidden field
- * @param readonly 
 **/
-function updateYesNoCheckBox(checkbox, id, readonly) {
-    if (readonly) {
-        checkbox.checked = !checkbox.checked;
-    } else {
-        var e = document.getElementById(id);
-        if (e) {
+function updateHiddenFieldOfCheckbox(checkbox) {
+    var hiddenFieldId = checkbox.getAttribute('associatedHiddenField');
+    if (hiddenFieldId) {
+        var hiddenField = document.getElementById(hiddenFieldId);
+        if (hiddenField) {
             if (checkbox.checked) {
-                e.value = 1;
+                hiddenField.value = 1;
             } else {
-		e.value = 0;
+                hiddenField.value = 0;
             }
         }
     }

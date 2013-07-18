@@ -141,7 +141,7 @@ class Log extends CommonDBTM {
                    && ($val2['rightname'] == $item->fields['name'])) {
 
                   $id_search_option = $key2;
-                  Toolbox::logDebug("idsoptNEW", $id_search_option, $searchopt[$key2]);
+                  //Toolbox::logDebug("idsoptNEW", $id_search_option, $searchopt[$key2]);
                   $changes =  array($id_search_option, addslashes($oldval), $values[$key]);
                }
 

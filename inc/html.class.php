@@ -2277,10 +2277,73 @@ class Html {
       if (empty($rand)) {
          $rand = mt_rand();
       }
+
       $out  = "<input title='".__s('Check all as')."' type='checkbox' name='_checkall_$rand' ".
                 "id='checkall_$rand' ".
                 "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
                                              {return true;}\">";
+
+      return $out;
+   }
+
+
+   /**
+    * @brief display a checkbox that $_POST 0 or 1 depending on if it is checked or not.
+    * @see Html::getCheckbox()
+    *
+    * @return nothing (display only)
+   **/
+   static function showCheckbox($name, array $options = array()) {
+      echo self::getCheckbox($name, $options);
+   }
+
+
+   /**
+    * @brief get a checkbox that $_POST 0 or 1 depending on if it is checked or not.
+    *
+    * Get a single checkbox with its hidden input field to be sure to get the value submitted to
+    * _POST. These checkbox uses the updateHiddenFieldOfCheckbox() js function to update its hidden
+    * field. The id of the hidden field is send to the associatedHiddenField HTML attribute setted
+    * to the HTML INPUT element.
+    *
+    * @since version 0.85
+    *
+    * @param $name     the name of the field
+    * @param $options array of parameters :
+    *                 value current state (default false = unchecked)
+    *                 readonly readonly or not ?
+    *                 rand : the randomized value used to generate the ids
+    *
+    * @return the HTML code for the checkbox
+   **/
+   static function getCheckbox($name, array $options = array()) {
+
+      $params             = array();
+      $params['value']    = false;
+      $params['readonly'] = false;
+      $params['rand']     = mt_rand();
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $hidden_id   = Html::cleanId($name.'_'.$params['rand']);
+      $checkbox_id = Html::cleanId('checkbox_'.$name.'_'.$params['rand']);
+      $value       = ($params['value'] ? 1 : 0);
+
+      $out = Html::hidden($name, array('id' => $hidden_id, 'value' => $value));
+
+      $out.= "<input type='checkbox'" . " associatedHiddenField='$hidden_id' ".
+             " onChange='updateHiddenFieldOfCheckbox(this)' id='$checkbox_id'";
+      if ($value) {
+         $out .= ' checked';
+      }
+      if ($params['readonly']) {
+         $out .= " disabled='disabled'";
+      }
+      $out .= ">";
 
       return $out;
    }
@@ -4408,6 +4471,128 @@ class Html {
                <div id='filedata$randupload'></div>";
       return $out;
    }
-   
+
+
+   /**
+    * Display choice matrix
+    *
+    * @since version 0.85
+    * @param $columns array of column field name => column label
+    * @param $rows string or array of field name => array(
+    *                        'label' the label of the row
+    *                        'columns' an array of specific information regaring current row and given column indexed by column field_name
+    *                                    * a string if only have to display a string
+    *                                    * an array('value' => ???, 'readonly' => ???) that is used to Dropdown::showYesNo()
+    * @param $options :
+    *             'title'         of the matrix
+    *             'first_cell'    the content of the upper-left cell
+    *             'row_check_all' set to true to display a checkbox to check all elements of the row
+    *
+    * @return nothing
+   **/
+   static function showCheckboxMatrix(array $columns, array $rows, array $options = array()) {
+
+      $param['title']                = '';
+      $param['first_cell']           = '&nbsp;';
+      $param['row_check_all']        = false;
+      $param['rotate_column_titles'] = false;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+
+      $number_columns = (count($columns) + 1);
+      if ($param['row_check_all']) {
+         $number_columns += 1;
+      }
+
+      echo "\n<table class='tab_cadre_fixe'>\n";
+
+      if (!empty($param['title'])) {
+         echo "\t<tr class='tab_bg_1'>\n";
+         echo "\t\t<th colspan='$number_columns'>".$param['title']."</th>\n";
+         echo "\t</tr>\n";
+      }
+
+      echo "\t<tr>\n";
+      echo "\t\t<td>".$param['first_cell']."</td>\n";
+      foreach ($columns as $label) {
+         echo "\t\t<td class='center";
+         if ($param['rotate_column_titles']) {
+            echo " rotate4cb";
+         }
+         echo "'>$label</td>\n";
+      }
+      if ($param['row_check_all']) {
+         echo "\t\t<td class='center";
+         if ($param['rotate_column_titles']) {
+            echo " rotate4cb";
+         }
+         echo "'>".__('Select/unselect all')."</td>\n";
+      }
+      echo "\t</tr>\n";
+
+      foreach ($rows as $name => $row) {
+
+         if ((!is_string($row)) && (!is_array($row))) {
+            continue;
+         }
+
+         echo "\t<tr";
+         if (isset($row['class'])) {
+            echo " class='".$row['class']."'";
+         }
+         if ($param['row_check_all']) {
+            $line_id = 'matrix_display_'.mt_rand();
+            echo " id='$line_id'";
+         }
+         echo ">";
+
+         if (is_string($row)) {
+            echo "\t\t<th colspan='$number_columns'>$row</th>\n";
+         } else {
+
+            echo "\t\t<td>";
+            if (!empty($row['label'])) {
+               echo $row['label'];
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td>\n";
+
+            foreach (array_keys($columns) as $col_name) {
+               echo "\t\t<td class='center'>";
+
+               // Warning: isset return false if the value is NULL ...
+               if (array_key_exists($col_name, $row['columns'])) {
+                  $content = $row['columns'][$col_name];
+                  if (is_array($content)
+                      && array_key_exists('value', $content)) {
+                     if (!array_key_exists('readonly', $content)) {
+                        $content['readonly'] = false;
+                     }
+                     Html::showCheckbox($name."[$col_name]", $content);
+                  } elseif (is_string($content)) {
+                     echo $content;
+                  } else {
+                     echo "&nbsp;";
+                  }
+               } else {
+                  echo "&nbsp;";
+               }
+
+               echo "</td>\n";
+            }
+         }
+         if ($param['row_check_all']) {
+            echo "\t\t<td class='center'>".Html::getCheckAllAsCheckbox($line_id)."</td>";
+         }
+         echo "\t</tr>\n";
+      }
+      echo "</table>";
+   }
+
 }
 ?>
