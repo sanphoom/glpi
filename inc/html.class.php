@@ -397,7 +397,7 @@ class Html {
       }
       return '';
    }
-// 
+//
 
    /**
     * Extract url from web link
@@ -966,7 +966,7 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js");
 
                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
-            "</script>\n";      
+            "</script>\n";
       if (isset($_SESSION['glpilanguage'])) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
@@ -2776,7 +2776,7 @@ class Html {
       }
 
       if (!empty($p['mintime'])) {
-         list($minHour, $minMinute, $minSec) = explode(':', $p['mintime']);
+         list($minHour, $minMinute) = explode(':', $p['mintime']);
          $minMinute = 0;
 
          // Check time in interval
@@ -2786,7 +2786,7 @@ class Html {
       }
 
       if (!empty($p['maxtime'])) {
-         list($maxHour, $maxMinute, $maxSec) = explode(':', $p['maxtime']);
+         list($maxHour, $maxMinute) = explode(':', $p['maxtime']);
          $maxMinute = 59;
 
          // Check time in interval
@@ -4396,7 +4396,7 @@ class Html {
       return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,
                      Html::parseAttributes($options));
    }
-   
+
    /**
     * Creates an input file field. Send file names in _$name field as array.
     * Files are uploaded in files/_tmp/ directory
@@ -4422,12 +4422,12 @@ class Html {
             $p[$key] = $val;
          }
       }
-      
+
       $randupload = mt_rand();
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       $out = "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
                $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name']."'>";
-      
+
       $script = "var fileindex$randupload = 0;
          $('#fileupload$randupload').fileupload({
 //             forceIframeTransport: true,
