@@ -266,12 +266,12 @@ class Dropdown {
       $comment = "";
 
       if ($id) {
-         $SELECTNAME    = "`$table`.`name`, '' AS transname";
-         $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
+         $SELECTNAME    = "'' AS transname";
+         $SELECTCOMMENT = "'' AS transcomment";
          $JOIN          = '';
          if  ($translate) {
             if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
-               $SELECTNAME = "`$table`.`name`, `namet`.`value` AS transname";
+               $SELECTNAME = "`namet`.`value` AS transname";
                $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
                                  ON (`namet`.`itemtype` = '".getItemTypeForTable($table)."'
                                      AND `namet`.`items_id` = `$table`.`id`
@@ -279,7 +279,7 @@ class Dropdown {
                                      AND `namet`.`field` = 'name')";
             }
             if (Session::haveTranslations(getItemTypeForTable($table), 'comment')) {
-               $SELECTCOMMENT = "`$table`.`comment`, `namec`.`value` AS transcomment";
+               $SELECTCOMMENT = "`namec`.`value` AS transcomment";
                $JOIN          .= " LEFT JOIN `glpi_dropdowntranslations` AS namec
                                     ON (`namec`.`itemtype` = '".getItemTypeForTable($table)."'
                                         AND `namec`.`items_id` = `$table`.`id`
@@ -289,7 +289,7 @@ class Dropdown {
 
          }
 
-         $query = "SELECT $SELECTNAME, $SELECTCOMMENT, `locations_id`
+         $query = "SELECT `$table`.*, $SELECTNAME, $SELECTCOMMENT
                    FROM `$table`
                    $JOIN
                    WHERE `$table`.`id` = '$id'";
