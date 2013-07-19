@@ -88,7 +88,6 @@ class Change_Ticket extends CommonDBRelation{
 
       $canedit = $change->canEdit($ID);
       $rand    = mt_rand();
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
                                 `glpi_tickets`.*
@@ -130,61 +129,39 @@ class Change_Ticket extends CommonDBRelation{
          echo "</div>";
       }
 
-
       echo "<div class='spaced'>";
-
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams = array('num_displayed' => $numrows,
-                                      'container'     => 'mass'.__CLASS__.$rand);
+         $massiveactionparams = array('num_displayed'    => $numrows,
+                                      'container'        => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
-
+      
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
-      if ($canedit && $numrows) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-      }
-      echo "<th>".__('Title')."</th>";
-      if ($change->isRecursive()) {
-         echo "<th>".__('Entity')."</th>";
-      }
+      echo "<tr><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
       echo "</tr>";
-
-      $used = array();
       if ($numrows) {
+         Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), Change::getTypeName(1),
-                                                $change->fields["name"]));
+                                         sprintf(__('%1$s = %2$s'), Problem::getTypeName(1),
+                                                 $change->fields["name"]));
 
+         $i = 0;
          foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            echo "<tr class='tab_bg_1'>";
-            if ($canedit) {
-               echo "<td>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
-               echo "</td>";
-            }
-            echo "<td><a href='".Toolbox::getItemTypeFormURL('Ticket')."?id=".$data['id']."'>".
-                      $data["name"]."</a></td>";
-            if ($change->isRecursive()) {
-               echo "<td>".Dropdown::getDropdownName('glpi_entities',$data["entities_id"])."</td>";
-            }
-            echo "</tr>";
+            Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
+            $i++;
          }
       }
-
-
       echo "</table>";
-
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
          Html::closeForm();
       }
-      echo "</div>";
+      echo "</div>";      
    }
 
 

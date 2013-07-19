@@ -270,7 +270,7 @@ class Problem_Ticket extends CommonDBRelation{
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='11'>".Ticket::getTypeName($numrows)."</th>";
+      echo "<tr><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
          Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
