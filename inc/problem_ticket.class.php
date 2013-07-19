@@ -283,7 +283,10 @@ class Problem_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, __CLASS__, $data['linkID']);
+            Ticket::showShort($data['id'], array('followups'              => false,
+                                                 'row_num'                => $i,
+                                                 'type_for_massiveaction' => __CLASS__,
+                                                 'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
       }
@@ -369,7 +372,7 @@ class Problem_Ticket extends CommonDBRelation{
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='11'>".Problem::getTypeName($numrows)."</th>";
+      echo "<tr><th colspan='12'>".Problem::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
          Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
@@ -382,7 +385,9 @@ class Problem_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($problems as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
-            Problem::showShort($data['id'], Search::HTML_OUTPUT, $i, __CLASS__, $data['linkID']);
+            Problem::showShort($data['id'], array('row_num'                => $i,
+                                                  'type_for_massiveaction' => __CLASS__,
+                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
       }

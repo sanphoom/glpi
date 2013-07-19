@@ -3632,6 +3632,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function showStats() {
 
+      /// TODO : right check trouble : Why Ticket ??? maybe Problem or Change
       if (!Session::haveRight('followup', TicketFollowup::SEEPUBLIC)
           || !Session::haveRight('task', TicketTask::SEEPUBLIC)
           || !isset($this->fields['id'])) {
@@ -4270,5 +4271,304 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+
+   /**
+    * Display a line for an object
+    *
+    * @param $id                 Integer  ID of the object
+    * @param $options            array of options
+    *      output_type : interger : Default output type (see Search class / default Search::HTML_OUTPUT)
+    *      row_num : integer : row num used for display (default 0)
+    *      type_for_massiveaction : string : itemtype for massive action (default __CLASS__)
+    *      id_for_massaction : integer : default 0 means no massive action (default 0)
+    *      followups : boolean : only for Tickets : show followup columns
+    */
+   static function showShort($id, $options = array()) {
+      global $CFG_GLPI, $DB;
+
+
+      $p['output_type']            = Search::HTML_OUTPUT;
+      $p['row_num']                = 0;
+      $p['type_for_massiveaction'] = 0;
+      $p['id_for_massiveaction']   = 0;
+      $p['followups']              = false;
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      
+      $rand = mt_rand();
+
+      /// TODO to be cleaned. Get datas and clean display links
+
+      // Prints a job in short form
+      // Should be called in a <table>-segment
+      // Print links or not in case of user view
+      // Make new job object and fill it from database, if success, print it
+      $item         = new static();
+
+      $candelete   = static::canDelete();
+      $canupdate   = Session::haveRight(static::$rightname, UPDATE);
+      $showprivate = Session::haveRight('followup', TicketFollowup::SEEPRIVATE);
+      $align       = "class='center";
+      $align_desc  = "class='left";
+
+      if ($p['followups']) {
+         $align      .= " top'";
+         $align_desc .= " top'";
+      } else {
+         $align      .= "'";
+         $align_desc .= "'";
+      }
+
+      if ($item->getFromDB($id)) {
+         $item_num = 1;
+         $bgcolor  = $_SESSION["glpipriority_".$item->fields["priority"]];
+
+         echo Search::showNewLine($p['output_type'],$p['row_num']%2);
+
+         $check_col = '';
+         if (($candelete || $canupdate)
+             && ($p['output_type'] == Search::HTML_OUTPUT)
+             && $p['id_for_massiveaction']) {
+
+            $check_col = Html::getMassiveActionCheckBox($p['type_for_massiveaction'], $p['id_for_massiveaction']);
+         }
+         echo Search::showItem($p['output_type'], $check_col, $item_num, $p['row_num'], $align);
+
+         // First column
+         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
+         if ($p['output_type'] == Search::HTML_OUTPUT) {
+            $first_col .= "<br><img src='".static::getStatusIconURL($item->fields["status"])."'
+                                alt=\"".static::getStatus($item->fields["status"])."\" title=\"".
+                                static::getStatus($item->fields["status"])."\">";
+         } else {
+            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
+                                 static::getStatus($item->fields["status"]));
+         }
+
+         echo Search::showItem($p['output_type'], $first_col, $item_num, $p['row_num'], $align);
+
+         // Second column
+         if ($item->fields['status'] == static::CLOSED) {
+            $second_col = sprintf(__('Closed on %s'),
+                                  ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($item->fields['closedate']));
+         } else if ($item->fields['status'] == static::SOLVED) {
+            $second_col = sprintf(__('Solved on %s'),
+                                  ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($item->fields['solvedate']));
+         } else if ($item->fields['begin_waiting_date']) {
+            $second_col = sprintf(__('Put on hold on %s'),
+                                  ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($item->fields['begin_waiting_date']));
+         } else if ($item->fields['due_date']) {
+            $second_col = sprintf(__('%1$s: %2$s'), __('Due date'),
+                                  ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($item->fields['due_date']));
+         } else {
+            $second_col = sprintf(__('Opened on %s'),
+                                  ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($item->fields['date']));
+         }
+
+         echo Search::showItem($p['output_type'], $second_col, $item_num, $p['row_num'], $align." width=130");
+
+         // Second BIS column
+         $second_col = Html::convDateTime($item->fields["date_mod"]);
+         echo Search::showItem($p['output_type'], $second_col, $item_num, $p['row_num'], $align." width=90");
+
+         // Second TER column
+         if (count($_SESSION["glpiactiveentities"]) > 1) {
+            $second_col = Dropdown::getDropdownName('glpi_entities', $item->fields['entities_id']);
+            echo Search::showItem($p['output_type'], $second_col, $item_num, $p['row_num'],
+                                  $align." width=100");
+         }
+
+         // Third Column
+         echo Search::showItem($p['output_type'],
+                               "<span class='b'>".static::getPriorityName($item->fields["priority"]).
+                                 "</span>",
+                               $item_num, $p['row_num'], "$align bgcolor='$bgcolor'");
+
+         // Fourth Column
+         $fourth_col = "";
+
+         foreach ($item->getUsers(CommonITILActor::REQUESTER) as $d) {
+            $userdata    = getUserName($d["users_id"], 2);
+            $fourth_col .= sprintf(__('%1$s %2$s'),
+                                    "<span class='b'>".$userdata['name']."</span>",
+                                    Html::showToolTip($userdata["comment"],
+                                                      array('link'    => $userdata["link"],
+                                                            'display' => false)));
+            $fourth_col .= "<br>";
+         }
+
+         foreach ($item->getGroups(CommonITILActor::REQUESTER) as $d) {
+            $fourth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+            $fourth_col .= "<br>";
+         }
+
+         echo Search::showItem($p['output_type'], $fourth_col, $item_num, $p['row_num'], $align);
+
+         // Fifth column
+         $fifth_col = "";
+
+         foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
+            $userdata   = getUserName($d["users_id"], 2);
+            $fifth_col .= sprintf(__('%1$s %2$s'),
+                                    "<span class='b'>".$userdata['name']."</span>",
+                                    Html::showToolTip($userdata["comment"],
+                                                      array('link'    => $userdata["link"],
+                                                            'display' => false)));
+            $fifth_col .= "<br>";
+         }
+
+         foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
+            $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+            $fifth_col .= "<br>";
+         }
+
+
+         foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $d) {
+            $fifth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
+            $fifth_col .= "<br>";
+         }
+
+         echo Search::showItem($p['output_type'], $fifth_col, $item_num, $p['row_num'], $align);
+
+         // Sixth Colum
+         // Ticket : simple link to item
+         $sixth_col  = "";
+         $is_deleted = false;
+         if ($item->getType() == 'Ticket') {
+            if (!empty($item->fields["itemtype"])
+               && ($item->fields["items_id"] > 0)) {
+               if ($object = getItemForItemtype($item->fields["itemtype"])) {
+                  if ($object->getFromDB($item->fields["items_id"])) {
+                     $is_deleted = $object->isDeleted();
+
+                     $sixth_col .= $object->getTypeName();
+                     $sixth_col .= "<br><span class='b'>";
+                     if ($item->canView()) {
+                        $sixth_col .= $object->getLink(array('linkoption' => $p['output_type']==Search::HTML_OUTPUT));
+                     } else {
+                        $sixth_col .= $object->getNameID();
+                     }
+                     $sixth_col .= "</span>";
+                  }
+               }
+
+            } else if (empty($item->fields["itemtype"])) {
+               $sixth_col = __('General');
+            }
+         } else {
+            // Several items may be linked
+            $sixth_col = 'ggg';
+         }
+
+         echo Search::showItem($p['output_type'], $sixth_col, $item_num, $p['row_num'],
+                               ($is_deleted?" class='center deleted' ":$align));
+
+         // Seventh column
+         echo Search::showItem($p['output_type'],
+                               "<span class='b'>".
+                                 Dropdown::getDropdownName('glpi_itilcategories',
+                                                           $item->fields["itilcategories_id"]).
+                               "</span>",
+                               $item_num, $p['row_num'], $align);
+
+         // Eigth column
+         $eigth_column = "<span class='b'>".$item->fields["name"]."</span>&nbsp;";
+
+         // Add link
+         if ($item->canViewItem()) {
+            $eigth_column = "<a id='".$item->getType().$item->fields["id"]."$rand' href=\"".$item->getLinkURL()
+                              ."\">$eigth_column</a>";
+
+            if ($p['followups']
+                && ($p['output_type'] == Search::HTML_OUTPUT)) {
+               $eigth_column .= TicketFollowup::showShortForTicket($item->fields["id"]);
+            } else {
+               if (method_exists($item, 'numberOfFollowups')) {
+                  $eigth_column  = sprintf(__('%1$s (%2$s)'), $eigth_column,
+                                          sprintf(__('%1$s - %2$s'),
+                                                   $item->numberOfFollowups($showprivate),
+                                                   $item->numberOfTasks($showprivate)));
+               } else {
+                  $eigth_column  = sprintf(__('%1$s (%2$s)'), $eigth_column,
+                                                   $item->numberOfTasks($showprivate));
+
+               }
+            }
+         }
+
+         if ($p['output_type'] == Search::HTML_OUTPUT) {
+            $eigth_column = sprintf(__('%1$s %2$s'), $eigth_column,
+                                    Html::showToolTip($item->fields['content'],
+                                                      array('display' => false,
+                                                            'applyto' => $item->getType().$item->fields["id"].
+                                                                           $rand)));
+         }
+
+         echo Search::showItem($p['output_type'], $eigth_column, $item_num, $p['row_num'],
+                               $align_desc."width='200'");
+
+
+         //tenth column
+         $tenth_column = '';
+
+         $tasktype = $item->getType()."Task";
+         $plan         = new $tasktype();
+         $items        = array();
+         foreach ($DB->request($plan->getTable(),
+                               array($item->getForeignKeyField() => $item->fields['id'])) as $plan) {
+            $i                  = $plan['id'];
+            $items[$i]['begin'] = $plan['begin'];
+            $items[$i]['end']   = $plan['end'];
+
+            if (isset($items[$i]['begin']) && $items[$i]['begin']) {
+
+               foreach ($DB->request("glpi_users",
+                                     array('id' => $plan['users_id_tech'])) as $user) {
+                  $j                      = $user['id'];
+                  $items[$j]['realname']  = $user['realname'];
+                  $items[$j]['firstname'] = $user['firstname'];
+                  if (($items[$j]['realname'] == '')
+                      && ($items[$j]['firstname'] == '')) {
+                     $name[$j] = $user['name'];
+                  } else {
+                     $name[$j] =  $items[$j]['realname']." ". $items[$j]['firstname'];
+                  }
+               }
+
+               if ($i) {
+                  $tenth_column .= sprintf(__('From %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                           Html::convDateTime($items[$i]['begin']));
+                  $tenth_column .= sprintf(__('To %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                           Html::convDateTime($items[$i]['end']));
+                  if (isset($j)) {
+                     $tenth_column .= sprintf(__('By %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                              $name[$j]);
+                  }
+                  $tenth_column .= "<br>";
+               }
+            }
+
+         }
+         unset($i, $j);
+         echo Search::showItem($p['output_type'], $tenth_column, $item_num, $p['row_num'],
+                               $align_desc."width='150'");
+
+         // Finish Line
+         echo Search::showEndLine($p['output_type']);
+      } else {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td colspan='6' ><i>".__('No ticket in progress.')."</i></td></tr>";
+      }
+   }
+   
 }
 ?>

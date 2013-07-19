@@ -151,7 +151,10 @@ class Change_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
+            Ticket::showShort($data['id'], array('followups'              => false,
+                                                 'row_num'                => $i,
+                                                 'type_for_massiveaction' => __CLASS__,
+                                                 'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
       }
@@ -180,7 +183,6 @@ class Change_Ticket extends CommonDBRelation{
 
       $canedit = $ticket->canEdit($ID);
       $rand    = mt_rand();
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
                                 `glpi_changes`.*
@@ -230,39 +232,29 @@ class Change_Ticket extends CommonDBRelation{
                                       'container'     => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
+      
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr>";
-      if ($canedit && $numrows) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-      }
-      echo "<th>".__('Title')."</th>";
+      echo "<tr><th colspan='12'>".Change::getTypeName($numrows)."</th>";
       echo "</tr>";
-
-
-
-      $used = array();
       if ($numrows) {
+         Change::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Change',
-         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), Ticket::getTypeName(1),
-                                                $ticket->fields["name"]));
+                                 //TRANS : %1$s is the itemtype name,
+                                 //        %2$s is the name of the item (used for headings of a list)
+                                         sprintf(__('%1$s = %2$s'), Ticket::getTypeName(1),
+                                                 $ticket->fields["name"]));
 
+         $i = 0;
          foreach ($changes as $data) {
-            $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Change', $data["id"]);
-            echo "<tr class='tab_bg_1'>";
-            if ($canedit) {
-               echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["linkID"]);
-               echo "</td>";
-            }
-            echo "<td><a href='".Toolbox::getItemTypeFormURL('Change')."?id=".$data['id']."'>".
-                      $data["name"]."</a></td>";
-            echo "</tr>";
+            Change::showShort($data['id'], array('row_num'                => $i,
+                                                 'type_for_massiveaction' => __CLASS__,
+                                                 'id_for_massiveaction'   => $data['linkID']));
+            $i++;
          }
       }
-
       echo "</table>";
+      
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
          Html::showMassiveActions(__CLASS__, $massiveactionparams);

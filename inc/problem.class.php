@@ -241,7 +241,7 @@ class Problem extends CommonITILObject {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Ticket', $ong, $options);
-//       $this->addStandardTab('Change', $ong, $options);
+      $this->addStandardTab('Change', $ong, $options);
       $this->addStandardTab('ProblemTask', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Problem', $ong, $options);
@@ -1487,9 +1487,11 @@ class Problem extends CommonITILObject {
       $items[__('Priority')]           = "glpi_problems.priority";
       $items[__('Requester')]          = "glpi_problems.users_id";
       $items[_x('problem','Assigned')] = "glpi_problems.users_id_assign";
-//       $items[__('Associated element')] = "glpi_problems.itemtype, glpi_problems.items_id";
+      $items[__('Associated element')] = "";
       $items[__('Category')]           = "glpi_itilcategories.completename";
       $items[__('Title')]              = "glpi_problems.name";
+      $items[__('Planification')]      = "glpi_problemtasks.begin";
+      
 
       foreach ($items as $key => $val) {
          $issort = 0;
@@ -1499,210 +1501,6 @@ class Problem extends CommonITILObject {
 
       // End Line for column headers
       echo Search::showEndLine($output_type);
-   }
-
-
-   /**
-    * @param $id
-    * @param $output_type        (default Search::HTML_OUTPUT)
-    * @param $row_num            (default 0)
-    * @param $type_for_massiveaction  string  itemtype for massive action (default 'Problem')
-    * @param $id_for_massaction  (default -1)
-    */
-   static function showShort($id, $output_type=Search::HTML_OUTPUT, $row_num=0,
-                             $type_for_massiveaction='Ticket', $id_for_massaction=-1) {
-      global $CFG_GLPI;
-
-      $rand = mt_rand();
-
-      /// TODO to be cleaned. Get datas and clean display links
-
-      // Prints a job in short form
-      // Should be called in a <table>-segment
-      // Print links or not in case of user view
-      // Make new job object and fill it from database, if success, print it
-      $job = new self();
-
-      // If id is specified it will be used as massive aciton id
-      // Used when displaying ticket and wanting to delete a link data
-      if ($id_for_massaction == -1) {
-         $id_for_massaction = $id;
-      }
-
-      $candelete   = Session::haveRight(self::$rightname, DELETE);
-      $canupdate   = Session::haveRight(self::$rightname, UPDATE);
-      $showprivate = Session::haveRight(self::$rightname, self::READALL);
-      $align       = "class='center'";
-      $align_desc  = "class='left'";
-
-      if ($job->getFromDB($id)) {
-         $item_num = 1;
-         $bgcolor  = $_SESSION["glpipriority_".$job->fields["priority"]];
-
-         echo Search::showNewLine($output_type,$row_num%2);
-
-         $check_col = '';
-         if (($candelete || $canupdate)
-             && ($output_type == Search::HTML_OUTPUT)) {
-
-            $check_col = Html::getMassiveActionCheckBox($type_for_massiveaction, $id_for_massaction);
-         }
-         echo Search::showItem($output_type, $check_col, $item_num, $row_num, $align);
-
-         // First column
-         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
-         if ($output_type == Search::HTML_OUTPUT) {
-            $first_col .= "<br><img src='".self::getStatusIconURL($job->fields["status"])."'
-                           alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
-                           self::getStatus($job->fields["status"])."\">";
-         } else {
-            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
-                                 self::getStatus($job->fields["status"]));
-         }
-
-         echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);
-
-         // Second column
-         if ($job->fields['status'] == self::CLOSED) {
-            $second_col = sprintf(__('Closed on %s'),
-                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
-                                    Html::convDateTime($job->fields['closedate']));
-          } else if ($job->fields['status'] == self::SOLVED) {
-            $second_col = sprintf(__('Solved on %s'),
-                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
-                                    Html::convDateTime($job->fields['solvedate']));
-         } else if ($job->fields['due_date']) {
-            $second_col = sprintf(__('%1$s: %2$s'), __('Due date'),
-                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
-                                    Html::convDateTime($job->fields['due_date']));
-         } else {
-             $second_col = sprintf(__('Opened on %s'),
-                                   (($output_type == Search::HTML_OUTPUT)?'<br>':'').
-                                     Html::convDateTime($job->fields['date']));
-        }
-
-         echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
-
-         // Second BIS column
-         $second_col = Html::convDateTime($job->fields["date_mod"]);
-         echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=90");
-
-         // Second TER column
-         if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $second_col = Dropdown::getDropdownName('glpi_entities', $job->fields['entities_id']);
-            echo Search::showItem($output_type, $second_col, $item_num, $row_num,
-                                  $align." width=100");
-         }
-
-         // Third Column
-         echo Search::showItem($output_type,
-                               "<span class='b'>".parent::getPriorityName($job->fields["priority"]).
-                                "</span>",
-                               $item_num, $row_num, "$align bgcolor='$bgcolor'");
-
-         // Fourth Column
-         $fourth_col = "";
-
-         if (isset($job->users[CommonITILActor::REQUESTER])
-             && count($job->users[CommonITILActor::REQUESTER])) {
-            foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
-               $userdata    = getUserName($d["users_id"], 2);
-               $fourth_col .= "<span class='b'>".$userdata['name']."</span>";
-               $fourth_col  = sprintf(__('%1$s %2$s')."<br>", $fourth_col,
-                                     Html::showToolTip($userdata["comment"],
-                                                       array('link'    => $userdata["link"],
-                                                             'display' => false)));
-            }
-         }
-
-         if (isset($job->groups[CommonITILActor::REQUESTER])
-             && count($job->groups[CommonITILActor::REQUESTER])) {
-            foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-               $fourth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
-               $fourth_col .= "<br>";
-            }
-         }
-
-         echo Search::showItem($output_type, $fourth_col, $item_num, $row_num, $align);
-
-         // Fifth column
-         $fifth_col = "";
-
-         if (isset($job->users[CommonITILActor::ASSIGN])
-             && count($job->users[CommonITILActor::ASSIGN])) {
-            foreach ($job->users[CommonITILActor::ASSIGN] as $d) {
-               $userdata = getUserName($d["users_id"], 2);
-               $fifth_col .= "<span class='b'>".$userdata['name']."</span>";
-               $fifth_col  = sprintf(__('%1$s %2$s')."<br>", $fifth_col,
-                                     Html::showToolTip($userdata["comment"],
-                                                       array('link'    => $userdata["link"],
-                                                             'display' => false)));
-            }
-         }
-
-         if (isset($job->groups[CommonITILActor::ASSIGN])
-             && count($job->groups[CommonITILActor::ASSIGN])) {
-            foreach ($job->groups[CommonITILActor::ASSIGN] as $d) {
-               $fifth_col .= Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
-               $fifth_col .= "<br>";
-            }
-         }
-
-         if (isset($job->suppliers[CommonITILActor::ASSIGN])
-             && count($job->suppliers[CommonITILActor::ASSIGN])) {
-            foreach ($job->suppliers[CommonITILActor::ASSIGN] as $d) {
-               $fifth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
-               $fifth_col .= "<br>";
-            }
-         }
-
-
-         echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
-
-         // Sixth Colum
-
-
-         // Seventh column
-         echo Search::showItem($output_type,
-                               "<span class='b'>".
-                                 Dropdown::getDropdownName('glpi_itilcategories',
-                                                           $job->fields["itilcategories_id"]).
-                                 "</span>",
-                               $item_num, $row_num, $align);
-
-         // Eigth column
-         $eigth_column = "<span class='b'>".$job->fields["name"]."</span>&nbsp;";
-
-         // Add link
-         if ($job->canViewItem()) {
-            $eigth_column = "<a id='problem".$job->fields["id"]."$rand' href=\"".
-                              $CFG_GLPI["root_doc"].
-                              "/front/problem.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
-
-            if ($output_type == Search::HTML_OUTPUT) {
-               $eigth_column = sprintf(__('%1$s (%2$s)'), $eigth_column,
-                                       $job->numberOfTasks($showprivate));
-            }
-         }
-
-         if ($output_type == Search::HTML_OUTPUT) {
-            $eigth_column = sprintf(__('%1$s %2$s'), $eigth_column,
-                                    Html::showToolTip($job->fields['content'],
-                                                      array('display' => false,
-                                                            'applyto' => "ticket".$job->fields["id"].
-                                                                           $rand)));
-         }
-
-         echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
-                               $align_desc."width='300'");
-
-         // Finish Line
-         echo Search::showEndLine($output_type);
-
-      } else {
-         echo "<tr class='tab_bg_2'><td colspan='6'><i>".__('No problem in progress.').
-              "</i></td></tr>";
-      }
    }
 
 

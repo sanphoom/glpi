@@ -1049,5 +1049,63 @@ class Change extends CommonITILObject {
 
       return $values;
    }
+
+   /**
+    * @param $output_type   (default Search::HTML_OUTPUT)
+    * @param $mass_id       id of the form to check all (default '')
+   **/
+   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
+
+      // New Line for Header Items Line
+      echo Search::showNewLine($output_type);
+      // $show_sort if
+      $header_num = 1;
+
+      $items = array();
+
+      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
+      $items[__('Status')]       = "glpi_changes.status";
+      $items[__('Date')]         = "glpi_changes.date";
+      $items[__('Last update')]  = "glpi_changes.date_mod";
+
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
+      }
+
+      $items[__('Priority')]           = "glpi_changes.priority";
+      $items[__('Requester')]          = "glpi_changes.users_id";
+      $items[_x('problem','Assigned')] = "glpi_changes.users_id_assign";
+      $items[__('Associated element')] = "";
+      $items[__('Category')]           = "glpi_itilcategories.completename";
+      $items[__('Title')]              = "glpi_changes.name";
+      $items[__('Planification')]      = "glpi_changetasks.begin";
+
+
+      foreach ($items as $key => $val) {
+         $issort = 0;
+         $link   = "";
+         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
+      }
+
+      // End Line for column headers
+      echo Search::showEndLine($output_type);
+   }
+
+   /**
+    * Number of tasks of the problem
+    *
+    * @return followup count
+   **/
+   function numberOfTasks() {
+      global $DB;
+      /// TODO : put it on commonitilobject 
+      // Set number of followups
+      $query = "SELECT COUNT(*)
+                FROM `glpi_changetasks`
+                WHERE `changes_id` = '".$this->fields["id"]."'";
+      $result = $DB->query($query);
+
+      return $DB->result($result, 0, 0);
+   }   
 }
 ?>
