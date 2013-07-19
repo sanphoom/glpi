@@ -717,7 +717,7 @@ class Html {
       }
       echo "<div class='center'><br><br>";
       echo Html::image($CFG_GLPI["root_doc"] . "/pics/warning.png", array('alt' => __('Warning')));
-      echo "><br><br><span class='b'>$message</span></div>";
+      echo "<br><br><span class='b'>$message</span></div>";
       self::nullFooter();
       exit ();
    }

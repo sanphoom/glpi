@@ -959,11 +959,13 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $this->showFormHeader($options);
 
-      $rowspan = 4 ;
+      $rowspan = 3 ;
       if ($this->maybePrivate()) {
          $rowspan++;
       }
-
+      if (isset($this->fields["state"])) {
+         $rowspan++;
+      }
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='$rowspan' class='middle right'>".__('Description')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>".
