@@ -779,10 +779,6 @@ class Profile extends CommonDBTM {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      $matrix_options = array('canedit'       => $canedit,
-                              'default_class' => 'tab_bg_2',
-                              'title'         => __('Assets'));
-
       $rights = array(array('itemtype'  => 'Computer',
                             'label'     => _n('Computer', 'Computers', 2),
                             'field'     => 'computer'),
@@ -814,7 +810,9 @@ class Profile extends CommonDBTM {
                             'label'     => __('Internet'),
                             'field'     => 'internet'));
 
-      $this->displayRightsChoiceMatrix($rights, $matrix_options);
+      $this->displayRightsChoiceMatrix($rights, array('canedit'       => $canedit,
+                                                      'default_class' => 'tab_bg_2',
+                                                      'title'         => __('Assets')));
 
       if ($canedit
           && $closeform) {
@@ -2414,7 +2412,11 @@ class Profile extends CommonDBTM {
                $row['class'] = $param['default_class'];
             }
             $profile_right = $this->fields[$info['field']];
-            $rights = self::getRightsFor($info['itemtype']);
+            if (isset($info['rights'])) {
+               $rights = $info['rights'];
+            } else {
+               $rights = self::getRightsFor($info['itemtype']);
+            }
 
             foreach ($rights as $right => $label) {
                $columns[$right] = $label;
