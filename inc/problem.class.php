@@ -184,10 +184,11 @@ class Problem extends CommonITILObject {
             case __CLASS__ :
                $ong = array(1 => __('Analysis'),
                             2 => _n('Solution', 'Solutions', 1));
-               if (Session::haveRight('task', TicketTask::SEEPUBLIC)
-                   || Session::haveRight('followup', TicketFollowup::SEEPUBLIC)) {
+                            
+               if ($item->canUpdate()) {
                   $ong[4] = __('Statistics');
                }
+
                return $ong;
          }
       }

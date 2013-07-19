@@ -544,8 +544,7 @@ class Ticket extends CommonITILObject {
                   $ong[3] = __('Satisfaction');
                }
             }
-            if (Session::haveRight('task', TicketTask::SEEPUBLIC)
-                || Session::haveRight('followup', TicketFollowup::SEEPUBLIC)) {
+            if ($item->canUpdate()) {
                $ong[4] = __('Statistics');
             }
             return $ong;

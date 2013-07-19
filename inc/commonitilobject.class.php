@@ -3633,8 +3633,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function showStats() {
 
       /// TODO : right check trouble : Why Ticket ??? maybe Problem or Change
-      if (!Session::haveRight('followup', TicketFollowup::SEEPUBLIC)
-          || !Session::haveRight('task', TicketTask::SEEPUBLIC)
+      if (!$this->canUpdate()
           || !isset($this->fields['id'])) {
          return false;
       }

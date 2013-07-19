@@ -185,9 +185,13 @@ class Change extends CommonITILObject {
                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
-               return array(1 => __('Analysis'),
+               $ong = array(1 => __('Analysis'),
                             2 => __('Plans'),
                             3 => __('Solution'));
+               if ($item->canUpdate()) {
+                  $ong[4] = __('Statistics');
+               }
+               return $ong;
          }
       }
       return '';
@@ -221,6 +225,9 @@ class Change extends CommonITILObject {
                   }
                   $item->showSolutionForm($_POST['load_kb_sol']);
                   break;
+               case 4 :
+                  $item->showStats();
+                  break;                  
             }
             break;
       }
