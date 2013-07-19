@@ -397,7 +397,7 @@ class Html {
       }
       return '';
    }
-
+// 
 
    /**
     * Extract url from web link
@@ -4506,7 +4506,7 @@ class Html {
       if ($param['row_check_all']) {
          $number_columns += 1;
       }
-
+      $width=round(100/$number_columns);
       echo "\n<table class='tab_cadre_fixe'>\n";
 
       if (!empty($param['title'])) {
@@ -4522,7 +4522,7 @@ class Html {
          if ($param['rotate_column_titles']) {
             echo " rotate4cb";
          }
-         echo "'>$label</td>\n";
+         echo "' width='$width%'>$label</td>\n";
       }
       if ($param['row_check_all']) {
          echo "\t\t<td class='center";
@@ -4560,7 +4560,6 @@ class Html {
                echo "&nbsp;";
             }
             echo "</td>\n";
-
             foreach (array_keys($columns) as $col_name) {
                echo "\t\t<td class='center'>";
 
