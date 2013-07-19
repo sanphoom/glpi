@@ -689,6 +689,10 @@ class Change extends CommonITILObject {
         return false;
       }
 
+      // In percent
+      $colsize1 = '13';
+      $colsize2 = '37';
+
       // Set default options
       if (!$ID) {
          $values = array('_users_id_requester'       => Session::getLoginUserID(),
@@ -753,17 +757,15 @@ class Change extends CommonITILObject {
 
       $this->showFormHeader($options);
 
-      echo "<tr>";
-      echo "<th class='left' colspan='2'>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th class='left' width='$colsize1%'>".__('Opening date')."</th>";
+      echo "<td class='left' width='$colsize2%'>";
 
       if (isset($options['tickets_id'])) {
          echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
       }
 
-      echo "<table>";
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".__('Opening date')."</span></td>";
-      echo "<td>";
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
@@ -771,80 +773,67 @@ class Change extends CommonITILObject {
       Html::showDateTimeField("date", array('value'      => $date,
                                             'timestep'   => 1,
                                             'maybeempty' => false));
+      echo "</td>";
+      echo "<th width='$colsize1%'>".__('Due date')."</th>";
+      echo "<td width='$colsize2%' class='left'>";
 
-      echo "</td></tr>";
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".__('By')."</span></td><td>";
-         User::dropdown(array('name'   => 'users_id_recipient',
-                              'value'  => $this->fields["users_id_recipient"],
-                              'entity' => $this->fields["entities_id"],
-                              'right'  => 'all'));
-         echo "</td></tr>";
-      }
-      echo "</table>";
-      echo "</th>";
-
-      echo "<th class='left' colspan='2'>";
-      echo "<table>";
-
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
-         echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater'] > 0) {
-            //TRANS: %s is the user name
-            printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
-         }
-         echo "</span>";
-         echo "</td></tr>";
-      }
-
-      // SLA
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".__('Due date')."</span></td>";
-      echo "<td>";
       if ($this->fields["due_date"] == 'NULL') {
          $this->fields["due_date"] = '';
       }
       Html::showDateTimeField("due_date", array('value'    => $this->fields["due_date"],
                                                 'timestep' => 1));
+
       echo "</td></tr>";
-
+      
       if ($ID) {
-         switch ($this->fields["status"]) {
-            case self::CLOSED :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Close date')."</span></td>";
-               echo "<td>";
-               Html::showDateTimeField("closedate", array('value'      => $this->fields["closedate"],
-                                                          'timestep'   => 1,
-                                                          'maybeempty' => false));
-               echo "</td></tr>";
-               break;
-
-            case self::SOLVED :
-            case self::OBSERVED :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Resolution date')."</span></td>";
-               echo "<td>";
-               Html::showDateTimeField("solvedate", array('value'      => $this->fields["solvedate"],
-                                                          'timestep'   => 1,
-                                                          'maybeempty' => false));
-               echo "</td></tr>";
-               break;
+         echo "<tr class='tab_bg_1'><th>".__('By')."</th><td>";
+         User::dropdown(array('name'   => 'users_id_recipient',
+                              'value'  => $this->fields["users_id_recipient"],
+                              'entity' => $this->fields["entities_id"],
+                              'right'  => 'all'));
+         echo "</td>";
+         echo "<th>".__('Last update')."</th>";
+         echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
+         if ($this->fields['users_id_lastupdater'] > 0) {
+            printf(__('%1$s: %2$s'), __('By'),
+                   getUserName($this->fields["users_id_lastupdater"], $showuserlink));
          }
+         echo "</td></tr>";
       }
 
+      if ($ID
+          && (in_array($this->fields["status"], $this->getSolvedStatusArray())
+              || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>".__('Date of solving')."</th>";
+         echo "<td>";
+         Html::showDateTimeField("solvedate", array('value'      => $this->fields["solvedate"],
+                                                    'timestep'   => 1,
+                                                    'maybeempty' => false));
+         echo "</td>";
+         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
+            echo "<th>".__('Closing date')."</th>";
+            echo "<td>";
+            Html::showDateTimeField("closedate", array('value'      => $this->fields["closedate"],
+                                                       'timestep'   => 1,
+                                                       'maybeempty' => false));
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
+         }
+         echo "</tr>";
+      }
       echo "</table>";
-      echo "</th></tr>";
-
+      
+      echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
       echo "<tr>";
-      echo "<th>".__('Status')."</th>";
-      echo "<td>";
+      echo "<th width='$colsize1%'>".__('Status')."</th>";
+      echo "<td width='$colsize2%'>";
       self::dropdownStatus(array('value'    => $this->fields["status"],
                                  'showtype' => 'allowed'));
       echo "</td>";
-      echo "<th>".__('Urgency')."</th>";
-      echo "<td>";
+      echo "<th width='$colsize1%'>".__('Urgency')."</th>";
+      echo "<td width='$colsize2%'>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
       $idurgency = self::dropdownUrgency(array('value' => $this->fields["urgency"]));
       echo "</td>";
@@ -887,14 +876,14 @@ class Change extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".__('Title')."</th>";
+      echo "<th width='$colsize1%'>".__('Title')."</th>";
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showName$rand() {\n";
       echo Html::jsHide("name$rand");
       $params = array('maxlength' => 250,
-                      'size'      => 50,
+                      'size'      => 110,
                       'name'      => 'name',
                       'data'      => rawurlencode($this->fields["name"]));
       Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params);
@@ -914,7 +903,6 @@ class Change extends CommonITILObject {
          </script>";
       }
       echo "</td>";
-      echo "<td colspan='2' width='50%'>&nbsp;</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -925,7 +913,7 @@ class Change extends CommonITILObject {
       echo "function showDesc$rand() {\n";
       echo Html::jsHide("desc$rand");
       $params = array('rows'  => 6,
-                      'cols'  => 50,
+                      'cols'  => 110,
                       'name'  => 'content',
                       'data'  => rawurlencode($this->fields["content"]));
       Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php", $params);
@@ -945,7 +933,6 @@ class Change extends CommonITILObject {
          </script>";
       }
       echo "</td>";
-      echo "<td colspan='2' width='50%'>&nbsp;</td>";
       echo "</tr>";
       $options['colspan'] = 3;
       $this->showFormButtons($options);
