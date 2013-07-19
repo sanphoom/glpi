@@ -51,12 +51,12 @@ if (isset($_POST["add"])) {
          $_POST["items_id"] = $splitter[1];
       }
    }
-   $id = $track->add($_POST);
-   if ($_SESSION['glpibackcreated']) {
-      Html::redirect($track->getFormURL()."?id=".$id);
-   } else {
-      Html::back();
+   if ($id = $track->add($_POST)) {
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($track->getFormURL()."?id=".$id);
+      }
    }
+   Html::back();
 
 } else if (isset($_POST['update'])) {
    $track->check($_POST['id'], UPDATE);

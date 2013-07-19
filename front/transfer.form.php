@@ -48,6 +48,7 @@ if (isset($_POST["add"])) {
    Event::log($newID, "transfers", 4, "setup",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
+
 } else if (isset($_POST["purge"])) {
    $transfer->check($_POST["id"], PURGE);
 

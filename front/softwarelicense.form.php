@@ -46,10 +46,14 @@ $license = new SoftwareLicense();
 if (isset($_POST["add"])) {
    $license->check(-1, CREATE,$_POST);
 
-   $newID = $license->add($_POST);
-   Event::log($_POST['softwares_id'], "software", 4, "inventory",
-              //TRANS: %s is the user login, %2$s is the license id
-              sprintf(__('%1$s adds the license %2$s'), $_SESSION["glpiname"], $newID));
+   if ($newID = $license->add($_POST)) {
+      Event::log($_POST['softwares_id'], "software", 4, "inventory",
+                 //TRANS: %s is the user login, %2$s is the license id
+                 sprintf(__('%1$s adds the license %2$s'), $_SESSION["glpiname"], $newID));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($license->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["purge"])) {
