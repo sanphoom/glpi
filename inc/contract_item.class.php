@@ -49,7 +49,7 @@ class Contract_Item extends CommonDBRelation{
    static public $itemtype_2 = 'itemtype';
    static public $items_id_2 = 'items_id';
 
-
+   var $no_form_page = true;
 
    /**
     * @since version 0.84
