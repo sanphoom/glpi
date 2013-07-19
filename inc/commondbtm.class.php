@@ -3240,6 +3240,7 @@ class CommonDBTM extends CommonGLPI {
             $res['noright'] += count($input['item']);
          }
       }
+      return $res;
    }
 
 
@@ -3259,8 +3260,7 @@ class CommonDBTM extends CommonGLPI {
 
       if (!isset($input["item"]) || (count($input["item"]) == 0)) {
          return false;
-      }
-
+      } 
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
