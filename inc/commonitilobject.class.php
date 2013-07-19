@@ -4463,13 +4463,11 @@ abstract class CommonITILObject extends CommonDBTM {
             } else if (empty($item->fields["itemtype"])) {
                $sixth_col = __('General');
             }
-         } else {
-            // Several items may be linked
-            $sixth_col = 'ggg';
+            echo Search::showItem($p['output_type'], $sixth_col, $item_num, $p['row_num'],
+                                 ($is_deleted?" class='center deleted' ":$align));
          }
 
-         echo Search::showItem($p['output_type'], $sixth_col, $item_num, $p['row_num'],
-                               ($is_deleted?" class='center deleted' ":$align));
+
 
          // Seventh column
          echo Search::showItem($p['output_type'],
@@ -4595,7 +4593,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $items[__('Priority')]           = "priority";
       $items[__('Requester')]          = "users_id";
       $items[__('Assigned')]           = "users_id_assign";
-      $items[__('Associated element')] = "";
+      if (static::getType() == 'Ticket') {
+         $items[__('Associated element')] = "";
+      }
       $items[__('Category')]           = "glpi_itilcategories.completename";
       $items[__('Title')]              = "name";
       $items[__('Planification')]      = "glpi_tickettasks.begin";
