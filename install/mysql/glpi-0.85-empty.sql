@@ -877,6 +877,7 @@ INSERT INTO `glpi_configs` VALUES ('145','core','translate_kb','0');
 INSERT INTO `glpi_configs` VALUES ('146','core','translate_dropdowns','0');
 INSERT INTO `glpi_configs` VALUES ('149','core','maintenance_mode','0');
 INSERT INTO `glpi_configs` VALUES ('150','core','maintenance_text','');
+INSERT INTO `glpi_configs` VALUES ('151','core','backcreated','0');
 
 ### Dump table glpi_consumableitems
 

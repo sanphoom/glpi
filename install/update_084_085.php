@@ -1659,7 +1659,11 @@ function update084to085() {
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
 
    // Pref to comme back ticket created
-   $migration->addField('glpi_users', 'backcreated', 'bool');
+   $migration->addField('glpi_users', 'backcreated', 'TINYINT(1) DEFAULT NULL');
+   $query = "INSERT INTO `glpi_configs`
+                    (`context`, `name`, `value`)
+             VALUES ('core', 'backcreated', 0)";
+   $DB->queryOrDie($query, "update glpi_configs with backcreated");
 
 
    // ************ Keep it at the end **************
