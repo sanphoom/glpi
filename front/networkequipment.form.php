@@ -46,9 +46,13 @@ $netdevice = new NetworkEquipment();
 if (isset($_POST["add"])) {
    $netdevice->check(-1, CREATE,$_POST);
 
-   $newID = $netdevice->add($_POST);
-   Event::log($newID, "networkequipment", 4, "inventory",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $netdevice->add($_POST)) {
+      Event::log($newID, "networkequipment", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($netdevice->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {

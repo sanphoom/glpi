@@ -40,7 +40,7 @@ $translation = new KnowbaseItemTranslation();
 if (isset($_POST['add'])) {
    $translation->add($_POST);
 
-} elseif(isset($_POST['update'])) {
+} else if (isset($_POST['update'])) {
    $translation->update($_POST);
 }
 Html::back();

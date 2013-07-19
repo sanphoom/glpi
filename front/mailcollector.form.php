@@ -43,10 +43,14 @@ $mailgate = new MailCollector();
 
 if (isset($_POST["add"])) {
    $mailgate->check(-1, CREATE, $_POST);
-   $newID = $mailgate->add($_POST);
 
-   Event::log($newID, "mailcollector", 4, "setup",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $mailgate->add($_POST)) {
+      Event::log($newID, "mailcollector", 4, "setup",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($mailgate->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["purge"])) {

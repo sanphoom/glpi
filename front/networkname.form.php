@@ -37,10 +37,15 @@ $nn = new NetworkName();
 
 if (isset($_POST["add"])) {
    $nn->check(-1, CREATE, $_POST);
-   $newID = $nn->add($_POST);
-   Event::log($newID, "networkname", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s adds an item'), $_SESSION["glpiname"]));
+
+   if ($newID = $nn->add($_POST)) {
+      Event::log($newID, "networkname", 5, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds an item'), $_SESSION["glpiname"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($nn->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["purge"])) {

@@ -47,9 +47,13 @@ $monitor = new Monitor();
 if (isset($_POST["add"])) {
    $monitor->check(-1, CREATE,$_POST);
 
-   $newID = $monitor->add($_POST);
-   Event::log($newID, "monitors", 4, "inventory",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $monitor->add($_POST)) {
+      Event::log($newID, "monitors", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($monitor->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {

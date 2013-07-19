@@ -944,8 +944,14 @@ class Config extends CommonDBTM {
       echo "<td>" . __('Keep devices when purging an item') . "</td><td>";
       Dropdown::showYesNo('keep_devices_when_purging_item',
                           $data['keep_devices_when_purging_item']);
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td>".__('Back to created item after create')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo("backcreated", $data["backcreated"]);
+      echo "</td></tr>";
+
+
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
@@ -979,11 +985,6 @@ class Config extends CommonDBTM {
                                                            'toadd' => array(0 => __('Never'))));
          echo "</td>";
          echo "</tr>";
-
-         echo "<tr class='tab_bg_2'><td>".__('Back to created item after create')."</td>";
-         echo "<td>";
-         Dropdown::showYesNo("backcreated", $data["backcreated"]);
-         echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Priority colors') . "</td>";

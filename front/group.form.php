@@ -46,6 +46,9 @@ if (isset($_POST["add"])) {
    if ($newID=$group->add($_POST)) {
       Event::log($newID, "groups", 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($group->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 

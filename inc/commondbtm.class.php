@@ -3082,9 +3082,9 @@ class CommonDBTM extends CommonGLPI {
                      $values[1] = $itemtype_2::getTypeName(2);
                   }
                   Dropdown::showFromArray('peer', $values);
-               } elseif (!static::$mustBeAttached_1) {
+               } else if (!static::$mustBeAttached_1) {
                   echo "<input type='hidden' name='peer' value='0'>";
-               } elseif (!static::$mustBeAttached_2) {
+               } else if (!static::$mustBeAttached_2) {
                   echo "<input type='hidden' name='peer' value='1'>";
                }
             }
@@ -3351,7 +3351,7 @@ class CommonDBTM extends CommonGLPI {
                            $res['ko']++;
                            $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
                         }
-                     } elseif ($this instanceof CommonDBChild) {
+                     } else if ($this instanceof CommonDBChild) {
                         if ($this->affectChild($key)) {
                            $res['ok']++;
                         } else {

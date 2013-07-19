@@ -45,9 +45,12 @@ if (empty($_GET["networknames_id"])) {
 if (isset($_POST["add"])) {
    $alias->check(-1, CREATE, $_POST);
 
-   if ($newID=$alias->add($_POST)) {
+   if ($newID = $alias->add($_POST)) {
       Event::log($newID, $alias->getType(), 4, "setup",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($alias->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 
