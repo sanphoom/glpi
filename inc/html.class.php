@@ -393,7 +393,7 @@ class Html {
 
       if ($display_sec) {
          //TRANS:  %1$s is the sign (-or empty), %2$d number of seconds
-         return sprintf(_n('%1$s%2$s second', '%1$s%2$s seconds', $sign, $units['second']), $units['second']);
+         return sprintf(_n('%1$s%2$s second', '%1$s%2$s seconds', $units['second']), $sign, $units['second']);
       }
       return '';
    }
