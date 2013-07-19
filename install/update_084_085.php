@@ -1600,7 +1600,16 @@ function update084to085() {
                         0, 24, 30, NULL, NULL, NULL)";
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for mailgateerror");
    }
-
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='Crontask' AND `name`='circularlogs'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('Crontask', 'circularlogs', ".DAY_TIMESTAMP.", 4, ".CronTask::STATE_DISABLE.", 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->queryOrDie($query, "0.85 populate glpi_crontasks for circularlogs");
+   }
+   
    $migration->addField('glpi_documents', 'is_blacklisted', 'bool');
 
    if (!TableExists("glpi_blacklistedmailcontents")) {

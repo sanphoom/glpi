@@ -1529,6 +1529,10 @@ class CronTask extends CommonDBTM{
             
          case 'watcher' :
             return array('description' => __('Monitoring of automatic actions'));
+         case 'circularlogs' :
+            return array('description' => __("Archives log files and deletes agging ones"),
+               'parameter' => __("Number of days to keep archived logs")
+            );
       }
    }
 
