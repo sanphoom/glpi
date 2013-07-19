@@ -1506,10 +1506,11 @@ class Problem extends CommonITILObject {
     * @param $id
     * @param $output_type        (default Search::HTML_OUTPUT)
     * @param $row_num            (default 0)
+    * @param $type_for_massiveaction  string  itemtype for massive action (default 'Problem')
     * @param $id_for_massaction  (default -1)
     */
    static function showShort($id, $output_type=Search::HTML_OUTPUT, $row_num=0,
-                             $id_for_massaction=-1) {
+                             $type_for_massiveaction='Ticket', $id_for_massaction=-1) {
       global $CFG_GLPI;
 
       $rand = mt_rand();
@@ -1544,7 +1545,7 @@ class Problem extends CommonITILObject {
          if (($candelete || $canupdate)
              && ($output_type == Search::HTML_OUTPUT)) {
 
-            $check_col = Html::getMassiveActionCheckBox(__CLASS__, $id_for_massaction);
+            $check_col = Html::getMassiveActionCheckBox($type_for_massiveaction, $id_for_massaction);
          }
          echo Search::showItem($output_type, $check_col, $item_num, $row_num, $align);
 

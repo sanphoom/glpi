@@ -5400,11 +5400,12 @@ class Ticket extends CommonITILObject {
     * @param $followups          Boolean  show followup columns
     * @param $output_type        Integer  type of output (default Search::HTML_OUTPUT)
     * @param $row_num            Integer  row number (default 0)
+    * @param $type_for_massiveaction  string  itemtype for massive action (default 'Ticket')
     * @param $id_for_massaction  Integer  default 0 means no massive action (default 0)
     *
     */
    static function showShort($id, $followups, $output_type=Search::HTML_OUTPUT, $row_num=0,
-                             $id_for_massaction=0) {
+                             $type_for_massiveaction='Ticket', $id_for_massaction=0) {
       global $CFG_GLPI, $DB;
 
       $rand = mt_rand();
@@ -5442,7 +5443,7 @@ class Ticket extends CommonITILObject {
              && ($output_type == Search::HTML_OUTPUT)
              && $id_for_massaction) {
 
-            $check_col = Html::getMassiveActionCheckBox(__CLASS__, $id_for_massaction);
+            $check_col = Html::getMassiveActionCheckBox($type_for_massiveaction, $id_for_massaction);
          }
          echo Search::showItem($output_type, $check_col, $item_num, $row_num, $align);
 

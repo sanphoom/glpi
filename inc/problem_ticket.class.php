@@ -283,7 +283,7 @@ class Problem_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($tickets as $data) {
             Session::addToNavigateListItems('Ticket', $data["id"]);
-            Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
+            Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, __CLASS__, $data['linkID']);
             $i++;
          }
       }
@@ -382,7 +382,7 @@ class Problem_Ticket extends CommonDBRelation{
          $i = 0;
          foreach ($problems as $data) {
             Session::addToNavigateListItems('Problem', $data["id"]);
-            Problem::showShort($data['id'], Search::HTML_OUTPUT, $i, $data['linkID']);
+            Problem::showShort($data['id'], Search::HTML_OUTPUT, $i, __CLASS__, $data['linkID']);
             $i++;
          }
       }
