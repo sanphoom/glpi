@@ -43,10 +43,14 @@ $sla = new SLA();
 
 if (isset($_POST["add"])) {
    $sla->check(-1, CREATE);
-   $newID = $sla->add($_POST);
 
-   Event::log($newID, "slas", 4, "setup",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $sla->add($_POST)) {
+      Event::log($newID, "slas", 4, "setup",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($sla->getFormURL()."?id=".$newID);
+      }
+   }
    Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
 
 } else if (isset($_POST["purge"])) {

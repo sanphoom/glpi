@@ -46,9 +46,13 @@ $soft = new Software();
 if (isset($_POST["add"])) {
    $soft->check(-1, CREATE,$_POST);
 
-   $newID = $soft->add($_POST);
-   Event::log($newID, "software", 4, "inventory",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $soft->add($_POST)) {
+      Event::log($newID, "software", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($soft->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {

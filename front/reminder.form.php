@@ -42,9 +42,13 @@ Session::checkLoginUser();
 if (isset($_POST["add"])) {
    $remind->check(-1, CREATE, $_POST);
 
-   $newID = $remind->add($_POST);
-   Event::log($newID, "reminder", 4, "tools",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $remind->add($_POST)) {
+      Event::log($newID, "reminder", 4, "tools",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($remind->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["purge"])) {

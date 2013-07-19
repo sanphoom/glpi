@@ -47,9 +47,13 @@ $phone = new Phone();
 if (isset($_POST["add"])) {
    $phone->check(-1, CREATE, $_POST);
 
-   $newID = $phone->add($_POST);
-   Event::log($newID, "phones", 4, "inventory",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $phone->add($_POST)) {
+      Event::log($newID, "phones", 4, "inventory",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($phone->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {

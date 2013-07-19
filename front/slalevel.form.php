@@ -50,10 +50,13 @@ if (isset($_POST["update"])) {
 } else if (isset($_POST["add"])) {
    $item->check(-1, CREATE, $_POST);
 
-   if ($item->add($_POST)) {
+   if ($newID = $item->add($_POST)) {
       Event::log($_POST["slas_id"], "slas", 4, "setup",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($item->getFormURL()."?id=".$newID);
+      }
    }
    Html::back();
 

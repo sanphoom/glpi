@@ -43,9 +43,13 @@ $problem = new Problem();
 if (isset($_POST["add"])) {
    $problem->check(-1, CREATE, $_POST);
 
-   $newID = $problem->add($_POST);
-   Event::log($newID, "problem", 4, "maintain",
-              sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+   if ($newID = $problem->add($_POST)) {
+      Event::log($newID, "problem", 4, "maintain",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($problem->getFormURL()."?id=".$newID);
+      }
+   }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
