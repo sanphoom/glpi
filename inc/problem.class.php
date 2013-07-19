@@ -1461,49 +1461,6 @@ class Problem extends CommonITILObject {
                $FROM";
    }
 
-
-   /**
-    * @param $output_type   (default Search::HTML_OUTPUT)
-    * @param $mass_id       id of the form to check all (default '')
-   **/
-   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
-
-      // New Line for Header Items Line
-      echo Search::showNewLine($output_type);
-      // $show_sort if
-      $header_num = 1;
-
-      $items = array();
-
-      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
-      $items[__('Status')]       = "glpi_problems.status";
-      $items[__('Date')]         = "glpi_problems.date";
-      $items[__('Last update')]  = "glpi_problems.date_mod";
-
-      if (count($_SESSION["glpiactiveentities"])>1) {
-         $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
-      }
-
-      $items[__('Priority')]           = "glpi_problems.priority";
-      $items[__('Requester')]          = "glpi_problems.users_id";
-      $items[_x('problem','Assigned')] = "glpi_problems.users_id_assign";
-      $items[__('Associated element')] = "";
-      $items[__('Category')]           = "glpi_itilcategories.completename";
-      $items[__('Title')]              = "glpi_problems.name";
-      $items[__('Planification')]      = "glpi_problemtasks.begin";
-      
-
-      foreach ($items as $key => $val) {
-         $issort = 0;
-         $link   = "";
-         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
-      }
-
-      // End Line for column headers
-      echo Search::showEndLine($output_type);
-   }
-
-
    /**
     * Display problems for an item
     *

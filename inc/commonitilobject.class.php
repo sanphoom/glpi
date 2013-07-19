@@ -4569,6 +4569,46 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<td colspan='6' ><i>".__('No ticket in progress.')."</i></td></tr>";
       }
    }
-   
+
+   /**
+    * @param $output_type     (default 'Search::HTML_OUTPUT')
+    * @param $mass_id         id of the form to check all (default '')
+    */
+   static function commonListHeader($output_type=Search::HTML_OUTPUT, $mass_id='') {
+
+      // New Line for Header Items Line
+      echo Search::showNewLine($output_type);
+      // $show_sort if
+      $header_num = 1;
+
+      $items                           = array();
+
+
+      $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
+      $items[__('Status')]             = "status";
+      $items[__('Date')]               = "date";
+      $items[__('Last update')]        = "date_mod";
+
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
+      }
+
+      $items[__('Priority')]           = "priority";
+      $items[__('Requester')]          = "users_id";
+      $items[__('Assigned')]           = "users_id_assign";
+      $items[__('Associated element')] = "";
+      $items[__('Category')]           = "glpi_itilcategories.completename";
+      $items[__('Title')]              = "name";
+      $items[__('Planification')]      = "glpi_tickettasks.begin";
+
+      foreach ($items as $key => $val) {
+         $issort = 0;
+         $link   = "";
+         echo Search::showHeaderItem($output_type,$key,$header_num,$link);
+      }
+
+      // End Line for column headers
+      echo Search::showEndLine($output_type);
+   }   
 }
 ?>
