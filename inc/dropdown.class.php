@@ -289,7 +289,7 @@ class Dropdown {
 
          }
 
-         $query = "SELECT $SELECTNAME, $SELECTCOMMENT
+         $query = "SELECT $SELECTNAME, $SELECTCOMMENT, `locations_id`
                    FROM `$table`
                    $JOIN
                    WHERE `$table`.`id` = '$id'";
