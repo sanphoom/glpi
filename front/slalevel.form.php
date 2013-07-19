@@ -93,5 +93,4 @@ if (isset($_POST["update"])) {
    $item->display(array('id' => $_GET["id"]));
    Html::footer();
 }
-Html::displayErrorAndDie('Lost');
 ?>

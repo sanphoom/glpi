@@ -120,7 +120,6 @@ class SlaLevel extends RuleTicket {
          echo "</td><td class='center'>".__('Execution')."</td><td>";
 
          $resolution_time = $sla->getResolutionTime();
-
          self::dropdownExecutionTime('execution_time',
                                      array('max_time'
                                              => $resolution_time,
@@ -282,9 +281,12 @@ class SlaLevel extends RuleTicket {
       echo "<td>".$sla->getLink()."</td>";
       echo "<td>".__('Execution')."</td>";
       echo "<td>";
+
+      $resolution_time = $sla->getResolutionTime();
+      
       self::dropdownExecutionTime('execution_time',
                                   array('max_time'
-                                             => $sla->fields['resolution_time'],
+                                             => $resolution_time,
                                         'used'
                                              => self::getAlreadyUsedExecutionTime($sla->fields['id']),
                                         'value'
@@ -340,7 +342,7 @@ class SlaLevel extends RuleTicket {
             }
          }
       }
-
+      
       for ($i=1 ; $i<24 ; $i++) {
          if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
             $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %d hour','+ %d hours',$i), $i);
@@ -366,8 +368,8 @@ class SlaLevel extends RuleTicket {
       if (!in_array(0,$p['used'])) {
          $possible_values[0] = __('Due date');
       }
-
       ksort($possible_values);
+      
       Dropdown::showFromArray($name, $possible_values, array('value' => $p['value']));
    }
 
