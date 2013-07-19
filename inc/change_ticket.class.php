@@ -49,6 +49,9 @@ class Change_Ticket extends CommonDBRelation{
    static public $itemtype_2   = 'Ticket';
    static public $items_id_2   = 'tickets_id';
 
+   var $no_form_page = true;
+
+
 
    function getForbiddenStandardMassiveAction() {
 
@@ -136,7 +139,7 @@ class Change_Ticket extends CommonDBRelation{
                                       'container'        => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
       }
-      
+
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
       echo "</tr>";
@@ -164,7 +167,7 @@ class Change_Ticket extends CommonDBRelation{
          Html::showMassiveActions(__CLASS__, $massiveactionparams);
          Html::closeForm();
       }
-      echo "</div>";      
+      echo "</div>";
    }
 
 
