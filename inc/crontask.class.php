@@ -989,12 +989,12 @@ class CronTask extends CommonDBTM{
    function showHistory() {
       global $DB, $CFG_GLPI;
 
-      if (isset($_POST["crontasklogs_id"]) && $_POST["crontasklogs_id"]) {
-         return $this->showHistoryDetail($_POST["crontasklogs_id"]);
+      if (isset($_GET["crontasklogs_id"]) && $_GET["crontasklogs_id"]) {
+         return $this->showHistoryDetail($_GET["crontasklogs_id"]);
       }
 
-      if (isset($_POST["start"])) {
-         $start = $_POST["start"];
+      if (isset($_GET["start"])) {
+         $start = $_GET["start"];
       } else {
          $start = 0;
       }
@@ -1346,7 +1346,67 @@ class CronTask extends CommonDBTM{
       return 0;
    }
 
+   /**
+    * Circular logs
+    *
+    * @param $task for log
+   **/
+   static function cronCircularlogs($task) {
+      $actionCode = 0; // by default
+      $error = false ;
+      $task->setVolume(0); // start with zero
 
+      // compute date in the past for the archived log to be deleted
+      $firstdate = date("Ymd", time() - ($task->fields['param'] * DAY_TIMESTAMP)); // compute current date - param as days and format it like YYYYMMDD
+
+      // first look for bak to delete
+      $dir = GLPI_LOG_DIR."/*.bak" ;
+      $findfiles = glob( $dir ) ;
+      foreach($findfiles as $file){
+         $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
+         // now depending on the format of the name we delete the file (for agging archives) or rename it (will add Ymd.log to the end of the file)
+         $match = null;
+         if( preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0 ){
+            if( $match[1] < $firstdate ) {
+               $task->addVolume(1);
+               if( unlink($file) ) {
+                  $task->log( sprintf(__('Delete archived log file: %1$s'), $shortfile)) ;
+                  $actionCode = 1 ;
+               } else {
+                  $task->log( sprintf(__('Unable to delete archived log file: %1$s'), $shortfile)) ;
+                  $error = true ;
+               }
+            }
+         }
+      }
+
+      // second look for log to archive
+      $dir = GLPI_LOG_DIR."/*.log" ;
+      $findfiles = glob( $dir ) ;
+      foreach($findfiles as $file){
+         $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
+         // rename the file
+         $newfilename = $file.".".date("Ymd", time()).".bak"; // will add to filename a string with format YYYYMMDD (= current date)
+         $shortnewfile = str_replace(GLPI_LOG_DIR.'/','',$newfilename);
+         
+         $task->addVolume(1);
+         if( !file_exists($newfilename) && rename($file, $newfilename ) ) {
+            $task->log( sprintf(__('Archive log file: %1$s to %2$s'), $shortfile, $shortnewfile)) ;
+            $actionCode = 1 ;
+         } else {
+            $task->log( sprintf(__('Unable to archive log file: %1$s. %2$s already exists. Wait till next day.'),
+                                 $shortfile, $shortnewfile)) ;
+            $error = true ;
+         }
+      }
+
+      if ($error) {
+         return -1 ;
+      } else {
+         return $actionCode;
+      }
+   }
+   
    /**
     * Garbage collector for cleaning graph files
     *
