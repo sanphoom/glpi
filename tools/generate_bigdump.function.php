@@ -588,12 +588,12 @@ function addTracking($type, $ID, $ID_entity) {
                          'users_id'          => $users[1],
                          'content'           => "task $i '".Toolbox::getRandomString(15),
                          'is_private'        => mt_rand(0,1),
-                         'state'             => $state));
+                         'state'             => $state,
+                         'users_id_tech'    => $users[1]));
 
          if ($status == CommonITILObject::PLANNED && $doplan) {
             $params['plan'] = array('begin'       => date("Y-m-d H:i:s", $date3),
-                                    'end'         => $endtask,
-                                    'users_id'    => $users[1]);
+                                    'end'         => $endtask);
          }
          $tt->add($params);
          $i++;
