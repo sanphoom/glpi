@@ -704,16 +704,65 @@ function deselectAll(id) {
  *
  * @param checkbox the object of the checkbox
 **/
-function updateHiddenFieldOfCheckbox(checkbox) {
-    var hiddenFieldId = checkbox.getAttribute('associatedHiddenField');
+function updateHiddenFieldOfCheckbox(reference) {
+    var hiddenFieldId = reference.getAttribute('data-glpicore-cb-associated-hidden-field');
     if (hiddenFieldId) {
         var hiddenField = document.getElementById(hiddenFieldId);
         if (hiddenField) {
-            if (checkbox.checked) {
+            if (reference.checked) {
                 hiddenField.value = 1;
             } else {
                 hiddenField.value = 0;
             }
+        }
+    }
+}
+
+
+/**
+ * Set all the checkbox that have the class associated to associatedClass attribute of the given
+ * checkbox (this as argument)
+ *
+ * @since version 0.85
+ *
+ * @param reference the checkbox object that provide the associated class and the new state
+**/
+function checkUncheckAllCheckboxes(reference) {
+    var container_id = reference.getAttribute('data-glpicore-cb-massive-container-id');
+    if (container_id) {
+        var container = document.getElementById(container_id);
+        if (!container) {
+            return
+        }
+        var inputs = container.getElementsByTagName('input');
+    } else {
+        var inputs = document.getElementsByTagName('input');
+    }
+    var tag_for_massive = reference.getAttribute('data-glpicore-cb-tag-for-massive');
+    var checkboxes      = [];
+    if (tag_for_massive) {
+        for (var i = 0; i < inputs.length; ++i) {
+            var input        = inputs[i];
+            var massive_tags = input.getAttribute('data-glpicore-cb-massive-tags');
+            if ((massive_tags) && (input.type == 'checkbox') && (input.disabled == false)) {
+                if (massive_tags.search(tag_for_massive) >= 0) {
+                    checkboxes.push(inputs[i]);
+                }
+            }
+        }
+    } else {
+        for (var i = 0; i < inputs.length; ++i) {
+            var input = inputs[i];
+            if ((input.type == 'checkbox') && (input.disabled == false)) {
+                checkboxes.push(inputs[i]);
+            }
+        }
+    }
+    for (var i = 0; i < checkboxes.length; ++i) {
+        var checkbox = checkboxes[i];
+        if (checkbox.type == 'checkbox') {
+            checkbox.checked = reference.checked;
+            updateHiddenFieldOfCheckbox(checkbox);
         }
     }
 }

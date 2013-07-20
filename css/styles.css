@@ -1931,14 +1931,3 @@ div#show_all_menu .tab_bg_1 a:hover {
 #debug table, #debugajax table {
    margin:0;
 }
-
-
-td.rotate4cb {
-/*                                 display: block; */
-                                -webkit-transform: rotate(-90deg);
-                                -moz-transform: rotate(-90deg);
-                                -transform: rotate(-90deg);
-                                filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-                                width: 10%;
-                                height: 80px;
-}
