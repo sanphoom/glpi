@@ -4374,7 +4374,7 @@ class Html {
     * @return String of `<script />` tags
    **/
    static function script($url) {
-      return sprintf('<script ty$namepe="text/javascript" src="%1$s"></script>', $url);
+      return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
    }
 
 
