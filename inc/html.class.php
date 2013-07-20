@@ -4647,8 +4647,10 @@ class Html {
             echo "\t\t<td class='center'>".Html::getCheckUncheckAllCheckboxes($cb_options)."</td>";
          }
 
-         $cb_options = array('tag_for_massive' => 'table_'.$checkall_id);
-         echo "\t\t<td class='center'>".Html::getCheckUncheckAllCheckboxes($cb_options)."</td>";
+         if ($param['row_check_all']) {
+            $cb_options = array('tag_for_massive' => 'table_'.$checkall_id);
+            echo "\t\t<td class='center'>".Html::getCheckUncheckAllCheckboxes($cb_options)."</td>";
+         }
          echo "\t</tr>\n";
       }
 
