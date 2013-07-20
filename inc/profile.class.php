@@ -49,7 +49,10 @@ class Profile extends CommonDBTM {
                                      'rule_ticket', 'rule_dictionnary_dropdown',
                                      'rule_dictionnary_software', 'rule_dictionnary_printer',
                                      'computer', 'monitor', 'software', 'networking', 'printer',
-                                     'cartridge', 'consumable', 'phone', 'peripheral', 'internet');
+                                     'cartridge', 'consumable', 'phone', 'peripheral', 'internet',
+                                     'contact_enterprise', 'document', 'contract', 'infocom',
+                                     'budget', 'reminder_public', 'rssfeed_public',
+                                     'bookmark_public', 'reports', 'knowbase', 'reservation');
 
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights = array('create_ticket_on_login', 'followup',
@@ -841,96 +844,66 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
+
+      // TODO: uniformize the class of forms ?
+      echo "<div class='spaced'>";
+
       if (($canedit = Session::haveRightsOr(self::$rightname, array(UPDATE, CREATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      echo "<div class='spaced'>";
-      echo "<table class='tab_cadre_fixe'>";
+      $matrix_options = array('canedit'       => $canedit,
+                              'default_class' => 'tab_bg_2');
 
-       // Gestion / Management
-      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Management')."</th></tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Contacts', 'Contacts', 2)." / "._n('Supplier', 'Suppliers', 2).
-           "</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Contact'), "_contact_enterprise",
-                           $this->fields["contact_enterprise"]);
-      echo "</td></tr>\n";
+      $rights = array(array('itemtype'  => 'Contact',
+                            'label'     => _n('Contacts', 'Contacts', 2)." / ".
+                                           _n('Supplier', 'Suppliers', 2),
+                            'field'     => 'contact_enterprise'),
+                      array('itemtype'  => 'Document',
+                            'label'     => _n('Document', 'Documents', 2),
+                            'field'     => 'document'),
+                      array('itemtype'  => 'Contract',
+                            'label'     => _n('Contract', 'Contracts', 2),
+                            'field'     => 'contract'),
+                      array('itemtype'  => 'Infocom',
+                            'label'     => __('Financial and administratives information'),
+                            'field'     => 'infocom'),
+                      array('itemtype'  => 'Budget',
+                            'label'     => __('Budget'),
+                            'field'     => 'budget'));
+      $matrix_options['title'] = __('Management');
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Document', 'Documents', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Document'), "_document",
-                           $this->fields["document"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Contract', 'Contracts', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Contract'), "_contract",
-                           $this->fields["contract"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'><td>".__('Financial and administratives information')."</td>".
-           "<td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Infocom'), "_infocom",
-                           $this->fields["infocom"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Budget')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Budget'), "_budget", $this->fields["budget"]);
-      echo "</td></tr>\n";
-
-      // Outils / Tools
-      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Tools')."</th></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('Reminder'), "_reminder_public",
-                           $this->fields["reminder_public"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Public RSS feed', 'Public RSS feeds', 2)."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('RSSFeed'), "_rssfeed_public",
-                           $this->fields["rssfeed_public"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Public bookmark', 'Public bookmarks', 2)."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('Bookmark'), "_bookmark_public",
-                           $this->fields["bookmark_public"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('Report'), "_reports", $this->fields["reports"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Knowledge base')."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('KnowbaseItem'), "_knowbase",
-                           $this->fields["knowbase"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Administration of reservations')."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('ReservationItem'), "_reservation",
-                           $this->fields["reservation"]);
-      echo "</td></tr>\n";
+      $rights = array(array('itemtype'  => 'Reminder',
+                            'label'     => _n('Public reminder', 'Public reminders', 2),
+                            'field'     => 'reminder_public'),
+                      array('itemtype'  => 'RSSFeed',
+                            'label'     => _n('Public RSS feed', 'Public RSS feeds', 2),
+                            'field'     => 'rssfeed_public'),
+                      array('itemtype'  => 'Bookmark',
+                            'label'     => _n('Public bookmark', 'Public bookmarks', 2),
+                            'field'     => 'bookmark_public'),
+                      array('itemtype'  => 'Report',
+                            'label'     => _n('Report', 'Reports', 2),
+                            'field'     => 'reports'),
+                      array('itemtype'  => 'KnowbaseItem',
+                            'label'     => __('Knowledge base'),
+                            'field'     => 'knowbase'),
+                      array('itemtype'  => 'ReservationItem',
+                            'label'     => __('Administration of reservations'),
+                            'field'     => 'reservation'));
+      $matrix_options['title'] = __('Tools');
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       if ($canedit
           && $closeform) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='6' class='center'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
+         echo "</div>\n";
          Html::closeForm();
-      } else {
-         echo "</table>\n";
       }
       echo "</div>";
    }
