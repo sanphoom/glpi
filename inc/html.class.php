@@ -1456,7 +1456,7 @@ class Html {
          echo "<li>";
          if (isset($links['search'])) {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search.png",
-                             array('alt' => __('Add'),
+                             array('alt' => __('Search'),
                                    'url' => $CFG_GLPI["root_doc"].$links['search']));
          } else {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search_off.png",
