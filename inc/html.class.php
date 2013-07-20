@@ -4520,14 +4520,14 @@ class Html {
       foreach ($columns as $label) {
          echo "\t\t<td class='center";
          if ($param['rotate_column_titles']) {
-            echo " rotate4cb";
+            echo " rotate";
          }
          echo "' width='$width%'>$label</td>\n";
       }
       if ($param['row_check_all']) {
          echo "\t\t<td class='center";
          if ($param['rotate_column_titles']) {
-            echo " rotate4cb";
+            echo " rotate";
          }
          echo "'>".__('Select/unselect all')."</td>\n";
       }
