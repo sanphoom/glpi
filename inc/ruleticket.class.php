@@ -482,7 +482,8 @@ class RuleTicket extends Rule {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      $values[self::PARENT] = __('Business rules for ticket (entity parent)');
+      $values[self::PARENT] = array('short' => __('Parent business'),
+                                    'long'  => __('Business rules for ticket (entity parent)'));
 
       return $values;
    }

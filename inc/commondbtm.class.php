@@ -4876,14 +4876,18 @@ class CommonDBTM extends CommonGLPI {
       $values = array(CREATE  => __('Create'),
                       READ    => __('Read'),
                       UPDATE  => __('Update'),
-                      PURGE   => _x('button', 'Delete permanently'));
+                      PURGE   => array('short' => __('Purge'),
+                                       'long'  => _x('button', 'Delete permanently')));
 
       if ($this->maybeDeleted()) {
-         $values[DELETE] = _x('button', 'Put in dustbin');
+         $values[DELETE] = array('short' => __('Delete'),
+                                 'long'  => _x('button', 'Put in dustbin'));
       }
       if ($this->isField("notepad")) {
-         $values[READNOTE] = __("Read the item's note");
-         $values[UPDATENOTE] = __("Update the item's note");
+         $values[READNOTE] = array('short' => __('Read note'),
+                                   'long' => __("Read the item's note"));
+         $values[UPDATENOTE] = array('short' => __('Update note'),
+                                     'long' => __("Update the item's note"));
       }
 
       return $values;

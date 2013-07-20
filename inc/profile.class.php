@@ -2061,6 +2061,12 @@ class Profile extends CommonDBTM {
    **/
    static function dropdownRights(array $values, $name, $current, $options=array()) {
 
+      foreach ($values as $key => $value) {
+         if (is_array($value)) {
+            $values[$key] = $value['long'];
+         }
+      }
+
       $param['multiple']= true;
       $param['display'] = true;
       $param['size']    = count($values);
@@ -2390,11 +2396,18 @@ class Profile extends CommonDBTM {
                if (!isset($column_labels[$right])) {
                   $column_labels[$right] = array();
                }
-               if (!isset($column_labels[$right][$label])) {
-                  $column_labels[$right][$label] = count($column_labels[$right]);
+               if (is_array($label)) {
+                  $long_label = $label['long'];
+               } else {
+                  $long_label = $label;
                }
-               $right_value = $right.'_'.$column_labels[$right][$label];
+               if (!isset($column_labels[$right][$long_label])) {
+                  $column_labels[$right][$long_label] = count($column_labels[$right]);
+               }
+               $right_value = $right.'_'.$column_labels[$right][$long_label];
+
                $columns[$right_value] = $label;
+
                $value = ((($profile_right & $right) == $right) ? 1 : 0);
                $row['columns'][$right_value] = array('value' => $value);
                if (!$param['canedit']) {

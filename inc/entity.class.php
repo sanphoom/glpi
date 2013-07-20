@@ -2443,8 +2443,10 @@ class Entity extends CommonTreeDropdown {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      $values[self::READHELPDESK]   = __('Read helpdesk parameters');
-      $values[self::UPDATEHELPDESK] = __('Update helpdesk parameters');
+      $values[self::READHELPDESK]   = array('short' => __('Read parameters'),
+                                            'long'  => __('Read helpdesk parameters'));
+      $values[self::UPDATEHELPDESK] = array('short' => __('Update parameters'),
+                                            'long'  => __('Update helpdesk parameters'));
 
       return $values;
    }

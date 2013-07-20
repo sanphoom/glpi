@@ -4045,9 +4045,12 @@ class User extends CommonDBTM {
     function getRights($interface='central') {
 
       $values = parent::getRights();
-      $values[self::IMPORTEXTAUTHUSERS] = __('Add users from an external source');
-      $values[self::READAUTHENT]        = __('Read method for user authentication and synchronization');
-      $values[self::UPDATEAUTHENT]      = __('Update method for user authentication and synchronization');
+      $values[self::IMPORTEXTAUTHUSERS] = array('short' => __('Add external'),
+                                                'long'  => __('Add users from an external source'));
+      $values[self::READAUTHENT]        = array('short' => __('Read method'),
+                                                'long'  => __('Read method for user authentication and synchronization'));
+      $values[self::UPDATEAUTHENT]      = array('short' => __('Update method'),
+                                                'long'  => __('Update method for user authentication and synchronization'));
 
       return $values;
    }

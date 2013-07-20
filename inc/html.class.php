@@ -4540,6 +4540,8 @@ class Html {
          }
       }
 
+      $checkall_id = mt_rand();
+
       $number_columns = (count($columns) + 1);
       if ($param['row_check_all']) {
          $number_columns += 1;
@@ -4555,23 +4557,31 @@ class Html {
 
       echo "\t<tr>\n";
       echo "\t\t<td>".$param['first_cell']."</td>\n";
-      foreach ($columns as $label) {
+      foreach ($columns as $col_name => $label) {
+         $col_id = Html::cleanId('col_'.$col_name.'_'.$checkall_id);
          echo "\t\t<td class='center";
          if ($param['rotate_column_titles']) {
             echo " rotate";
          }
-         echo "' width='$width%'>$label</td>\n";
+         echo "' id='$col_id' width='$width%'>";
+         if (is_array($label)) {
+            echo $label['short'];
+            self::showToolTip($label['long'], array('applyto' => $col_id));
+         } else {
+            echo $label;
+         }
+         echo "</td>\n";
       }
       if ($param['row_check_all']) {
+         $col_id = Html::cleanId('col_of_table_'.$checkall_id);
          echo "\t\t<td class='center";
          if ($param['rotate_column_titles']) {
             echo " rotate";
          }
-         echo "'>".__('Select/unselect all')."</td>\n";
+         echo "' id='$col_id'>&nbsp;</td>\n";
+         self::showToolTip(__('Select/unselect all'), array('applyto' => $col_id));
       }
       echo "\t</tr>\n";
-
-      $checkall_id = mt_rand();
 
       foreach ($rows as $row_name => $row) {
 
