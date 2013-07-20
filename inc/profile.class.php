@@ -287,6 +287,9 @@ class Profile extends CommonDBTM {
                $newvalue = 0;
                foreach ($input['_'.$right] as $value => $valid) {
                   if ($valid) {
+                     if (($underscore_pos = strpos($value, '_')) !== false) {
+                        $value = substr($value, 0, $underscore_pos);
+                     }
                      $newvalue += $value;
                   }
                }
@@ -2391,6 +2394,7 @@ class Profile extends CommonDBTM {
          }
       }
 
+      $column_labels = array();
       $columns = array();
       $rows = array();
 
@@ -2419,21 +2423,35 @@ class Profile extends CommonDBTM {
             }
 
             foreach ($rights as $right => $label) {
-               $columns[$right] = $label;
+               if (!isset($column_labels[$right])) {
+                  $column_labels[$right] = array();
+               }
+               if (!isset($column_labels[$right][$label])) {
+                  $column_labels[$right][$label] = count($column_labels[$right]);
+               }
+               $right_value = $right.'_'.$column_labels[$right][$label];
+               $columns[$right_value] = $label;
                $value = ((($profile_right & $right) == $right) ? 1 : 0);
-               $row['columns'][$right] = array('value' => $value);
+               $row['columns'][$right_value] = array('value' => $value);
                if (!$param['canedit']) {
-                  $row['columns'][$right]['restrict_to'] = $value;
+                  $row['columns'][$right_value]['restrict_to'] = $value;
                }
             }
             $rows['_'.$info['field']] = $row;
          }
       }
 
-      ksort($columns);
+      uksort($columns, function ($a, $b) {
+            $a = explode('_', $a);
+            $b = explode('_', $b);
+            if ($a[0] > $b[0]) return true;
+            if ($a[0] < $b[0]) return false;
+            return ($a[1] > $b[1]);
+         });
 
-      Html::showCheckboxMatrix($columns, $rows, array('title'         => $param['title'],
-                                                         'row_check_all' => true));
+      Html::showCheckboxMatrix($columns, $rows, array('title'                => $param['title'],
+                                                      'row_check_all'        => true,
+                                                      'rotate_column_titles' => false));
    }
 
 }
