@@ -52,7 +52,10 @@ class Profile extends CommonDBTM {
                                      'cartridge', 'consumable', 'phone', 'peripheral', 'internet',
                                      'contact_enterprise', 'document', 'contract', 'infocom',
                                      'budget', 'reminder_public', 'rssfeed_public',
-                                     'bookmark_public', 'reports', 'knowbase', 'reservation');
+                                     'bookmark_public', 'reports', 'knowbase', 'reservation',
+                                     'ticket', 'ticketcost', 'ticketrecurrent', 'tickettemplate',
+                                     'followup', 'task', 'validation', 'statistic', 'planning',
+                                     'problem', 'change');
 
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights = array('create_ticket_on_login', 'followup',
@@ -305,6 +308,14 @@ class Profile extends CommonDBTM {
             }
             unset($input['_'.$right]);
          }
+      }
+
+      if (isset($input['show_group_hardware'])) {
+         if (!isset($this->fields['show_group_hardware'])
+             || ($this->fields['show_group_hardware'] != $input['show_group_hardware'])) {
+            $this->profileRight['show_group_hardware'] = $input['show_group_hardware'];
+         }
+         unset($input['show_group_hardware']);
       }
 
       // check if right if the last write profile on Profile object
@@ -921,45 +932,21 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
+
+
+      // TODO: uniformize the class of forms ?
+      echo "<div class='spaced'>";
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-
       // Assistance / Tracking-helpdesk
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assistance')."</th></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>"._n('Ticket', 'Tickets', 2)."</th></tr>\n";
-
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Ticket', 'Tickets', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Ticket'), "_ticket",
-                           $this->fields["ticket"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Ticket cost', 'Ticket costs', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketCost'), "_ticketcost",
-                           $this->fields["ticketcost"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Recurrent tickets')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketRecurrent'), "_ticketrecurrent",
-                           $this->fields["ticketrecurrent"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Ticket template', 'Ticket templates', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketTemplate'), "_tickettemplate",
-                           $this->fields["tickettemplate"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Default ticket template')."</td><td  width='30%'>";
+      echo "<td>"._n('Ticket', 'Tickets', 2).': '.__('Default ticket template')."</td><td  width='30%'>";
       // Only root entity ones and recursive
       $options = array('value'     => $this->fields["tickettemplates_id"],
                        'entity'    => 0);
@@ -974,44 +961,59 @@ class Profile extends CommonDBTM {
       TicketTemplate::dropdown($options);
       echo "</td></tr>\n";
 
+      echo "</table>";
 
-      echo "<tr class='tab_bg_5'>";
-      echo "<th colspan='6'>"._n('Followup', 'Followups', 2)." / "._n('Task', 'Tasks', 2) ."</th>";
-      echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Followup', 'Followups', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketFollowup'), "_followup",
-                           $this->fields["followup"]);
-      echo "</td></tr>\n";
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Task', 'Tasks', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketTask'), "_task", $this->fields["task"]);
-      echo "</td></tr>\n";
+      $matrix_options = array('canedit'       => $canedit,
+                              'default_class' => 'tab_bg_2');
 
-      echo "<tr class='tab_bg_5'>";
-      echo "<th colspan='6'>"._n('Validation', 'Validations', 2)."</th>";
-      echo "</tr>\n";
+      $rights = array(array('itemtype'  => 'Ticket',
+                            'label'     => _n('Ticket', 'Tickets', 2),
+                            'field'     => 'ticket'),
+                      array('itemtype'  => 'TicketCost',
+                            'label'     => _n('Ticket cost', 'Ticket costs', 2),
+                            'field'     => 'ticketcost'),
+                      array('itemtype'  => 'TicketRecurrent',
+                            'label'     => __('Recurrent tickets'),
+                            'field'     => 'ticketrecurrent'),
+                      array('itemtype'  => 'TicketTemplate',
+                            'label'     => _n('Ticket template', 'Ticket templates', 2),
+                            'field'     => 'tickettemplate'));
+      $matrix_options['title'] = _n('Ticket', 'Tickets', 2);
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Validation', 'Validations', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketValidation'), "_validation",
-                           $this->fields["validation"]);
-      echo "</td></tr>\n";
+      $rights = array(array('itemtype'  => 'TicketFollowup',
+                            'label'     => _n('Followup', 'Followups', 2),
+                            'field'     => 'followup'),
+                      array('itemtype'  => 'TicketTask',
+                            'label'     => _n('Task', 'Tasks', 2),
+                            'field'     => 'task'));
+      $matrix_options['title'] = _n('Followup', 'Followups', 2)." / "._n('Task', 'Tasks', 2);
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
+      $rights = array(array('itemtype'  => 'TicketValidation',
+                            'label'     => _n('Validation', 'Validations', 2),
+                            'field'     => 'validation'));
+      $matrix_options['title'] = _n('Validation', 'Validations', 2);
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
+
+      echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See hardware of my groups')."</td><td>";
-      Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
+      Html::showCheckbox('show_group_hardware',
+                         array('value' => $this->fields['show_group_hardware']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "\n<td>";
       self::dropdownRights(self::getHelpdeskHardwareTypes(), 'helpdesk_hardware',
-                           $this->fields["helpdesk_hardware"]);
+                           $this->fields["helpdesk_hardware"], array('multiple' => false));
 
       echo "</td></tr>\n";
 
@@ -1021,46 +1023,35 @@ class Profile extends CommonDBTM {
       self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
       echo "</td>";
       echo "</tr>\n";
+      echo "</table>";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Visibility')."</th>";
-      echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Statistics')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Stat'), "_statistic", $this->fields["statistic"]);
-      echo "</td></tr>\n";
+      $rights = array(array('itemtype'   => 'Stat',
+                            'label'      => __('Statistics'),
+                            'field'      => 'statistic'),
+                      array('itemtype'   => 'Planning',
+                            'label'      => __('Planning'),
+                            'field'      => 'planning'));
+      $matrix_options['title'] = __('Visibility');
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Planning')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Planning'), "_planning",
-                           $this->fields["planning"]);
-      echo "</td></tr>\n";
+      $rights = array(array('itemtype'   => 'Problem',
+                            'label'      => _n('Problem', 'Problems', 2),
+                            'field'      => 'problem'),
+                      array('itemtype'   => 'Change',
+                            'label'      => _n('Change', 'Changes', 2),
+                            'field'      => 'change'));
+      $matrix_options['title'] = _n('Problem', 'Problems', 2)." / "._n('Change', 'Changes', 2);
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<tr class='tab_bg_5'>";
-      echo "<th colspan='6'>"._n('Problem', 'Problems', 2)." / "._n('Change', 'Changes', 2);
-      echo "</th></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Problem', 'Problems', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Problem'), "_problem", $this->fields["problem"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Change', 'Changes', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Change'), "_change", $this->fields["change"]);
-      echo "</td></tr>\n";
 
       if ($canedit
           && $closeform) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='6' class='center'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
+         echo "</div>\n";
          Html::closeForm();
-      } else {
-         echo "</table>\n";
       }
       echo "</div>";
    }
@@ -2378,7 +2369,7 @@ class Profile extends CommonDBTM {
             continue;
          }
 
-         if (is_array($info) && (!empty($info['itemtype']))
+         if (is_array($info) && ((!empty($info['itemtype'])) || (!empty($info['rights'])))
              && (!empty($info['label'])) && (!empty($info['field']))) {
 
             $row = array('label'   => $info['label'],
@@ -2410,7 +2401,11 @@ class Profile extends CommonDBTM {
                   $row['columns'][$right_value]['restrict_to'] = $value;
                }
             }
-            $rows['_'.$info['field']] = $row;
+            if (!empty($info['html_field'])) {
+               $rows[$info['html_field']] = $row;
+            } else {
+               $rows['_'.$info['field']] = $row;
+            }
          }
       }
 
@@ -2423,9 +2418,9 @@ class Profile extends CommonDBTM {
          });
 
       Html::showCheckboxMatrix($columns, $rows, array('title'                => $param['title'],
-                                                      'row_check_all'        => true,
-                                                      'col_check_all'        => true,
-                                                      'rotate_column_titles' => true));
+                                                      'row_check_all'        => count($columns) > 1,
+                                                      'col_check_all'        => count($rows) > 1,
+                                                      'rotate_column_titles' => count($columns) > 5));
    }
 
 }
