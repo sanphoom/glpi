@@ -55,7 +55,11 @@ class Profile extends CommonDBTM {
                                      'bookmark_public', 'reports', 'knowbase', 'reservation',
                                      'ticket', 'ticketcost', 'ticketrecurrent', 'tickettemplate',
                                      'followup', 'task', 'validation', 'statistic', 'planning',
-                                     'problem', 'change');
+                                     'problem', 'change', 'config', 'search_config', 'device',
+                                     'dropdown', 'domain', 'location', 'itilcategory',
+                                     'knowbasecategory', 'netpoint', 'taskcategory', 'state',
+                                     'solutiontemplate', 'calendar', 'typedoc', 'link',
+                                     'notification', 'sla');
 
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights = array('create_ticket_on_login', 'followup',
@@ -1246,144 +1250,80 @@ class Profile extends CommonDBTM {
          return false;
       }
 
+      // TODO: uniformize the class of forms ?
       echo "<div class='firstbloc'>";
       if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
           && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
-      echo "<table class='tab_cadre_fixe'>";
+      $dropdown_rights = CommonDBTM::getRights();
+      unset($dropdown_rights[DELETE]);
 
-      // Setup
-      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Setup')."</th></tr>\n";
+      $rights = array(array('itemtype'  => 'Config',
+                            'label'     => __('General setup'),
+                            'field'     => 'config'),
+                      array('itemtype'  => 'DisplayPreference',
+                            'label'     => __('Search result display'),
+                            'field'     => 'search_config'),
+                      array('itemtype'  => 'Item_Devices',
+                            'label'     => _n('Component', 'Components', 2),
+                            'field'     => 'device'),
+                      array('rights'    => $dropdown_rights,
+                            'label'     => _n('Global dropdown', 'Global dropdowns', 2),
+                            'field'     => 'dropdown'),
+                      __('Entity dropdowns'),
+                      array('itemtype'  => 'Domain',
+                            'label'     => _n('Domain', 'Domains', 2),
+                            'field'     => 'domain'),
+                      array('itemtype'  => 'Location',
+                            'label'     => _n('Location', 'Locations', 2),
+                            'field'     => 'location'),
+                      array('itemtype'  => 'ITILCategory',
+                            'label'     => _n('Category of ticket', 'Categories of tickets', 2),
+                            'field'     => 'itilcategory'),
+                      array('itemtype'  => 'KnowbaseItemCategory',
+                            'label'     => _n('Knowledge base category', 'Knowledge base categories', 2),
+                            'field'     => 'knowbasecategory'),
+                      array('itemtype'  => 'Netpoint',
+                            'label'     => _n('Network outlet', 'Network outlets', 2),
+                            'field'     => 'netpoint'),
+                      array('itemtype'  => 'TaskCategory',
+                            'label'     => _n('Tasks category','Tasks categories', 2),
+                            'field'     => 'taskcategory'),
+                      array('itemtype'  => 'State',
+                            'label'     => _n('Status of items', 'Statuses of items', 2),
+                            'field'     => 'state'),
+                      array('itemtype'  => 'SolutionTemplate',
+                            'label'     => _n('Solution template', 'Solution templates', 2),
+                            'field'     => 'solutiontemplate'),
+                      array('itemtype'  => 'Calendar',
+                            'label'     => _n('Calendar', 'Calendars', 2),
+                            'field'     => 'calendar'),
+                      array('itemtype'  => 'DocumentType',
+                            'label'     => __('Document type'),
+                            'field'     => 'typedoc'),
+                      array('itemtype'  => 'Link',
+                            'label'     => _n('External link', 'External links',2),
+                            'field'     => 'link'),
+                      array('itemtype'  => 'Notification',
+                            'label'     => _n('Notification', 'Notifications',2),
+                            'field'     => 'notification'),
+                      array('itemtype'  => 'SLA',
+                            'label'     => __('SLA'),
+                            'field'     => 'sla'));
 
-      echo "<tr class='tab_bg_4'>";
-      echo "<td width='18%'>".__('General setup')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Config'), "_config",
-                           $this->fields["config"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td width='18%'>".__('Search result display')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('DisplayPreference'), "_search_config",
-                           $this->fields["search_config"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Component', 'Components', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Item_Devices'), "_device",
-                           $this->fields["device"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('Global dropdown', 'Global dropdowns', 2)."</td><td>";
-      $tab = CommonDBTM::getRights();
-      unset($tab[DELETE]);
-      self::dropdownRights($tab, "_dropdown", $this->fields["dropdown"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class=' b'>".__('Entity dropdowns')." :</td>";
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Domain', 'Domains', 2)."</td>";
-      echo "<td>";
-      self::dropdownRights(Profile::getRightsFor('Domain'), "_domain", $this->fields["domain"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Location', 'Locations', 2)."</td>";
-      echo "<td>";
-      self::dropdownRights(Profile::getRightsFor('Location'), "_location",
-                           $this->fields["location"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Category of ticket', 'Categories of tickets', 2)."</td>";
-      echo "<td>";
-      self::dropdownRights(Profile::getRightsFor('ITILCategory'), "_itilcategory",
-                           $this->fields["itilcategory"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Knowledge base category', 'Knowledge base categories', 2);
-      echo "</td>";
-      echo "<td>";
-      self::dropdownRights(Profile::getRightsFor('KnowbaseItemCategory'), "_knowbasecategory",
-                           $this->fields["knowbasecategory"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Network outlet', 'Network outlets', 2)."</td>";
-      echo "<td>";
-      self::dropdownRights(Profile::getRightsFor('Netpoint'), "_netpoint",
-                           $this->fields["netpoint"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Tasks category','Tasks categories', 2)."</td>";
-      echo "<td>";
-      self::dropdownRights(Profile::getRightsFor('TaskCategory'), "_taskcategory",
-                           $this->fields["taskcategory"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td class='tab_bg_2'>&nbsp;&nbsp;&nbsp;"._n('Status of items', 'Statuses of items', 2);
-      echo "</td>";
-      echo "<td class='tab_bg_2'>";
-      self::dropdownRights(Profile::getRightsFor('State'), "_state", $this->fields["state"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Solution template', 'Solution templates', 2)."</td>";
-      echo "<td>";
-      self::dropdownRights(Profile::getRightsFor('SolutionTemplate'), "_solutiontemplate",
-                           $this->fields["solutiontemplate"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>&nbsp;&nbsp;&nbsp;"._n('Calendar', 'Calendars', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Calendar'), "_calendar",
-                           $this->fields["calendar"]);
-      echo "</td></tr>\n";
-
-
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Document type')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('DocumentType'), "_typedoc",
-                           $this->fields["typedoc"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>"._n('External link', 'External links',2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Link'), "_link", $this->fields["link"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Notification', 'Notifications',2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Notification'), "_notification",
-                           $this->fields["notification"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('SLA')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('SLA'), "_sla", $this->fields["sla"]);
-      echo "</td></tr>\n";
-
+      $this->displayRightsChoiceMatrix($rights, array('canedit'       => $canedit,
+                                                      'default_class' => 'tab_bg_2',
+                                                      'title'         => __('Setup')));
 
       if ($canedit
           && $closeform) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='6' class='center'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-         echo "</td></tr>\n";
-         echo "</table>\n";
+         echo "</div>\n";
          Html::closeForm();
-      } else {
-         echo "</table>\n";
       }
       echo "</div>";
 

@@ -4640,7 +4640,7 @@ class Html {
                echo "</td>\n";
             }
          }
-         if ($param['row_check_all']) {
+         if (($param['row_check_all']) && (!is_string($row))){
             $cb_options = array('tag_for_massive' => 'row_'.$row_name.'_'.$checkall_id,
                                 'massive_tags'    => 'table_'.$checkall_id);
             echo "\t\t<td class='center'>".Html::getCheckUncheckAllCheckboxes($cb_options)."</td>";
