@@ -2286,12 +2286,31 @@ class Html {
    }
 
 
-   static function getCheckUncheckAllCheckboxes(array $options) {
+   /**
+    * @brief get a checkbox that $_POST 0 or 1 depending on if it is checked or not.
+    *
+    * @since version 0.85
+    *
+    * @param $name     the name of the field
+    * @param $options array of parameters :
+    *                 value current state (default false = unchecked)
+    *                 readonly readonly or not ?
+    *                 rand : the randomized value used to generate the ids
+    *
+    * @return the HTML code for the checkbox
+   **/
+   static function getCheckbox(array $options) {
       $params                    = array();
+      $params['title']           = '';
+      $params['name']            = '';
+      $params['id']              = '';
       $params['tag_for_massive'] = '';
       $params['massive_tags']    = '';
       $params['container_id']    = '';
-      $params['state']           = false;
+      $params['readonly']        = false;
+      $params['value']           = 1;
+      $params['checked']         = false;
+      $params['zero_on_empty']   = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2299,20 +2318,56 @@ class Html {
          }
       }
 
-      $out  = "<input title='".__s('Check/uncheck all')."' type='checkbox'";
-      if (!empty($params['tag_for_massive'])) {
-         $out .= " data-glpicore-cb-tag-for-massive='".$params['tag_for_massive']."'";
+      $out  = "<input type='checkbox'";
+
+      foreach (array('id', 'name', 'title', 'value') as $field) {
+         if (!empty($params[$field])) {
+            $out .= " $field='".$params[$field]."'";
+         }
       }
+
+      if (!empty($params['tag_for_massive'])
+          || !empty($params['container_id'])) {
+         // Filtering on the container !
+         if (!empty($params['container_id'])) {
+            $criterion = '#' . $params['container_id'] . ' ';
+         } else {
+            $criterion = '';
+         }
+
+         // We only want the checkbox input
+         $criterion .= 'input[type="checkbox"]';
+
+         // Only the given massive tag !
+         if (!empty($params['tag_for_massive'])) {
+            $criterion .= '[data-glpicore-cb-massive-tags~="' . $params['tag_for_massive'] . '"]';
+         }
+
+         // Only enabled checkbox
+         $criterion .= ':enabled';
+
+         $out .= " onClick='massiveUpdateCheckbox(\"" . addslashes($criterion) . "\", this)'";
+      }
+
+      if ($params['zero_on_empty']) {
+         $out .= " glpi-core-cb-zero-on-empty='1'";
+      }
+
       if (!empty($params['massive_tags'])) {
+         if (is_array($params['massive_tags'])) {
+            $params['massive_tags'] = implode(' ', $params['massive_tags']);
+         }
          $out .= " data-glpicore-cb-massive-tags='".$params['massive_tags']."'";
       }
-      if (!empty($params['container_id'])) {
-         $out .= " data-glpicore-cb-massive-container-id='".$params['container_id']."'";
+
+      if ($params['readonly']) {
+         $out .= " disabled='disabled'";
       }
-      $out .= " onClick='checkUncheckAllCheckboxes(this)'";
-      if ($params['state']) {
+
+      if ($params['checked']) {
          $out .= " checked";
       }
+
       $out .= ">";
 
       return $out;
@@ -2325,60 +2380,8 @@ class Html {
     *
     * @return nothing (display only)
    **/
-   static function showCheckbox($name, array $options = array()) {
-      echo self::getCheckbox($name, $options);
-   }
-
-
-   /**
-    * @brief get a checkbox that $_POST 0 or 1 depending on if it is checked or not.
-    *
-    * Get a single checkbox with its hidden input field to be sure to get the value submitted to
-    * _POST. These checkbox uses the updateHiddenFieldOfCheckbox() js function to update its hidden
-    * field. The id of the hidden field is send to the  data-glpicore-cb-associated_hidden_field
-    * HTML attribute setted to the HTML INPUT element.
-    *
-    * @since version 0.85
-    *
-    * @param $name     the name of the field
-    * @param $options array of parameters :
-    *                 value current state (default false = unchecked)
-    *                 readonly readonly or not ?
-    *                 rand : the randomized value used to generate the ids
-    *
-    * @return the HTML code for the checkbox
-   **/
-   static function getCheckbox($name, array $options = array()) {
-
-      $params                 = array();
-      $params['value']        = false;
-      $params['readonly']     = false;
-      $params['rand']         = mt_rand();
-      $params['massive_tags'] = array();
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $params[$key] = $val;
-         }
-      }
-
-      $hidden_id   = Html::cleanId($name.'_'.$params['rand']);
-      $checkbox_id = Html::cleanId('checkbox_'.$name.'_'.$params['rand']);
-      $value       = ($params['value'] ? 1 : 0);
-
-      $out= "<input name='$name' type='checkbox' id='$checkbox_id' glpi-core-cb-zero-on-empty='1'";
-      if (count($params['massive_tags'])) {
-         $out .= " data-glpicore-cb-massive-tags='".implode(' ', $params['massive_tags'])."'";
-      }
-      if ($value) {
-         $out .= ' checked';
-      }
-      if ($params['readonly']) {
-         $out .= " disabled='disabled'";
-      }
-      $out .= ">";
-
-      return $out;
+   static function showCheckbox(array $options = array()) {
+      echo self::getCheckbox($options);
    }
 
 
@@ -3896,9 +3899,9 @@ class Html {
       // TODO: check this new method for checkboxes ...
       $out .= "<script language=javascript>
    $('form').submit(function() {
-      $('input[type=\"checkbox\"]').each(function(index){
+      $('input[type=\"checkbox\"][glpi-core-cb-zero-on-empty=\"1\"]:not(:checked)').each(function(index){
          // If the checkbox is not validated, we add a hidden field with '0' as value
-         if (($(this).attr('glpi-core-cb-zero-on-empty')) && ($(this).attr('name')) && (!$(this).is(':checked'))) {
+         if ($(this).attr('name')) {
             $('<input>').attr({
                type: 'hidden',
                name: $(this).attr('name'),
@@ -4555,6 +4558,8 @@ class Html {
 
       $checkall_id = mt_rand();
 
+      $cb_options = array('title' => __s('Check/uncheck all'));
+
       $number_columns = (count($columns) + 1);
       if ($param['row_check_all']) {
          $number_columns += 1;
@@ -4626,7 +4631,7 @@ class Html {
                if (array_key_exists($col_name, $row['columns'])) {
                   $content = $row['columns'][$col_name];
                   if (is_array($content)
-                      && array_key_exists('value', $content)) {
+                      && array_key_exists('checked', $content)) {
                      if (!array_key_exists('readonly', $content)) {
                         $content['readonly'] = false;
                      }
@@ -4640,7 +4645,8 @@ class Html {
                      if ($param['row_check_all'] && $param['col_check_all']) {
                         $content['massive_tags'][] = 'table_'.$checkall_id;
                      }
-                     Html::showCheckbox($row_name."[$col_name]", $content);
+                     $content['name'] = $row_name."[$col_name]";
+                     Html::showCheckbox($content);
                   } elseif (is_string($content)) {
                      echo $content;
                   } else {
@@ -4654,9 +4660,9 @@ class Html {
             }
          }
          if (($param['row_check_all']) && (!is_string($row))){
-            $cb_options = array('tag_for_massive' => 'row_'.$row_name.'_'.$checkall_id,
-                                'massive_tags'    => 'table_'.$checkall_id);
-            echo "\t\t<td class='center'>".Html::getCheckUncheckAllCheckboxes($cb_options)."</td>";
+            $cb_options['tag_for_massive'] = 'row_'.$row_name.'_'.$checkall_id;
+            $cb_options['massive_tags']    = 'table_'.$checkall_id;
+            echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>";
          }
          echo "\t</tr>\n";
       }
@@ -4665,14 +4671,15 @@ class Html {
          echo "\t<tr>\n";
          echo "\t\t<td>".__('Select/unselect all')."</td>\n";
          foreach ($columns as $col_name => $label) {
-            $cb_options = array('tag_for_massive' => 'col_'.$col_name.'_'.$checkall_id,
-                                'massive_tags'    => 'table_'.$checkall_id);
-            echo "\t\t<td class='center'>".Html::getCheckUncheckAllCheckboxes($cb_options)."</td>";
+            $cb_options['tag_for_massive'] = 'col_'.$col_name.'_'.$checkall_id;
+            $cb_options['massive_tags']    = 'table_'.$checkall_id;
+            echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>";
          }
 
          if ($param['row_check_all']) {
-            $cb_options = array('tag_for_massive' => 'table_'.$checkall_id);
-            echo "\t\t<td class='center'>".Html::getCheckUncheckAllCheckboxes($cb_options)."</td>";
+            $cb_options['tag_for_massive'] = 'table_'.$checkall_id;
+            $cb_options['massive_tags']    = '';
+            echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>";
          }
          echo "\t</tr>\n";
       }

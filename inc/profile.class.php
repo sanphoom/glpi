@@ -1009,8 +1009,8 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See hardware of my groups')."</td><td>";
-      Html::showCheckbox('show_group_hardware',
-                         array('value' => $this->fields['show_group_hardware']));
+      Html::showCheckbox(array('name' => 'show_group_hardware',
+                               'checked' => $this->fields['show_group_hardware']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -1084,9 +1084,9 @@ class Profile extends CommonDBTM {
          $row               = array('label'      => $status_1,
                                     'columns'    => array());
          foreach ($statuses as $index_2 => $status_2) {
-            $content = array('value' => true);
+            $content = array('checked' => true);
             if (isset($this->fields[$db_field][$index_1][$index_2])) {
-               $content['value'] = $this->fields[$db_field][$index_1][$index_2];
+               $content['checked'] = $this->fields[$db_field][$index_1][$index_2];
             }
             if (($index_1 == $index_2) || (!$canedit)) {
                $content['readonly'] = true;
@@ -2348,10 +2348,10 @@ class Profile extends CommonDBTM {
 
                $columns[$right_value] = $label;
 
-               $value = ((($profile_right & $right) == $right) ? 1 : 0);
-               $row['columns'][$right_value] = array('value' => $value);
+               $checked = ((($profile_right & $right) == $right) ? 1 : 0);
+               $row['columns'][$right_value] = array('checked' => $checked);
                if (!$param['canedit']) {
-                  $row['columns'][$right_value]['restrict_to'] = $value;
+                  $row['columns'][$right_value]['readonly'] = true;
                }
             }
             if (!empty($info['html_field'])) {

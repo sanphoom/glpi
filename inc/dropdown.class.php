@@ -601,23 +601,23 @@ class Dropdown {
         $params['use_checkbox'] = false;
       }
       if ($params['use_checkbox']) {
-         $options = array();
+         $options = array('name' => $name);
          switch ($restrict_to) {
             case 0:
-               $options['value']    = false;
+               $options['checked']  = false;
                $options['readonly'] = true;
                break;
             case 1:
-               $options['value']    = true;
+               $options['checked']  = true;
                $options['readonly'] = true;
                break;
             default:
-               $options['value']    = ($value ? 1 : 0);
+               $options['checked']  = ($value ? 1 : 0);
                $options['readonly'] = false;
                break;
          }
 
-         return Html::showCheckbox($name, $options);
+         return Html::showCheckbox($options);
       }
 
       if ($restrict_to != 0) {

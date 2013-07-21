@@ -388,7 +388,6 @@ function markCheckboxes(container_id) {
       if (checkbox && (checkbox.type == 'checkbox')) {
          if (checkbox.disabled == false ) {
             checkbox.checked = true;
-            updateHiddenFieldOfCheckbox(checkbox);
          }
       }
    }
@@ -409,7 +408,6 @@ function unMarkCheckboxes(container_id) {
       checkbox = checkboxes[j];
       if (checkbox && (checkbox.type == 'checkbox')) {
          checkbox.checked = false;
-         updateHiddenFieldOfCheckbox(checkbox);
       }
    }
    return true;
@@ -434,7 +432,6 @@ function toggleCheckboxes( container_id ) {
                } else {
                   checkbox.checked = false;
                }
-               updateHiddenFieldOfCheckbox(checkbox);
             }
          }
    }
@@ -480,7 +477,6 @@ function checkAsCheckboxes( reference_id, container_id ) {
       if (checkbox && (checkbox.type == 'checkbox')) {
          if (checkbox.disabled == false) {
             checkbox.checked = ref.checked;
-            updateHiddenFieldOfCheckbox(checkbox);
          }
       }
    }
@@ -699,73 +695,35 @@ function deselectAll(id) {
    $('#'+id).val('').trigger('change');
 }
 
-/**
- * @since version 0.85
- *
- * @param checkbox the object of the checkbox
-**/
-function updateHiddenFieldOfCheckbox(reference) {
-    var hiddenFieldId = reference.getAttribute('data-glpicore-cb-associated-hidden-field');
-    if (hiddenFieldId) {
-        var hiddenField = document.getElementById(hiddenFieldId);
-        if (hiddenField) {
-            if (reference.checked) {
-                hiddenField.value = 1;
-            } else {
-                hiddenField.value = 0;
-            }
-        }
-    }
-}
-
-
-/**
- * Set all the checkbox that have the class associated to associatedClass attribute of the given
- * checkbox (this as argument)
- *
- * @since version 0.85
- *
- * @param reference the checkbox object that provide the associated class and the new state
-**/
-function checkUncheckAllCheckboxes(reference) {
-    // We only want checkbox input
-    var criterion = 'input[type="checkbox"]';
-
-    // Restrict to a container
-    var container_id = reference.getAttribute('data-glpicore-cb-massive-container-id');
-    if (container_id) {
-        criterion = '#' + container_id + ' > ' + criterion;
-    }
-
-    // Only select for tags
-    var tag_for_massive = reference.getAttribute('data-glpicore-cb-tag-for-massive');
-    if (tag_for_massive){
-        criterion += '[data-glpicore-cb-massive-tags~="'+tag_for_massive+'"]';
-    }
-
-    // Only apply to enabled checkboxes
-    criterion += ':enabled';
-
-    updateCheckbox(criterion, reference.checked);
-}
-
 
 /**
  * Set all the checkbox that refere to the criterion
  *
  * @since version 0.85
  *
- * @param criterion jquery criterion 
- * @param value the new value (default toggle)
+ * @param criterion jquery criterion
+ * @param reference the new reference object, boolean, id ... (default toggle)
  *
  * @param reference the checkbox object that provide the associated class and the new state
 **/
-function updateCheckbox(criterion, value = null) {
-    $(criterion).each(function(index) {
-        if (value === null) {
-            $(this).prop('checked', !$(this).prop('checked'));
-        } else {
-            $(this).prop('checked', value);
+function massiveUpdateCheckbox(criterion, reference = null) {
+    if (reference === null) {
+        var value = null;
+    } else if (typeof(reference) == 'boolean') {
+        var value = reference;
+    } else if (typeof(reference) == 'string') {
+        var value = $('#' + reference).prop('checked');
+    } else if (typeof(reference) == 'object') {
+        var value = $(reference).prop('checked');
+    }
+    if (typeof(value) == 'undefined') {
+        return false;
+    }
+    $(criterion).each(function() {
+        if (reference === null) {
+            value = !$(this).prop('checked');
         }
+        $(this).prop('checked', value);
     });
+    return true;
 }
