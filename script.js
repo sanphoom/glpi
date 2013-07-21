@@ -728,41 +728,44 @@ function updateHiddenFieldOfCheckbox(reference) {
  * @param reference the checkbox object that provide the associated class and the new state
 **/
 function checkUncheckAllCheckboxes(reference) {
+    // We only want checkbox input
+    var criterion = 'input[type="checkbox"]';
+
+    // Restrict to a container
     var container_id = reference.getAttribute('data-glpicore-cb-massive-container-id');
     if (container_id) {
-        var container = document.getElementById(container_id);
-        if (!container) {
-            return
-        }
-        var inputs = container.getElementsByTagName('input');
-    } else {
-        var inputs = document.getElementsByTagName('input');
+        criterion = '#' + container_id + ' > ' + criterion;
     }
+
+    // Only select for tags
     var tag_for_massive = reference.getAttribute('data-glpicore-cb-tag-for-massive');
-    var checkboxes      = [];
-    if (tag_for_massive) {
-        for (var i = 0; i < inputs.length; ++i) {
-            var input        = inputs[i];
-            var massive_tags = input.getAttribute('data-glpicore-cb-massive-tags');
-            if ((massive_tags) && (input.type == 'checkbox') && (input.disabled == false)) {
-                if (massive_tags.search(tag_for_massive) >= 0) {
-                    checkboxes.push(inputs[i]);
-                }
-            }
-        }
-    } else {
-        for (var i = 0; i < inputs.length; ++i) {
-            var input = inputs[i];
-            if ((input.type == 'checkbox') && (input.disabled == false)) {
-                checkboxes.push(inputs[i]);
-            }
-        }
+    if (tag_for_massive){
+        criterion += '[data-glpicore-cb-massive-tags~="'+tag_for_massive+'"]';
     }
-    for (var i = 0; i < checkboxes.length; ++i) {
-        var checkbox = checkboxes[i];
-        if (checkbox.type == 'checkbox') {
-            checkbox.checked = reference.checked;
-            updateHiddenFieldOfCheckbox(checkbox);
+
+    // Only apply to enabled checkboxes
+    criterion += ':enabled';
+
+    updateCheckbox(criterion, reference.checked);
+}
+
+
+/**
+ * Set all the checkbox that refere to the criterion
+ *
+ * @since version 0.85
+ *
+ * @param criterion jquery criterion 
+ * @param value the new value (default toggle)
+ *
+ * @param reference the checkbox object that provide the associated class and the new state
+**/
+function updateCheckbox(criterion, value = null) {
+    $(criterion).each(function(index) {
+        if (value === null) {
+            $(this).prop('checked', !$(this).prop('checked'));
+        } else {
+            $(this).prop('checked', value);
         }
-    }
+    });
 }

@@ -2366,10 +2366,7 @@ class Html {
       $checkbox_id = Html::cleanId('checkbox_'.$name.'_'.$params['rand']);
       $value       = ($params['value'] ? 1 : 0);
 
-      $out = Html::hidden($name, array('id' => $hidden_id, 'value' => $value));
-
-      $out.= "<input type='checkbox'  data-glpicore-cb-associated-hidden-field='$hidden_id' ".
-             " onClick='updateHiddenFieldOfCheckbox(this)' id='$checkbox_id'";
+      $out= "<input name='$name' type='checkbox' id='$checkbox_id' glpi-core-cb-zero-on-empty='1'";
       if (count($params['massive_tags'])) {
          $out .= " data-glpicore-cb-massive-tags='".implode(' ', $params['massive_tags'])."'";
       }
@@ -3896,13 +3893,12 @@ class Html {
          $out .= Html::hidden('_glpi_csrf_token', array('value' => Session::getNewCSRFToken()))."\n";
       }
 
-      /*
-      // TODO : check this new method for checkboxes ...
+      // TODO: check this new method for checkboxes ...
       $out .= "<script language=javascript>
    $('form').submit(function() {
       $('input[type=\"checkbox\"]').each(function(index){
          // If the checkbox is not validated, we add a hidden field with '0' as value
-         if (($(this).attr('name')) && (!$(this).is(':checked'))) {
+         if (($(this).attr('glpi-core-cb-zero-on-empty')) && ($(this).attr('name')) && (!$(this).is(':checked'))) {
             $('<input>').attr({
                type: 'hidden',
                name: $(this).attr('name'),
@@ -3912,7 +3908,6 @@ class Html {
       });
    });
 </script>\n";
-      */
 
       $out .= "</form>\n";
       if ($display) {
