@@ -3891,10 +3891,28 @@ class Html {
    **/
    static function closeForm ($display=true) {
 
-      $out = '';
+      $out = "\n";
       if (GLPI_USE_CSRF_CHECK) {
-         $out .= Html::hidden('_glpi_csrf_token', array('value' => Session::getNewCSRFToken()));
+         $out .= Html::hidden('_glpi_csrf_token', array('value' => Session::getNewCSRFToken()))."\n";
       }
+
+      /*
+      // TODO : check this new method for checkboxes ...
+      $out .= "<script language=javascript>
+   $('form').submit(function() {
+      $('input[type=\"checkbox\"]').each(function(index){
+         // If the checkbox is not validated, we add a hidden field with '0' as value
+         if (($(this).attr('name')) && (!$(this).is(':checked'))) {
+            $('<input>').attr({
+               type: 'hidden',
+               name: $(this).attr('name'),
+               value: '0'
+            }).insertAfter($(this));
+         }
+      });
+   });
+</script>\n";
+      */
 
       $out .= "</form>\n";
       if ($display) {
