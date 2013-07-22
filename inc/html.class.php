@@ -2287,42 +2287,28 @@ class Html {
 
 
    /**
-    * @brief get a checkbox that $_POST 0 or 1 depending on if it is checked or not.
+    * Get the jquery criterion for massive checkbox update
+    * We can filter checkboxes by a container or by a tag. We can also select checkboxes that have
+    * a given tag and that are contained inside a container
     *
     * @since version 0.85
     *
-    * @param $name     the name of the field
     * @param $options array of parameters :
-    *                 value current state (default false = unchecked)
-    *                 readonly readonly or not ?
-    *                 rand : the randomized value used to generate the ids
+    *                - tag_for_massive tag of the checkboxes to update
+    *                - container_id    if of the container of the checkboxes
     *
-    * @return the HTML code for the checkbox
+    * @return the javascript code for jquery criterion or empty string if it is not a
+    *         massive update checkbox
    **/
-   static function getCheckbox(array $options) {
+   static function getCriterionForMassiveCheckboxes(array $options) {
+
       $params                    = array();
-      $params['title']           = '';
-      $params['name']            = '';
-      $params['id']              = '';
       $params['tag_for_massive'] = '';
-      $params['massive_tags']    = '';
       $params['container_id']    = '';
-      $params['readonly']        = false;
-      $params['value']           = 1;
-      $params['checked']         = false;
-      $params['zero_on_empty']   = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
-         }
-      }
-
-      $out  = "<input type='checkbox'";
-
-      foreach (array('id', 'name', 'title', 'value') as $field) {
-         if (!empty($params[$field])) {
-            $out .= " $field='".$params[$field]."'";
          }
       }
 
@@ -2346,7 +2332,58 @@ class Html {
          // Only enabled checkbox
          $criterion .= ':enabled';
 
-         $out .= " onClick='massiveUpdateCheckbox(\"" . addslashes($criterion) . "\", this)'";
+         return addslashes($criterion);
+      }
+      return '';
+   }
+
+
+   /**
+    * Get a checkbox.
+    *
+    * @since version 0.85
+    *
+    * @param $options array of parameters :
+    *                - title         its title
+    *                - name          its name
+    *                - id            its id
+    *                - value         the value to set when checked
+    *                - readonly      can we edit it ?
+    *                - massive_tags  the tag to set for massive checkbox update
+    *                - checked       is it checked or not ?
+    *                - zero_on_empty do we send 0 on submit when it is not checked ?
+    *             all options provided to Html::getCriterionForMassiveCheckboxes()
+    *
+    * @return the HTML code for the checkbox
+   **/
+   static function getCheckbox(array $options) {
+      $params                    = array();
+      $params['title']           = '';
+      $params['name']            = '';
+      $params['id']              = '';
+      $params['value']           = 1;
+      $params['readonly']        = false;
+      $params['massive_tags']    = '';
+      $params['checked']         = false;
+      $params['zero_on_empty']   = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $out  = "<input type='checkbox'";
+
+      foreach (array('id', 'name', 'title', 'value') as $field) {
+         if (!empty($params[$field])) {
+            $out .= " $field='".$params[$field]."'";
+         }
+      }
+
+      $criterion = self::getCriterionForMassiveCheckboxes($options);
+      if (!empty($criterion)) {
+         $out .= " onClick='massiveUpdateCheckbox(\"$criterion\", this)'";
       }
 
       if ($params['zero_on_empty']) {
