@@ -2357,6 +2357,8 @@ class Html {
     * @return the HTML code for the checkbox
    **/
    static function getCheckbox(array $options) {
+      global $CFG_GLPI;
+
       $params                    = array();
       $params['title']           = '';
       $params['name']            = '';
@@ -2387,7 +2389,9 @@ class Html {
       }
 
       if ($params['zero_on_empty']) {
-         $out .= " glpi-core-cb-zero-on-empty='1'";
+         $out .= " data-glpicore-cb-zero-on-empty='1'";
+         $CFG_GLPI['checkbox-zero-on-empty'] = true;
+
       }
 
       if (!empty($params['massive_tags'])) {
@@ -3927,27 +3931,29 @@ class Html {
     * @return String
    **/
    static function closeForm ($display=true) {
+      global $CFG_GLPI;
 
       $out = "\n";
       if (GLPI_USE_CSRF_CHECK) {
          $out .= Html::hidden('_glpi_csrf_token', array('value' => Session::getNewCSRFToken()))."\n";
       }
 
-      // TODO: check this new method for checkboxes ...
-      $out .= "<script language=javascript>
-   $('form').submit(function() {
-      $('input[type=\"checkbox\"][glpi-core-cb-zero-on-empty=\"1\"]:not(:checked)').each(function(index){
-         // If the checkbox is not validated, we add a hidden field with '0' as value
-         if ($(this).attr('name')) {
-            $('<input>').attr({
-               type: 'hidden',
-               name: $(this).attr('name'),
-               value: '0'
-            }).insertAfter($(this));
-         }
-      });
-   });
-</script>\n";
+      if (isset($CFG_GLPI['checkbox-zero-on-empty']) && $CFG_GLPI['checkbox-zero-on-empty']) {
+         $js = "   $('form').submit(function() {
+         $('input[type=\"checkbox\"][data-glpicore-cb-zero-on-empty=\"1\"]:not(:checked)').each(function(index){
+            // If the checkbox is not validated, we add a hidden field with '0' as value
+            if ($(this).attr('name')) {
+               $('<input>').attr({
+                  type: 'hidden',
+                  name: $(this).attr('name'),
+                  value: '0'
+               }).insertAfter($(this));
+            }
+         });
+      });";
+         $out .= Html::scriptBlock($js)."\n";
+         unset($CFG_GLPI['checkbox-zero-on-empty']);
+      }
 
       $out .= "</form>\n";
       if ($display) {

@@ -706,8 +706,8 @@ function deselectAll(id) {
  *
  * @param reference the checkbox object that provide the associated class and the new state
 **/
-function massiveUpdateCheckbox(criterion, reference = null) {
-    if (reference === null) {
+function massiveUpdateCheckbox(criterion, reference) {
+    if (typeof(reference) == 'undefined') {
         var value = null;
     } else if (typeof(reference) == 'boolean') {
         var value = reference;
@@ -720,7 +720,7 @@ function massiveUpdateCheckbox(criterion, reference = null) {
         return false;
     }
     $(criterion).each(function() {
-        if (reference === null) {
+        if (typeof(reference) == 'undefined') {
             value = !$(this).prop('checked');
         }
         $(this).prop('checked', value);
