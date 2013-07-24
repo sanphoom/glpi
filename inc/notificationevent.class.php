@@ -160,6 +160,7 @@ class NotificationEvent extends CommonDBTM {
                            unset($email_notprocessed[$users_infos['language']]
                                                     [$users_infos['email']]);
                         }
+                        $options['item'] = $item;
                         if ($tid = $template->getTemplateByLanguage($notificationtarget,
                                                                     $users_infos, $event,
                                                                     $options)) {

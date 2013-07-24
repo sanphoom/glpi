@@ -924,7 +924,7 @@ class Html {
       echo "<meta http-equiv='Expires' content='Fri, Jun 12 1981 08:20:00 GMT'>\n";
       echo "<meta http-equiv='Pragma' content='no-cache'>\n";
       echo "<meta http-equiv='Cache-Control' content='no-cache'>\n";
-
+      echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />";
       //  CSS link
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
 
@@ -952,6 +952,7 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
 
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
 
@@ -964,6 +965,8 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/plugins/imagepaste/jquery.image_paste.js");
 
                $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
             "</script>\n";
@@ -3472,10 +3475,11 @@ class Html {
     * Init the Editor System to a textarea
     *
     * @param $name name of the html textarea where to used
+    * @param $itemtype type of the item
     *
     * @return nothing
    **/
-   static function initEditorSystem($name) {
+   static function initEditorSystem($name, $itemtype = '') {
       global $CFG_GLPI;
 
       Html::scriptStart();
@@ -3484,21 +3488,87 @@ class Html {
          mode : 'exact',
          elements: '$name',
          valid_elements: '*[*]',
-         plugins : 'table,directionality,searchreplace',
+         plugins : 'table,directionality,searchreplace,paste',
+         paste_use_dialog : false,
+         paste_auto_cleanup_on_paste : true,
+         paste_convert_headers_to_strong : false,
+         paste_strip_class_attributes : 'all',
+         paste_remove_spans : true,
+         paste_remove_styles : true,
+         paste_retain_style_properties : '',
+         paste_preprocess : function(pl, o) {
+            _html = o.content;
+            if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
+               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');			
+               o.content = _html;
+            }
+         },
          theme : 'advanced',
          entity_encoding : 'raw', ";
          // directionality + search replace plugin
       echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
       echo "theme_advanced_toolbar_location : 'top',
          theme_advanced_toolbar_align : 'left',
-	 theme_advanced_statusbar_location : 'none',
+         theme_advanced_statusbar_location : 'none',
+         theme_advanced_resizing : 'true',
          theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-         theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-         theme_advanced_buttons3 : ''});";
+         theme_advanced_buttons2 : 'imagepaste,forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
+         theme_advanced_buttons3 : '',";
+      
+      if($itemtype == 'Ticket'){
+         echo "setup : function(ed) {
+                  ed.addButton('imagepaste', {
+                     title : '".__('Paste an image')."',
+                     image : '".$CFG_GLPI["root_doc"]."/lib/tiny_mce/plugins/imagepaste/img/imagepaste.png',
+                     onclick : function() {
+                        imagepaste_$name.dialog(\"open\");
+                     }
+                  });
+               }";
+      }
+      echo "});";
+      
 //         invalid_elements : 'script',
       echo Html::scriptEnd();
+      
+      // Create Modal window
+      if($itemtype == 'Ticket'){
+         echo "<div id='imagepaste_$name'></div>";
+         
+         Ajax::createModalWindow('imagepaste_'.$name,
+                                 $CFG_GLPI["root_doc"]."/front/document.form.php?popup=1&rand=".
+                                    mt_rand()."&name=".$name,
+                                 array('title'       => __('Paste an image'),
+                                       'container'   => 'imagepaste_'.$name,
+                                       'width'       => 600,
+                                       'height'      => 500));
+         
+      }
    }
+   
+   /**
+    * Init the Image paste System for tiny mce
+    *
+    * @param params params used for image paste : 
+    *                            - image_name : Upload image name
+    *                            - image_paste : Name of the image uploaded successfully
+    *                            - initMsg : Message to display on init
+    *                            - errorMsg : Message to display on error
+    *
+    * @return nothing
+   **/
+   static function initImagePasteSystem($params) {
+      global $CFG_GLPI;
+      
+      $params['root_doc'] = $CFG_GLPI["root_doc"];
 
+      echo "<script language='javascript' type='text/javascript'>
+               if(!isIE()) // Chrome, Firefox plugin
+                  var imagePaste = $(document).imagePaste(".json_encode($params).");
+               else // IE plugin
+                  $(document).IE_support_imagePaste(".json_encode($params).");
+            </script>";
+   }
 
    /**
     * Print Ajax pager for list in tab panel

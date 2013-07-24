@@ -166,6 +166,10 @@ class NotificationMail implements NotificationInterface {
          $data['messageid'] = $options['messageid'];
       }
 
+      if (isset($options['documents'])) {
+         $data['documents'] = json_encode($options['documents']);
+      }
+
       $mailqueue = new QueuedMail();
 
       if (!$mailqueue->add(Toolbox::addslashes_deep($data))) {

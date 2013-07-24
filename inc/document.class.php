@@ -843,12 +843,13 @@ class Document extends CommonDBTM {
       $tab[5]['field']           = 'mime';
       $tab[5]['name']            = __('MIME type');
       $tab[5]['datatype']        = 'string';
-
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
-
+      
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'tag';
+      $tab[6]['name']            = __('Tag');
+      $tab[6]['datatype']        = 'text';
+      $tab[6]['massiveaction']   = false;
+      
       $tab[90]['table']          = $this->getTable();
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
@@ -1360,6 +1361,36 @@ class Document extends CommonDBTM {
       echo "</span>\n";
 
       return $rand;
+   }
+   
+   /**
+    * showImagePaste : Show the popup of image paste for an item
+    *
+    * @param $name              text  Name of the textarea
+    *
+    * @return nothing (print the image paste)
+   **/
+   function showImagePaste($name) {
+      if (!self::canCreate()) {
+         return false;
+      }
+
+      // Init the image paste system
+      echo "<div id='image_paste'>"; 
+      // Upload and clear buttons (and paste button for IE)
+      echo "<div id='paste_image_menu' class='center'><a id='paste_image' class='vsubmit' style='display:none'>"._sx('button', 'Paste image')."</a>";
+      echo "<a id='upload_image' class='vsubmit' style='display:none'>"._sx('button', 'Save')."</a>";
+      echo "<a id='clear_image' class='vsubmit' style='display:none'>"._sx('button', 'Cancel')."</a>";
+      echo "</div>";
+
+      $params = array('image_name' => Toolbox::getRandomString(8), // generate image name
+                      'name'       => $name,
+                      'modalName'  => 'imagepaste_'.$name,
+                      'initMsg'    => __('Paste an image')." (ctrl+v)",
+                      'errorMsg'   => __('Item not found'));
+
+      html::initImagePasteSystem($params);
+      echo "</div>\n";     
    }
 
 }

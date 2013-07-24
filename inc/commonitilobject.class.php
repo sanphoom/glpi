@@ -1067,6 +1067,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // For mailcollector
          $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
          $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
+         $input['name'] = Html::clean(Html::entity_decode_deep($input['name']));
          $input["name"] = Toolbox::substr($input['name'],0,70);
          $input['name'] = Toolbox::addslashes_deep($input['name']);
       }
@@ -1426,16 +1427,16 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return array of doc added name
    **/
-   function addFiles($donotif=1) {
+   function addFiles($donotif=1, $disablenotif=0) {
       global $CFG_GLPI;
       if (!isset($this->input['_filename']) || count($this->input['_filename'])==0) {
          return array();
       }
-      $docadded = array();
-      $doc      = new Document();
-      $docitem  = new Document_Item();
+      $docadded  = array();
+      $doc       = new Document();
+      $docitem   = new Document_Item();
 
-      foreach ($this->input['_filename'] as $file) {
+      foreach ($this->input['_filename'] as $key => $file) {
          $docID = 0;
          $filename = GLPI_DOC_DIR."/_tmp/".$file;
          // Check for duplicate
@@ -1444,6 +1445,16 @@ abstract class CommonITILObject extends CommonDBTM {
             if (!$doc->fields['is_blacklisted']) {
                $docID = $doc->fields["id"];
             }
+
+            // check sum already exist, we replace the tag by the existing one
+            if(isset($this->input['_tag'][$key]) && $docID > 0){
+               $this->input['content'] = preg_replace('/'.$this->input['_tag'][$key].'/', 
+                       $doc->fields["tag"], 
+                       $this->input['content']);
+
+               $docadded[$docID]['tag'] = $doc->fields["tag"];
+            }
+
          } else {
             $input2         = array();
             //TRANS: Default document to files attached to tickets : %d is the ticket id
@@ -1451,6 +1462,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($this->getType() == 'Ticket') {
                $input2["tickets_id"]           = $this->getID();
+               if(isset($this->input['_tag'][$key])){
+                  $input2["tag"]               = $this->input['_tag'][$key];
+               }
             }
             $input2["entities_id"]             = $this->fields["entities_id"];
             $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
@@ -1461,16 +1475,27 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          if ($docID > 0) {
-            if ($docitem->add(array('documents_id' => $docID,
-                                    '_do_notif'    => $donotif,
-                                    'itemtype'     => $this->getType(),
-                                    'items_id'     => $this->getID()))) {
-               $docadded[] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]),
+            if ($docitem->add(array('documents_id'  => $docID,
+                                    '_do_notif'     => $donotif,
+                                    '_disablenotif' => $disablenotif,
+                                    'itemtype'      => $this->getType(),
+                                    'items_id'      => $this->getID()))) {
+               $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]),
                                        stripslashes($doc->fields["filename"]));
+
+               if(isset($input2["tag"])){
+                  $docadded[$docID]['tag'] = $input2["tag"];
+                  unset($this->input['_filename'][$key]);
+                  unset($this->input['_tag'][$key]);
+               }
             }
          }
          // Only notification for the first New doc
          $donotif = 0;
+      }
+      
+      if($CFG_GLPI["use_rich_text"]){
+         $this->input['content'] = $this->convertTagToImage($this->input['content'], true, $docadded);
       }
 
       return $docadded;

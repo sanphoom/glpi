@@ -4412,11 +4412,12 @@ class Search {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
                }
                $out .= $name."</a>";
-
+               $content=Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($data[$NAME.$num."_3"]));
                $out = sprintf(__('%1$s %2$s'), $out,
-                              Html::showToolTip(nl2br($data[$NAME.$num."_3"]),
+                              Html::showToolTip(nl2br(Html::Clean($content)),
                                                       array('applyto' => 'ticket'.$data[$NAME.$num."_2"],
                                                             'display' => false)));
+
                return $out;
 
             case 'glpi_ticketvalidations.status' :

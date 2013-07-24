@@ -678,7 +678,7 @@ class Config extends CommonDBTM {
       echo "<td>".__('Default file size limit imported by the mails receiver')."</td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
-      echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+      echo "</td>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default heading when adding a document to a ticket') . "</td><td>";
@@ -704,7 +704,22 @@ class Config extends CommonDBTM {
       echo "</td><td>" . __('Allow anonymous followups (receiver)') . "</td><td>";
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"]);
       echo "</td></tr>";
-
+       
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Use rich text for helpdesk') . "</td><td>";
+      $id = 'alert'.mt_rand();
+      $param['on_change'] = '$("#'.$id.'").html("");
+            if($(this).val() == 0){
+               $("#'.$id.'").html("<br>'.__('You will loose the formatting of your data').'");
+            }';
+      Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
+      echo "<span class='red' id='".$id."'></span>";
+      echo "</td>";
+      
+      echo "<td>" . __('Add documents into ticket notifications') . "</td><td>";
+      Dropdown::showYesNo("attach_ticket_documents_to_mail", $CFG_GLPI["attach_ticket_documents_to_mail"]);
+      echo "</td></tr>";
+      
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe'>";

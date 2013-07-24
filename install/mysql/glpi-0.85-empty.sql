@@ -875,9 +875,13 @@ INSERT INTO `glpi_configs` VALUES ('143','core','registration_number_ssofield','
 INSERT INTO `glpi_configs` VALUES ('144','core','ssovariables_id','0');
 INSERT INTO `glpi_configs` VALUES ('145','core','translate_kb','0');
 INSERT INTO `glpi_configs` VALUES ('146','core','translate_dropdowns','0');
+INSERT INTO `glpi_configs` VALUES ('148','core','attach_ticket_documents_to_mail','0');
 INSERT INTO `glpi_configs` VALUES ('149','core','maintenance_mode','0');
 INSERT INTO `glpi_configs` VALUES ('150','core','maintenance_text','');
 INSERT INTO `glpi_configs` VALUES ('151','core','backcreated','0');
+INSERT INTO `glpi_configs` VALUES ('152','core','use_rich_text','0');
+
+
 
 ### Dump table glpi_consumableitems
 
@@ -1658,6 +1662,7 @@ CREATE TABLE `glpi_documents` (
   `tickets_id` int(11) NOT NULL DEFAULT '0',
   `sha1sum` char(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_blacklisted` tinyint(1) NOT NULL DEFAULT '0',
+  `tag` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
@@ -1666,7 +1671,8 @@ CREATE TABLE `glpi_documents` (
   KEY `users_id` (`users_id`),
   KEY `documentcategories_id` (`documentcategories_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `sha1sum` (`sha1sum`)
+  KEY `sha1sum` (`sha1sum`),
+  KEY `tag` (`tag`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -4915,6 +4921,7 @@ CREATE TABLE `glpi_queuedmails` (
   `body_html` longtext COLLATE utf8_unicode_ci,
   `body_text` longtext COLLATE utf8_unicode_ci,
   `messageid` text COLLATE utf8_unicode_ci,
+  `documents` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`,`notificationtemplates_id`),
   KEY `is_deleted` (`is_deleted`),

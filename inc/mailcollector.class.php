@@ -58,6 +58,8 @@ class MailCollector  extends CommonDBTM {
    var $structure = false;
    /// structure used to store files attached to a mail
    var $files;
+   /// Tag used to recognize embedded images of a mail
+   var $tags;
    /// Message to add to body to build ticket
    var $addtobody;
    /// Number of fetched emails
@@ -662,6 +664,7 @@ class MailCollector  extends CommonDBTM {
       if ($this->fields['filesize_max'] > 0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
             $tkt['_filename'] = $this->getAttached($i, GLPI_DOC_DIR."/_tmp/", $this->fields['filesize_max']);
+            $tkt['_tag'] = $this->tags;
          } else {
             //TRANS: %s is a directory
             Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'),
@@ -742,7 +745,15 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
-      $tkt['content'] = $this->cleanMailContent($tkt['content']);
+      //If files are present and content is html
+      if(isset($this->files) 
+              && count($this->files) 
+              && $tkt['content'] != strip_tags($tkt['content'])){
+
+         $tkt['content'] = Ticket::convertContentForTicket($tkt['content'], $this->files, $this->tags);
+      }
+
+      $tkt['content'] = nl2br($this->cleanMailContent($tkt['content']));
 
       $tkt['_supplier_email'] = false;
       // Found ticket link
@@ -1371,6 +1382,11 @@ class MailCollector  extends CommonDBTM {
 
             if (file_put_contents($path.$filename, $message)) {
                $this->files[] = $filename;
+               // If embeded image, we add a tag
+               if($structure->type == 5 && $structure->subtype) {
+                  end($this->files);
+                  $this->tags[key($this->files)]  = '#'.Toolbox::getRandomString(8);
+               }
             }
          } // fetchbody
       } // Single part

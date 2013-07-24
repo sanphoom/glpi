@@ -617,6 +617,9 @@ class CommonGLPI {
          if (isset($cleaned_options['id'])) {
             unset($cleaned_options['id']);
          }
+         if (isset($cleaned_options['stock_image'])) {
+            unset($cleaned_options['stock_image']);
+         }
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
          $extraparam     = "&".Toolbox::append_params($cleaned_options);
       }

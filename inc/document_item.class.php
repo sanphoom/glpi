@@ -100,6 +100,10 @@ class Document_Item extends CommonDBRelation{
          if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
             $input['_forcenotif'] = true;
          }
+         if (isset($this->input['_disablenotif']) && $this->input['_disablenotif']) {
+            $input['_disablenotif'] = true;
+         }
+
          $ticket->update($input);
       }
       parent::post_addItem();
@@ -651,7 +655,7 @@ class Document_Item extends CommonDBRelation{
 
       echo "<tr>";
       if ($canedit && $number && ($withtemplate < 2)) {
-         echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+         echo "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
       }
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Entity')."</th>";
@@ -659,6 +663,7 @@ class Document_Item extends CommonDBRelation{
       echo "<th>".__('Web link')."</th>";
       echo "<th>".__('Heading')."</th>";
       echo "<th>".__('MIME type')."</th>";
+      echo "<th>".__('Tag')."</th>";
       echo "</tr>";
       $used = array();
 
@@ -712,6 +717,7 @@ class Document_Item extends CommonDBRelation{
                                                                  $data["documentcategories_id"]);
             echo "</td>";
             echo "<td class='center'>".$data["mime"]."</td>";
+            echo "<td class='center'>".$data["tag"]."</td>";
             echo "</tr>";
             $i++;
          }

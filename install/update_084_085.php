@@ -1683,6 +1683,12 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_blacklistedmailcontents");
    }
+   
+   $migration->addField('glpi_documents', 'tag', 'string');
+   $migration->addField('glpi_queuedmails', 'documents', 'text');
+   $migration->addKey('glpi_documents', 'tag');
+   Config::setConfigurationValues('core', array('use_rich_text' => 0));
+   Config::setConfigurationValues('core', array('attach_ticket_documents_to_mail' => 0));
 
    // increase password length
    $migration->changeField('glpi_users', 'password', 'password', 'string');
