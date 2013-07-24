@@ -1006,18 +1006,24 @@ class Config extends CommonDBTM {
          echo "<td colspan='3'>";
 
          echo "<table><tr>";
-         echo "<td bgcolor='" . $data["priority_1"] . "'>1&nbsp;";
-         echo "<input type='text' name='priority_1' size='7' value='".$data["priority_1"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_2"] . "'>2&nbsp;";
-         echo "<input type='text' name='priority_2' size='7' value='".$data["priority_2"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_3"] . "'>3&nbsp;";
-         echo "<input type='text' name='priority_3' size='7' value='".$data["priority_3"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_4"] . "'>4&nbsp;";
-         echo "<input type='text' name='priority_4' size='7' value='".$data["priority_4"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_5"] . "'>5&nbsp;";
-         echo "<input type='text' name='priority_5' size='7' value='".$data["priority_5"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_6"] . "'>6&nbsp;";
-         echo "<input type='text' name='priority_6' size='7' value='".$data["priority_6"]."'></td>";
+         echo "<td>1&nbsp;";
+         Html::showColorField('priority_1', array('value' => $data["priority_1"]));
+         echo "</td>";
+         echo "<td>2&nbsp;";
+         Html::showColorField('priority_2', array('value' => $data["priority_2"]));
+         echo "</td>";
+         echo "<td>3&nbsp;";
+         Html::showColorField('priority_3', array('value' => $data["priority_3"]));
+         echo "</td>";
+         echo "<td>4&nbsp;";
+         Html::showColorField('priority_4', array('value' => $data["priority_4"]));
+         echo "</td>";
+         echo "<td>5&nbsp;";
+         Html::showColorField('priority_5', array('value' => $data["priority_5"]));
+         echo "</td>";
+         echo "<td>6&nbsp;";
+         Html::showColorField('priority_6', array('value' => $data["priority_6"]));
+         echo "</td>";
          echo "</tr></table>";
 
          echo "</td></tr>";
@@ -1054,16 +1060,14 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>".
            "<td>".__('OK state color')."</td>";
-      echo "<td bgcolor='".$data['duedateok_color']."'>";
-      echo "<input name='duedateok_color' size='7' value='".$data['duedateok_color']."'
-             type='text'>";
+      echo "<td>";
+      Html::showColorField('duedateok_color', array('value' => $data["duedateok_color"]));
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Warning state color')."</td>";
-      echo "<td bgcolor='".$data['duedatewarning_color']."'>";
-      echo "<input name='duedatewarning_color' size='7' value='".$data['duedatewarning_color']."'
-             type='text'>";
+      echo "<td>";
+      Html::showColorField('duedatewarning_color', array('value' => $data["duedatewarning_color"]));
       echo "</td>";
       echo "<td>".__('Warning state threshold')."</td>";
       echo "<td>";
@@ -1078,9 +1082,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>".
            "<td>".__('Critical state color')."</td>";
-      echo "<td bgcolor='".$data['duedatecritical_color']."'>";
-      echo "<input name='duedatecritical_color' size='7' value='".$data['duedatecritical_color']."'
-             type='text'>";
+      echo "<td>";
+      Html::showColorField('duedatecritical_color', array('value' => $data["duedatecritical_color"]));
       echo "</td>";
       echo "<td>".__('Critical state threshold')."</td>";
       echo "<td>";

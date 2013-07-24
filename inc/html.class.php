@@ -953,6 +953,7 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.css");
 
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
 
@@ -967,7 +968,9 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/plugins/imagepaste/jquery.image_paste.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.js");
 
+      
       if (isset($_SESSION['glpilanguage'])) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
@@ -2758,6 +2761,39 @@ class Html {
    }
 
 
+   /**
+    * Display Color field 
+    *
+    * @since version 0.85
+    *
+    * @param $name            name of the element
+    * @param $options  array  of possible options:
+    *   - value      : default value to display (default '')
+    *   - display    : boolean display or get string (default true)
+    *   - rand       : specific random value (default generated one)
+   **/
+   static function showColorField($name, $options = array()) {
+      $p['value']      = '';
+      $p['rand']       = mt_rand();
+      $p['display']    = true;
+
+      foreach ($options as $key => $val) {
+         if (isset($p[$key])) {
+            $p[$key] = $val;
+         }
+      }
+      $field_id = Html::cleanId("color_".$name.$p['rand']);
+      $output = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
+      $js = "$('#$field_id').spectrum();";
+      $output .= Html::scriptBlock($js);
+
+
+      if ($p['display']) {
+         echo $output;
+         return $p['rand'];
+      }
+      return $output;
+   }
 
    /**
     * Display DateTime form with calendar
