@@ -1498,11 +1498,36 @@ class Ticket extends CommonITILObject {
 
          $validation          = new TicketValidation();
 
-         foreach ($validations_to_send as $users_id) {
-            if ($users_id > 0) {
-               $values                      = array();
+         foreach ($validations_to_send as $validate_id) {
+            $values = array();
+            if(is_array($validate_id)){
+               $values["users_id_validate"] = array();
+               foreach($validate_id as $type => $array_id){
+                  switch($type){
+                     case 'group':
+                        foreach($array_id as $groups_id){
+                           foreach(Group_User::getGroupUsers($groups_id) as $user){
+                              $values["users_id_validate"][] = $user['id'];
+                           }
+                        }
+                        break;
+                     case 'user':
+                        foreach($array_id as $users_id){
+                           $values["users_id_validate"][] = $users_id;
+                        }
+                        break;
+                     case 'validation':
+                        $values['validation_percent'] = $array_id[0];
+                        break;
+                  }
+               }
+               $values["users_id_validate"] = array_unique($values["users_id_validate"]);
+            }
+            
+
+            if (!empty($validate_id)) {
+               
                $values['tickets_id']        = $this->fields['id'];
-               $values['users_id_validate'] = $users_id;
                $values['_ticket_add']       = true;
 
                // to know update by rules
@@ -1891,9 +1916,10 @@ class Ticket extends CommonITILObject {
                if ($val == 1) {
                   $ticket = new self();
                   if ($ticket->getFromDB($key)) {
-                     $input2 = array('tickets_id'         => $key,
-                                    'users_id_validate'  => $input['users_id_validate'],
-                                    'comment_submission' => $input['comment_submission']);
+                     $input2 = array('tickets_id'            => $key,
+                                     'users_id_validate'     => $input['users_id_validate'],
+                                     'validation_percent'    => $input['validation_percent'],
+                                     'comment_submission'    => $input['comment_submission']);
                      if ($valid->can(-1, CREATE, $input2)) {
                         if ($valid->add($input2)) {
                            $res['ok']++;
@@ -2143,7 +2169,13 @@ class Ticket extends CommonITILObject {
 
 
       $tab['validation']            = __('Approval');
-
+      
+      $tab[51]['table']             = $this->getTable();
+      $tab[51]['field']             = 'validation_percent';
+      $tab[51]['name']              = __('Minimum validation required');
+      $tab[51]['searchtype']        = 'equals';
+      $tab[51]['datatype']          = 'specific';
+      
       $tab[52]['table']             = $this->getTable();
       $tab[52]['field']             = 'global_validation';
       $tab[52]['name']              = __('Approval');
@@ -2212,7 +2244,7 @@ class Ticket extends CommonITILObject {
       $tab[59]['forcegroupby']      = true;
       $tab[59]['massiveaction']     = false;
       $tab[59]['joinparams']        = array('beforejoin'
-                                             => array('table'      => 'glpi_ticketvalidations',
+                                             => array('table'      => 'glpi_ticketvalidations_users',
                                                       'joinparams' => array('jointype' => 'child')));
 
 
@@ -2584,6 +2616,9 @@ class Ticket extends CommonITILObject {
       switch ($field) {
          case 'global_validation' :
             return TicketValidation::getStatus($values[$field]);
+         
+         case 'validation_percent' :
+            return TicketValidation_User::showValidationRequired($values[$field], false);
 
          case 'type':
             return self::getTicketTypeName($values[$field]);
@@ -4726,15 +4761,17 @@ class Ticket extends CommonITILObject {
             $query .= ")".
                       getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
-
          case "tovalidate" : // on affiche les tickets à valider
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
-                        WHERE $is_deleted AND `users_id_validate` = '".Session::getLoginUserID()."'
-                              AND `glpi_ticketvalidations`.`status` = 'waiting'
-                              AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."',
-                                                                   '".self::SOLVED."')) ".
-                              getEntitiesRestrictRequest("AND", "glpi_tickets");
+                        LEFT JOIN `glpi_ticketvalidations_users`
+                           ON (`glpi_ticketvalidations`.`id` = `glpi_ticketvalidations_users`.`ticketvalidations_id`)   
+                        WHERE $is_deleted 
+                        AND `glpi_ticketvalidations_users`.`users_id_validate` = '".Session::getLoginUserID()."'
+                        AND `glpi_ticketvalidations`.`status` = 'waiting'
+                        AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."',
+                                                            '".self::SOLVED."')) ".
+                       getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "rejected" : // on affiche les tickets rejetés

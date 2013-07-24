@@ -130,6 +130,18 @@ class RuleTicket extends Rule {
                         $output['_add_validation'][] = 'assign_supervisor';
                         break;
 
+                     case 'groups_id_validate' :
+                        $output['_add_validation']['validation_users']['group'][] = $action->fields["value"];
+                        break;
+                     
+                     case 'users_id_validate' :
+                        $output['_add_validation']['validation_users']['user'][] = $action->fields["value"];
+                        break;
+                     
+                     case 'validation_percent' :
+                        $output['_add_validation']['validation_users']['validation'][] = $action->fields["value"];
+                        break;
+
                      default :
                         $output['_add_validation'][] = $action->fields["value"];
                         break;
@@ -447,10 +459,18 @@ class RuleTicket extends Rule {
       $actions['slas_id']['name']                           = __('SLA');
       $actions['slas_id']['type']                           = 'dropdown';
 
-      $actions['users_id_validate']['name']                 = __('Send an approval request');
+      $actions['users_id_validate']['name']                 = __('Send an approval request').' - '.__('User');
       $actions['users_id_validate']['type']                 = 'dropdown_users_validate';
       $actions['users_id_validate']['force_actions']        = array('add_validation');
 
+      $actions['groups_id_validate']['name']                = __('Send an approval request').' - '.__('Group');
+      $actions['groups_id_validate']['type']                = 'dropdown_groups_validate';
+      $actions['groups_id_validate']['force_actions']       = array('add_validation');
+      
+      $actions['validation_percent']['name']                = __('Send an approval request').' - '.__('Minimum validation required');
+      $actions['validation_percent']['type']                = 'dropdown_validation_percent';
+      $actions['validation_percent']['force_actions']       = array('add_validation');
+      
       $actions['users_id_validate_requester_supervisor']['name']
                                           = __('Approval request to requesters group supervisor');
       $actions['users_id_validate_requester_supervisor']['type']

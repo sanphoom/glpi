@@ -430,7 +430,9 @@ class RuleAction extends CommonDBChild {
                                 WHERE `".static::$items_id."` = '".$rules_id."'");
 
          while ($action = $DB->fetch_assoc($res)) {
-            if (isset($actions_options[$action["field"]])) {
+            if (isset($actions_options[$action["field"]]) 
+                    && $action["field"] != 'groups_id_validate'
+                    && $action["field"] != 'users_id_validate') {
                $actions[$action["field"]] = $action["field"];
             }
          }
@@ -541,15 +543,42 @@ class RuleAction extends CommonDBChild {
                      Dropdown::showGlobalSwitch(0, $param);
                      $display = true;
                      break;
-
+                  
                   case "dropdown_users_validate" :
+                     $rule_data = getAllDatasFromTable('glpi_ruleactions', 
+                             "action_type = 'add_validation' AND field = 'users_id_validate'");
+                     foreach($rule_data as $data) $used[] = $data['value'];
+                     
                      $param['name']  = 'value';
                      $param['right'] = array('validate_incident', 'validate_request');
-
+                     $param['used']  = $used;
                      User::dropdown($param);
                      $display = true;
                      break;
 
+                  case "dropdown_groups_validate" :
+                     $condition = "(SELECT count(`users_id`) 
+                                    FROM `glpi_groups_users` 
+                                    WHERE `groups_id` = `glpi_groups`.`id`)";
+                     
+                     $rule_data = getAllDatasFromTable('glpi_ruleactions', 
+                             "action_type = 'add_validation' AND field = 'groups_id_validate'");
+                     foreach($rule_data as $data) $used[] = $data['value'];
+                     
+                     $param['name']      = 'value';
+                     $param['condition'] = $condition;
+                     $param['right']     = array('validate_incident', 'validate_request');
+                     $param['used']      = $used;
+                     Group::dropdown($param);
+                     $display = true;
+                     break;
+                  
+                  case "dropdown_validation_percent" :
+                     $param['name'] = 'value';
+                     TicketValidation_User::dropdownValidationRequired($param);
+                     $display = true;
+                     break;
+                  
                   default :
                      if ($rule = getItemForItemtype($options["sub_type"])) {
                         $display = $rule->displayAdditionalRuleAction($actions[$options["field"]], $param['value']);

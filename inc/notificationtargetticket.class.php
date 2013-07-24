@@ -257,7 +257,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @see NotificationTargetCommonITILObject::getDatasForObject()
    **/
    function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // Common ITIL datas
       $datas                               = parent::getDatasForObject($item, $options, $simple);
@@ -493,35 +493,51 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
 
-         $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
+         $query = "SELECT `glpi_ticketvalidations`.*
+                   FROM `glpi_ticketvalidations`
+                   WHERE $restrict";
 
-         foreach ($validations as $validation) {
-            $tmp = array();
-            $tmp['##validation.submission.title##']
-                  //TRANS: %s is the user name
-                  = sprintf(__('An approval request has been submitted by %s'),
-                            Html::clean(getUserName($validation['users_id'])));
-            $tmp['##validation.answer.title##']
-                  //TRANS: %s is the user name
-                  = sprintf(__('An answer to an an approval request was produced by %s'),
-                            Html::clean(getUserName($validation['users_id_validate'])));
+         if ($result = $DB->query($query)) {
+            while ($validation = $DB->fetch_assoc($result)) {
+               $validator = array();
 
-            $tmp['##validation.author##'] = Html::clean(getUserName($validation['users_id']));
+               $users_validate = TicketValidation_User::getUsersValidation($validation['id']);
+               if(count($users_validate)){
+                  foreach($users_validate as $data){
+                     $validator[] = formatUserName($data['id'], $data['name'], 
+                                          $data['realname'], $data['firstname']);
+                  }
+               }
+               $validator = implode(', ',$validator);
 
-            $tmp['##validation.status##'] = TicketValidation::getStatus($validation['status']);
-            $tmp['##validation.storestatus##']
-                                          = $validation['status'];
-            $tmp['##validation.submissiondate##']
-                                          = Html::convDateTime($validation['submission_date']);
-            $tmp['##validation.commentsubmission##']
-                                          = $validation['comment_submission'];
-            $tmp['##validation.validationdate##']
-                                          = Html::convDateTime($validation['validation_date']);
-            $tmp['##validation.validator##']
-                                          =  Html::clean(getUserName($validation['users_id_validate']));
-            $tmp['##validation.commentvalidation##']
-                                          = $validation['comment_validation'];
-            $datas['validations'][]       = $tmp;
+               $tmp = array();
+               $tmp['##validation.submission.title##']
+                     //TRANS: %s is the user name
+                     = sprintf(__('An approval request has been submitted by %s'),
+                               Html::clean(getUserName($validation['users_id'])));
+               $tmp['##validation.answer.title##']
+                     //TRANS: %s is the user name
+                     = sprintf(__('An answer to an an approval request was produced by %s'),
+                               Html::clean($validator));
+
+               $tmp['##validation.author##'] = Html::clean(getUserName($validation['users_id']));
+
+               $tmp['##validation.status##'] = TicketValidation::getStatus($validation['status']);
+               $tmp['##validation.storestatus##']
+                                             = $validation['status'];
+               $tmp['##validation.submissiondate##']
+                                             = Html::convDateTime($validation['submission_date']);
+               $tmp['##validation.commentsubmission##']
+                                             = $validation['comment_submission'];
+               $tmp['##validation.validationdate##']
+                                             = Html::convDateTime($validation['validation_date']);
+               $tmp['##validation.validator##']
+                                             =  Html::clean($validator);
+               $tmp['##validation.commentvalidation##']
+                                             = TicketValidation_User::getUsersValidationComments(
+                                                     $validation['id'], true);
+               $datas['validations'][]       = $tmp;
+            }
          }
 
          // Ticket Satisfaction
