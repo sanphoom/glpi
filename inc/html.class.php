@@ -4330,14 +4330,14 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $title              The content to be wrapped by <a> tags.
+    * @param $text              The content to be wrapped by <a> tags.
     * @param $url                URL parameter
     * @param $options   Array    of HTML attributes.
     *     - `confirm` JavaScript confirmation message.
     *     - `confirmaction` optional action to do on confirmation
     * @return string An `<a />` element.
    **/
-   static function link($title, $url, $options=array()) {
+   static function link($text, $url, $options=array()) {
 
       if (isset($options['confirm'])) {
          if (!empty($options['confirm'])) {
@@ -4355,13 +4355,13 @@ class Html {
          unset($options['confirm']);
       }
       // Do not escape title if it is an image
-      if (!preg_match('/^<img.*/', $title)) {
-         $title = Html::cleanInputText($title);
+      if (!preg_match('/^<img.*/', $text)) {
+         $text = Html::cleanInputText($text);
       }
 
 
       return sprintf('<a href="%1$s" %2$s>%3$s</a>', Html::cleanInputText($url),
-                     Html::parseAttributes($options), $title);
+                     Html::parseAttributes($options), $text);
    }
 
 
