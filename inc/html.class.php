@@ -968,8 +968,6 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/plugins/imagepaste/jquery.image_paste.js");
 
-               $CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js'>";
-            "</script>\n";
       if (isset($_SESSION['glpilanguage'])) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
