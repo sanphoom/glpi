@@ -2308,7 +2308,6 @@ class Profile extends CommonDBTM {
             $rows[] = $info;
             continue;
          }
-
          if (is_array($info) && ((!empty($info['itemtype'])) || (!empty($info['rights'])))
              && (!empty($info['label'])) && (!empty($info['field']))) {
 
@@ -2359,9 +2358,16 @@ class Profile extends CommonDBTM {
       uksort($columns, function ($a, $b) {
             $a = explode('_', $a);
             $b = explode('_', $b);
-            if ($a[0] > $b[0]) return true;
-            if ($a[0] < $b[0]) return false;
-            return ($a[1] > $b[1]);
+
+            // For standard rights sort by right
+            if ($a[0] < 1024 || $b[0] < 1024) {
+               if ($a[0] > $b[0]) return true;
+               if ($a[0] < $b[0]) return false;
+               return ($a[1] > $b[1]);
+            // For extra right sort by type
+            } else {
+               return ($a[1] > $b[1]);
+            }
          });
 
       Html::showCheckboxMatrix($columns, $rows, array('title'                => $param['title'],
