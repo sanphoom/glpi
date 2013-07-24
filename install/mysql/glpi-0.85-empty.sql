@@ -1,4 +1,4 @@
-#GLPI Dump database on 2013-07-19 09:49
+#GLPI Dump database on 2013-07-24 12:48
 
 ### Dump table glpi_alerts
 
@@ -1129,8 +1129,8 @@ CREATE TABLE `glpi_crontasklogs` (
 
 INSERT INTO `glpi_crontasklogs` VALUES ('1','15','0','2013-05-28 09:51:12','0','0','0','Mode d\'exécution : GLPI');
 INSERT INTO `glpi_crontasklogs` VALUES ('2','15','1','2013-05-28 09:51:12','2','0.0165679','0','Action terminée, rien à faire');
-INSERT INTO `glpi_crontasklogs` VALUES ('3','16','0','2013-07-19 09:45:06','0','0','0','Run mode: GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('4','16','3','2013-07-19 09:45:06','2','0.038594','0','Action completed, no processing required');
+INSERT INTO `glpi_crontasklogs` VALUES ('3','16','0','2013-07-24 12:48:25','0','0','0','Run mode: GLPI');
+INSERT INTO `glpi_crontasklogs` VALUES ('4','16','3','2013-07-24 12:48:25','2','0.00250101','0','Action completed, no processing required');
 
 ### Dump table glpi_crontasks
 
@@ -1169,7 +1169,7 @@ INSERT INTO `glpi_crontasks` VALUES ('12','CronTask','session','86400',NULL,'1',
 INSERT INTO `glpi_crontasks` VALUES ('13','CronTask','graph','3600',NULL,'1','1','3','0','24','30','2011-12-06 09:48:42',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('14','ReservationItem','reservation','3600',NULL,'1','1','3','0','24','30','2012-04-05 20:31:57',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('15','Ticket','closeticket','43200',NULL,'1','1','3','0','24','30','2013-05-28 09:51:00',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('16','Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30','2013-07-19 09:45:00',NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('16','Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30','2013-07-24 12:48:00',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('17','SlaLevel_Ticket','slaticket','300',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('18','Ticket','createinquest','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('19','Crontask','watcher','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -1944,7 +1944,7 @@ CREATE TABLE `glpi_events` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_events` VALUES ('1','-1','system','2013-05-28 09:51:14','login','3','glpi se connecte depuis l\'IP 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('2','-1','system','2013-07-19 09:45:08','login','3','glpi log in from IP 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('2','-1','system','2013-07-24 12:48:26','login','3','glpi log in from IP 127.0.0.1');
 
 ### Dump table glpi_fieldblacklists
 
@@ -3288,8 +3288,8 @@ INSERT INTO `glpi_notifications` VALUES ('38','Contract End Periodicity','0','Co
 INSERT INTO `glpi_notifications` VALUES ('39','Contract Notice Periodicity','0','Contract','periodicitynotice','mail','12','','1','1','2013-05-28 09:50:42');
 INSERT INTO `glpi_notifications` VALUES ('40','Planning recall','0','PlanningRecall','planningrecall','mail','18','','1','1','2013-05-28 09:50:43');
 INSERT INTO `glpi_notifications` VALUES ('41','Delete Ticket','0','Ticket','delete','mail','4','','1','1','2013-05-28 09:50:44');
-INSERT INTO `glpi_notifications` VALUES ('42','Ticket Satisfaction Answer','0','Ticket','replysatisfaction','mail','14','','1','1','2013-07-19 09:45:03');
-INSERT INTO `glpi_notifications` VALUES ('43','Receiver errors','0','MailCollector','error','mail','19','','1','1','2013-07-19 09:45:03');
+INSERT INTO `glpi_notifications` VALUES ('42','Ticket Satisfaction Answer','0','Ticket','replysatisfaction','mail','14','','1','1','2013-07-24 12:48:08');
+INSERT INTO `glpi_notifications` VALUES ('43','Receiver errors','0','MailCollector','error','mail','19','','1','1','2013-07-24 12:48:09');
 
 ### Dump table glpi_notificationtargets
 
@@ -3415,7 +3415,7 @@ INSERT INTO `glpi_notificationtemplates` VALUES ('15','Item not unique','FieldUn
 INSERT INTO `glpi_notificationtemplates` VALUES ('16','Crontask','Crontask','2011-03-04 11:35:16',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('17','Problems','Problem','2011-12-06 09:48:33',NULL,NULL);
 INSERT INTO `glpi_notificationtemplates` VALUES ('18','Planning recall','PlanningRecall','2013-05-28 09:50:43',NULL,NULL);
-INSERT INTO `glpi_notificationtemplates` VALUES ('19','Receiver errors','MailCollector','2013-07-19 09:45:03',NULL,NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES ('19','Receiver errors','MailCollector','2013-07-24 12:48:09',NULL,NULL);
 
 ### Dump table glpi_notificationtemplatetranslations
 
@@ -4437,9 +4437,9 @@ INSERT INTO `glpi_profilerights` VALUES ('136','2','reminder_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('137','2','rssfeed_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('138','2','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('139','2','backup','1024');
-INSERT INTO `glpi_profilerights` VALUES ('140','2','ticket','130063');
+INSERT INTO `glpi_profilerights` VALUES ('140','2','ticket','130079');
 INSERT INTO `glpi_profilerights` VALUES ('144','2','followup','15365');
-INSERT INTO `glpi_profilerights` VALUES ('145','2','task','7169');
+INSERT INTO `glpi_profilerights` VALUES ('145','2','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('157','2','planning','3073');
 INSERT INTO `glpi_profilerights` VALUES ('696','3','taskcategory','31');
 INSERT INTO `glpi_profilerights` VALUES ('689','3','netpoint','31');
@@ -4462,7 +4462,7 @@ INSERT INTO `glpi_profilerights` VALUES ('182','2','ticketrecurrent','0');
 INSERT INTO `glpi_profilerights` VALUES ('183','2','ticketcost','1');
 INSERT INTO `glpi_profilerights` VALUES ('708','1','solutiontemplate','0');
 INSERT INTO `glpi_profilerights` VALUES ('709','2','solutiontemplate','0');
-INSERT INTO `glpi_profilerights` VALUES ('186','2','validation','15368');
+INSERT INTO `glpi_profilerights` VALUES ('186','2','validation','15384');
 INSERT INTO `glpi_profilerights` VALUES ('187','3','computer','127');
 INSERT INTO `glpi_profilerights` VALUES ('188','3','monitor','127');
 INSERT INTO `glpi_profilerights` VALUES ('189','3','software','127');
@@ -4503,9 +4503,9 @@ INSERT INTO `glpi_profilerights` VALUES ('229','3','reminder_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('230','3','rssfeed_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('231','3','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('232','3','backup','1024');
-INSERT INTO `glpi_profilerights` VALUES ('233','3','ticket','130063');
+INSERT INTO `glpi_profilerights` VALUES ('233','3','ticket','130079');
 INSERT INTO `glpi_profilerights` VALUES ('237','3','followup','15383');
-INSERT INTO `glpi_profilerights` VALUES ('238','3','task','7169');
+INSERT INTO `glpi_profilerights` VALUES ('238','3','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('250','3','planning','3073');
 INSERT INTO `glpi_profilerights` VALUES ('695','2','taskcategory','0');
 INSERT INTO `glpi_profilerights` VALUES ('688','2','netpoint','0');
@@ -4528,7 +4528,7 @@ INSERT INTO `glpi_profilerights` VALUES ('275','3','ticketrecurrent','0');
 INSERT INTO `glpi_profilerights` VALUES ('276','3','ticketcost','31');
 INSERT INTO `glpi_profilerights` VALUES ('706','6','state','0');
 INSERT INTO `glpi_profilerights` VALUES ('707','7','state','31');
-INSERT INTO `glpi_profilerights` VALUES ('279','3','validation','15368');
+INSERT INTO `glpi_profilerights` VALUES ('279','3','validation','15384');
 INSERT INTO `glpi_profilerights` VALUES ('280','4','computer','127');
 INSERT INTO `glpi_profilerights` VALUES ('281','4','monitor','127');
 INSERT INTO `glpi_profilerights` VALUES ('282','4','software','127');
@@ -4568,9 +4568,9 @@ INSERT INTO `glpi_profilerights` VALUES ('322','4','reminder_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('323','4','rssfeed_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('324','4','bookmark_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('325','4','backup','1055');
-INSERT INTO `glpi_profilerights` VALUES ('326','4','ticket','130063');
+INSERT INTO `glpi_profilerights` VALUES ('326','4','ticket','130079');
 INSERT INTO `glpi_profilerights` VALUES ('330','4','followup','15383');
-INSERT INTO `glpi_profilerights` VALUES ('331','4','task','7169');
+INSERT INTO `glpi_profilerights` VALUES ('331','4','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('343','4','planning','3073');
 INSERT INTO `glpi_profilerights` VALUES ('694','1','taskcategory','0');
 INSERT INTO `glpi_profilerights` VALUES ('687','1','netpoint','0');
@@ -4593,7 +4593,7 @@ INSERT INTO `glpi_profilerights` VALUES ('368','4','ticketrecurrent','31');
 INSERT INTO `glpi_profilerights` VALUES ('369','4','ticketcost','31');
 INSERT INTO `glpi_profilerights` VALUES ('704','4','state','31');
 INSERT INTO `glpi_profilerights` VALUES ('705','5','state','0');
-INSERT INTO `glpi_profilerights` VALUES ('372','4','validation','15368');
+INSERT INTO `glpi_profilerights` VALUES ('372','4','validation','15384');
 INSERT INTO `glpi_profilerights` VALUES ('373','5','computer','0');
 INSERT INTO `glpi_profilerights` VALUES ('374','5','monitor','0');
 INSERT INTO `glpi_profilerights` VALUES ('375','5','software','0');
@@ -4636,7 +4636,7 @@ INSERT INTO `glpi_profilerights` VALUES ('417','5','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('418','5','backup','0');
 INSERT INTO `glpi_profilerights` VALUES ('419','5','ticket','9223');
 INSERT INTO `glpi_profilerights` VALUES ('423','5','followup','12295');
-INSERT INTO `glpi_profilerights` VALUES ('424','5','task','2049');
+INSERT INTO `glpi_profilerights` VALUES ('424','5','task','8193');
 INSERT INTO `glpi_profilerights` VALUES ('436','5','planning','1');
 INSERT INTO `glpi_profilerights` VALUES ('693','7','netpoint','31');
 INSERT INTO `glpi_profilerights` VALUES ('439','5','statistic','1');
@@ -4659,7 +4659,7 @@ INSERT INTO `glpi_profilerights` VALUES ('461','5','ticketrecurrent','0');
 INSERT INTO `glpi_profilerights` VALUES ('462','5','ticketcost','31');
 INSERT INTO `glpi_profilerights` VALUES ('702','2','state','0');
 INSERT INTO `glpi_profilerights` VALUES ('703','3','state','31');
-INSERT INTO `glpi_profilerights` VALUES ('465','5','validation','3072');
+INSERT INTO `glpi_profilerights` VALUES ('465','5','validation','3088');
 INSERT INTO `glpi_profilerights` VALUES ('466','6','computer','127');
 INSERT INTO `glpi_profilerights` VALUES ('467','6','monitor','127');
 INSERT INTO `glpi_profilerights` VALUES ('468','6','software','127');
@@ -4701,7 +4701,7 @@ INSERT INTO `glpi_profilerights` VALUES ('510','6','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('511','6','backup','0');
 INSERT INTO `glpi_profilerights` VALUES ('512','6','ticket','37895');
 INSERT INTO `glpi_profilerights` VALUES ('516','6','followup','13319');
-INSERT INTO `glpi_profilerights` VALUES ('517','6','task','7169');
+INSERT INTO `glpi_profilerights` VALUES ('517','6','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('656','5','change','1054');
 INSERT INTO `glpi_profilerights` VALUES ('657','6','change','1151');
 INSERT INTO `glpi_profilerights` VALUES ('658','7','change','1151');
@@ -4729,7 +4729,7 @@ INSERT INTO `glpi_profilerights` VALUES ('554','6','ticketrecurrent','1');
 INSERT INTO `glpi_profilerights` VALUES ('555','6','ticketcost','31');
 INSERT INTO `glpi_profilerights` VALUES ('700','7','taskcategory','31');
 INSERT INTO `glpi_profilerights` VALUES ('701','1','state','0');
-INSERT INTO `glpi_profilerights` VALUES ('558','6','validation','3072');
+INSERT INTO `glpi_profilerights` VALUES ('558','6','validation','3088');
 INSERT INTO `glpi_profilerights` VALUES ('559','7','computer','127');
 INSERT INTO `glpi_profilerights` VALUES ('560','7','monitor','127');
 INSERT INTO `glpi_profilerights` VALUES ('561','7','software','127');
@@ -4769,9 +4769,9 @@ INSERT INTO `glpi_profilerights` VALUES ('601','7','reminder_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('602','7','rssfeed_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('603','7','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('604','7','backup','0');
-INSERT INTO `glpi_profilerights` VALUES ('605','7','ticket','128015');
+INSERT INTO `glpi_profilerights` VALUES ('605','7','ticket','128031');
 INSERT INTO `glpi_profilerights` VALUES ('609','7','followup','13335');
-INSERT INTO `glpi_profilerights` VALUES ('610','7','task','7169');
+INSERT INTO `glpi_profilerights` VALUES ('610','7','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('652','1','change','0');
 INSERT INTO `glpi_profilerights` VALUES ('653','2','change','1087');
 INSERT INTO `glpi_profilerights` VALUES ('654','3','change','1151');
@@ -4800,7 +4800,7 @@ INSERT INTO `glpi_profilerights` VALUES ('647','7','ticketrecurrent','31');
 INSERT INTO `glpi_profilerights` VALUES ('648','7','ticketcost','31');
 INSERT INTO `glpi_profilerights` VALUES ('698','5','taskcategory','0');
 INSERT INTO `glpi_profilerights` VALUES ('699','6','taskcategory','0');
-INSERT INTO `glpi_profilerights` VALUES ('651','7','validation','15368');
+INSERT INTO `glpi_profilerights` VALUES ('651','7','validation','15384');
 
 ### Dump table glpi_profiles
 
@@ -5161,12 +5161,12 @@ CREATE TABLE `glpi_rules` (
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0','c8823882-2bd6e957-51e8ee7f449229.79566473');
-INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0','c8823882-2bd6e957-51e8ee7f449b66.68651910');
-INSERT INTO `glpi_rules` VALUES ('4','0','RuleMailCollector','1','Auto-Reply X-Auto-Response-Suppress','Exclude Auto-Reply emails using X-Auto-Response-Suppress header','AND','1',NULL,'2011-01-18 11:40:42','1','c8823882-2bd6e957-51e8ee7f44a254.35012345');
-INSERT INTO `glpi_rules` VALUES ('5','0','RuleMailCollector','2','Auto-Reply Auto-Submitted','Exclude Auto-Reply emails using Auto-Submitted header','AND','1',NULL,'2011-01-18 11:40:42','1','c8823882-2bd6e957-51e8ee7f44aad3.09169055');
-INSERT INTO `glpi_rules` VALUES ('6','0','RuleTicket','1','Ticket location from item','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','c8823882-2bd6e957-51e8ee7f44b159.45970807');
-INSERT INTO `glpi_rules` VALUES ('7','0','RuleTicket','2','Ticket location from user','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','c8823882-2bd6e957-51e8ee7f44b807.90392671');
+INSERT INTO `glpi_rules` VALUES ('2','0','RuleRight','1','Root','','OR','1',NULL,NULL,'0','f1b85126-2bd6e957-51efb0e8b65665.68936643');
+INSERT INTO `glpi_rules` VALUES ('3','0','RuleMailCollector','3','Root','','OR','1',NULL,NULL,'0','f1b85126-2bd6e957-51efb0e8b66586.41487563');
+INSERT INTO `glpi_rules` VALUES ('4','0','RuleMailCollector','1','Auto-Reply X-Auto-Response-Suppress','Exclude Auto-Reply emails using X-Auto-Response-Suppress header','AND','1',NULL,'2011-01-18 11:40:42','1','f1b85126-2bd6e957-51efb0e8b67049.28776371');
+INSERT INTO `glpi_rules` VALUES ('5','0','RuleMailCollector','2','Auto-Reply Auto-Submitted','Exclude Auto-Reply emails using Auto-Submitted header','AND','1',NULL,'2011-01-18 11:40:42','1','f1b85126-2bd6e957-51efb0e8b67a42.70404110');
+INSERT INTO `glpi_rules` VALUES ('6','0','RuleTicket','1','Ticket location from item','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','f1b85126-2bd6e957-51efb0e8b68400.63284527');
+INSERT INTO `glpi_rules` VALUES ('7','0','RuleTicket','2','Ticket location from user','','AND','0','Généré automatiquement par GLPI 0.84',NULL,'1','f1b85126-2bd6e957-51efb0e8b69329.67268302');
 
 ### Dump table glpi_slalevelactions
 
@@ -5645,7 +5645,6 @@ CREATE TABLE `glpi_tickets` (
   `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
   `solution` text COLLATE utf8_unicode_ci,
   `global_validation` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'none',
-  `validation_percent` int(11) NOT NULL DEFAULT '0',
   `slas_id` int(11) NOT NULL DEFAULT '0',
   `slalevels_id` int(11) NOT NULL DEFAULT '0',
   `due_date` datetime DEFAULT NULL,
@@ -5658,6 +5657,7 @@ CREATE TABLE `glpi_tickets` (
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `locations_id` int(11) NOT NULL DEFAULT '0',
+  `validation_percent` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `closedate` (`closedate`),
@@ -5827,8 +5827,10 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `users_id` (`users_id`),
   KEY `tickets_id` (`tickets_id`),
   KEY `submission_date` (`submission_date`),
+  KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_ticketvalidations_users
 
@@ -5839,7 +5841,7 @@ CREATE TABLE `glpi_ticketvalidations_users` (
   `tickets_id` int(11) NOT NULL DEFAULT '0',
   `ticketvalidations_id` int(11) NOT NULL DEFAULT '0',
   `comment_validation` text COLLATE utf8_unicode_ci,
-  `status` varchar(255) DEFAULT NULL,
+  `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `validation_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `users_id_validate` (`users_id_validate`),
@@ -5848,6 +5850,7 @@ CREATE TABLE `glpi_ticketvalidations_users` (
   KEY `status` (`status`),
   KEY `validation_date` (`validation_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_transfers
 
@@ -5994,7 +5997,7 @@ CREATE TABLE `glpi_users` (
   `end_date` datetime DEFAULT NULL,
   `keep_devices_when_purging_item` tinyint(1) DEFAULT NULL,
   `privatebookmarkorder` longtext COLLATE utf8_unicode_ci,
-  `backcreated` tinyint(1) NOT NULL DEFAULT '0',
+  `backcreated` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),
@@ -6011,10 +6014,10 @@ CREATE TABLE `glpi_users` (
   KEY `is_deleted_ldap` (`is_deleted_ldap`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','$2y$10$YphFQL9DkbyJqRtkGP0EbulyAoWIf952NgobmWBwzrz6zbpD3q60i','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2013-07-19 09:45:08','2013-07-19 09:45:08',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,'0');
-INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,'0');
-INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,'0');
-INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,'0');
+INSERT INTO `glpi_users` VALUES ('2','glpi','$2y$10$KtiCSh/IgDCAXoLgXMY9yOI26Yp0/mbhFL6ZMUvERkiP05XPNRJfq','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2013-07-24 12:48:26','2013-07-24 12:48:26',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','',NULL,'0','fr_FR','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_usertitles
 

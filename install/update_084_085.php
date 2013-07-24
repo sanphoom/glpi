@@ -370,7 +370,7 @@ function update084to085() {
                          "`name` = 'delete_ticket' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . DELETE ."
+                 SET `rights` = `rights` | " . DELETE ." | " . PURGE ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'ticket'";
       $DB->queryOrDie($query, "0.85 update ticket with delete_ticket right");
@@ -654,7 +654,7 @@ function update084to085() {
                          "`name` = 'update_tasks' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  ." | ". TicketTask::UPDATEALL  ."
+                 SET `rights` = `rights` | " . READ  ." | ". TicketTask::UPDATEALL  ." | " . PURGE ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'task'";
       $DB->queryOrDie($query, "0.85 update task with update_tasks right");
@@ -718,7 +718,7 @@ function update084to085() {
                          "`name` = 'create_request_validation' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketValidation::CREATEREQUEST ."
+                 SET `rights` = `rights` | " . TicketValidation::CREATEREQUEST ." | ".PURGE." 
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'validation'";
       $DB->queryOrDie($query, "0.85 update validation with create_request_validation right");
@@ -733,7 +733,7 @@ function update084to085() {
                          "`name` = 'create_incident_validation' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketValidation::CREATEINCIDENT ."
+                 SET `rights` = `rights` | " . TicketValidation::CREATEINCIDENT ." | ".PURGE."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'validation'";
       $DB->queryOrDie($query, "0.85 update validation with create_incident_validation right");
