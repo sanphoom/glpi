@@ -158,10 +158,8 @@ class TicketValidation  extends CommonDBChild {
       global $DB;
 
       $query = "SELECT `users_id_validate`
-                FROM `glpi_ticketvalidations`
-                LEFT JOIN `glpi_ticketvalidations_users`
-                   ON (`glpi_ticketvalidations`.`id` = `glpi_ticketvalidations_users`.`ticketvalidations_id`)
-                WHERE `glpi_ticketvalidations`.`tickets_id` = '$tickets_id'
+                FROM `glpi_ticketvalidations_users`
+                WHERE `glpi_ticketvalidations_users`.`tickets_id` = '$tickets_id'
                 AND `users_id_validate` = '".Session::getLoginUserID()."'";
       $result = $DB->query($query);
 
@@ -977,14 +975,19 @@ class TicketValidation  extends CommonDBChild {
 
       if ($ID > 0) {
          echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;</td></tr>";
-
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Status of the approval request')."</td>";
+         echo "<td>". self::getStatus($this->fields["status"])."</td></tr>";
+            
          if ($validator) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Status of the approval request')."</td>";
-            echo "<td>";
-            self::dropdownStatus("status", array('value' => $this->fields["status"]));
-            echo "</td></tr>";
 
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".__('Status of my validation')."</td>";
+            echo "<td>";
+            self::dropdownStatus("status", array('value' => TicketValidation_User::showMyValidationStatus($this->fields["id"])));
+            echo "</td></tr>";
+            
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Approval comments')."<br>(".__('Optional when approved').")</td>";
             echo "<td><textarea cols='60' rows='3' name='comment_validation'>".
@@ -992,9 +995,7 @@ class TicketValidation  extends CommonDBChild {
             echo "</td></tr>";
 
          } else {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Status of the approval request')."</td>";
-            echo "<td>". self::getStatus($this->fields["status"])."</td></tr>";
+            
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Comments')."</td>";

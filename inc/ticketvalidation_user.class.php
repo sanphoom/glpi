@@ -161,7 +161,10 @@ class TicketValidation_User  extends CommonDBRelation {
          foreach($data as $status){
             if(!empty($status['status']) && !empty($status['name'])){
                $bgcolor = $ticketvalidation->getStatusColor($status['status']);
-                  $content .= "<tr style='background-color:".$bgcolor.";'><td><b>".$status['name']."</b></td><td>&nbsp;".$ticketvalidation->getStatus($status['status'])."</td></tr>";
+                  $content .= "<tr style='background-color:".$bgcolor.";'>";
+                  $content .= "<td><b>".$status['name']."</b></td>";
+                  $content .= "<td>&nbsp;".$ticketvalidation->getStatus($status['status'])."</td>";
+                  $content .= "</tr>";
             }
          }
          $content .= "</table>";
@@ -240,7 +243,6 @@ class TicketValidation_User  extends CommonDBRelation {
     * Show comments for selected validation users
     *
     * @param $ticketvalidations_id ID of the ticketvalidation
-    * @param $options - add_comment : user name => comment
     *
     * @return html
    **/
@@ -262,6 +264,27 @@ class TicketValidation_User  extends CommonDBRelation {
             }
          }
       }
+   }
+   
+   
+   /**
+    * Show validation status for selected validation users
+    *
+    * @param $ticketvalidations_id ID of the ticketvalidation
+    *
+    * @return html
+   **/
+   static function showMyValidationStatus($ticketvalidations_id){
+      $data = self::getUsersValidationStatus($ticketvalidations_id);
+      
+      if(count($data) > 1) {
+         foreach($data as $k => $v) {
+            if($k == Session::getLoginUserID()) {
+               return $v['status'];
+            }
+         }
+      }
+      return false;
    }
    
    
