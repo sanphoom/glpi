@@ -4617,10 +4617,14 @@ class Html {
          echo "\t</tr>\n";
       }
 
+      $nb_cb_per_col = array();
+
       echo "\t<tr>\n";
       echo "\t\t<td>".$param['first_cell']."</td>\n";
       foreach ($columns as $col_name => $label) {
-         $col_id = Html::cleanId('col_'.$col_name.'_'.$checkall_id);
+         $nb_cb_per_col[$col_name] = 0;
+         $col_id                 = Html::cleanId('col_'.$col_name.'_'.$checkall_id);
+
          echo "\t\t<td class='center b";
          if ($param['rotate_column_titles']) {
             echo " rotate";
@@ -4691,6 +4695,7 @@ class Html {
                      }
                      $content['name'] = $row_name."[$col_name]";
                      Html::showCheckbox($content);
+                     $nb_cb_per_col[$col_name] ++;
                   } elseif (is_string($content)) {
                      echo $content;
                   } else {
@@ -4715,9 +4720,15 @@ class Html {
          echo "\t<tr>\n";
          echo "\t\t<td>".__('Select/unselect all')."</td>\n";
          foreach ($columns as $col_name => $label) {
-            $cb_options['tag_for_massive'] = 'col_'.$col_name.'_'.$checkall_id;
-            $cb_options['massive_tags']    = 'table_'.$checkall_id;
-            echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>";
+            echo "\t\t<td class='center'>";
+            if ($nb_cb_per_col[$col_name] > 1) {
+               $cb_options['tag_for_massive'] = 'col_'.$col_name.'_'.$checkall_id;
+               $cb_options['massive_tags']    = 'table_'.$checkall_id;
+               echo Html::getCheckbox($cb_options);
+            } else {
+               echo "&nbsp;";
+            }
+            echo "</td>";
          }
 
          if ($param['row_check_all']) {

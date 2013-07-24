@@ -704,8 +704,10 @@ class DisplayPreference extends CommonDBTM {
    **/
    function getRights($interface='central') {
 
-      $values[self::PERSONAL]  = __('Search result user display');
-      $values[self::GENERAL]  =  __('Search result default display');
+      $values[self::PERSONAL]  = array('short' => __('User display'),
+                                       'long'  => __('Search result user display'));
+      $values[self::GENERAL]  =  array('short' => __('Default display'),
+                                       'long'  => __('Search result default display'));
 
       return $values;
    }

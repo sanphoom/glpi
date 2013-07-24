@@ -1112,8 +1112,10 @@ class TicketValidation  extends CommonDBChild {
       $values = parent::getRights();
       unset($values[UPDATE], $values[CREATE], $values[READ]);
 
-      $values[self::CREATEREQUEST]    = __('Create a validation request for a request');
-      $values[self::CREATEINCIDENT]   = __('Create a validation request for an incident');
+      $values[self::CREATEREQUEST]    = array('short' => __('Create for request'),
+                                              'long'  => __('Create a validation request for a request'));
+      $values[self::CREATEINCIDENT]   = array('short' => __('Create for incident'),
+                                              'long'  => __('Create a validation request for an incident'));
       $values[self::VALIDATEREQUEST]  = __('Validate a request');
       $values[self::VALIDATEINCIDENT] = __('Validate an incident');
 

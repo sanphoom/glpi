@@ -5776,13 +5776,18 @@ class Ticket extends CommonITILObject {
       $values = parent::getRights();
       unset($values[READ]);
       $values[self::READMY]    = __('See my ticket');
-      $values[self::READGROUP] =  __('See tickets created by my groups');
+      $values[self::READGROUP] = array('short' => __('See owned'),
+                                       'long'  => __('See tickets created by my groups'));
       if ($interface == 'central') {
          $values[self::READALL]        = __('See all tickets');
-         $values[self::READASSIGN]     = __('See assigned tickets (group associated)');
-         $values[self::ASSIGN]         = __('Assign a ticket');
-         $values[self::STEAL]          = __('Steal a ticket');
-         $values[self::OWN]            = __('To be in charge of a ticket');
+         $values[self::READASSIGN]     = array('short' => __('See assigned'),
+                                               'long'  => __('See assigned tickets (group associated)'));
+         $values[self::ASSIGN]         = array('short' => __('Assign'),
+                                               'long'  => __('Assign a ticket'));
+         $values[self::STEAL]          = array('short' => __('Steal'),
+                                               'long'  => __('Steal a ticket'));
+         $values[self::OWN]            = array('short' => __('Beeing in charge'),
+                                               'long'  => __('To be in charge of a ticket'));
          $values[self::CHANGEPRIORITY] = __('Change the priority');
       }
       if ($interface == 'helpdesk') {
