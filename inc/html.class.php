@@ -4582,6 +4582,7 @@ class Html {
     *             'title'         of the matrix
     *             'first_cell'    the content of the upper-left cell
     *             'row_check_all' set to true to display a checkbox to check all elements of the row
+    *             'col_check_all' set to true to display a checkbox to check all elements of the col
     *
     * @return nothing
    **/
@@ -4620,7 +4621,7 @@ class Html {
       echo "\t\t<td>".$param['first_cell']."</td>\n";
       foreach ($columns as $col_name => $label) {
          $col_id = Html::cleanId('col_'.$col_name.'_'.$checkall_id);
-         echo "\t\t<td class='center";
+         echo "\t\t<td class='center b";
          if ($param['rotate_column_titles']) {
             echo " rotate";
          }
@@ -4639,8 +4640,8 @@ class Html {
          if ($param['rotate_column_titles']) {
             echo " rotate";
          }
-         echo "' id='$col_id'>&nbsp;</td>\n";
-         self::showToolTip(__('Select/unselect all'), array('applyto' => $col_id));
+         echo "' id='$col_id'>".__('Select/unselect all')."</td>\n";
+         //self::showToolTip(__('Select/unselect all'), array('applyto' => $col_id));
       }
       echo "\t</tr>\n";
 
@@ -4660,7 +4661,7 @@ class Html {
             echo "\t\t<th colspan='$number_columns'>$row</th>\n";
          } else {
 
-            echo "\t\t<td>";
+            echo "\t\t<td class='b'>";
             if (!empty($row['label'])) {
                echo $row['label'];
             } else {

@@ -1051,8 +1051,8 @@ class Change extends CommonITILObject {
       $values = parent::getRights();
       unset($values[READ]);
 
-      $values[self::READALL] = __('See all changes');
-      $values[self::READMY]  = __('See changes (author)');
+      $values[self::READALL] = __('See all');
+      $values[self::READMY]  = __('See (author)');
 
       return $values;
    }

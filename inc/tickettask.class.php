@@ -42,8 +42,9 @@ class TicketTask  extends CommonITILTask {
    const SEEPUBLIC       =    1;
    const UPDATEMY        =    2;
    const UPDATEALL       = 1024;
-   const SEEPRIVATE      = 2048;
+//   const NOTUSED      = 2048;
    const ADDALLTICKET    = 4096;
+   const SEEPRIVATE      = 8192;
 
 
 
@@ -222,12 +223,12 @@ class TicketTask  extends CommonITILTask {
       unset($values[UPDATE], $values[CREATE], $values[READ]);
 
       if ($interface == 'central') {
-         $values[self::UPDATEALL]      = __('Edit all tasks');
-         $values[self::ADDALLTICKET]   = __('Add tasks to all tickets');
-         $values[self::SEEPRIVATE]     = __('See private tasks');
+         $values[self::UPDATEALL]      = __('Update all');
+         $values[self::ADDALLTICKET]   = __('Add to all tickets');
+         $values[self::SEEPRIVATE]     = __('See private ones');
       }
 
-      $values[self::SEEPUBLIC]   = __('See public tasks');
+      $values[self::SEEPUBLIC]   = __('See public ones');
 
       if ($interface == 'helpdesk') {
          unset($values[PURGE]);

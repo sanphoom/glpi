@@ -790,15 +790,15 @@ class TicketFollowup  extends CommonDBTM {
       unset($values[UPDATE], $values[CREATE], $values[READ]);
 
       if ($interface == 'central') {
-         $values[self::UPDATEALL]      = __('Update all followups');
-         $values[self::ADDALLTICKET]   = __('Add followups to all tickets');
+         $values[self::UPDATEALL]      = __('Update all');
+         $values[self::ADDALLTICKET]   = __('Add to all tickets');
          $values[self::ADDGROUPTICKET] = __('Add a followup to tickets of associated groups');
-         $values[self::SEEPRIVATE]     = __('See private followups');
+         $values[self::SEEPRIVATE]     = __('See private ones');
       }
 
       $values[self::UPDATEMY]    = __('Update followups (author)');
       $values[self::ADDMYTICKET] = __('Add a followup to tickets (requester)');
-      $values[self::SEEPUBLIC]   = __('See public followups');
+      $values[self::SEEPUBLIC]   = __('See public ones');
 
       if ($interface == 'helpdesk') {
          unset($values[PURGE]);

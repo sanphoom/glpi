@@ -1675,8 +1675,8 @@ class Problem extends CommonITILObject {
       $values = parent::getRights();
       unset($values[READ]);
 
-      $values[self::READALL] = __('See all problems');
-      $values[self::READMY]  = __('See problems (author)');
+      $values[self::READALL] = __('See all');
+      $values[self::READMY]  = __('See (author)');
 
       return $values;
    }
