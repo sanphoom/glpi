@@ -111,6 +111,8 @@ if (isset($_POST["validatortype"])) {
          $param['multiple']= true;
          $param['display'] = true;
          $param['size']    = count($users);
+         $users = Toolbox::stripslashes_deep($users);
+
          $rand = Dropdown::showFromArray(
                  !empty($_POST['name']) ? $_POST['name']:'users_id_validate', 
                  $users, 
