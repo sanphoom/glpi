@@ -663,25 +663,41 @@ class Profile extends CommonDBTM {
       if (!self::canView()) {
          return false;
       }
+
+      // TODO: uniformize the class of forms ?
+      echo "<div class='spaced'>";
       if ($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE))) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
+      $matrix_options = array('canedit'       => $canedit,
+                              'default_class' => 'tab_bg_2');
+
+      $rights = array(array('rights'     => Profile::getRightsFor('Ticket', 'helpdesk'),
+                            'label'      => _n('Ticket', 'Tickets', 2),
+                            'field'      => 'ticket'),
+                      array('rights'     => Profile::getRightsFor('TicketFollowup', 'helpdesk'),
+                            'label'      => _n('Followup', 'Followups', 2),
+                            'field'      => 'followup'),
+                      array('rights'     => Profile::getRightsFor('TicketTask', 'helpdesk'),
+                            'label'      => _n('Task', 'Tasks', 2),
+                            'field'      => 'task'),
+                      array('rights'     => Profile::getRightsFor('TicketValidation', 'helpdesk'),
+                            'label'      => _n('Validation', 'Validations', 2),
+                            'field'      => 'validation'));
+
+      $matrix_options['title'] = __('Assistance');
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
+
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='25%'>".__('Ticket')."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('Ticket', 'helpdesk'), "_ticket",
-                           $this->fields["ticket"]);
-      echo "</td></tr>\n";
-
-
+      // TODO : switch to matrix
       echo "<tr class='tab_bg_2'>";
       echo "<td width='20%'>".__('Link with items for the creation of tickets')."</td>";
       echo "<td colspan='5'>";
       self::dropdownRights(self::getHelpdeskHardwareTypes(), 'helpdesk_hardware',
-                           $this->fields["helpdesk_hardware"]);
+                           $this->fields["helpdesk_hardware"], array('multiple' => false));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -711,57 +727,33 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Followup', 'Followups', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketFollowup', 'helpdesk'), "_followup",
-                           $this->fields["followup"]);
+      echo "<td>".__('See hardware of my groups')."</td><td>";
+      Html::showCheckbox(array('name' => 'show_group_hardware',
+                               'checked' => $this->fields['show_group_hardware']));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Task', 'Tasks', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketTask', 'helpdesk'), "_task",
-                           $this->fields["task"]);
-      echo "</td></tr>\n";
+      echo "</table>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='18%'>"._n('Validation', 'Validations', 2)."</td><td colspan='5'>";
-      self::dropdownRights(Profile::getRightsFor('TicketValidation', 'helpdesk'), "_validation",
-            $this->fields["validation"]);
-      echo "</td></tr>\n";
-
-
-
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See hardware of my group(s)')."</td><td>";
-      Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Tools')."</th></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('FAQ')."</td><td>";
       if (($this->fields["interface"] == "helpdesk")
           && ($this->fields["knowbase"] == KnowbaseItem::PUBLISHFAQ)) {
          $this->fields["knowbase"] = KnowbaseItem::READFAQ;
       }
-      self::dropdownRights(Profile::getRightsFor('KnowbaseItem', 'helpdesk'), "_knowbase",
-                           $this->fields["knowbase"]);
-      echo "</td>";
-      echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('ReservationItem', 'helpdesk'), "_reservation",
-                           $this->fields["reservation"]);
-      echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('Reminder', 'helpdesk'), "_reminder_public",
-                           $this->fields["reminder_public"]);
-      echo "</td>";
-      echo "<td>"._n('Public RSS feed', 'Public RSS feeds', 2)."</td><td>";
-      self::dropdownRights(Profile::getRightsFor('RSSFeed', 'helpdesk'), "_rssfeed_public",
-                           $this->fields["rssfeed_public"]);
-      echo "</td>";
-      echo "</td></tr>\n";
+      $rights = array(array('rights'    => Profile::getRightsFor('KnowbaseItem', 'helpdesk'),
+                            'label'     => __('FAQ'),
+                            'field'     => 'knowbase'),
+                      array('rights'  => Profile::getRightsFor('ReservationItem', 'helpdesk'),
+                            'label'     => _n('Reservation', 'Reservations', 2),
+                            'field'     => 'reservation'),
+                      array('rights'    => Profile::getRightsFor('Reminder', 'helpdesk'),
+                            'label'     => _n('Public reminder', 'Public reminders', 2),
+                            'field'     => 'reminder_public'),
+                      array('rights'    => Profile::getRightsFor('RSSFeed', 'helpdesk'),
+                            'label'     => _n('Public RSS feed', 'Public RSS feeds', 2),
+                            'field'     => 'rssfeed_public'));
+
+      $matrix_options['title'] = __('Tools');
+      $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
@@ -2283,9 +2275,11 @@ class Profile extends CommonDBTM {
     * @since version 0.85
     *
     * @param $rights array :
-    *             'itemtype' => the type of the item to check (as passed to self::getRightsFor())
-    *             'label'    => the label for the right
-    *             'field'    => the name of the field inside the DB and HTML form (prefixed by '_')
+    *             'itemtype'   => the type of the item to check (as passed to self::getRightsFor())
+    *             'rights'     => when use of self::getRightsFor() is impossible
+    *             'label'      => the label for the right
+    *             'field'      => the name of the field inside the DB and HTML form (prefixed by '_')
+    *             'html_field' => when $html_field != '_'.$field
     * @param $options array
     *                 'title' : the title of the 
     *
