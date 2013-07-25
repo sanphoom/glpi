@@ -40,7 +40,8 @@ Session::checkLoginUser();
 
 require_once (GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
 
-$upload_handler = new UploadHandler(array('upload_dir' => GLPI_ROOT.'/files/_tmp/',
-                                          'param_name' => $_GET['name']));
+$upload_handler = new UploadHandler(array('upload_dir'        => GLPI_ROOT.'/files/_tmp/',
+                                          'param_name'        => $_GET['name'],
+                                          'orient_image'      => false));
 
 ?>
