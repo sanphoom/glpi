@@ -906,7 +906,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          _e('None');
       } else {
-         echo "<table>";
+         echo "<table width='100%'>";
          if (isset($this->fields["state"])) {
             echo "<tr><td>".__('State')."</td><td>";
             echo Planning::getState($this->fields["state"])."</td></tr>";
@@ -967,7 +967,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $rowspan++;
       }
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='$rowspan' class='middle right'>".__('Description')."</td>";
+      echo "<td rowspan='$rowspan' class='middle'>".__('Description')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>".
            "<textarea name='content' cols='50' rows='$rowspan'>".$this->fields["content"].
            "</textarea></td>";
@@ -1108,7 +1108,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (!empty($this->fields["begin"])
           && PlanningRecall::isAvailable()) {
 
-         echo "<tr class='tab_bg_1'><td>"._x('Planning','Reminder')."</td><td>";
+         echo "<tr class='tab_bg_1'><td>"._x('Planning','Reminder')."</td><td class='center'>";
          PlanningRecall::dropdown(array('itemtype' => $this->getType(),
                                         'items_id' => $this->getID()));
          echo "</td></tr>";
