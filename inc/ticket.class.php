@@ -4561,7 +4561,7 @@ class Ticket extends CommonITILObject {
          $rows = 6;
          if($CFG_GLPI["use_rich_text"]) {
             $this->fields["content"] = $this->setRichTextContent("content$rand", $this->fields["content"]);
-            $cols = 155;
+            $cols = 120;
             $rows = 20;
          } else {
             $this->fields["content"] = $this->setSimpleTextContent($this->fields["content"]);
