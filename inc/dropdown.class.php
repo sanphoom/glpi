@@ -616,7 +616,8 @@ class Dropdown {
                $options['readonly'] = false;
                break;
          }
-
+         /// TODO specify ID as showFromArray (used by javascript)
+         /// Need to return rand value
          return Html::showCheckbox($options);
       }
 
