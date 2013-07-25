@@ -43,6 +43,9 @@ require_once (GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/Upload
 $upload_handler = new UploadHandler(array('upload_dir'        => GLPI_ROOT.'/files/_tmp/',
                                           'param_name'        => $_GET['name'],
                                           'orient_image'      => false,
-                                          'image_versions'    => array()));
+                                          'image_versions'    => array()), false);
+$response = $upload_handler->post(false);
+// Ajout du Doc + generation tag + autre traitement
 
+$upload_handler->generate_response($response);
 ?>
