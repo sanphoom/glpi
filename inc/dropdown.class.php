@@ -601,7 +601,16 @@ class Dropdown {
         $params['use_checkbox'] = false;
       }
       if ($params['use_checkbox']) {
-         $options = array('name' => $name);
+
+         if (!empty($params['rand'])) {
+            $rand = $params['rand'];
+         } else {
+            $rand = mt_rand();
+         }
+
+         $options = array('name' => $name,
+                          'id'   => Html::cleanId("dropdown_".$name.$rand));
+
          switch ($restrict_to) {
             case 0:
                $options['checked']  = false;
@@ -616,9 +625,9 @@ class Dropdown {
                $options['readonly'] = false;
                break;
          }
-         /// TODO specify ID as showFromArray (used by javascript)
-         /// Need to return rand value
-         return Html::showCheckbox($options);
+
+         Html::showCheckbox($options);
+         return $rand;
       }
 
       if ($restrict_to != 0) {
