@@ -368,8 +368,10 @@ class ReservationItem extends CommonDBChild {
          echo __('Find a free item in a specific period')."</a></div>\n";
 
          echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
-         $_POST['reserve']["begin"] = date("Y-m-d H:i:s",mktime(8,0,0,date("m"),date("d"),date("Y")));
-         $_POST['reserve']["end"]   = date("Y-m-d H:i:s",mktime(9,0,0,date("m"),date("d"),date("Y")));
+         $begin_time = time();
+         $begin_time -= ($begin_time%HOUR_TIMESTAMP);
+         $_POST['reserve']["begin"] = date("Y-m-d H:i:s",$begin_time);
+         $_POST['reserve']["end"]   = date("Y-m-d H:i:s",$begin_time+HOUR_TIMESTAMP);
          $_POST['reservation_types'] = '';
       }
       echo "<form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
