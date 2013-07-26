@@ -3522,7 +3522,7 @@ class Html {
          mode : 'exact',
          elements: '$name',
          valid_elements: '*[*]',
-         plugins : 'table,directionality,searchreplace,paste',
+         plugins : 'table,directionality,searchreplace,paste,tabfocus',
          paste_use_dialog : false,
          paste_auto_cleanup_on_paste : true,
          paste_convert_headers_to_strong : false,

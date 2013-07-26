@@ -710,7 +710,7 @@ class Config extends CommonDBTM {
       $id = 'alert'.mt_rand();
       $param['on_change'] = '$("#'.$id.'").html("");
             if($(this).val() == 0){
-               $("#'.$id.'").html("<br>'.__('You will loose the formatting of your data').'");
+               $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
             }';
       Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
       echo "<span class='red' id='".$id."'></span>";
