@@ -4824,7 +4824,7 @@ class Html {
          if (($param['row_check_all']) && (!is_string($row)) && ($nb_cb_per_row['total'] > 1)){
             $cb_options['tag_for_massive'] = 'row_'.$row_name.'_'.$param['rand'];
             $cb_options['massive_tags']    = 'table_'.$param['rand'];
-            $cb_options['id']              = 'cb_checkall_row_'.$row_name.'_'.$param['rand'];
+            $cb_options['id']              = Html::cleanId('cb_checkall_row_'.$row_name.'_'.$param['rand']);
             $cb_options['checked']         = ($nb_cb_per_row['checked'] > ($nb_cb_per_row['total'] / 2));
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
          }
@@ -4839,7 +4839,7 @@ class Html {
             if ($nb_cb_per_col[$col_name]['total'] > 1) {
                $cb_options['tag_for_massive'] = 'col_'.$col_name.'_'.$param['rand'];
                $cb_options['massive_tags']    = 'table_'.$param['rand'];
-               $cb_options['id']              = 'cb_checkall_col_'.$col_name.'_'.$param['rand'];
+               $cb_options['id']              = Html::cleanId('cb_checkall_col_'.$col_name.'_'.$param['rand']);
                $cb_options['checked']         = ($nb_cb_per_col[$col_name]['checked'] > ($nb_cb_per_col[$col_name]['total'] / 2));
                echo Html::getCheckbox($cb_options);
             } else {
@@ -4851,7 +4851,7 @@ class Html {
          if ($param['row_check_all']) {
             $cb_options['tag_for_massive'] = 'table_'.$param['rand'];
             $cb_options['massive_tags']    = '';
-            $cb_options['id']              = 'cb_checkall_table_'.$param['rand'];
+            $cb_options['id']              = Html::cleanId('cb_checkall_table_'.$param['rand']);
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
          }
          echo "\t</tr>\n";
