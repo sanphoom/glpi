@@ -42,25 +42,6 @@ class Profile extends CommonDBTM {
 
    // Specific ones
 
-   // Transitional: the fields that are managed through the new checkbox matrix framework
-   static $checkbox_profiles = array('user', 'entity', 'group', 'profile', 'queuedmail',
-                                     'backup', 'logs', 'transfer', 'rule_ldap', 'rule_import',
-                                     'rule_mailcollector', 'rule_softwarecategories',
-                                     'rule_ticket', 'rule_dictionnary_dropdown',
-                                     'rule_dictionnary_software', 'rule_dictionnary_printer',
-                                     'computer', 'monitor', 'software', 'networking', 'printer',
-                                     'cartridge', 'consumable', 'phone', 'peripheral', 'internet',
-                                     'contact_enterprise', 'document', 'contract', 'infocom',
-                                     'budget', 'reminder_public', 'rssfeed_public',
-                                     'bookmark_public', 'reports', 'knowbase', 'reservation',
-                                     'ticket', 'ticketcost', 'ticketrecurrent', 'tickettemplate',
-                                     'followup', 'task', 'validation', 'statistic', 'planning',
-                                     'problem', 'change', 'config', 'search_config', 'device',
-                                     'dropdown', 'domain', 'location', 'itilcategory',
-                                     'knowbasecategory', 'netpoint', 'taskcategory', 'state',
-                                     'solutiontemplate', 'calendar', 'typedoc', 'link',
-                                     'notification', 'sla');
-
    /// Helpdesk fields of helpdesk profiles
    static public $helpdesk_rights = array('create_ticket_on_login', 'followup',
                                           'knowbase', 'helpdesk_hardware', 'helpdesk_item_type',
@@ -293,18 +274,19 @@ class Profile extends CommonDBTM {
       $this->profileRight = array();
       foreach (ProfileRight::getAllPossibleRights() as $right => $default) {
          if (isset($input['_'.$right])) {
-            if (in_array($right, self::$checkbox_profiles)) {
-               $newvalue = 0;
-               foreach ($input['_'.$right] as $value => $valid) {
-                  if ($valid) {
-                     if (($underscore_pos = strpos($value, '_')) !== false) {
-                        $value = substr($value, 0, $underscore_pos);
-                     }
-                     $newvalue += $value;
+            if (!is_array($input['_'.$right])) {
+               // TODO: what about changing password_update => UPDATE and show_group_hardware => READ ?
+               // If there is only one element, then, the right is 0 or 1 (ie.: password_update, show_group_hardware)
+               $input['_'.$right] = array('1' => $input['_'.$right]);
+            }
+            $newvalue = 0;
+            foreach ($input['_'.$right] as $value => $valid) {
+               if ($valid) {
+                  if (($underscore_pos = strpos($value, '_')) !== false) {
+                     $value = substr($value, 0, $underscore_pos);
                   }
+                  $newvalue += $value;
                }
-            } else {
-               $newvalue = array_sum($input['_'.$right]);
             }
             // Update rights only if changed
             if (!isset($this->fields[$right]) || ($this->fields[$right] != $newvalue)) {
@@ -312,14 +294,6 @@ class Profile extends CommonDBTM {
             }
             unset($input['_'.$right]);
          }
-      }
-
-      if (isset($input['show_group_hardware'])) {
-         if (!isset($this->fields['show_group_hardware'])
-             || ($this->fields['show_group_hardware'] != $input['show_group_hardware'])) {
-            $this->profileRight['show_group_hardware'] = $input['show_group_hardware'];
-         }
-         unset($input['show_group_hardware']);
       }
 
       // check if right if the last write profile on Profile object
@@ -623,7 +597,8 @@ class Profile extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Default profile')."</td><td>";
-      Dropdown::showYesNo("is_default", $this->fields["is_default"]);
+      Html::showCheckbox(array('name'    => 'is_default',
+                               'checked' => $this->fields['is_default']));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__("Profile's interface")."</td>";
@@ -633,11 +608,13 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__('Update password')."</td><td>";
-      Dropdown::showYesNo("password_update", $this->fields["password_update"]);
+      Html::showCheckbox(array('name'    => '_password_update',
+                               'checked' => $this->fields['password_update']));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__('Ticket creation form on login')."</td><td>";
-      Dropdown::showYesNo("create_ticket_on_login", $this->fields["create_ticket_on_login"]);
+      Html::showCheckbox(array('name'    => 'create_ticket_on_login',
+                               'checked' => $this->fields['create_ticket_on_login']));
       echo "</td></tr>\n";
 
       if ($ID > 0) {
@@ -728,7 +705,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See hardware of my groups')."</td><td>";
-      Html::showCheckbox(array('name' => 'show_group_hardware',
+      Html::showCheckbox(array('name' => '_show_group_hardware',
                                'checked' => $this->fields['show_group_hardware']));
       echo "</td></tr>\n";
 
@@ -1001,7 +978,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See hardware of my groups')."</td><td>";
-      Html::showCheckbox(array('name' => 'show_group_hardware',
+      Html::showCheckbox(array('name' => '_show_group_hardware',
                                'checked' => $this->fields['show_group_hardware']));
       echo "</td></tr>";
 
