@@ -106,6 +106,8 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
 
       echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
    }
+   // Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
+   $CFG_GLPI['checkbox-zero-on-empty'] = true;
    Html::closeForm();
    echo "</div>";
 }
