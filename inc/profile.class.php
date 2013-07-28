@@ -222,11 +222,20 @@ class Profile extends CommonDBTM {
       }
 
       if (isset($input["_helpdesk_item_types"])) {
-         if (isset($input["helpdesk_item_type"])) {
-            $input["helpdesk_item_type"] = exportArrayToDB($input["helpdesk_item_type"]);
-         } else {
-            $input["helpdesk_item_type"] = exportArrayToDB(array());
+         if ((!isset($input["helpdesk_item_type"])) || (!is_array($input["helpdesk_item_type"]))) {
+            $input["helpdesk_item_type"] = array();
          }
+         $input["helpdesk_item_type"] = exportArrayToDB(array_keys($input["helpdesk_item_type"]));
+      }
+
+      if (isset($input['helpdesk_hardware']) && is_array($input['helpdesk_hardware'])) {
+         $helpdesk_hardware = 0;
+         foreach ($input['helpdesk_hardware'] as $right => $value) {
+            if ($value) {
+               $helpdesk_hardware += $right;
+            }
+         }
+         $input['helpdesk_hardware'] = $helpdesk_hardware;
       }
 
       if (isset($input["_cycle_ticket"])) {
@@ -673,14 +682,24 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td width='20%'>".__('Link with items for the creation of tickets')."</td>";
       echo "<td colspan='5'>";
-      self::dropdownRights(self::getHelpdeskHardwareTypes(), 'helpdesk_hardware',
-                           $this->fields["helpdesk_hardware"], array('multiple' => false));
+      self::getLinearRightChoice(self::getHelpdeskHardwareTypes(true),
+                                     array('field' => 'helpdesk_hardware',
+                                           'value' => $this->fields['helpdesk_hardware']));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td width='20%'>".__('Associable items to a ticket')."</td>";
       echo "<td colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
-      self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
+      self::getLinearRightChoice(self::getHelpdeskItemtypes(),
+                                 array('field'         => 'helpdesk_item_type',
+                                       'value'         => $this->fields['helpdesk_item_type'],
+                                       'check_all'     => true,
+                                       'zero_on_empty' => false,
+                                       'max_per_line'  => 4,
+                                       'check_method'  =>
+                                       function ($element, $field) {
+                                          return in_array($element,$field);
+                                       }));
       echo "</td>";
       echo "</tr>\n";
 
@@ -985,15 +1004,24 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "\n<td>";
-      self::dropdownRights(self::getHelpdeskHardwareTypes(), 'helpdesk_hardware',
-                           $this->fields["helpdesk_hardware"], array('multiple' => false));
-
+      self::getLinearRightChoice(self::getHelpdeskHardwareTypes(true),
+                                     array('field' => 'helpdesk_hardware',
+                                           'value' => $this->fields['helpdesk_hardware']));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Associable items to a ticket')."</td>";
       echo "<td  colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
-      self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
+      self::getLinearRightChoice(self::getHelpdeskItemtypes(),
+                                     array('field'         => 'helpdesk_item_type',
+                                           'value'         => $this->fields['helpdesk_item_type'],
+                                           'check_all'     => true,
+                                           'zero_on_empty' => false,
+                                           'max_per_line'  => 4,
+                                           'check_method'  =>
+                                           function ($element, $field) {
+                                              return in_array($element,$field);
+                                           }));
       echo "</td>";
       echo "</tr>\n";
       echo "</table>";
@@ -1930,9 +1958,16 @@ class Profile extends CommonDBTM {
             return Dropdown::showFromArray($name, self::getHelpdeskHardwareTypes(), $options);
 
          case "helpdesk_item_type":
-            $options['values'] = explode(',', $values[$field]);
-            $options['name']  = $name;
-            return self::dropdownHelpdeskItemtypes($options);
+            // TODO: check if it is working ! I didn't find where it is used ...
+            return self::getLinearRightChoice(self::getHelpdeskItemtypes(),
+                                              array('field'         => $name,
+                                                    'value'         => explode(',', $values[$field]),
+                                                    'check_all'     => true,
+                                                    'zero_on_empty' => false,
+                                                    'check_method'  =>
+                                                    function ($element, $field) {
+                                                       return in_array($element,$field);
+                                                    }));
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
@@ -2131,7 +2166,12 @@ class Profile extends CommonDBTM {
    /**
     * @since version 0.84
    **/
-   static function getHelpdeskHardwareTypes() {
+   static function getHelpdeskHardwareTypes($rights = false) {
+
+      if ($rights) {
+         return array(pow(2, Ticket::HELPDESK_MY_HARDWARE)     => __('My devices'),
+                      pow(2, Ticket::HELPDESK_ALL_HARDWARE)    => __('All items'));
+      }
 
       return array(0                                        => Dropdown::EMPTY_VALUE,
                    pow(2, Ticket::HELPDESK_MY_HARDWARE)     => __('My devices'),
@@ -2157,26 +2197,11 @@ class Profile extends CommonDBTM {
 
 
    /**
-    * Dropdown profiles which have rights under the active one
-    *
-    * @since ersin 0.84
-    *
-    * @param $options array of possible options:
-    *    - name : string / name of the select (default is profiles_id)
-    *    - values : array of values
+    * @since 0.85
    **/
-   static function dropdownHelpdeskItemtypes($options) {
+   static function getHelpdeskItemtypes() {
       global $CFG_GLPI;
 
-      $p['name']    = 'helpdesk_item_type';
-      $p['values']  = array();
-      $p['display'] = true;
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $p[$key] = $val;
-         }
-      }
       $values = array();
       foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
@@ -2187,10 +2212,7 @@ class Profile extends CommonDBTM {
             unset($CFG_GLPI["ticket_types"][$key]);
          }
       }
-
-      $p['multiple'] = true;
-      $p['size']     = 3;
-      return Dropdown::showFromArray($p['name'], $values, $p);
+      return $values;
    }
 
 
@@ -2258,9 +2280,11 @@ class Profile extends CommonDBTM {
     *             'field'      => the name of the field inside the DB and HTML form (prefixed by '_')
     *             'html_field' => when $html_field != '_'.$field
     * @param $options array
-    *                 'title' : the title of the 
+    *                 'title'         the title of the matrix
+    *                 'canedit'
+    *                 'default_class' the default CSS class used for the row
     *
-    * @return rights
+    * @return random value used to generate the ids
    **/
    function displayRightsChoiceMatrix(array $rights, array $options = array()) {
 
@@ -2347,11 +2371,112 @@ class Profile extends CommonDBTM {
             }
          });
 
-      Html::showCheckboxMatrix($columns, $rows, array('title'                => $param['title'],
-                                                      'row_check_all'        => count($columns) > 1,
-                                                      'col_check_all'        => count($rows) > 1,
-                                                      'rotate_column_titles' => count($columns) > 5));
+      return Html::showCheckboxMatrix($columns, $rows, array('title'                => $param['title'],
+                                                             'row_check_all'        => count($columns) > 1,
+                                                             'col_check_all'        => count($rows) > 1,
+                                                             'rotate_column_titles' => count($columns) > 5));
    }
 
+
+   /**
+    * Get right linear right choice.
+    *
+    * @since version 0.85
+    *
+    * @param $elements all pair identifier => label
+    * @param $options
+    *             'canedit'
+    *             'field'         name of the HTML field
+    *             'value'         the value inside the database
+    *             'max_per_line'  maximum number of elements per line
+    *             'check_all'     add a checkbox to check or uncheck every checkbox
+    *             'rand'          random value used to generate the ids
+    *             'zero_on_empty' do we send 0 when checkbox is not checked ?
+    *             'display'
+    *             'check_method'  method used to check the right
+    *
+    * @return content if !display
+   **/
+   static function getLinearRightChoice(array $elements, array $options = array()) {
+
+      $param = array();
+      $param['canedit']       = true;
+      $param['field']         = '';
+      $param['value']         = '';
+      $param['max_per_line']  = 10;
+      $param['check_all']     = false;
+      $param['rand']          = mt_rand();
+      $param['zero_on_empty'] = true;
+      $param['display']       = true;
+      $param['check_method']  = function ($element, $field) {
+         return (($field & $element) == $element);
+      };
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+
+      if (empty($param['field'])) {
+         return;
+      }
+
+      $nb_cbs      = count($elements);
+      $cb_options  = array('readonly' => !$param['canedit']);
+      if ($param['check_all']) {
+         $nb_cbs ++;
+         $massive_tag                = 'checkall_'.$param['field'].'_'.$param['rand'];
+         $cb_options['massive_tags'] = $massive_tag;
+      }
+
+      $nb_lines         = ceil($nb_cbs / $param['max_per_line']);
+      $nb_item_per_line = ceil($nb_cbs / $nb_lines);
+
+      $out = '';
+
+      $count      = 0;
+      $nb_checked = 0;
+      foreach ($elements as $element => $label) {
+         if ($count != 0) {
+            if (($count % $nb_item_per_line) == 0) {
+               $out .= "<br>\n";
+            } else {
+               $out .= "&nbsp;-\n\t\t&nbsp;";
+            }
+         } else {
+            $out .= "\n\t\t";
+         }
+         $out .= $label.'&nbsp;';
+         $cb_options['name']          = $param['field'].'['.$element.']';
+         $cb_options['id']            = Html::cleanId('checkbox_linear_'.$cb_options['name'].
+                                                      '_'.$param['rand']);
+         $cb_options['zero_on_empty'] = $param['zero_on_empty'];
+
+         $cb_options['checked']       = $param['check_method']($element,
+                                                               $param['value']);
+
+         $out .= Html::getCheckbox($cb_options);
+         $count ++;
+         if ($cb_options['checked']) {
+            $nb_checked ++;
+         }
+      }
+
+      if ($param['check_all']) {
+         $cb_options = array('tag_for_massive' => $massive_tag,
+                             'id'              => Html::cleanId('checkbox_linear_'.$param['rand']));
+         if ($nb_checked > (count($elements) / 2)) {
+            $cb_options['checked'] = true;
+         }
+         $out .= "&nbsp;-&nbsp;<i><b>".__('Select/unselect all')."</b></i>&nbsp;".Html::getCheckbox($cb_options);
+      }
+
+      if (!$param['display']) {
+         return $out;
+      }
+
+      echo $out;
+   }
 }
 ?>
