@@ -970,7 +970,7 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/plugins/imagepaste/jquery.image_paste.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.js");
 
-      
+
       if (isset($_SESSION['glpilanguage'])) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
@@ -1278,7 +1278,8 @@ class Html {
       if ($CFG_GLPI['allow_search_global']) {
          echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
          echo "<div id='boutonRecherche'>";
-         echo Html::submit(__('Post'), array('image' => $CFG_GLPI["root_doc"]."/pics/search.png"));
+         echo Html::submit(_sx('button','Post'),
+                           array('image' => $CFG_GLPI["root_doc"]."/pics/search.png"));
          echo "</div>";
          echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch'
                                          value='". __s('Search')."' onfocus=\"this.value='';\">";
@@ -2762,7 +2763,7 @@ class Html {
 
 
    /**
-    * Display Color field 
+    * Display Color field
     *
     * @since version 0.85
     *
@@ -3533,7 +3534,7 @@ class Html {
          paste_preprocess : function(pl, o) {
             _html = o.content;
             if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
-               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');			
+               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');
                o.content = _html;
             }
          },
@@ -3548,7 +3549,7 @@ class Html {
          theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
          theme_advanced_buttons2 : 'imagepaste,forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
          theme_advanced_buttons3 : '',";
-      
+
       if($itemtype == 'Ticket'){
          echo "setup : function(ed) {
                   ed.addButton('imagepaste', {
@@ -3561,14 +3562,14 @@ class Html {
                }";
       }
       echo "});";
-      
+
 //         invalid_elements : 'script',
       echo Html::scriptEnd();
-      
+
       // Create Modal window
       if($itemtype == 'Ticket'){
          echo "<div id='imagepaste_$name'></div>";
-         
+
          Ajax::createModalWindow('imagepaste_'.$name,
                                  $CFG_GLPI["root_doc"]."/front/document.form.php?popup=1&rand=".
                                     mt_rand()."&name=".$name,
@@ -3576,14 +3577,14 @@ class Html {
                                        'container'   => 'imagepaste_'.$name,
                                        'width'       => 600,
                                        'height'      => 500));
-         
+
       }
    }
-   
+
    /**
     * Init the Image paste System for tiny mce
     *
-    * @param params params used for image paste : 
+    * @param params params used for image paste :
     *                            - image_name : Upload image name
     *                            - image_paste : Name of the image uploaded successfully
     *                            - initMsg : Message to display on init
@@ -3593,7 +3594,7 @@ class Html {
    **/
    static function initImagePasteSystem($params) {
       global $CFG_GLPI;
-      
+
       $params['root_doc'] = $CFG_GLPI["root_doc"];
 
       echo "<script language='javascript' type='text/javascript'>

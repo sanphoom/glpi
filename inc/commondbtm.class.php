@@ -3161,7 +3161,7 @@ class CommonDBTM extends CommonGLPI {
          default :
             if (!$this->showSpecificMassiveActionsParameters($input)) {
                echo "<input type='submit' name='massiveaction' class='submit' value='".
-                      __s('Post')."'>\n";
+                      _sx('button','Post')."'>\n";
             }
       }
 
@@ -3260,7 +3260,7 @@ class CommonDBTM extends CommonGLPI {
 
       if (!isset($input["item"]) || (count($input["item"]) == 0)) {
          return false;
-      } 
+      }
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
