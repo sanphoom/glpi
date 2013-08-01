@@ -225,7 +225,8 @@ class Profile extends CommonDBTM {
          if ((!isset($input["helpdesk_item_type"])) || (!is_array($input["helpdesk_item_type"]))) {
             $input["helpdesk_item_type"] = array();
          }
-         $input["helpdesk_item_type"] = exportArrayToDB(array_keys($input["helpdesk_item_type"]));
+         // Linear_HIT: $input["helpdesk_item_type"] = array_keys($input["helpdesk_item_type"]
+         $input["helpdesk_item_type"] = exportArrayToDB($input["helpdesk_item_type"]);
       }
 
       if (isset($input['helpdesk_hardware']) && is_array($input['helpdesk_hardware'])) {
@@ -690,6 +691,8 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td width='20%'>".__('Associable items to a ticket')."</td>";
       echo "<td colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
+      self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
+      /* Linear_HIT
       self::getLinearRightChoice(self::getHelpdeskItemtypes(),
                                  array('field'         => 'helpdesk_item_type',
                                        'value'         => $this->fields['helpdesk_item_type'],
@@ -700,6 +703,7 @@ class Profile extends CommonDBTM {
                                        function ($element, $field) {
                                           return in_array($element,$field);
                                        }));
+      */
       echo "</td>";
       echo "</tr>\n";
 
@@ -1012,6 +1016,8 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Associable items to a ticket')."</td>";
       echo "<td  colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
+      self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
+      /* Linear_HIT
       self::getLinearRightChoice(self::getHelpdeskItemtypes(),
                                      array('field'         => 'helpdesk_item_type',
                                            'value'         => $this->fields['helpdesk_item_type'],
@@ -1022,6 +1028,7 @@ class Profile extends CommonDBTM {
                                            function ($element, $field) {
                                               return in_array($element,$field);
                                            }));
+      */
       echo "</td>";
       echo "</tr>\n";
       echo "</table>";
@@ -1958,6 +1965,10 @@ class Profile extends CommonDBTM {
             return Dropdown::showFromArray($name, self::getHelpdeskHardwareTypes(), $options);
 
          case "helpdesk_item_type":
+            $options['values'] = explode(',', $values[$field]);
+            $options['name']  = $name;
+            return self::dropdownHelpdeskItemtypes($options);
+            /* Linear_HIT
             // TODO: check if it is working ! I didn't find where it is used ...
             return self::getLinearRightChoice(self::getHelpdeskItemtypes(),
                                               array('field'         => $name,
@@ -1968,6 +1979,7 @@ class Profile extends CommonDBTM {
                                                     function ($element, $field) {
                                                        return in_array($element,$field);
                                                     }));
+            */
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
@@ -2213,6 +2225,36 @@ class Profile extends CommonDBTM {
          }
       }
       return $values;
+   }
+
+
+   /**
+    * Dropdown profiles which have rights under the active one
+    *
+    * @since ersin 0.84
+    *
+    * @param $options array of possible options:
+    *    - name : string / name of the select (default is profiles_id)
+    *    - values : array of values
+   **/
+   static function dropdownHelpdeskItemtypes($options) {
+      global $CFG_GLPI;
+
+      $p['name']    = 'helpdesk_item_type';
+      $p['values']  = array();
+      $p['display'] = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $values = self::getHelpdeskItemtypes();
+
+      $p['multiple'] = true;
+      $p['size']     = 3;
+      return Dropdown::showFromArray($p['name'], $values, $p);
    }
 
 
