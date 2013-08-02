@@ -681,8 +681,10 @@ class ReservationItem extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getType() == __CLASS__) {
-         $tabs[1] = __('Reservation');
-         if (Session::haveRightsOr("reservation", array(CREATE, UPDATE, DELETE, PURGE))) {
+         if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+            $tabs[1] = __('Reservation');
+         }
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
             $tabs[2] = __('Administration');
          }
          return $tabs;
@@ -701,9 +703,11 @@ class ReservationItem extends CommonDBChild {
          switch ($tabnum) {
             case 1 :
                $item->showListSimple();
+               break;
 
             case 2 :
                Search::show('ReservationItem');
+               break;
          }
       }
       return true;
