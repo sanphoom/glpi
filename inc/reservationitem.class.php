@@ -402,10 +402,31 @@ class ReservationItem extends CommonDBChild {
 
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
 
-      foreach ($CFG_GLPI["reservation_types"] as $key => $val) {
-         $values[$val] = $val;
+      $sql = "SELECT DISTINCT(`itemtype`)
+              FROM `glpi_reservationitems`
+              WHERE `is_active` = 1".
+                    getEntitiesRestrictRequest(" AND", 'glpi_reservationitems', 'entities_id',
+                                               $_SESSION['glpiactiveentities']);
+
+      $values[0] = Dropdown::EMPTY_VALUE;
+      foreach ($DB->request($sql) AS $data => $val) {
+         $values[$val['itemtype']] = $val['itemtype'];
       }
-      foreach ($DB->request('glpi_peripheraltypes', array('ORDER' => 'name')) as $ptype) {
+
+      $query = "SELECT `glpi_peripheraltypes`.`name`, `glpi_reservationitems`.`id`
+                FROM `glpi_reservationitems`
+                LEFT JOIN `glpi_peripherals`
+                  ON `glpi_reservationitems`.`items_id` = `glpi_peripherals`.`id`
+                LEFT JOIN `glpi_peripheraltypes`
+                  ON `glpi_peripherals`.`peripheraltypes_id` = `glpi_peripheraltypes`.`id`
+                WHERE `itemtype` = 'Peripheral'
+                      AND `is_active` = 1".
+                      getEntitiesRestrictRequest(" AND", 'glpi_reservationitems', 'entities_id',
+                            $_SESSION['glpiactiveentities'])."
+                ORDER BY `glpi_peripheraltypes`.`name`";
+
+      foreach ($DB->request($query) as $ptype) {
+  //    foreach ($DB->request('glpi_peripheraltypes', array('ORDER' => 'name')) as $ptype) {
          $id = $ptype['id'];
          $values["Peripheral#$id"] = $ptype['name'];
       }
