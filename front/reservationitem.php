@@ -44,6 +44,9 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
+$res = new ReservationItem();
+$res->display();
+/*
 if (!Session::haveRight("reservation", READ)) {
    ReservationItem::showListSimple();
 } else {
@@ -214,7 +217,7 @@ if (!Session::haveRight("reservation", READ)) {
       echo "</div>\n";
    }
 }
-
+*/
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::helpFooter();
 } else {

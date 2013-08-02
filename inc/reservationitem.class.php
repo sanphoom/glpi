@@ -658,5 +658,65 @@ class ReservationItem extends CommonDBChild {
       return $values;
    }
 
+
+   /**
+    * @see CommonGLPI::defineTabs()
+    *
+    * @since version 0.85
+   **/
+   function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+
+      return $ong;
+   }
+
+
+   /**
+    * @see CommonGLPI::getTabNameForItem()
+    *
+    * @since version 0.85
+   **/
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if ($item->getType() == __CLASS__) {
+         $tabs[1] = __('Reservation');
+         if (Session::haveRightsOr("reservation", array(CREATE, UPDATE, DELETE, PURGE))) {
+            $tabs[2] = __('Administration');
+         }
+         return $tabs;
+      }
+      return '';
+   }
+
+   /**
+    * @param $item         CommonGLPI object
+    * @param $tabnum       (default1)
+    * @param $withtemplate (default0)
+    **/
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showListSimple();
+
+            case 2 :
+               Search::show('ReservationItem');
+         }
+      }
+      return true;
+   }
+
+   /**
+    * @see CommonDBTM::isNewItem()
+    *
+    * @since version 0.85
+   **/
+   function isNewItem() {
+      return false;
+   }
+
 }
 ?>
