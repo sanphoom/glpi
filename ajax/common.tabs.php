@@ -68,8 +68,7 @@ if ($item = getItemForItemtype($_GET['_itemtype'])) {
             exit();
          }
       } else if (!isset($_GET["id"])|| $item->isNewID($_GET["id"])) {
-         if (!$item->can(-1, CREATE, $_GET)
-             && $item->isNewItem()) {
+         if (!$item->can(-1, CREATE, $_GET)) {
             exit();
          }
       } else if (!$item->can($_GET["id"], READ)) {

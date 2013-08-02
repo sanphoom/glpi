@@ -50,7 +50,8 @@ class ReservationItem extends CommonDBChild {
 
    const RESERVEANITEM              = 1024;
 
-
+   public $get_item_to_display_tab = false;
+   public $showdebug               = false;
 
    static function getTypeName($nb=0) {
       return _n('Reservable item', 'Reservable items',$nb);
@@ -353,7 +354,9 @@ class ReservationItem extends CommonDBChild {
       $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
 
-
+      if (isset($_SESSION['glpi_saved']['ReservationItem'])) {
+         $_POST = $_SESSION['glpi_saved']['ReservationItem'];
+      }
       if (isset($_POST['reserve'])) {
          echo "<div id='viewresasearch'  class='center'>";
          Toolbox::manageBeginAndEndPlanDates($_POST['reserve']);
@@ -374,14 +377,14 @@ class ReservationItem extends CommonDBChild {
          $_POST['reserve']["end"]   = date("Y-m-d H:i:s",$begin_time+HOUR_TIMESTAMP);
          $_POST['reservation_types'] = '';
       }
-      echo "<form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
+      echo "<form method='post' name='form' action='".Toolbox::getItemTypeSearchURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
       echo "<th colspan='3'>".__('Find a free item in a specific period')."</th></tr>";
 
 
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
       Html::showDateTimeField("reserve[begin]", array('value'      =>  $_POST['reserve']["begin"],
-                                            'maybeempty' => false));
+                                                      'maybeempty' => false));
       echo "</td><td rowspan='3'>";
       echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Search')."\">";
       echo "</td></tr>";
@@ -399,7 +402,6 @@ class ReservationItem extends CommonDBChild {
 
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
 
-      $values[0] = Dropdown::EMPTY_VALUE;
       foreach ($CFG_GLPI["reservation_types"] as $key => $val) {
          $values[$val] = $val;
       }
@@ -668,7 +670,7 @@ class ReservationItem extends CommonDBChild {
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
-
+      $ong['no_all_tab'] = true;
       return $ong;
    }
 
