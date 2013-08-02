@@ -161,6 +161,7 @@ class CommonGLPI {
       }
 
       $class = $this->getType();
+      toolbox::logdebug($this);
       if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && (!$this->isNewItem() || $this->showdebug)
           && (method_exists($class, 'showDebug')
@@ -608,7 +609,6 @@ class CommonGLPI {
       $extraparamhtml = "";
       $extraparam     = "";
       $withtemplate   = "";
-
       if (is_array($options) && count($options)) {
          if (isset($options['withtemplate'])) {
             $withtemplate = $options['withtemplate'];
@@ -1020,7 +1020,7 @@ class CommonGLPI {
       if (in_array($class, $CFG_GLPI["reservation_types"])) {
          $resitem = new ReservationItem();
          if ($resitem->getFromDBbyItem($class, $this->fields['id'])) {
-            $resitem->showDebug();
+            $resitem->showDebugResa();
          }
       }
    }
