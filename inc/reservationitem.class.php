@@ -408,8 +408,10 @@ class ReservationItem extends CommonDBChild {
                     getEntitiesRestrictRequest(" AND", 'glpi_reservationitems', 'entities_id',
                                                $_SESSION['glpiactiveentities']);
 
+      $result = $DB->query($sql);
+
       $values[0] = Dropdown::EMPTY_VALUE;
-      foreach ($DB->request($sql) AS $data => $val) {
+      foreach ($result AS $data => $val) {
          $values[$val['itemtype']] = $val['itemtype'];
       }
 
@@ -426,13 +428,19 @@ class ReservationItem extends CommonDBChild {
                 ORDER BY `glpi_peripheraltypes`.`name`";
 
       foreach ($DB->request($query) as $ptype) {
-  //    foreach ($DB->request('glpi_peripheraltypes', array('ORDER' => 'name')) as $ptype) {
          $id = $ptype['id'];
          $values["Peripheral#$id"] = $ptype['name'];
       }
 
-      Dropdown::showFromArray("reservation_types", $values,
-                              array('value' => $_POST['reservation_types']));
+      if ($DB->numrows($result) > 1) {
+         Dropdown::showFromArray("reservation_types", $values,
+                                 array('value' => $_POST['reservation_types']));
+      } else {
+         unset($values[0]);
+         foreach ($values as $key => $val) {
+            echo $val;
+         }
+      }
 
 
       echo "</td></tr>";
