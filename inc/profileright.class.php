@@ -290,7 +290,11 @@ class ProfileRight extends CommonDBChild {
             } else {
                $rights .= ", ";
             }
-            $rights .= $name;
+            if (is_array($name)) {
+               $rights .= $name['long'];
+            } else {
+               $rights .= $name;
+            }
          }
       }
       return ($rights ? $rights : __('None'));
