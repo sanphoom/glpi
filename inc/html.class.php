@@ -4700,6 +4700,7 @@ class Html {
       $param['col_check_all']        = false;
       $param['rotate_column_titles'] = false;
       $param['rand']                 = mt_rand();
+      $param['cell_class_method']    = NULL;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -4724,7 +4725,7 @@ class Html {
 
       echo "\t<tr>\n";
       echo "\t\t<td>".$param['first_cell']."</td>\n";
-      foreach ($columns as $col_name => $label) {
+      foreach ($columns as $col_name => &$column) {
          $nb_cb_per_col[$col_name] = array('total'   => 0,
                                            'checked' => 0);
          $col_id                   = Html::cleanId('col_label_'.$col_name.'_'.$param['rand']);
@@ -4734,11 +4735,13 @@ class Html {
             echo " rotate";
          }
          echo "' id='$col_id' width='$width%'>";
-         if (is_array($label)) {
-            echo $label['short'];
-            self::showToolTip($label['long'], array('applyto' => $col_id));
+         if (is_array($column)) {
+            echo $column['short'];
+            self::showToolTip($column['long'], array('applyto' => $col_id));
          } else {
-            echo $label;
+            echo $column;
+            $column = array('short' => $column,
+                            'long'  => $column);
          }
          echo "</td>\n";
       }
@@ -4758,18 +4761,19 @@ class Html {
             continue;
          }
 
-         echo "\t<tr";
-         if (isset($row['class'])) {
-            echo " class='".$row['class']."'";
-         }
-         echo ">\n";
+         echo "\t<tr>\n";
 
          if (is_string($row)) {
             echo "\t\t<th colspan='$number_columns'>$row</th>\n";
          } else {
 
             $row_id = Html::cleanId('row_label_'.$row_name.'_'.$param['rand']);
-            echo "\t\t<td class='b' id='$row_id'>";
+            if (isset($row['class'])) {
+               $class = $row['class'];
+            } else {
+               $class = '';
+            }
+            echo "\t\t<td class='b $class' id='$row_id'>";
             if (!empty($row['label'])) {
                echo $row['label'];
             } else {
@@ -4780,8 +4784,21 @@ class Html {
             $nb_cb_per_row = array('total'   => 0,
                                    'checked' => 0);
 
-            foreach (array_keys($columns) as $col_name) {
-               echo "\t\t<td class='center'>";
+            foreach ($columns as $col_name => $column) {
+               if ((!empty($row['class'])) && (!empty($column['class']))) {
+                  if (is_callable($param['cell_class_method'])) {
+                     $class = $param['cell_class_method']($row['class'], $column['class']);
+                  } else {
+                     $class = '';
+                  }
+               } elseif (!empty($row['class'])) {
+                  $class = $row['class'];
+               } elseif (!empty($column['class'])) {
+                  $class = $row['class'];
+               } else {
+                  $class = '';
+               }
+               echo "\t\t<td class='center $class'>";
 
                // Warning: isset return false if the value is NULL ...
                if (array_key_exists($col_name, $row['columns'])) {
@@ -4835,7 +4852,7 @@ class Html {
       if ($param['col_check_all']) {
          echo "\t<tr>\n";
          echo "\t\t<td>".__('Select/unselect all')."</td>\n";
-         foreach ($columns as $col_name => $label) {
+         foreach ($columns as $col_name => $column) {
             echo "\t\t<td class='center'>";
             if ($nb_cb_per_col[$col_name]['total'] > 1) {
                $cb_options['tag_for_massive'] = 'col_'.$col_name.'_'.$param['rand'];
