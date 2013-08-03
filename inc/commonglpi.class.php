@@ -161,7 +161,6 @@ class CommonGLPI {
       }
 
       $class = $this->getType();
-      toolbox::logdebug($this);
       if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && (!$this->isNewItem() || $this->showdebug)
           && (method_exists($class, 'showDebug')
