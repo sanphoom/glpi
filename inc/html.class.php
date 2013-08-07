@@ -4700,6 +4700,7 @@ class Html {
       $param['col_check_all']        = false;
       $param['rotate_column_titles'] = false;
       $param['rand']                 = mt_rand();
+      $param['table_class']          = 'tab_cadre_fixe';
       $param['cell_class_method']    = NULL;
 
       if (is_array($options) && count($options)) {
@@ -4715,17 +4716,17 @@ class Html {
          $number_columns += 1;
       }
       $width=round(100/$number_columns);
-      echo "\n<table class='tab_cadre_fixe'>\n";
+      echo "\n<table class='".$param['table_class']."'>\n";
 
       if (!empty($param['title'])) {
-         echo "\t<tr class='tab_bg_1'>\n";
+         echo "\t<tr>\n";
          echo "\t\t<th colspan='$number_columns'>".$param['title']."</th>\n";
          echo "\t</tr>\n";
       }
 
       echo "\t<tr>\n";
       echo "\t\t<td>".$param['first_cell']."</td>\n";
-      foreach ($columns as $col_name => &$column) {
+      foreach ($columns as $col_name => $column) {
          $nb_cb_per_col[$col_name] = array('total'   => 0,
                                            'checked' => 0);
          $col_id                   = Html::cleanId('col_label_'.$col_name.'_'.$param['rand']);
@@ -4735,13 +4736,14 @@ class Html {
             echo " rotate";
          }
          echo "' id='$col_id' width='$width%'>";
-         if (is_array($column)) {
+         if (!is_array($column)) {
+            $columns[$col_name] = $column = array('label' => $column);
+         }
+         if (isset($column['short']) && isset($column['long'])) {
             echo $column['short'];
             self::showToolTip($column['long'], array('applyto' => $col_id));
          } else {
-            echo $column;
-            $column = array('short' => $column,
-                            'long'  => $column);
+            echo $column['label'];
          }
          echo "</td>\n";
       }
@@ -4785,19 +4787,17 @@ class Html {
                                    'checked' => 0);
 
             foreach ($columns as $col_name => $column) {
+               $class = '';
                if ((!empty($row['class'])) && (!empty($column['class']))) {
                   if (is_callable($param['cell_class_method'])) {
                      $class = $param['cell_class_method']($row['class'], $column['class']);
-                  } else {
-                     $class = '';
                   }
                } elseif (!empty($row['class'])) {
                   $class = $row['class'];
                } elseif (!empty($column['class'])) {
-                  $class = $row['class'];
-               } else {
-                  $class = '';
+                  $class = $column['class'];
                }
+
                echo "\t\t<td class='center $class'>";
 
                // Warning: isset return false if the value is NULL ...
