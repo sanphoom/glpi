@@ -3310,10 +3310,10 @@ class Ticket extends CommonITILObject {
       // Get default values from posted values on reload form
       if (!$ticket_template) {
          if (isset($_POST)) {
-            $values = $_POST;
+            $values = Html::cleanPostForTextArea($_POST);
          }
       }
-
+      
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
       foreach ($default_values as $name => $value) {
@@ -3574,12 +3574,20 @@ class Ticket extends CommonITILObject {
          if($CFG_GLPI["use_rich_text"]){
             $cols = 110;
             $rows = 20;
-            Html::initEditorSystem("content$rand", $this->getType());
          }
 
+         if($CFG_GLPI["use_rich_text"]) {
+            Html::initEditorSystem("content$rand", $this->getType());
+            $values["content"] = $this->setRichTextContent("content$rand", $values["content"]);
+            $cols = 110;
+            $rows = 20;
+         } else {
+            $values["content"] = $this->setSimpleTextContent($values["content"]);
+         }
+         
          echo "<div id='content$rand_text'>";
          echo "<textarea id='content$rand' name='content' cols='80' rows='14'>".
-                nl2br($values['content'])."</textarea></div>";
+                $values['content']."</textarea></div>";
          echo "</td></tr>";
       }
 
@@ -3810,11 +3818,13 @@ class Ticket extends CommonITILObject {
       $default_values = self::getDefaultValues();
 
       // Get default values from posted values on reload form
+      // On get because of tabs
       if (!isset($options['template_preview'])) {
          if (isset($_GET)) {
-            $values = $_GET;
+            $values = Html::cleanPostForTextArea($_GET);
          }
       }
+      
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
 
