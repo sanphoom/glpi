@@ -807,9 +807,11 @@ class Bookmark extends CommonDBTM {
          }
          echo "</table></div>";
 
-         $massiveactionparams['ontop']       = false;
-         $massiveactionparams['forcecreate'] = true;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         if ($is_private || Session::haveRight('bookmark_public', DELETE)) {
+            $massiveactionparams['ontop']       = false;
+            $massiveactionparams['forcecreate'] = true;
+            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         }
       } else {
          echo "<tr class='tab_bg_1'><td colspan='$colspan'>";
          _e('You have not recorded any bookmarks yet');
