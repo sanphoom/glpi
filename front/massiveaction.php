@@ -62,7 +62,7 @@ if (isset($_POST['check_itemtype'])) {
    }
 }
 
-$actions = MassiveActions::getAllMassiveActions($item, $_POST['is_deleted'], $checkitem);
+$actions = MassiveAction::getAllMassiveActions($item, $_POST['is_deleted'], $checkitem);
 if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
    if (!isset($actions[$_POST['action']])) {
       Html::displayRightError();
@@ -113,7 +113,7 @@ if (isset($_POST["action"])
    $nbok      = 0;
    $nbnoright = 0;
    $nbko      = 0;
-   $res = MassiveActions::process($_POST);
+   $res = MassiveAction::process($_POST);
 
    if (is_array($res)
          && isset($res['ok'])

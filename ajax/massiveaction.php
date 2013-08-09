@@ -72,8 +72,8 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
    }
 
    $params['specific_action'] = 0;
-   $actions                   = MassiveActions::getAllMassiveActions($item, $_POST['is_deleted'],
-                                                                     $checkitem);
+   $actions                   = MassiveAction::getAllMassiveActions($item, $_POST['is_deleted'],
+                                                                    $checkitem);
    if (isset($_POST['specific_actions'])
        && is_array($_POST['specific_actions'])
        && count($_POST['specific_actions'])) {

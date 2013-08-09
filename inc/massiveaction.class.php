@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * @since version 0.85
 **/
-class MassiveActions {
+class MassiveAction {
 
    const CLASS_ACTION_SEPARATOR = ':';
 

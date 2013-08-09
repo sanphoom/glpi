@@ -61,7 +61,7 @@ if (isset($_POST["action"]) && ($_POST["action"] != '-1')
       echo "<input type='hidden' name='check_itemtype' value='".$_POST["check_itemtype"]."'>";
    }
 
-   $actions = MassiveActions::getAllMassiveActions($item, $_POST['is_deleted'], $checkitem);
+   $actions = MassiveAction::getAllMassiveActions($item, $_POST['is_deleted'], $checkitem);
    if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
       echo "<input type='hidden' name='specific_action' value='0'>";
       if (!isset($actions[$_POST['action']])) {
@@ -97,7 +97,7 @@ if (isset($_POST["action"]) && ($_POST["action"] != '-1')
 //       Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
 //                         $_POST["action"]);
    } else {
-      MassiveActions::showSubForm($_POST);
+      MassiveAction::showSubForm($_POST);
    }
 }
 ?>
