@@ -2607,13 +2607,25 @@ class Html {
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             echo "<div id='massiveactioncontent$identifier'></div>";
 
+            if (!empty($p['container'])) {
+               $js_modal_fields  = "                  var items = $('[id=";
+               $js_modal_fields .= $p['container'];
+               $js_modal_fields .= "] [id*=massaction_item_]:checked')";
+               $js_modal_fields .= ".each(function( index ) {\n";
+               $js_modal_fields .= "                    fields[$(this).attr('name')] = 1;\n";
+               $js_modal_fields .= "        });";
+            } else {
+               $js_modal_fields = '';
+            }
+
             Ajax::createModalWindow('massiveaction_window'.$identifier,
                                     $url,
-                                    array('title'       => $p['title'],
-                                          'container'   => 'massiveactioncontent'.$identifier,
-                                          'extraparams' => $p['extraparams'],
-                                          'width'       => $p['width'],
-                                          'height'      => $p['height'],));
+                                    array('title'           => $p['title'],
+                                          'container'       => 'massiveactioncontent'.$identifier,
+                                          'extraparams'     => $p['extraparams'],
+                                          'width'           => $p['width'],
+                                          'height'          => $p['height'],
+                                          'js_modal_fields' => $js_modal_fields));
          }
          echo "<table class='tab_glpi' width='$width'><tr>";
          if ($p['display_arrow']) {
@@ -2627,7 +2639,7 @@ class Html {
          }  else {
             echo "onclick='massiveaction_window$identifier.dialog(\"open\");'";
          }
-         echo "href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
+         echo " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
          echo $p['title']."</a>";
          echo "</td>";
 

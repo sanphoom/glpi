@@ -59,13 +59,14 @@ class Ajax {
    **/
    static function createModalWindow($name, $url, $options=array() ) {
 
-      $param = array('width'       => 800,
-                     'height'      => 400,
-                     'modal'       => true,
-                     'container'   => '',
-                     'title'       => '',
-                     'extraparams' => array(),
-                     'display'     => true);
+      $param = array('width'           => 800,
+                     'height'          => 400,
+                     'modal'           => true,
+                     'container'       => '',
+                     'title'           => '',
+                     'extraparams'     => array(),
+                     'display'         => true,
+                     'js_modal_fields' => '');
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -74,6 +75,7 @@ class Ajax {
             }
          }
       }
+
       $out  = "<script type='text/javascript'>\n";
       $out .= "var $name=";
       if (!empty($param['container'])) {
@@ -88,11 +90,17 @@ class Ajax {
          modal: ".($param['modal']?'true':'false').",\n
          title: \"".addslashes($param['title'])."\",\n
          open: function (){\n
-            $(this).load('$url'";
+            fields = ";
       if (is_array($param['extraparams']) && count($param['extraparams'])) {
-         $out .= ", ".json_encode($param['extraparams'],JSON_FORCE_OBJECT);
+         $out .= json_encode($param['extraparams'],JSON_FORCE_OBJECT);
+      } else {
+         $out .= '{}';
       }
-      $out .= ");\n}\n
+      $out .= ";\n";
+      if (!empty($param['js_modal_fields'])) {
+         $out .= $param['js_modal_fields']."\n";
+      }
+      $out .= "            $(this).load('$url', fields);\n}\n
          });\n";
       $out .= "</script>";
 
