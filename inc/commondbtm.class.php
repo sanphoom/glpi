@@ -3183,67 +3183,6 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
-
-   /**
-    * Execute standard massive actions for all passed items
-    *
-    * @since version 0.85
-    *
-    * This must not be overloaded in Class
-    * @param $input array of input datas
-    *
-    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
-   **/
-   function executeMassiveActions($input=array()) {
-
-      if (!isset($input["item"]) || (count($input["item"]) == 0)) {
-         return false;
-      }
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      $items        = $input['item'];
-      $inititemtype = $input['itemtype'];
-      foreach ($items as $itemtype => $data) {
-         $input['itemtype'] = $itemtype;
-         $input['item']     = $data;
-
-         // Check if action is available for this itemtype
-         $actionok = false;
-         if ($item = getItemForItemtype($itemtype)) {
-            $checkitem = NULL;
-            if (isset($input['check_itemtype'])) {
-               if ($checkitem = getItemForItemtype($input['check_itemtype'])) {
-                  if (isset($input['check_items_id'])) {
-                     $checkitem->getFromDB($input['check_items_id']);
-                  }
-               }
-            }
-            $actions = $item->getAllMassiveActions($input['is_deleted'], $checkitem);
-
-            if ($input['specific_action'] || isset($actions[$input['action']])) {
-               $actionok = true;
-            } else {
-               $res['noright'] += count($input['item']);
-            }
-         }
-
-         if ($actionok) {
-            if ($tmpres = $item->doMassiveActions($input)) {
-               $res['ok']      += $tmpres['ok'];
-               $res['ko']      += $tmpres['ko'];
-               $res['noright'] += $tmpres['noright'];
-            }
-         } else {
-            $res['noright'] += count($input['item']);
-         }
-      }
-      return $res;
-   }
-
-
    /**
     * Do the standard massive actions
     *

@@ -113,7 +113,7 @@ if (isset($_POST["action"])
    $nbok      = 0;
    $nbnoright = 0;
    $nbko      = 0;
-   $res = $item->executeMassiveActions($_POST);
+   $res = MassiveActions::processMassiveActions($_POST);
 
    if (is_array($res)
          && isset($res['ok'])

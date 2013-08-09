@@ -89,8 +89,8 @@ class Ajax {
          height:".$param['height'].",\n
          modal: ".($param['modal']?'true':'false').",\n
          title: \"".addslashes($param['title'])."\",\n
-         open: function (){\n
-            fields = ";
+         open: function (){
+            var fields = ";
       if (is_array($param['extraparams']) && count($param['extraparams'])) {
          $out .= json_encode($param['extraparams'],JSON_FORCE_OBJECT);
       } else {
