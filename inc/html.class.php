@@ -3945,7 +3945,7 @@ class Html {
          /// TODO : trouble :  urlencode not available for array / do not pass array fields...
          if (!is_array($value)) {
             // Javascript no gettext
-            $javascriptArray[] = "$name: '".urlencode($value)."'";
+            $javascriptArray[] = "'$name': '".urlencode($value)."'";
          }
       }
 
@@ -3968,7 +3968,7 @@ class Html {
       if (is_array($confirm) || strlen($confirm)) {
          $link .= self::addConfirmationOnAction($confirm, $action);
       }  else {
-         $link .= " onclick=\"$action\" ";;
+         $link .= " onclick=\"$action\" ";
       }
 
       $link .= '>';
