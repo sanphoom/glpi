@@ -928,7 +928,8 @@ class Search {
             }
             $showmassiveactions = false;
             if ($itemtype != 'AllAssets') {
-               $showmassiveactions = count($item->getAllMassiveActions($p['is_deleted']));
+               $showmassiveactions = count(MassiveActions::getAllMassiveActions($item,
+                                                                                $p['is_deleted']));
                if ($showmassiveactions
                    && ($output_type == self::HTML_OUTPUT)) {
                   Html::openMassiveActionsForm('massform'.$itemtype);
