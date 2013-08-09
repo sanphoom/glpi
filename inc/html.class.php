@@ -2555,8 +2555,7 @@ class Html {
          }
       }
 
-      $p['extraparams']['itemtype'] = $itemtype;
-      $url                          = $CFG_GLPI['root_doc']."/ajax/massiveaction.php";
+      $url = $CFG_GLPI['root_doc']."/ajax/massiveaction.php";
       if ($p['container']) {
          $p['extraparams']['container'] = $p['container'];
       }

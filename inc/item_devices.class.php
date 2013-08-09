@@ -61,6 +61,15 @@ class Item_Devices extends CommonDBRelation {
    static $rightname = 'device';
 
 
+   static function getTypeName($nb=0) {
+
+      $device_type = static::getDeviceType();
+      //TRANS: %s is the type of the component
+      return sprintf(__('Item - %s link'), $device_type::getTypeName($nb));
+
+   }
+
+
    /**
     * @since version 0.85
     *
@@ -69,7 +78,11 @@ class Item_Devices extends CommonDBRelation {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
+
+      if (count(static::getSpecificities()) == 0) {
+         $forbidden[] = 'update';
+      }
+
       return $forbidden;
    }
 
@@ -306,7 +319,6 @@ class Item_Devices extends CommonDBRelation {
             $massiveactionparams['specific_actions']['update_device'] = _x('button', 'Update');
          } else {
             $class = __CLASS__;
-            $massiveactionparams['title'] = __('Actions for all devices');
          }
          $content = array(array('function'   => 'Html::showMassiveActions',
                                 'parameters' => array($class, $massiveactionparams)));
@@ -457,25 +469,7 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($options['canedit']) {
-         if ($item instanceof CommonDevice) {
-            $content = '&nbsp;';
-         } else {
-            // TODO: filter to only apply the updaze to the given itemtype (example of "serial"
-            //       field that is defines for memory, disk ...
-            $massiveactionparams = array('container'
-                                                 => 'form_device_action'.$options['rand'],
-                                         'fixed' => false,
-                                         'display_arrow'
-                                                 => false,
-                                         'specific_actions'
-                                                 => array('update'   => _x('button', 'Update'),
-                                                          'unaffect' => __('Dissociate'),
-                                                          'purge'    => _x('button',
-                                                                           'Delete permanently')),
-                                         'title' => __('Actions for this kind of device'));
-            $content = array(array('function'   => 'Html::showMassiveActions',
-                                   'parameters' => array(static::getType(), $massiveactionparams)));
-         }
+         $content = '&nbsp;';
          $delete_one  = $table_group->addHeader('one', $content, $delete_column, $previous_column);
       }
 

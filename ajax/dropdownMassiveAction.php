@@ -36,68 +36,44 @@ include ('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-
 if (isset($_POST["action"]) && ($_POST["action"] != '-1')
-    && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
-    if (!isset($_POST['is_deleted'])) {
+    && (!empty($_POST["item"]))) {
+
+   if (!isset($_POST['is_deleted'])) {
       $_POST['is_deleted'] = 0;
-    }
-
-   if (!($item = getItemForItemtype($_POST['itemtype']))) {
-      exit();
    }
-   $checkitem = NULL;
 
-   if (isset($_POST['check_itemtype'])) {
-      if (!($checkitem = getItemForItemtype($_POST['check_itemtype']))) {
+   // Only set $_POST['item'][itemtype] if $_POST['itemtype'] is defined
+   if (!empty($_POST['itemtype'])) {
+      if ($_POST['itemtype'] == -1) {
          exit();
       }
-      if (isset($_POST['check_items_id'])) {
-         if (!$checkitem->getFromDB($_POST['check_items_id'])) {
-            exit();
-         }
-      echo "<input type='hidden' name='check_items_id' value='".$_POST["check_items_id"]."'>";
+      $itemtype = $_POST['itemtype'];
+      if (!empty($_POST['item'][$itemtype])) {
+         $_POST['item'] = array($itemtype => $_POST['item'][$itemtype]);
+      } else {
+         $_POST['item'] = array();
       }
-      echo "<input type='hidden' name='check_itemtype' value='".$_POST["check_itemtype"]."'>";
+      unset($itemtype);
    }
 
-   $actions = MassiveAction::getAllMassiveActions($item, $_POST['is_deleted'], $checkitem);
+   $actions = MassiveAction::getAllActionsFromInput($_POST, true);
+
    if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
-      echo "<input type='hidden' name='specific_action' value='0'>";
+      // If it is not a specific action, then, it must be a standard action !
       if (!isset($actions[$_POST['action']])) {
          Html::displayRightError();
          exit();
       }
+      $specific_action = 0;
    } else {
-      if (!isset($actions[$_POST['action']])) {
-         echo "<input type='hidden' name='specific_action' value='1'>";
-      } else {
-         echo "<input type='hidden' name='specific_action' value='0'>";
-      }
+      $specific_action = (isset($actions[$_POST['action']]) ? 0 : 1);
    }
 
-   echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
-   echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
-   echo "<input type='hidden' name='is_deleted' value='".$_POST["is_deleted"]."'>";
-   echo '&nbsp;';
+   echo Html::hidden('action', array('value' => $_POST['action']));
+   echo Html::hidden('specific_action', array('value' => $specific_action));
+   echo Html::hidden('is_deleted', array('value' => $_POST['is_deleted']));
 
-   // Plugin specific actions
-   $split = explode('_',$_POST["action"]);
-
-   if (($split[0] == 'plugin') && isset($split[1])) {
-      // Normalized name plugin_name_action
-      // Allow hook from any plugin on any (core or plugin) type
-      Plugin::doOneHook($split[1], 'MassiveActionsDisplay',
-                        array('itemtype' => $_POST["itemtype"],
-                              'action'   => $_POST["action"]));
-
-//    } else if ($plug=isPluginItemType($_POST["itemtype"])) {
-      // non-normalized name
-      // hook from the plugin defining the type
-//       Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
-//                         $_POST["action"]);
-   } else {
-      MassiveAction::showSubForm($_POST);
-   }
+   MassiveAction::showSubForm($_POST);
 }
 ?>

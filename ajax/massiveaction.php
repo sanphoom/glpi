@@ -39,41 +39,25 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+if (isset($_POST['item'])) {
 
-if (isset($_POST['itemtype']) && isset($_POST['container'])) {
-   if (!($item = getItemForItemtype($_POST['itemtype']))) {
-      exit();
-   }
    if (!isset($_POST['is_deleted'])) {
       $_POST['is_deleted'] = 0;
    }
-   $checkitem = NULL;
-   if (isset($_POST['check_itemtype'])) {
-      $checkitem = new $_POST['check_itemtype']();
-      if (isset($_POST['check_items_id'])) {
-         $checkitem->getFromDB($_POST['check_items_id']);
-      }
+
+   $actions = MassiveAction::getAllActionsFromInput($_POST, false);
+
+   if (count($actions) == 0) {
+      exit();
    }
+
    echo "<div width='90%' class='center'><br>";
-   $formname = 'massform'.$_POST['itemtype'].mt_rand();
-   Html::openMassiveActionsForm($formname);
-   echo "<script type='text/javascript'>";
-   echo "var items = $('[id=".$_POST['container']."] [id*=massaction_item_]:checked').each(function( index ) {
-                     $('<input>').attr({
-                     type: 'hidden',
-                     name: $(this).attr('name'),
-                     value: 1
-                     }).appendTo('#$formname');
-         });";
-   echo "</script>";
-   $params = array('action' => '__VALUE__');
+   Html::openMassiveActionsForm();
+   $params = array('action'           => '__VALUE__');
    foreach ($_POST as $key => $val) {
       $params[$key] = $val;
    }
 
-   $params['specific_action'] = 0;
-   $actions                   = MassiveAction::getAllMassiveActions($item, $_POST['is_deleted'],
-                                                                    $checkitem);
    if (isset($_POST['specific_actions'])
        && is_array($_POST['specific_actions'])
        && count($_POST['specific_actions'])) {
@@ -86,10 +70,11 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
       $actions = $specific_actions;
    }
 
+
    if (count($actions)) {
-      if (isset($params['hidden']) && count($params['hidden'])) {
+      if (isset($params['hidden']) && is_array($params['hidden'])) {
          foreach ($params['hidden'] as $key => $val) {
-            echo "<input type='hidden' name=\"$key\" value=\"$val\">";
+            echo Html::hidden($key, array('value' => $val));
          }
 
       }
@@ -107,6 +92,7 @@ if (isset($_POST['itemtype']) && isset($_POST['container'])) {
 
       echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
    }
+
    // Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
    $CFG_GLPI['checkbox-zero-on-empty'] = true;
    Html::closeForm();

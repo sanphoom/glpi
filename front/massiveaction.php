@@ -44,25 +44,8 @@ if (isset($_GET['multiple_actions'])) {
    }
 }
 
-if (!isset($_POST["itemtype"])
-    || !($item = getItemForItemtype($_POST["itemtype"]))
-    || !isset($_POST['is_deleted'])) {
-   exit();
-}
+$actions = MassiveAction::getAllActionsFromInput($_POST, false);
 
-$checkitem = NULL;
-if (isset($_POST['check_itemtype'])) {
-   if (!($checkitem = getItemForItemtype($_POST['check_itemtype']))) {
-      exit();
-   }
-   if (isset($_POST['check_items_id'])) {
-      if (!$checkitem->getFromDB($_POST['check_items_id'])) {
-         exit();
-      }
-   }
-}
-
-$actions = MassiveAction::getAllMassiveActions($item, $_POST['is_deleted'], $checkitem);
 if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
    if (!isset($actions[$_POST['action']])) {
       Html::displayRightError();
@@ -90,17 +73,18 @@ if (isset($_GET['multiple_actions'])) {
 }
 
 if (isset($_POST["action"])
-    && isset($_POST["itemtype"])
     && isset($_POST["item"])
     && count($_POST["item"])) {
 
    /// Save selection
-   if (!isset($_SESSION['glpimassiveactionselected'][$_POST["itemtype"]])
-       || (count($_SESSION['glpimassiveactionselected'][$_POST["itemtype"]]) == 0)) {
-      $_SESSION['glpimassiveactionselected'][$_POST["itemtype"]] = array();
-      foreach ($_POST["item"] as $key => $val) {
-         if ($val == 1) {
-            $_SESSION['glpimassiveactionselected'][$_POST["itemtype"]][$key] = $key;
+   foreach ($_POST['item'] as $itemtype => $ids) {
+      if (!isset($_SESSION['glpimassiveactionselected'][$itemtype])
+          || (count($_SESSION['glpimassiveactionselected'][$itemtype]) == 0)) {
+         $_SESSION['glpimassiveactionselected'][$itemtype] = array();
+         foreach ($ids as $key => $val) {
+            if ($val == 1) {
+               $_SESSION['glpimassiveactionselected'][$itemtype][$key] = $key;
+            }
          }
       }
    }
