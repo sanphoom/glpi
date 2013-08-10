@@ -80,7 +80,7 @@ class Item_Devices extends CommonDBRelation {
       $forbidden   = parent::getForbiddenStandardMassiveAction();
 
       if (count(static::getSpecificities()) == 0) {
-         $forbidden[] = 'update';
+         $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       }
 
       return $forbidden;

@@ -65,14 +65,21 @@ if (isset($_POST["action"]) && ($_POST["action"] != '-1')
          Html::displayRightError();
          exit();
       }
-      $specific_action = 0;
+      $_POST['specific_action'] = 0;
    } else {
-      $specific_action = (isset($actions[$_POST['action']]) ? 0 : 1);
+      $_POST['specific_action'] = (isset($actions[$_POST['action']]) ? 0 : 1);
    }
 
-   echo Html::hidden('action', array('value' => $_POST['action']));
-   echo Html::hidden('specific_action', array('value' => $specific_action));
-   echo Html::hidden('is_deleted', array('value' => $_POST['is_deleted']));
+   // Remove from itemtypes the items that doesn't match the action
+   if ($_POST['specific_action'] == 0) {
+      foreach ($_POST['item'] as $itemtype => $ids) {
+         $actions = MassiveAction::getAllMassiveActions($itemtype, $_POST['is_deleted'],
+                                                        $checkitem);
+         if (!isset($actions[$_POST['action']])) {
+            unset($_POST['item'][$itemtype]);
+         }
+      }
+   }
 
    MassiveAction::showSubForm($_POST);
 }

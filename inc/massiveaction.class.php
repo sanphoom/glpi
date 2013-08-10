@@ -55,22 +55,25 @@ class MassiveAction {
     * @return the array of the actions available
    **/
    static function getAllActionsFromInput(array &$input, $set_hidden_check_item_fields) {
-      $checkitem = NULL;
+      if (!isset($GLOBALS['checkitem'])) {
+         global $checkitem;
+         $checkitem = NULL;
 
-      if (isset($input['check_itemtype'])) {
-         if (!($checkitem = getItemForItemtype($input['check_itemtype']))) {
-            exit();
-         }
-         if (isset($input['check_items_id'])) {
-            if (!$checkitem->getFromDB($input['check_items_id'])) {
+         if (isset($input['check_itemtype'])) {
+            if (!($checkitem = getItemForItemtype($input['check_itemtype']))) {
                exit();
             }
-            if ($set_hidden_check_item_fields) {
-               echo Html::Hidden('check_items_id', array('value' => $_POST["check_items_id"]));
+            if (isset($input['check_items_id'])) {
+               if (!$checkitem->getFromDB($input['check_items_id'])) {
+                  exit();
+               }
+               if ($set_hidden_check_item_fields) {
+                  echo Html::Hidden('check_items_id', array('value' => $_POST["check_items_id"]));
+               }
             }
-         }
-         if ($set_hidden_check_item_fields) {
-            echo Html::Hidden('check_itemtype', array('value' => $_POST["check_itemtype"]));
+            if ($set_hidden_check_item_fields) {
+               echo Html::Hidden('check_itemtype', array('value' => $_POST["check_itemtype"]));
+            }
          }
       }
 
@@ -96,7 +99,12 @@ class MassiveAction {
     *
     * @return nothing (display)
    **/
-   static function addHiddenItemsFromInput(array $input) {
+   static function addHiddenFieldsFromInput(array $input) {
+
+      echo Html::hidden('action',          array('value' => $input['action']));
+      echo Html::hidden('specific_action', array('value' => $input['specific_action']));
+      echo Html::hidden('is_deleted',      array('value' => $input['is_deleted']));
+
       if (isset($input['item']) && is_array($input['item'])) {
          foreach ($input['item'] as $itemtype => $items_ids) {
             foreach ($items_ids as $items_id => $val) {
@@ -302,7 +310,7 @@ class MassiveAction {
             $display_submit = $processor::showMassiveActionsSubForm($action[1], $input);
          }
          if ($display_submit) {
-            self::addHiddenItemsFromInput($input);
+            self::addHiddenFieldsFromInput($input);
             echo "<input type='submit' name='massiveaction' class='submit' value='".
                __s('Post')."'>\n";
          }
@@ -310,7 +318,7 @@ class MassiveAction {
          // Old formalism
          // To prevent any error when the itemtype will be remove from input ...
 
-         self::addHiddenItemsFromInput($input);
+         self::addHiddenFieldsFromInput($input);
          $input['itemtype'] = self::getItemtypeFromInput($input, true);
 
          $split = explode('_',$input["action"]);
@@ -492,7 +500,7 @@ class MassiveAction {
       switch ($action) {
          case 'update':
             $itemtype = self::getItemtypeFromInput($input, true);
-            self::addHiddenItemsFromInput($input);
+            self::addHiddenFieldsFromInput($input);
             // Specific options for update fields
             if (!isset($input['options'])) {
                $input['options'] = array();
