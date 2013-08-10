@@ -3066,32 +3066,10 @@ class CommonDBTM extends CommonGLPI {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case 'add_document' :
-         case 'remove_document' :
-            $doc = new Document;
-            return $doc->doSpecificMassiveActions($input);
-
          case 'add_contract_item' :
          case 'remove_contract_item' :
             $contract = new Contract;
             return $contract->doSpecificMassiveActions($input);
-
-         case "add_transfer_list" :
-            if (!isset($_SESSION['glpitransfer_list'])) {
-               $_SESSION['glpitransfer_list'] = array();
-            }
-            if (!isset($_SESSION['glpitransfer_list'][$input["itemtype"]])) {
-               $_SESSION['glpitransfer_list'][$input["itemtype"]] = array();
-            }
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  $_SESSION['glpitransfer_list'][$input["itemtype"]][$key] = $key;
-                  $res['ok']++;
-               }
-            }
-            $res['REDIRECT'] = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
-            Toolbox::logDebug();
-            break;
 
          case "activate_infocoms" :
                $ic = new Infocom();

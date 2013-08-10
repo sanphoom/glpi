@@ -1323,8 +1323,6 @@ class Document extends CommonDBTM {
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
 
-      Toolbox::logDebug();
-
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
@@ -1332,7 +1330,6 @@ class Document extends CommonDBTM {
       switch ($action) {
          case 'add' :
          case 'add_item' :
-            Toolbox::logDebug();
             $documentitem = new Document_Item();
             foreach ($ids as $key => $val) {
                if (isset($input['items_id'])) {

@@ -170,7 +170,7 @@ class MassiveAction {
 
       if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+         $actions[__CLASS__.self::CLASS_ACTION_SEPARATOR.'add_transfer_list'] = _x('button', 'Add to transfer list');
       }
 
    }
@@ -395,85 +395,6 @@ class MassiveAction {
             }
             break;
 
-         case "add_document" :
-            Document::dropdown(array('name' => 'documents_id'));
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Add')."'>";
-            break;
-
-         case "remove_document" :
-            Document::dropdown(array('name' => 'documents_id'));
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Delete permanently')."'>";
-            break;
-
-         case 'update' :
-            $itemtype = self::getItemtypeFromInput($input, true);
-            // Specific options for update fields
-            if (!isset($input['options'])) {
-               $input['options'] = array();
-            }
-            $group          = "";
-            $show_all       = true;
-            $show_infocoms  = true;
-
-            if (in_array($itemtype, $CFG_GLPI["infocom_types"])
-                && (!$itemtype::canUpdate()
-                    || !Infocom::canUpdate())) {
-               $show_all      = false;
-               $show_infocoms = Infocom::canUpdate();
-            }
-            $searchopt = Search::getCleanedOptions($itemtype, UPDATE);
-
-            $values = array(0 => Dropdown::EMPTY_VALUE);
-
-            foreach ($searchopt as $key => $val) {
-               if (!is_array($val)) {
-                  $group = $val;
-               } else {
-                  // No id and no entities_id massive action and no first item
-                  if (($val["field"] != 'id')
-                      && ($key != 1)
-                     // Permit entities_id is explicitly activate
-                      && (($val["linkfield"] != 'entities_id')
-                          || (isset($val['massiveaction']) && $val['massiveaction']))) {
-
-                     if (!isset($val['massiveaction']) || $val['massiveaction']) {
-
-                        if ($show_all) {
-                           $values[$group][$key] = $val["name"];
-                        } else {
-                           // Do not show infocom items
-                           if (($show_infocoms
-                                && Search::isInfocomOption($itemtype, $key))
-                               || (!$show_infocoms
-                                   && !Search::isInfocomOption($itemtype, $key))) {
-                              $values[$group][$key] = $val["name"];
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-
-            $rand = Dropdown::showFromArray('id_field', $values);
-
-            $paramsmassaction = array('id_field' => '__VALUE__',
-                                      'itemtype' => $itemtype,
-                                      'options'  => $input['options']);
-
-            foreach ($input as $key => $val) {
-               if (preg_match("/extra_/",$key,$regs)) {
-                  $paramsmassaction[$key] = $val;
-               }
-            }
-            Ajax::updateItemOnSelectEvent("dropdown_id_field$rand", "show_massiveaction_field",
-                                          $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
-                                          $paramsmassaction);
-
-            echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
-            break;
-
          default :
             // TODO : fix it after transition ...
             $itemtype = self::getItemtypeFromInput($input, true);
@@ -689,6 +610,7 @@ class MassiveAction {
    **/
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
+      global $CFG_GLPI;
 
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -879,6 +801,23 @@ class MassiveAction {
                   }
                }
             }
+            break;
+
+         case 'add_transfer_list' :
+            $itemtype = $item->getType();
+            if (!isset($_SESSION['glpitransfer_list'])) {
+               $_SESSION['glpitransfer_list'] = array();
+            }
+            if (!isset($_SESSION['glpitransfer_list'][$itemtype])) {
+               $_SESSION['glpitransfer_list'][$itemtype] = array();
+            }
+            foreach ($ids as $key => $val) {
+               if ($val == 1) {
+                  $_SESSION['glpitransfer_list'][$itemtype][$key] = $key;
+                  $res['ok']++;
+               }
+            }
+            $res['REDIRECT'] = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
             break;
 
       }
