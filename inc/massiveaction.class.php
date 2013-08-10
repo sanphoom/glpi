@@ -305,12 +305,7 @@ class MassiveAction {
       if (count($action) == 2) {
          // New formalism
          $processor       = $action[0];
-
-         $display_submit = true;
-         if (method_exists($processor, 'showMassiveActionsSubForm')) {
-            $display_submit = $processor::showMassiveActionsSubForm($action[1], $input);
-         }
-         if ($display_submit) {
+         if ($processor::showMassiveActionsSubForm($action[1], $input)) {
             self::addHiddenFieldsFromInput($input);
             echo "<input type='submit' name='massiveaction' class='submit' value='".
                __s('Post')."'>\n";
@@ -585,38 +580,20 @@ class MassiveAction {
          return false;
       }
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
       $action = explode(self::CLASS_ACTION_SEPARATOR, $input['action']);
       if (count($action) == 2) {
-         // New formalism
+
          $processor = $action[0];
 
-         if (method_exists($processor, 'processMassiveActionsForSeveralItemtype')) {
-            $res = $processor::processMassiveActionsForSeveralItemtype($action[1], $input);
-         } else {
-            $res['must_process_each_itemtype'] = true;
-         }
-
-         if (!empty($res['must_process_each_itemtype'])) {
-            unset($res['must_process_each_itemtype']);
-
-            if (method_exists($processor, 'processMassiveActionsForOneItemtype')) {
-               foreach ($input['item'] as $itemtype => $ids) {
-                  if ($item = getItemForItemtype($itemtype)) {
-                     $tmpres = $processor::processMassiveActionsForOneItemtype($action[1], $item,
-                                                                               $ids, $input);
-                     $res['ok']      += $tmpres['ok'];
-                     $res['ko']      += $tmpres['ko'];
-                     $res['noright'] += $tmpres['noright'];
-                  }
-               }
-            }
-         }
+         return $processor::processMassiveActionsForSeveralItemtype($action[1], $input);
 
       } elseif (count($action) == 1) {
+
+         $res = array('ok'      => 0,
+                      'ko'      => 0,
+                      'noright' => 0);
+
+
          foreach ($input['item'] as $itemtype => $data) {
             $input['itemtype'] = $itemtype;
             $input['item']     = $data;
@@ -653,6 +630,38 @@ class MassiveAction {
          }
       }
       return $res;
+   }
+
+
+   /**
+    * Process the specific massive actions
+    *
+    * @since version 0.85
+    *
+    * @param $action the name of the action
+    * @param $input list of input (mainly $_POST or $_GET)
+    *
+   **/
+   static function processMassiveActionsForSeveralItemtype($action, array $input) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      foreach ($input['item'] as $itemtype => $ids) {
+         if ($item = getItemForItemtype($itemtype)) {
+
+            $tmpres = self::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
+
+            $res['ok']      += $tmpres['ok'];
+            $res['ko']      += $tmpres['ko'];
+            $res['noright'] += $tmpres['noright'];
+
+         }
+      }
+
+      return $res;
+
    }
 
 

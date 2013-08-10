@@ -3016,7 +3016,20 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
-   /**
+    /**
+    * Class-specific method used to show the fields to specify the massive action
+    *
+    * @param $action the name of the action (not prefixed by the class name)
+    * @param $input the inputs (mainly $_POST or $_GET)
+    *
+    * @return false if this method display the submit field
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+      return true;
+   }
+
+
+  /**
     * Do the standard massive actions
     *
     * @since version 0.84
@@ -3148,6 +3161,58 @@ class CommonDBTM extends CommonGLPI {
       return false;
    }
 
+
+   /**
+    * Process the specific massive actions
+    *
+    * @since version 0.85
+    *
+    * @param $action the name of the action
+    * @param $input list of input (mainly $_POST or $_GET)
+    *
+   **/
+   static function processMassiveActionsForSeveralItemtype($action, array $input) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      foreach ($input['item'] as $itemtype => $ids) {
+
+         if ($item = getItemForItemtype($itemtype)) {
+
+            $tmpres = static::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
+
+            $res['ok']      += $tmpres['ok'];
+            $res['ko']      += $tmpres['ko'];
+            $res['noright'] += $tmpres['noright'];
+
+         }
+      }
+
+      return $res;
+
+   }
+
+
+   /**
+    * Class specific execution of the massive action (new system) by itemtypes
+    *
+    * @param $action the name of the action
+    * @param $item the item on which apply the massive action
+    * @param $ids an array of the ids of the item on which apply the action
+    * @param $input the array of the input provided by the form ($_POST, $_GET ...)
+    *
+    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
+
+      return array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+   }
 
    /**
     * Get the standard massive actions which are forbidden
