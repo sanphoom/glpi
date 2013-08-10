@@ -53,6 +53,7 @@ class Calendar extends CommonDropdown {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
+      // TODO : update when merge will use new massive actions system
       $forbidden[] = 'merge';
       return $forbidden;
    }

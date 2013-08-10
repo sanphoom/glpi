@@ -45,6 +45,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
+      // TODO: update when move_under will migrate to new massive actions system
       $forbidden[] = 'move_under';
       return $forbidden;
    }
