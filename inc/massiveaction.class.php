@@ -245,12 +245,7 @@ class MassiveAction {
             $actions[$self_pref.'purge'] = _x('button', 'Delete permanently');
          }
 
-         if (in_array($itemtype, $CFG_GLPI["document_types"])) {
-            if (Document::canView()) {
-               $actions['add_document']    = _x('button', 'Add a document');
-               $actions['remove_document'] = _x('button', 'Remove a document');
-            }
-         }
+         Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
          if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
             if (Contract::canUpdate()) {

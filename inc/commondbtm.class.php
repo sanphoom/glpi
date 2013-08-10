@@ -3003,6 +3003,21 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Get all the massive actions available for the current class regarding given itemtype
+    *
+    * @param $actions array of the actions to update
+    * @param $itemtype the type of the item for which we want the actions
+    * @param $is_deleted
+    * @param $checkitem
+    *
+    * @return nothing (update is set inside $actions)
+   **/
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
+                                                CommonDBTM $checkitem = NULL) {
+   }
+
+
+   /**
     * Display specific options add action button for massive actions
     *
     * This may be overloaded in Class

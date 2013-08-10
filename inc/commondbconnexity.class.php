@@ -384,7 +384,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
    /**
     * @since 0.85
-    * @see MassiveAction::showMassiveActionsSubForm()
+    * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
                                                 CommonDBTM $checkitem = NULL) {
@@ -401,11 +401,13 @@ abstract class CommonDBConnexity extends CommonDBTM {
       }
    }
 
+
    /**
     * @since 0.85
-    * @see MassiveAction::showMassiveActionsSubForm()
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm($action, array $input) {
+
       switch ($action) {
          case 'unaffect':
             MassiveAction::addHiddenFieldsFromInput($input);
@@ -444,12 +446,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
             return false;
             break;
       }
+
+      return true;
    }
 
 
    /**
     * @since 0.85
-    * @see MassiveAction::processMassiveActionsForOneItemtype()
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {

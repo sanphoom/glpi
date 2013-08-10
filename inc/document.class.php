@@ -161,7 +161,7 @@ class Document extends CommonDBTM {
                                                        200));
          $create_from_item = true;
       }
-      
+
       if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
          $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
       } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
@@ -652,165 +652,15 @@ class Document extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
-      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
-      if ($isadmin) {
-         $actions['add_document_item']    = _x('button', 'Add an item');
-         $actions['remove_document_item'] = _x('button', 'Remove an item');
-      }
       if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()
-          && $isadmin) {
+          && static::canUpdate()) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
+
       return $actions;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-      global $CFG_GLPI;
-
-      $showAllItemsOptions = array('itemtype_name'   => 'item_itemtype',
-                                   'itemtypes'       => $CFG_GLPI["document_types"],
-                                   'checkright'      => true);
-      switch ($input['action']) {
-         case "add_document_item" :
-            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Add')."'>";
-            return true;
-
-         case "remove_document_item" :
-            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Delete permanently')."'>";
-            return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "add_document" :
-         case "add_document_item" :
-            $documentitem = new Document_Item();
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['items_id'])) {
-                  // Add items to documents
-                  $input2 = array('itemtype'     => $input["item_itemtype"],
-                                  'items_id'     => $input["items_id"],
-                                  'documents_id' => $key);
-                  if ($item = getItemForItemtype('Document')) {
-                     $item->getFromDB($input2['documents_id']);
-                  }
-               } else if (isset($input['documents_id'])) { // Add document to item
-                  $input2 = array('itemtype'     => $input["itemtype"],
-                                  'items_id'     => $key,
-                                  'documents_id' => $input['documents_id']);
-                  if ($item = getItemForItemtype($input2["itemtype"])) {
-                     $item->getFromDB($input2['items_id']);
-                  }
-               } else {
-                  return false;
-               }
-
-               if ($documentitem->can(-1, CREATE, $input2)) {
-                  if ($documentitem->add($input2)) {
-                     $res['ok']++;
-                  } else {
-                     $res['ko']++;
-                     if ($item) {
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                     }
-                  }
-               } else {
-                  $res['noright']++;
-                  if ($item) {
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
-                  }
-               }
-            }
-            break;
-
-         case "remove_document" :
-         case "remove_document_item" :
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['items_id'])) {
-                  // Remove item to documents
-                  $input2 = array('itemtype'     => $input["item_itemtype"],
-                                  'items_id'     => $input["items_id"],
-                                  'documents_id' => $key);
-                  if ($refitem = getItemForItemtype('Document')) {
-                     $refitem->getFromDB($input2['documents_id']);
-                  }
-               } else if (isset($input['documents_id'])) {
-                  // Remove contract to items
-                  $input2 = array('itemtype'     => $input["itemtype"],
-                                  'items_id'     => $key,
-                                  'documents_id' => $input['documents_id']);
-                  if ($refitem = getItemForItemtype($input2["itemtype"])) {
-                     $refitem->getFromDB($input2['items_id']);
-                  }
-               } else {
-                  return false;
-               }
-
-               $docitem = new Document_Item();
-               if ($docitem->can(-1, CREATE, $input2)) {
-                  if ($item = getItemForItemtype($input2["itemtype"])) {
-                     if ($item->getFromDB($input2['items_id'])) {
-                        $doc = new self();
-                        if ($doc->getFromDB($input2['documents_id'])) {
-                           if ($docitem->getFromDBForItems($doc, $item)) {
-                              if ($docitem->delete(array('id' => $docitem->getID()))) {
-                                 $res['ok']++;
-                              } else {
-                                 $res['ko']++;
-                                 $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
-                              }
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $refitem->getErrorMessage(ERROR_NOT_FOUND);
-                           }
-                        } else {
-                           $res['messages'][] = $doc->getErrorMessage(ERROR_NOT_FOUND);
-                           $res['ko']++;
-                        }
-                     } else {
-                        $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
-                        $res['ko']++;
-                     }
-                  } else {
-                     $res['messages'][] = $refitem->getErrorMessage(ERROR_NOT_FOUND);
-                     $res['ko']++;
-                  }
-               } else {
-                  $res['noright']++;
-                  $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 
@@ -846,13 +696,13 @@ class Document extends CommonDBTM {
       $tab[5]['field']           = 'mime';
       $tab[5]['name']            = __('MIME type');
       $tab[5]['datatype']        = 'string';
-      
+
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'tag';
       $tab[6]['name']            = __('Tag');
       $tab[6]['datatype']        = 'text';
       $tab[6]['massiveaction']   = false;
-      
+
       $tab[90]['table']          = $this->getTable();
       $tab[90]['field']          = 'notepad';
       $tab[90]['name']           = __('Notes');
@@ -1365,7 +1215,8 @@ class Document extends CommonDBTM {
 
       return $rand;
    }
-   
+
+
    /**
     * showImagePaste : Show the popup of image paste for an item
     *
@@ -1379,7 +1230,7 @@ class Document extends CommonDBTM {
       }
 
       // Init the image paste system
-      echo "<div id='image_paste'>"; 
+      echo "<div id='image_paste'>";
       // Upload and clear buttons (and paste button for IE)
       echo "<div id='paste_image_menu' class='center'><a id='paste_image' class='vsubmit' style='display:none'>"._sx('button', 'Paste image')."</a>";
       echo "<a id='upload_image' class='vsubmit' style='display:none'>"._sx('button', 'Save')."</a>";
@@ -1393,7 +1244,196 @@ class Document extends CommonDBTM {
                       'errorMsg'   => __('Item not found'));
 
       html::initImagePasteSystem($params);
-      echo "</div>\n";     
+      echo "</div>\n";
+   }
+
+
+   /**
+    * @since 0.85
+    * @see MassiveAction::showMassiveActionsSubForm()
+   **/
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
+                                                CommonDBTM $checkitem = NULL) {
+      global $CFG_GLPI;
+
+      $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+
+      if (in_array($itemtype, $CFG_GLPI["document_types"])) {
+         if (Document::canView()) {
+            $actions[$action_prefix.'add']    = _x('button', 'Add a document');
+            $actions[$action_prefix.'remove'] = _x('button', 'Remove a document');
+         }
+      }
+
+      if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
+         $actions[$action_prefix.'add_item']    = _x('button', 'Add an item');
+         $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
+      }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+      global $CFG_GLPI;
+
+      MassiveAction::addHiddenFieldsFromInput($input);
+
+      $showAllItemsOptions = array('itemtype_name'   => 'item_itemtype',
+                                   'itemtypes'       => $CFG_GLPI["document_types"],
+                                   'checkright'      => true);
+
+      switch ($action) {
+
+         case 'add' :
+            self::dropdown(array('name' => 'documents_id'));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+            return false;
+
+         case 'remove' :
+            self::dropdown(array('name' => 'documents_id'));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Delete permanently')."'>";
+            return false;
+
+         case 'add_item' :
+            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+            return false;
+
+         case 'remove_item' :
+            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Delete permanently')."'>";
+            return false;
+
+      }
+
+      return true;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
+
+      Toolbox::logDebug();
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($action) {
+         case 'add' :
+         case 'add_item' :
+            Toolbox::logDebug();
+            $documentitem = new Document_Item();
+            foreach ($ids as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Add items to documents
+                  $input2 = array('itemtype'     => $input['item_itemtype'],
+                                  'items_id'     => $input['items_id'],
+                                  'documents_id' => $key);
+                  if ($item = getItemForItemtype('Document')) {
+                     $item->getFromDB($input2['documents_id']);
+                  }
+               } else if (isset($input['documents_id'])) { // Add document to item
+                  $input2 = array('itemtype'     => $item->getType(),
+                                  'items_id'     => $key,
+                                  'documents_id' => $input['documents_id']);
+                  if ($item = getItemForItemtype($input2['itemtype'])) {
+                     $item->getFromDB($input2['items_id']);
+                  }
+               } else {
+                  return false;
+               }
+
+               if ($documentitem->can(-1, CREATE, $input2)) {
+                  if ($documentitem->add($input2)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                     if ($item) {
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                     }
+                  }
+               } else {
+                  $res['noright']++;
+                  if ($item) {
+                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                  }
+               }
+            }
+            break;
+
+         case 'remove' :
+         case 'remove_item' :
+            foreach ($ids as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Remove item to documents
+                  $input2 = array('itemtype'     => $input['item_itemtype'],
+                                  'items_id'     => $input['items_id'],
+                                  'documents_id' => $key);
+                  if ($refitem = getItemForItemtype('Document')) {
+                     $refitem->getFromDB($input2['documents_id']);
+                  }
+               } else if (isset($input['documents_id'])) {
+                  // Remove contract to items
+                  $input2 = array('itemtype'     => $item->getType(),
+                                  'items_id'     => $key,
+                                  'documents_id' => $input['documents_id']);
+                  if ($refitem = getItemForItemtype($input2['itemtype'])) {
+                     $refitem->getFromDB($input2['items_id']);
+                  }
+               } else {
+                  return false;
+               }
+
+               $docitem = new Document_Item();
+               if ($docitem->can(-1, CREATE, $input2)) {
+                  if ($item = getItemForItemtype($input2['itemtype'])) {
+                     if ($item->getFromDB($input2['items_id'])) {
+                        $doc = new self();
+                        if ($doc->getFromDB($input2['documents_id'])) {
+                           if ($docitem->getFromDBForItems($doc, $item)) {
+                              if ($docitem->delete(array('id' => $docitem->getID()))) {
+                                 $res['ok']++;
+                              } else {
+                                 $res['ko']++;
+                                 $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
+                              }
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $refitem->getErrorMessage(ERROR_NOT_FOUND);
+                           }
+                        } else {
+                           $res['messages'][] = $doc->getErrorMessage(ERROR_NOT_FOUND);
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['messages'][] = $refitem->getErrorMessage(ERROR_NOT_FOUND);
+                     $res['ko']++;
+                  }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
+               }
+            }
+            break;
+      }
+
+      return $res;
    }
 
 }
