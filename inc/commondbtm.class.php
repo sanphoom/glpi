@@ -3071,32 +3071,6 @@ class CommonDBTM extends CommonGLPI {
             $contract = new Contract;
             return $contract->doSpecificMassiveActions($input);
 
-         case "activate_infocoms" :
-               $ic = new Infocom();
-               if ($ic->canCreate()) {
-                  foreach ($input["item"] as $key => $val) {
-                     $input = array('itemtype' => $input['itemtype'],
-                                    'items_id' => $key);
-                     if (!$ic->getFromDBforDevice($input['itemtype'], $key)) {
-                        if ($ic->can(-1, CREATE, $input)) {
-                           if ($ic->add($input)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                        }
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
-                     }
-                  }
-               }
-            break;
-
          //Lock management
          case 'unlock_Printer' :
          case 'unlock_Monitor' :

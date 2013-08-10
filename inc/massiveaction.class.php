@@ -240,10 +240,7 @@ class MassiveAction {
             $actions[$self_pref.'update'] = _x('button', 'Update');
          }
 
-         if (in_array($itemtype, $CFG_GLPI["infocom_types"])
-             && Infocom::canCreate()) {
-            $actions['activate_infocoms'] = __('Enable the financial and administrative information');
-         }
+         Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
          CommonDBConnexity::getMassiveActionsForItemtype($actions, $itemtype,
                                                          $is_deleted, $checkitem);

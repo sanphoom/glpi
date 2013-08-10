@@ -1623,5 +1623,67 @@ class Infocom extends CommonDBChild {
    }
 
 
+   /**
+    * @since 0.85
+    * @see CommonDBTM::getMassiveActionsForItemtype()
+   **/
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
+                                                CommonDBTM $checkitem = NULL) {
+      global $CFG_GLPI;
+
+      $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'activate';
+
+      if (in_array($itemtype, $CFG_GLPI["infocom_types"])
+          && static::canCreate()) {
+         $actions[$action_name] = __('Enable the financial and administrative information');
+      }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($action) {
+         case 'activate' :
+            $ic = new self();
+            if ($ic->canCreate()) {
+               $itemtype = $item->getType();
+               foreach ($ids as  $key => $val) {
+                  if (!$ic->getFromDBforDevice($itemtype, $key)) {
+                     $input = array('itemtype' => $itemtype,
+                                    'items_id' => $key);
+                     if ($ic->can(-1, CREATE, $input)) {
+                        if ($ic->add($input)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $ic->getErrorMessage(ERROR_ON_ACTION);
+                        }
+                     } else {
+                        $res['noright']++;
+                        $res['messages'][] = $ic->getErrorMessage(ERROR_RIGHT);
+                     }
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $ic->getErrorMessage(ERROR_NOT_FOUND);
+                  }
+               }
+            }
+
+
+            break;
+
+      }
+
+      return $res;
+   }
 }
 ?>
