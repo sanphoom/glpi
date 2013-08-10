@@ -3064,33 +3064,6 @@ class CommonDBTM extends CommonGLPI {
             $res['REDIRECT'] = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
             break;
 
-         case 'unaffect' :
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($this->can($key, UPDATE)) {
-                     if ($this instanceof CommonDBRelation) {
-                        if ($this->affectRelation($key, $input['peer'])) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else if ($this instanceof CommonDBChild) {
-                        if ($this->affectChild($key)) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     }
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                  }
-               }
-            }
-            break;
-
          case "activate_infocoms" :
                $ic = new Infocom();
                if ($ic->canCreate()) {

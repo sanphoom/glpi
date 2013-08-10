@@ -224,16 +224,8 @@ class MassiveAction {
             $actions['activate_infocoms'] = __('Enable the financial and administrative information');
          }
 
-         if (is_a($itemtype, 'CommonDBChild', true)) {
-            if (!$itemtype::$mustBeAttached) {
-               $actions['unaffect'] = __('Dissociate');
-            }
-         }
-         if (is_a($itemtype, 'CommonDBRelation', true)) {
-            if ((!$itemtype::$mustBeAttached_1) || (!$itemtype::$mustBeAttached_2)) {
-               $actions['unaffect'] = __('Dissociate');
-            }
-         }
+         CommonDBConnexity::getMassiveActionsForItemtype($actions, $itemtype,
+                                                         $is_deleted, $checkitem);
 
          // do not take into account is_deleted if items may be dynamic
          if ($item->maybeDeleted()
@@ -403,37 +395,7 @@ class MassiveAction {
                            _sx('button', 'Delete permanently')."'>";
             break;
 
-         case 'unaffect':
-            $itemtype = self::getItemtypeFromInput($input, true);
-            if (is_a($itemtype, 'CommonDBRelation', true)) {
-               if ((!$itemtype::$mustBeAttached_1) && (!$itemtype::$mustBeAttached_2)) {
-                  $values = array();
-                  if ((empty($itemtype::$itemtype_1))
-                      || (preg_match('/^itemtype/', $itemtype::$itemtype_1))) {
-                     $values[0] = __('First Item');
-                  } else {
-                     $itemtype_1 = $itemtype::$itemtype_1;
-                     $values[0] = $itemtype_1::getTypeName(2);
-                  }
-                  if ((empty($itemtype::$itemtype_2))
-                      || (preg_match('/^itemtype/', $itemtype::$itemtype_2))) {
-                     $values[1] = __('Second Item');
-                  } else {
-                     $itemtype_2 = $itemtype::$itemtype_2;
-                     $values[1] = $itemtype_2::getTypeName(2);
-                  }
-                  Dropdown::showFromArray('peer', $values);
-               } else if (!$itemtype::$mustBeAttached_1) {
-                  echo "<input type='hidden' name='peer' value='0'>";
-               } else if (!$itemtype::$mustBeAttached_2) {
-                  echo "<input type='hidden' name='peer' value='1'>";
-               }
-            }
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           __('Dissociate')."'>";
-            break;
-
-         case "update" :
+         case 'update' :
             $itemtype = self::getItemtypeFromInput($input, true);
             // Specific options for update fields
             if (!isset($input['options'])) {

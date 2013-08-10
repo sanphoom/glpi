@@ -382,5 +382,118 @@ abstract class CommonDBConnexity extends CommonDBTM {
       return $result;
    }
 
+   /**
+    * @since 0.85
+    * @see MassiveAction::showMassiveActionsSubForm()
+   **/
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
+                                                CommonDBTM $checkitem = NULL) {
+      $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'unaffect';
+
+      if (is_a($itemtype, 'CommonDBChild', true)) {
+         if (!$itemtype::$mustBeAttached) {
+            $actions[$action_name] = __('Dissociate');
+         }
+      } elseif (is_a($itemtype, 'CommonDBRelation', true)) {
+         if ((!$itemtype::$mustBeAttached_1) || (!$itemtype::$mustBeAttached_2)) {
+            $actions[$action_name] = __('Dissociate');
+         }
+      }
+   }
+
+   /**
+    * @since 0.85
+    * @see MassiveAction::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+      switch ($action) {
+         case 'unaffect':
+            MassiveAction::addHiddenItemsFromInput($input);
+            foreach ($input['item'] as $itemtype => $ids) {
+               if (is_a($itemtype, 'CommonDBRelation', true)) {
+                  $peer_field = "peer[$itemtype]";
+                  if ((!$itemtype::$mustBeAttached_1) && (!$itemtype::$mustBeAttached_2)) {
+                     // Should never occur ... But we must care !
+                     $values = array();
+                     if ((empty($itemtype::$itemtype_1))
+                      || (preg_match('/^itemtype/', $itemtype::$itemtype_1))) {
+                        $values[0] = __('First Item');
+                     } else {
+                        $itemtype_1 = $itemtype::$itemtype_1;
+                        $values[0] = $itemtype_1::getTypeName(2);
+                     }
+                     if ((empty($itemtype::$itemtype_2))
+                         || (preg_match('/^itemtype/', $itemtype::$itemtype_2))) {
+                        $values[1] = __('Second Item');
+                     } else {
+                        $itemtype_2 = $itemtype::$itemtype_2;
+                        $values[1] = $itemtype_2::getTypeName(2);
+                     }
+                     echo sprintf(__('Select a peer for %s:'), $itemtype::getTypeName());
+                     Dropdown::showFromArray($peer_field, $values);
+                     echo "<br>\n";
+                  } else if (!$itemtype::$mustBeAttached_1) {
+                     echo "<input type='hidden' name='$peer_field' value='0'>";
+                  } else if (!$itemtype::$mustBeAttached_2) {
+                     echo "<input type='hidden' name='$peer_field' value='1'>";
+                  }
+               }
+            }
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           __('Dissociate')."'>";
+            return false;
+            break;
+      }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see MassiveAction::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($action) {
+         case 'unaffect' :
+            foreach ($ids as $key => $val) {
+               if ($val == 1) {
+                  if ($item->can($key, UPDATE)) {
+                     if ($item instanceof CommonDBRelation) {
+                        if (isset($input['peer'][$item->getType()])) {
+                           if ($item->affectRelation($key, $input['peer'][$item->getType()])) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                           }
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        }
+                     } else if ($item instanceof CommonDBChild) {
+                        if ($item->affectChild($key)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        }
+                     }
+                  } else {
+                     $res['noright']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                  }
+               }
+            }
+            break;
+
+      }
+
+      return $res;
+   }
 }
 ?>
