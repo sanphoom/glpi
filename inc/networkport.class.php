@@ -667,8 +667,7 @@ class NetworkPort extends CommonDBChild {
                       && $canedit
                       && !empty($portType)) {
                      $ce_checkbox =  $t_row->addCell($c_checkbox,
-                                                     "<input type='checkbox' name='item[" .
-                                                       $netport->fields["id"]."]' value='1'>");
+                                                     Html::getMassiveActionCheckBox(__CLASS__, $netport->fields["id"]));
                   } else {
                      $ce_checkbox = NULL;
                   }

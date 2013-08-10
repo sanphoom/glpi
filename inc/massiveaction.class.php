@@ -242,7 +242,7 @@ class MassiveAction {
                $actions[$self_pref.'delete'] = _x('button', 'Put in dustbin');
             }
          } else if ($canpurge){
-            $actions['purge'] = _x('button', 'Delete permanently');
+            $actions[$self_pref.'purge'] = _x('button', 'Delete permanently');
          }
 
          if (in_array($itemtype, $CFG_GLPI["document_types"])) {
@@ -565,9 +565,9 @@ class MassiveAction {
                                           $paramsmassaction);
 
             echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
-            break;
+            return false;
       }
-      return false;
+      return true;
    }
 
 
