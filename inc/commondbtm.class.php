@@ -3090,6 +3090,7 @@ class CommonDBTM extends CommonGLPI {
                }
             }
             $res['REDIRECT'] = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
+            Toolbox::logDebug();
             break;
 
          case "activate_infocoms" :
@@ -3196,11 +3197,9 @@ class CommonDBTM extends CommonGLPI {
 
          if ($item = getItemForItemtype($itemtype)) {
 
-            $tmpres = static::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
-
-            $res['ok']      += $tmpres['ok'];
-            $res['ko']      += $tmpres['ko'];
-            $res['noright'] += $tmpres['noright'];
+            $itemtype_res = static::processMassiveActionsForOneItemtype($action, $item,
+                                                                        $ids, $input);
+            MassiveAction::mergeProcessResult($res, $itemtype_res);
 
          }
       }

@@ -417,11 +417,11 @@ class Problem extends CommonITILObject {
       if (Session::haveRight(self::$rightname, UPDATE)) {
          $actions['add_actor'] = __('Add an actor');
       }
-      if (Session::haveRight('transfer', READ)
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 

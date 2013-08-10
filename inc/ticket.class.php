@@ -1850,11 +1850,11 @@ class Ticket extends CommonITILObject {
          $actions['add_actor']   = __('Add an actor');
          $actions['link_ticket'] = _x('button', 'Link tickets');
       }
-      if (Session::haveRight('transfer', READ)
-            && Session::isMultiEntitiesMode()
-            && Session::haveRight(self::$rightname, UPDATE)) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+
+      if (Session::haveRight(self::$rightname, UPDATE)) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 

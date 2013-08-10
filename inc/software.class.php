@@ -321,11 +321,10 @@ class Software extends CommonDBTM {
          $actions['replay_dictionnary'] = __('Replay the dictionary rules');
       }
 
-      if (Session::haveRight('transfer', READ)
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 

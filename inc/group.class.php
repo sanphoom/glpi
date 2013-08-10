@@ -320,11 +320,11 @@ class Group extends CommonTreeDropdown {
          $actions['add_supervisor_group']  = _x('button', 'Add a supervisor');
          $actions['add_delegatee_group']   = _x('button', 'Add a delegatee');
       }
-      if (Session::haveRight('transfer', READ)
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 

@@ -601,11 +601,11 @@ class Contract extends CommonDBTM {
          $actions['add_contract_item']    = _x('button', 'Add an item');
          $actions['remove_contract_item'] = _x('button', 'Remove an item');
       }
-      if (Session::haveRight('transfer', READ)
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 

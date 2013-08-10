@@ -164,6 +164,19 @@ class MassiveAction {
 
 
    /**
+    *
+   **/
+   static function getAddTransferList(array &$actions) {
+
+      if (Session::haveRight('transfer', READ)
+          && Session::isMultiEntitiesMode()) {
+         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      }
+
+   }
+
+
+   /**
     * Get the standard massive actions
     *
     * @param $item the item for which we want the massive actions
@@ -561,6 +574,17 @@ class MassiveAction {
    }
 
 
+   static function mergeProcessResult(array &$global, $local) {
+      if (is_array($local)) {
+         $global['ok']      += $local['ok'];
+         $global['ko']      += $local['ko'];
+         $global['noright']      += $local['noright'];
+         if (isset($local['REDIRECT'])) {
+            $global['REDIRECT'] = $local['REDIRECT'];
+         }
+      }
+   }
+
    /**
     * Process the massive actions for all passed items. This a switch between different methods:
     * new system, old one and plugins ...
@@ -588,7 +612,6 @@ class MassiveAction {
                       'ko'      => 0,
                       'noright' => 0);
 
-
          foreach ($input['item'] as $itemtype => $data) {
             $input['itemtype'] = $itemtype;
             $input['item']     = $data;
@@ -614,11 +637,7 @@ class MassiveAction {
             }
 
             if ($actionok) {
-               if ($tmpres = $item->doMassiveActions($input)) {
-                  $res['ok']      += $tmpres['ok'];
-                  $res['ko']      += $tmpres['ko'];
-                  $res['noright'] += $tmpres['noright'];
-               }
+               self::mergeProcessResult($res, $item->doMassiveActions($input));
             } else {
                $res['noright'] += count($input['item']);
             }
@@ -646,11 +665,9 @@ class MassiveAction {
       foreach ($input['item'] as $itemtype => $ids) {
          if ($item = getItemForItemtype($itemtype)) {
 
-            $tmpres = self::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
-
-            $res['ok']      += $tmpres['ok'];
-            $res['ko']      += $tmpres['ko'];
-            $res['noright'] += $tmpres['noright'];
+            $itemtype_res = static::processMassiveActionsForOneItemtype($action, $item,
+                                                                        $ids, $input);
+            MassiveAction::mergeProcessResult($res, $itemtype_res);
 
          }
       }

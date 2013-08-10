@@ -271,11 +271,11 @@ class Contact extends CommonDBTM{
       if ($isadmin) {
          $actions['add_contact_supplier'] = _x('button', 'Add a supplier');
       }
-      if (Session::haveRight('transfer', READ)
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+
+      if ($isadmin) {
+         MassiveAction::getAddTransferList($actions);
       }
+
       return $actions;
    }
 

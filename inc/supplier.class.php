@@ -186,11 +186,8 @@ class Supplier extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['add_contact_supplier'] = _x('button', 'Add a contact');
-      }
-      if (Session::haveRight('transfer', READ)
-          && Session::isMultiEntitiesMode()
-          && $isadmin) {
-         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+
+         MassiveAction::getAddTransferList($actions);
       }
       return $actions;
    }
