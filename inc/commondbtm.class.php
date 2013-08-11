@@ -3058,28 +3058,6 @@ class CommonDBTM extends CommonGLPI {
             $contract = new Contract;
             return $contract->doSpecificMassiveActions($input);
 
-         //Lock management
-         case 'unlock_Printer' :
-         case 'unlock_Monitor' :
-         case 'unlock_NetworkPort' :
-         case 'unlock_NetworkName' :
-         case 'unlock_IPAddress' :
-         case 'unlock_ComputerDisk' :
-         case 'unlock_ComputerVirtualMachine' :
-         case 'unlock_Peripheral' :
-         case 'unlock_SoftwareVersion' :
-            $itemtype = Lock::getItemTypeForMassiveAction($input["action"]);
-            if ($itemtype) {
-               $res = Lock::unlockItems($itemtype, $this->getType(), $input["item"]);
-            }
-            break;
-
-         case 'unlock_Device' :
-            foreach (Item_Devices::getDeviceTypes() as $itemtype) {
-               $res = Lock::unlockItems($itemtype, $this->getType(), $input["item"]);
-            }
-            break;
-
          default :
             // Plugin specific actions
             $split = explode('_',$input["action"]);

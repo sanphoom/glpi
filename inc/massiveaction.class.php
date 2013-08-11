@@ -276,8 +276,8 @@ class MassiveAction {
             }
          }
       }
-      //Add unlock if needed
-      $actions += Lock::getUnlockMassiveActions($itemtype);
+
+      Lock::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
       // Manage forbidden actions
       // TODO: can we delete an action on its name (ie. update instead of MassiveAction::update) ?

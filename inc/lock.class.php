@@ -344,90 +344,6 @@ class Lock {
       return true;
    }
 
-   /**
-    * Unlock locked items
-    *
-    * @param $itemtype          itemtype of ids to locks
-    * @param $baseitemtype      itemtype of the based item
-    * @param $items       array of items to unlock
-   **/
-   static function unlockItems($itemtype, $baseitemtype, $items) {
-      global $DB;
-
-      $ok       = 0;
-      $ko       = 0;
-      $messages = array();
-      $infos    = self::getLocksQueryInfosByItemType($itemtype, $baseitemtype);
-
-      if ($item = getItemForItemtype($infos['type'])) {
-
-         foreach ($items as $id => $value) {
-            if ($value == 1) {
-               $infos['condition'][$infos['field']] = $id;
-               foreach ($DB->request($infos['table'], $infos['condition']) as $data) {
-                  // Restore without history
-                  if ($item->restore(array('id' => $data['id']))) {
-                     $ok++;
-                  } else {
-                     $ko++;
-                     $messages[] = $this->getErrorMessage(ERROR_ON_ACTION);
-                  }
-               }
-            }
-         }
-      }
-
-      return array('ok'       => $ok,
-                   'ko'       => $ko,
-                   'messages' => $messages);
-   }
-
-
-   /**
-    * Get massive actions to unlock items
-    *
-    * @param $itemtype source itemtype
-    *
-    * @return an array of actions to be added (empty if no actions to add)
-   **/
-   static function getUnlockMassiveActions($itemtype) {
-
-      if (Session::haveRight('computer', UPDATE)
-          && ($itemtype == 'Computer')) {
-
-         return array("unlock_Monitor"                => __('Unlock monitors'),
-                      "unlock_Peripheral"             => __('Unlock peripherals'),
-                      "unlock_Printer"                => __('Unlock printers'),
-                      "unlock_SoftwareVersion"        => __('Unlock software'),
-                      "unlock_NetworkPort"            => __('Unlock network ports'),
-                      "unlock_NetworkName"            => __('Unlock network names'),
-                      "unlock_IPAddress"              => __('Unlock IP addresses'),
-                      "unlock_ComputerDisk"           => __('Unlock volumes'),
-                      "unlock_Device"                 => __('Unlock devices'),
-                      "unlock_ComputerVirtualMachine" => __('Unlock virtual machines'));
-      }
-      return array();
-   }
-
-
-   /**
-    * Return itemtype associated with the unlock massive action
-    *
-    * @param action the selected massive action
-    *
-    * @return the itemtype associated
-   **/
-   static function getItemTypeForMassiveAction($action) {
-
-      if (preg_match('/unlock_(.*)/', $action, $results)) {
-         $itemtype = $results[1];
-         if (class_exists($itemtype)) {
-            return $itemtype;
-         }
-      }
-      return false;
-   }
-
 
    /**
     * Get infos to build an SQL query to get locks fields in a table
@@ -531,5 +447,111 @@ class Lock {
                    'type'      => $type);
    }
 
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::getMassiveActionsForItemtype()
+   **/
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
+                                                CommonDBTM $checkitem = NULL) {
+      $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock';
+
+
+      if (Session::haveRight('computer', UPDATE)
+          && ($itemtype == 'Computer')) {
+
+         $actions[$action_name] = __('Unlock components');
+      }
+   }
+
+   /**
+    * @since 0.85
+    * @see MassiveAction::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+
+      switch ($action) {
+         case 'unlock':
+            MassiveAction::addHiddenFieldsFromInput($input);
+            $types = array('Monitor'                => _n('Monitor', 'Monitors', 2),
+                           'Peripheral'             => _n('Device', 'Devices', 2),
+                           'Printer'                => _n('Printer', 'Printers', 2),
+                           'SoftwareVersion'        => _n('Version', 'Versions', 2),
+                           'NetworkPort'            => _n('Network port', 'Network ports', 2),
+                           'NetworkName'            => _n('Network name', 'Network names', 2),
+                           'IPAddress'              => _n('IP address', 'IP addresses', 2),
+                           'ComputerDisk'           => _n('Volume', 'Volumes', 2),
+                           'Device'                 => _n('Component', 'Components', 2),
+                           'ComputerVirtualMachine' => _n('Virtual machine', 'Virtual machines', 2));
+
+            _e('Select the type of the item that must be unlock');
+
+            echo "<br><br>\n";
+
+            Dropdown::showFromArray('attached_item', $types,
+                                    array('multiple' => true,
+                                          'size'     => 5,
+                                          'values'   => array_keys($types)));
+
+            echo "<br><br>".Html::submit(__s('Post'), array('name' => 'massiveaction'));
+
+            return true;
+      }
+      return false;
+   }
+
+   /**
+    * @since 0.85
+    * @see MassiveAction::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $baseitem, array $ids,
+                                                       array $input) {
+      global $DB;
+
+      $res = array('ok'       => 0,
+                   'ko'       => 0,
+                   'noright'  => 0,
+                   'messages' => array());
+
+      switch ($action) {
+         case 'unlock':
+            if (isset($input['attached_item'])) {
+               $attached_items = $input['attached_item'];
+               if (($device_key = array_search('Device', $attached_items)) !== false) {
+                  unset($attached_items[$device_key]);
+                  $attached_items = array_merge($attached_items, Item_Devices::getDeviceTypes());
+               }
+               $links = array();
+               foreach ($attached_items as $attached_item) {
+                  $infos = self::getLocksQueryInfosByItemType($attached_item, $baseitem->getType());
+                  if ($item = getItemForItemtype($infos['type'])) {
+                     $infos['item'] = $item;
+                     $links[$attached_item] = $infos;
+                  }
+               }
+               foreach ($ids as $id => $val) {
+                  if ($val == 1) {
+                     $action_valid = false;
+                     foreach ($links as $infos) {
+                        $infos['condition'][$infos['field']] = $id;
+                        foreach ($DB->request($infos['table'], $infos['condition']) as $data) {
+                           // Restore without history
+                           $action_valid = $infos['item']->restore(array('id' => $data['id']));
+                        }
+                     }
+                     if ($action_valid) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $infos['item']->getErrorMessage(ERROR_ON_ACTION);
+                     }
+                  }
+               }
+            }
+            break;
+      }
+
+      return $res;
+   }
 }
 ?>
