@@ -3005,6 +3005,8 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get all the massive actions available for the current class regarding given itemtype
     *
+    * @since version 0.85
+    *
     * @param $actions array of the actions to update
     * @param $itemtype the type of the item for which we want the actions
     * @param $is_deleted
@@ -3018,61 +3020,40 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Display specific options add action button for massive actions
+    * Class specific execution of the massive action (new system) by itemtypes
     *
-    * This may be overloaded in Class
-    * Parameters must not be : itemtype, action, is_deleted, check_itemtype or check_items_id
-    * @param $input array of input datas
-    * @since version 0.84
-    * @return boolean if parameters displayed ?
+    * @since 0.85
+    *
+    * @param $action the name of the action
+    * @param $item the item on which apply the massive action
+    * @param $ids an array of the ids of the item on which apply the action
+    * @param $input the array of the input provided by the form ($_POST, $_GET ...)
+    *
+    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-      return false;
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
+
+      return array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
    }
 
 
    /**
-    * Do the standard massive actions
+    * Display specific options add action button for massive actions
     *
     * @since version 0.84
     *
-    * This must not be overloaded in Class
+    * This may be overloaded in Class
+    * Parameters must not be : itemtype, action, is_deleted, check_itemtype or check_items_id
     * @param $input array of input datas
     *
-    * @return an array of results (ok, ko, noright counts,
-    *                              may include REDIRECT field to set REDIRECT page)
+    * @return boolean if parameters displayed ?
    **/
-   function doMassiveActions($input=array()) {
-      global $CFG_GLPI;
-
-      if (!isset($input["item"]) || (count($input["item"]) == 0)) {
-         return false;
-      }
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-
-         default :
-            // Plugin specific actions
-            $split = explode('_',$input["action"]);
-            $res   = '';
-            if ($split[0] == 'plugin' && isset($split[1])) {
-               // Normalized name plugin_name_action
-               // Allow hook from any plugin on any (core or plugin) type
-               $res = Plugin::doOneHook($split[1], 'MassiveActionsProcess', $input);
-
-//            } else if ($plug=isPluginItemType($input["itemtype"])) {
-               // non-normalized name
-               // hook from the plugin defining the type
-//               $res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
-            } else {
-               $res = $this->doSpecificMassiveActions($input);
-            }
-            break;
-      }
-      return $res;
+   function showSpecificMassiveActionsParameters($input=array()) {
+      return false;
    }
 
 
@@ -3090,25 +3071,6 @@ class CommonDBTM extends CommonGLPI {
       return false;
    }
 
-
-   /**
-    * Class specific execution of the massive action (new system) by itemtypes
-    *
-    * @param $action the name of the action
-    * @param $item the item on which apply the massive action
-    * @param $ids an array of the ids of the item on which apply the action
-    * @param $input the array of the input provided by the form ($_POST, $_GET ...)
-    *
-    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
-   **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
-
-      return array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-   }
 
    /**
     * Get the standard massive actions which are forbidden

@@ -315,13 +315,10 @@ class Item_Devices extends CommonDBRelation {
                                       'fixed'         => false,
                                       'display_arrow' => false);
          if ($is_device) {
-            $class = 'Item_'.$item->getType();
             $massiveactionparams['specific_actions']['update_device'] = _x('button', 'Update');
-         } else {
-            $class = __CLASS__;
          }
          $content = array(array('function'   => 'Html::showMassiveActions',
-                                'parameters' => array($class, $massiveactionparams)));
+                                'parameters' => array($massiveactionparams)));
          $delete_column = $table->addHeader('delete one', $content);
          $delete_column->setHTMLClass('center');
       }

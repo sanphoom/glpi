@@ -301,6 +301,7 @@ class MassiveAction {
     * @return nothing: display
    **/
    static function showSubForm(array $input) {
+      global $CFG_GLPI;
 
       if (empty($input['action'])) {
          return false;
@@ -342,7 +343,12 @@ class MassiveAction {
                               $_POST["action"]);
             */
          } else {
-            self::tmpShowMassiveActionsSubForm($input);
+            if (!($item = getItemForItemtype($input['itemtype']))) {
+               exit();
+            }
+            if (!$item->showSpecificMassiveActionsParameters($input)) {
+               self::showDefaultSubForm($input['action'], $input, false);
+            }
          }
       }
    }
@@ -365,30 +371,6 @@ class MassiveAction {
 
       echo Html::submit(__s('Post'), array('name' => 'massiveaction'));
 
-   }
-
-
-   /**
-    * Display options add action button for massive actions
-    *
-    * Temporary method during transition from previous formalism to new one
-    *
-    * @param $input array of input datas
-    *
-    * @return nothing display
-   **/
-   static function tmpShowMassiveActionsSubForm(array $input) {
-      global $CFG_GLPI;
-
-      // TODO : move it to  ...
-      $itemtype = self::getItemtypeFromInput($input, true);
-      if (!($item = getItemForItemtype($itemtype))) {
-         exit();
-      }
-      if (!$item->showSpecificMassiveActionsParameters($input)) {
-         self::showDefaultSubForm($input['action'], $input, false);
-      }
-      return true;
    }
 
 
@@ -520,14 +502,14 @@ class MassiveAction {
                    'ko'      => 0,
                    'noright' => 0);
 
-       if (count($action) == 1) {
+      if (count($action) == 1) {
 
+         // Actually, there should be only one itemtype in old system version
          foreach ($input['item'] as $itemtype => $data) {
             $input['itemtype'] = $itemtype;
             $input['item']     = $data;
 
             // Check if action is available for this itemtype
-            $actionok = false;
             if ($item = getItemForItemtype($itemtype)) {
                $checkitem = NULL;
                if (isset($input['check_itemtype'])) {
@@ -540,16 +522,27 @@ class MassiveAction {
                $actions = self::getAllMassiveActions($item, $input['is_deleted'], $checkitem);
 
                if ($input['specific_action'] || isset($actions[$input['action']])) {
-                  $actionok = true;
+                  $itemtype_res   = '';
+
+                  $split = explode('_', $input["action"]);
+                  if ($split[0] == 'plugin' && isset($split[1])) {
+                     // Normalized name plugin_name_action
+                     // Allow hook from any plugin on any (core or plugin) type
+                     $itemtype_res = Plugin::doOneHook($split[1], 'MassiveActionsProcess', $input);
+
+                     //} else if ($plug=isPluginItemType($input["itemtype"])) {
+                     // non-normalized name
+                     // hook from the plugin defining the type
+                     //$itemtype_res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
+                  } else {
+                     $itemtype_res = $item->doSpecificMassiveActions($input);
+                  }
+
+                  self::mergeProcessResult($res, $itemtype_res);
+
                } else {
                   $res['noright'] += count($input['item']);
                }
-            }
-
-            if ($actionok) {
-               self::mergeProcessResult($res, $item->doMassiveActions($input));
-            } else {
-               $res['noright'] += count($input['item']);
             }
          }
       }
