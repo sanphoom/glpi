@@ -1249,7 +1249,7 @@ class Document extends CommonDBTM {
 
    /**
     * @since 0.85
-    * @see MassiveAction::showMassiveActionsSubForm()
+    * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
                                                 CommonDBTM $checkitem = NULL) {
@@ -1273,7 +1273,7 @@ class Document extends CommonDBTM {
 
    /**
     * @since 0.85
-    * @see CommonDBTM::showMassiveActionsSubForm()
+    * @see MassiveAction::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm($action, array $input) {
       global $CFG_GLPI;
@@ -1288,31 +1288,29 @@ class Document extends CommonDBTM {
 
          case 'add' :
             self::dropdown(array('name' => 'documents_id'));
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Add')."'>";
-            return false;
-
-         case 'remove' :
-            self::dropdown(array('name' => 'documents_id'));
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Delete permanently')."'>";
-            return false;
+            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
+            return true;
 
          case 'add_item' :
             Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Add')."'>";
-            return false;
+            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
+            return true;
+
+         case 'remove' :
+            self::dropdown(array('name' => 'documents_id'));
+            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
+                                         array('name' => 'massiveaction'));
+            return true;
 
          case 'remove_item' :
             Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Delete permanently')."'>";
-            return false;
+            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
+                                         array('name' => 'massiveaction'));
+            return true;
 
       }
 
-      return true;
+      return false;
    }
 
 

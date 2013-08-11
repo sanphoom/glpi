@@ -308,13 +308,16 @@ class MassiveAction {
 
       $action = explode(self::CLASS_ACTION_SEPARATOR, $input['action']);
       if (count($action) == 2) {
-         // New formalism
          $processor       = $action[0];
-         if ($processor::showMassiveActionsSubForm($action[1], $input)) {
-            self::addHiddenFieldsFromInput($input);
-            echo "<input type='submit' name='massiveaction' class='submit' value='".
-               __s('Post')."'>\n";
+
+         if (method_exists($processor, 'showMassiveActionsSubForm')) {
+            if (!$processor::showMassiveActionsSubForm($action[1], $input)) {
+               self::showDefaultSubForm($action[1], $input, true);
+            }
+         } else {
+            self::showDefaultSubForm($action[1], $input, true);
          }
+
       } elseif (count($action) == 1) {
          // Old formalism
          // To prevent any error when the itemtype will be remove from input ...
@@ -345,6 +348,26 @@ class MassiveAction {
    }
 
 
+    /**
+    * Class-specific method used to show the fields to specify the massive action
+    *
+    * @param $action current action
+    * @param $input the inputs (mainly $_POST or $_GET)
+    * @param $set_hidden_fields do we have to include the hidden fields ?
+    *
+    * @return nothing (display only)
+   **/
+   static function showDefaultSubForm($action, array $input, $set_hidden_fields) {
+
+      if ($set_hidden_fields) {
+         self::addHiddenFieldsFromInput($input);
+      }
+
+      echo Html::submit(__s('Post'), array('name' => 'massiveaction'));
+
+   }
+
+
    /**
     * Display options add action button for massive actions
     *
@@ -366,14 +389,11 @@ class MassiveAction {
                                                                     => $CFG_GLPI["contract_types"],
                                                            'checkright'
                                                                     => true));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Add')."'>";
             } else {
                Contract::dropdown(array('name' => "contracts_id"));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Add')."'>";
             }
-            break;
+            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
+            return true;
 
          case "remove_contract_item" :
             if ($input['itemtype'] == 'Contract') {
@@ -383,14 +403,12 @@ class MassiveAction {
                                                                     => $CFG_GLPI["contract_types"],
                                                            'checkright'
                                                                     => true));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Delete permanently')."'>";
             } else {
                Contract::dropdown(array('name' => "contracts_id"));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Delete permanently')."'>";
             }
-            break;
+            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
+                                         array('name' => 'massiveaction'));
+            return true;
 
          default :
             // TODO : fix it after transition ...
@@ -399,9 +417,9 @@ class MassiveAction {
                exit();
             }
             if (!$item->showSpecificMassiveActionsParameters($input)) {
-               echo "<input type='submit' name='massiveaction' class='submit' value='".
-                      _sx('button','Post')."'>\n";
+               self::showDefaultSubForm($input['action'], $input, false);
             }
+            return true;
       }
 
       return false;
@@ -414,7 +432,7 @@ class MassiveAction {
     * @param $action the name of the action (not prefixed by the class name)
     * @param $input the inputs (mainly $_POST or $_GET)
     *
-    * @return nothing (display only)
+    * @return false if parameters displayed ?
    **/
    static function showMassiveActionsSubForm($action, array $input) {
       global $CFG_GLPI;
@@ -486,9 +504,10 @@ class MassiveAction {
                                           $paramsmassaction);
 
             echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
-            return false;
+            exit();
+
       }
-      return true;
+      return false;
    }
 
 
@@ -496,7 +515,9 @@ class MassiveAction {
       if (is_array($local)) {
          $global['ok']      += $local['ok'];
          $global['ko']      += $local['ko'];
-         $global['noright']      += $local['noright'];
+         if (isset($local['noright'])) {
+            $global['noright'] += $local['noright'];
+         }
          if (isset($local['REDIRECT'])) {
             $global['REDIRECT'] = $local['REDIRECT'];
          }
@@ -521,14 +542,19 @@ class MassiveAction {
       if (count($action) == 2) {
 
          $processor = $action[0];
+         if (method_exists($processor, 'processMassiveActionsForSeveralItemtype')) {
+            return $processor::processMassiveActionsForSeveralItemtype($action[1], $input);
+         }
 
-         return $processor::processMassiveActionsForSeveralItemtype($action[1], $input);
+         return self::processForSeveralItemtype($processor, $action[1], $input);
 
-      } elseif (count($action) == 1) {
+      }
 
-         $res = array('ok'      => 0,
-                      'ko'      => 0,
-                      'noright' => 0);
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+       if (count($action) == 1) {
 
          foreach ($input['item'] as $itemtype => $data) {
             $input['itemtype'] = $itemtype;
@@ -561,20 +587,21 @@ class MassiveAction {
             }
          }
       }
+
       return $res;
    }
 
 
    /**
-    * Process the specific massive actions
+    * Process the specific massive actions for severl itemtypes
     *
-    * @since version 0.85
-    *
+    * @param $processortype the type of the main processor
     * @param $action the name of the action
     * @param $input list of input (mainly $_POST or $_GET)
     *
+    * @return array of the results for the actions
    **/
-   static function processMassiveActionsForSeveralItemtype($action, array $input) {
+   static function processForSeveralItemtype($processortype, $action, array $input) {
 
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -583,9 +610,10 @@ class MassiveAction {
       foreach ($input['item'] as $itemtype => $ids) {
          if ($item = getItemForItemtype($itemtype)) {
 
-            $itemtype_res = static::processMassiveActionsForOneItemtype($action, $item,
-                                                                        $ids, $input);
-            MassiveAction::mergeProcessResult($res, $itemtype_res);
+            $itemtype_res = $processortype::processMassiveActionsForOneItemtype($action, $item,
+                                                                                $ids, $input);
+
+            self::mergeProcessResult($res, $itemtype_res);
 
          }
       }

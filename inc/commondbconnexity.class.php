@@ -404,7 +404,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
    /**
     * @since 0.85
-    * @see CommonDBTM::showMassiveActionsSubForm()
+    * @see MassiveAction::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm($action, array $input) {
 
@@ -441,13 +441,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
                   }
                }
             }
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           __('Dissociate')."'>";
-            return false;
-            break;
+            echo "<br><br>".Html::submit(__('Dissociate'), array('name' => 'massiveaction'));
+            return true;
       }
 
-      return true;
+      return false;
    }
 
 
