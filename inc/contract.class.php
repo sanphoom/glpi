@@ -154,116 +154,6 @@ class Contract extends CommonDBTM {
 
 
    /**
-    *
-    * @since version 0.85
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "add_contract_item" :
-            $contractitem = new Contract_Item();
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['items_id'])) {
-                  // Add items to contracts
-                  $input2 = array('itemtype'     => $input["item_itemtype"],
-                                  'items_id'     => $input["items_id"],
-                                  'contracts_id' => $key);
-                  if ($item = getItemForItemtype('Contract')) {
-                     $item->getFromDB($input2['contracts_id']);
-                  }
-               }  if (isset($input['contracts_id'])) { // Add contract to item
-                  $input2 = array('itemtype'     => $input["itemtype"],
-                                  'items_id'     => $key,
-                                  'contracts_id' => $input['contracts_id']);
-                  if ($item = getItemForItemtype($input2["itemtype"])) {
-                     $item->getFromDB($input2['items_id']);
-                  }
-               } else {
-                  return false;
-               }
-               if ($contractitem->can(-1, CREATE, $input2)) {
-               if ($contractitem->add($input2)) {
-                     $res['ok']++;
-                  } else {
-                     $res['ko']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                  }
-               } else {
-                  $res['noright']++;
-                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
-               }
-            }
-            break;
-
-         case "remove_contract_item" :
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['items_id'])) {
-                  // Remove item to contracts
-                  $input2 = array('itemtype'     => $input["item_itemtype"],
-                                  'items_id'     => $input["items_id"],
-                                  'contracts_id' => $key);
-                  if ($item = getItemForItemtype('Contract')) {
-                     $refitem->getFromDB($input2['contracts_id']);
-                  }
-               } else {
-                  // Remove contract to items
-                  $input2 = array('itemtype'     => $input["itemtype"],
-                                  'items_id'     => $key,
-                                  'contracts_id' => $input['contracts_id']);
-                  if ($item = getItemForItemtype($input2["itemtype"])) {
-                     $refitem->getFromDB($input2['items_id']);
-                  }
-               }
-               $contractitem = new Contract_Item();
-               if ($contractitem->can(-1, CREATE, $input2)) {
-                  if ($item = getItemForItemtype($input2["itemtype"])) {
-                     if ($item->getFromDB($input2['items_id'])) {
-                        $contract = new self();
-                        if ($contract->getFromDB($input2['contracts_id'])) {
-                           if ($contractitem->getFromDBForItems($contract, $item)) {
-                              if ($contractitem->delete(array('id' => $contractitem->getID()))) {
-                                 $res['ok']++;
-                              } else {
-                                 $res['ko']++;
-                                 $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
-                              }
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $refitem->getErrorMessage(ERROR_NOT_FOUND);
-                           }
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $contract->getErrorMessage(ERROR_NOT_FOUND);
-                        }
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
-                     }
-                  } else {
-                     $res['ko']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
-                  }
-               } else {
-                  $res['noright']++;
-                  $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
-
-
-   /**
     * Print the contract form
     *
     * @param $ID        integer ID of the item
@@ -597,9 +487,10 @@ class Contract extends CommonDBTM {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
+
       if ($isadmin) {
-         $actions['add_contract_item']    = _x('button', 'Add an item');
-         $actions['remove_contract_item'] = _x('button', 'Remove an item');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item']    = _x('button', 'Add an item');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'remove_item'] = _x('button', 'Remove an item');
       }
 
       if ($isadmin) {
@@ -1486,5 +1377,160 @@ class Contract extends CommonDBTM {
                                'week_begin_hour', 'week_end_hour'));
    }
 
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::getMassiveActionsForItemtype()
+   **/
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
+                                                CommonDBTM $checkitem = NULL) {
+      global $CFG_GLPI;
+
+      $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+
+      if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
+         if (self::canUpdate()) {
+            $actions[$action_prefix.'add_item']    = _x('button', 'Add a contract');
+            $actions[$action_prefix.'remove_item'] = _x('button', 'Remove a contract');
+         }
+      }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see MassiveAction::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+      global $CFG_GLPI;
+
+      switch ($action) {
+         case 'add_item' :
+            MassiveAction::addHiddenFieldsFromInput($input);
+            if (isset($input['item']['Contract'])) {
+               Dropdown::showSelectItemFromItemtypes(array('itemtype_name' => 'item_itemtype',
+                                                           'checkright'    => true,
+                                                           'itemtypes'
+                                                                  => $CFG_GLPI["contract_types"]));
+            } else {
+               Contract::dropdown(array('name' => "contracts_id"));
+            }
+            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
+            return true;
+
+         case 'remove_item' :
+            MassiveAction::addHiddenFieldsFromInput($input);
+            if (isset($input['item']['Contract'])) {
+               Dropdown::showSelectItemFromItemtypes(array('itemtype_name' => 'item_itemtype',
+                                                           'checkright'    => true,
+                                                           'itemtypes'
+                                                                   => $CFG_GLPI["contract_types"]));
+            } else {
+               Contract::dropdown(array('name' => "contracts_id"));
+            }
+            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
+                                         array('name' => 'massiveaction'));
+            return true;
+      }
+
+      return false;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $baseitem, array $ids,
+                                                       array $input) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($action) {
+         case 'add_item' :
+            $contractitem = new Contract_Item();
+            foreach ($ids as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Add items to contracts
+                  $input2 = array('itemtype'     => $input['item_itemtype'],
+                                  'items_id'     => $input['items_id'],
+                                  'contracts_id' => $key);
+               }  if (isset($input['contracts_id'])) { // Add contract to item
+                  $input2 = array('itemtype'     => $baseitem->getType(),
+                                  'items_id'     => $key,
+                                  'contracts_id' => $input['contracts_id']);
+               } else {
+                  return false;
+               }
+               // canCreate check that both peers are valid
+               if ($contractitem->can(-1, CREATE, $input2)) {
+                  if ($contractitem->add($input2)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $baseitem->getErrorMessage(ERROR_ON_ACTION);
+                  }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $baseitem->getErrorMessage(ERROR_RIGHT);
+               }
+            }
+            break;
+
+         case 'remove_item' :
+            foreach ($ids as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Remove item to contracts
+                  $input2 = array('itemtype'     => $input['item_itemtype'],
+                                  'items_id'     => $input['items_id'],
+                                  'contracts_id' => $key);
+               } else {
+                  // Remove contract to items
+                  $input2 = array('itemtype'     => $baseitem->getType(),
+                                  'items_id'     => $key,
+                                  'contracts_id' => $input['contracts_id']);
+               }
+               $contractitem = new Contract_Item();
+               if ($contractitem->can(-1, DELETE, $input2)) {
+                  if ($item = getItemForItemtype($input2['itemtype'])) {
+                     if ($item->getFromDB($input2['items_id'])) {
+                        $contract = new self();
+                        if ($contract->getFromDB($input2['contracts_id'])) {
+                           if ($contractitem->getFromDBForItems($contract, $item)) {
+                              if ($contractitem->delete(array('id' => $contractitem->getID()))) {
+                                 $res['ok']++;
+                              } else {
+                                 $res['ko']++;
+                                 $res['messages'][] = $baseitem->getErrorMessage(ERROR_ON_ACTION);
+                              }
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $baseitem->getErrorMessage(ERROR_NOT_FOUND);
+                           }
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $baseitem->getErrorMessage(ERROR_NOT_FOUND);
+                        }
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $baseitem->getErrorMessage(ERROR_NOT_FOUND);
+                     }
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $baseitem->getErrorMessage(ERROR_NOT_FOUND);
+                  }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $baseitem->getErrorMessage(ERROR_RIGHT);
+               }
+            }
+            break;
+
+      }
+
+      return $res;
+   }
 }
 ?>

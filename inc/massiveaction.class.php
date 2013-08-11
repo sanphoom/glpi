@@ -260,15 +260,11 @@ class MassiveAction {
          }
 
          Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+         Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
-         if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
-            if (Contract::canUpdate()) {
-               $actions['add_contract_item']    = _x('button', 'Add a contract');
-               $actions['remove_contract_item'] = _x('button', 'Remove a contract');
-            }
-         }
          // Specific actions
          $actions += $item->getSpecificMassiveActions($checkitem);
+
          // Plugin Specific actions
          if (isset($PLUGIN_HOOKS['use_massive_action'])) {
             foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
@@ -384,49 +380,15 @@ class MassiveAction {
    static function tmpShowMassiveActionsSubForm(array $input) {
       global $CFG_GLPI;
 
-      switch ($input['action']) {
-         case "add_contract_item" :
-            if ($input['itemtype'] == 'Contract') {
-               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'
-                                                                   => 'item_itemtype',
-                                                           'itemtypes'
-                                                                    => $CFG_GLPI["contract_types"],
-                                                           'checkright'
-                                                                    => true));
-            } else {
-               Contract::dropdown(array('name' => "contracts_id"));
-            }
-            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
-            return true;
-
-         case "remove_contract_item" :
-            if ($input['itemtype'] == 'Contract') {
-               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'
-                                                                   => 'item_itemtype',
-                                                           'itemtypes'
-                                                                    => $CFG_GLPI["contract_types"],
-                                                           'checkright'
-                                                                    => true));
-            } else {
-               Contract::dropdown(array('name' => "contracts_id"));
-            }
-            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
-                                         array('name' => 'massiveaction'));
-            return true;
-
-         default :
-            // TODO : fix it after transition ...
-            $itemtype = self::getItemtypeFromInput($input, true);
-            if (!($item = getItemForItemtype($itemtype))) {
-               exit();
-            }
-            if (!$item->showSpecificMassiveActionsParameters($input)) {
-               self::showDefaultSubForm($input['action'], $input, false);
-            }
-            return true;
+      // TODO : move it to  ...
+      $itemtype = self::getItemtypeFromInput($input, true);
+      if (!($item = getItemForItemtype($itemtype))) {
+         exit();
       }
-
-      return false;
+      if (!$item->showSpecificMassiveActionsParameters($input)) {
+         self::showDefaultSubForm($input['action'], $input, false);
+      }
+      return true;
    }
 
 

@@ -3053,10 +3053,6 @@ class CommonDBTM extends CommonGLPI {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case 'add_contract_item' :
-         case 'remove_contract_item' :
-            $contract = new Contract;
-            return $contract->doSpecificMassiveActions($input);
 
          default :
             // Plugin specific actions
