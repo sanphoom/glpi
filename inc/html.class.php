@@ -2441,14 +2441,14 @@ class Html {
     *
     * @return get checkbox
    **/
-   static function getMassiveActionCheckBox($itemtype, $id) {
+   static function getMassiveActionCheckBox($itemtype, $id, array $options = array()) {
 
-      $sel = "";
-      if (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id])) {
-         $sel = "checked";
-      }
-      return "<input type='checkbox' id='massaction_item_".$itemtype."_$id' ".
-               "name=\"item[$itemtype][".$id."]\" value='1' $sel>";
+      $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]));
+      $options['id']            = "massaction_item_".$itemtype."_$id";
+      $options['name']          = "item[$itemtype][".$id."]";
+      $options['zero_on_empty'] = false;
+
+      return self::getCheckbox($options);
    }
 
 
@@ -2462,8 +2462,8 @@ class Html {
     *
     * @return show checkbox
    **/
-   static function showMassiveActionCheckBox($itemtype, $id) {
-      echo Html::getMassiveActionCheckBox($itemtype, $id);
+   static function showMassiveActionCheckBox($itemtype, $id, array $options = array()) {
+      echo Html::getMassiveActionCheckBox($itemtype, $id, $options);
    }
 
 
@@ -2527,7 +2527,7 @@ class Html {
     *
     * @return nothing
    **/
-   static function showMassiveActions($itemtype, $options=array()) {
+   static function showMassiveActions($options=array()) {
       global $CFG_GLPI;
 
       /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
@@ -2584,7 +2584,7 @@ class Html {
          $width= '80%';
       }
 
-      $identifier = md5($url.$itemtype.serialize($p['extraparams']).$p['rand']);
+      $identifier = md5($url.serialize($p['extraparams']).$p['rand']);
       $max        = Toolbox::get_max_input_vars();
 
       if (($p['num_displayed'] >= 0)
@@ -2643,11 +2643,14 @@ class Html {
          echo "</td>";
 
          echo "</tr></table>";
+         // TODO : study how to force cleaning of the glpimassiveactionselected
+         /*
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             // Clean selection
             $_SESSION['glpimassiveactionselected'][$itemtype] = array();
          }
+         */
       }
    }
 

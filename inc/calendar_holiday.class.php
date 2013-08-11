@@ -120,7 +120,7 @@ class Calendar_Holiday extends CommonDBRelation {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed' => $numrows,
                            'container'     => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -164,7 +164,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
       if ($canedit && $numrows) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";

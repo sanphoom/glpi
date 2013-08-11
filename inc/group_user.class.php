@@ -190,7 +190,7 @@ class Group_User extends CommonDBRelation{
          echo "<input type='hidden' name='users_id' value='".$user->fields['id']."'>";
          $paramsma = array('num_displayed' => count($used),
                            'container'     => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'><tr>";
       if ($canedit && count($used)) {
@@ -258,7 +258,7 @@ class Group_User extends CommonDBRelation{
 
       if ($canedit && count($used)) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";
@@ -459,7 +459,7 @@ class Group_User extends CommonDBRelation{
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed' => min($number-$start, $_SESSION['glpilist_limit']),
                               'container'     => 'mass'.__CLASS__.$rand);
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
          }
 
          echo "<table class='tab_cadre_fixehov'><tr>";
@@ -513,7 +513,7 @@ class Group_User extends CommonDBRelation{
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),

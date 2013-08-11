@@ -613,7 +613,7 @@ class SoftwareLicense extends CommonDBTM {
                                                             => "`glpi_softwareversions`.`softwares_id`
                                                                   = $softwares_id")));
 
-               Html::showMassiveActions(__CLASS__, $massiveactionparams);
+               Html::showMassiveActions($massiveactionparams);
             }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
@@ -722,7 +722,7 @@ class SoftwareLicense extends CommonDBTM {
 
             if ($showmassiveactions) {
                $massiveactionparams['ontop'] = false;
-               Html::showMassiveActions(__CLASS__, $massiveactionparams);
+               Html::showMassiveActions($massiveactionparams);
 
                Html::closeForm();
             }

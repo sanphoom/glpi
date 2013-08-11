@@ -170,7 +170,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed' => count($used),
                               'container'     => 'mass'.__CLASS__.$rand);
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
          }
 
          echo "<table class='tab_cadre_fixe'>";
@@ -195,7 +195,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
          echo "</div>";

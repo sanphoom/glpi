@@ -700,8 +700,10 @@ class Bookmark extends CommonDBTM {
       Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
 
       echo "<div class='center' id='tabsbody' >";
-      $maactions = array('purge' => _x('button', 'Delete permanently'));
+      $maactions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                         'purge' => _x('button', 'Delete permanently'));
       if ($is_private) {
+         // TODO MassiveAction: specific_actions
          $maactions['move_bookmark'] = __('Move');
       }
       $massiveactionparams = array('num_displayed'     => $numrows,
@@ -711,7 +713,8 @@ class Bookmark extends CommonDBTM {
                                     'height'           => 200,
                                     'specific_actions' => $maactions);
 
-//          Html::showMassiveActions(__CLASS__, $massiveactionparams);
+      // TODO : is it normal that it is commented ?
+//          Html::showMassiveActions($massiveactionparams);
 
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -810,7 +813,7 @@ class Bookmark extends CommonDBTM {
          if ($is_private || Session::haveRight('bookmark_public', DELETE)) {
             $massiveactionparams['ontop']       = false;
             $massiveactionparams['forcecreate'] = true;
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            Html::showMassiveActions($massiveactionparams);
          }
       } else {
          echo "<tr class='tab_bg_1'><td colspan='$colspan'>";

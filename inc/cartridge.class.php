@@ -218,6 +218,8 @@ class Cartridge extends CommonDBChild {
    function restore(array $input, $history=1) {
       global $DB;
 
+      // TODO: restore is not what we expect ! We should rename this method !
+
       $query = "UPDATE `".$this->getTable()."`
                 SET `date_out` = NULL,
                     `date_use` = NULL,
@@ -529,15 +531,17 @@ class Cartridge extends CommonDBChild {
          if ($canedit && $number) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $actions = array('purge'   => _x('button', 'Delete permanently'),
-                             'activate_infocoms'
+            // TODO MassiveAction: specific_actions
+            $actions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'.
+                                       => _x('button', 'Delete permanently'),
+                             'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
                                        => __('Enable the financial and administrative information'),
                              'restore' => __('Back to stock'));
             $paramsma = array('num_displayed'    => $number,
                               'specific_actions' => $actions,
                               'container'        => 'mass'.__CLASS__.$rand,
                               'rand'             => $rand);
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
          }
          echo "<table class='tab_cadre_fixe'>";
          if (!$show_old) {
@@ -660,7 +664,7 @@ class Cartridge extends CommonDBChild {
       echo "</table>";
       if ($canedit && $number) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>\n\n";
@@ -778,11 +782,13 @@ class Cartridge extends CommonDBChild {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         // TODO MassiveAction: specific_actions
          if (!$old) {
             $actions = array('uninstall' => __('End of life'));
          } else {
             $actions = array('updatepages' => __('Update printer counter'),
-                             'purge'       => _x('button', 'Delete permanently'));
+                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
+                                      => _x('button', 'Delete permanently'));
          }
          $paramsma = array('num_displayed'    => $number,
                            'specific_actions' => $actions,
@@ -790,7 +796,7 @@ class Cartridge extends CommonDBChild {
                            'rand'             => $rand,
                            'extraparams'      => array('maxpages'
                                                        => $printer->fields['last_pages_counter']));
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       if ($old == 0) {
@@ -904,7 +910,7 @@ class Cartridge extends CommonDBChild {
       echo "</table>";
       if ($canedit && $number) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>\n\n";

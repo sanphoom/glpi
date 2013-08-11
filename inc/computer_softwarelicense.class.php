@@ -444,9 +444,11 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+               // TODO MassiveAction: specific_actions
                $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
                                  'specific_actions' => array('move_license'
                                                                       => _x('button', 'Move'),
+                                                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                                              'delete' => _x('button',
                                                                            'Delete permanently')));
                // Options to update license
@@ -454,7 +456,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                $paramsma['extraparams']['options']['move']['softwares_id']
                                                                    = $license->fields['softwares_id'];
 
-               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::showMassiveActions($paramsma);
             }
 
             $soft = new Software();
@@ -542,7 +544,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             echo "</table>\n";
             if ($canedit) {
                $paramsma['ontop'] = false;
-               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::showMassiveActions($paramsma);
                Html::closeForm();
             }
 

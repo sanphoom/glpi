@@ -199,7 +199,7 @@ class Contract_Supplier extends CommonDBRelation {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('container'     => 'mass'.__CLASS__.$rand,
                                       'num_displayed' => $number);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
 
@@ -253,7 +253,7 @@ class Contract_Supplier extends CommonDBRelation {
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -333,7 +333,7 @@ class Contract_Supplier extends CommonDBRelation {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed' => $number,
                                       'container'     => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -384,7 +384,7 @@ class Contract_Supplier extends CommonDBRelation {
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";

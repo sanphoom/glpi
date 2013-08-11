@@ -43,6 +43,10 @@ if (!defined('GLPI_ROOT')) {
 **/
 class MassiveAction {
 
+   // TODO MassiveAction: specific_actions
+   // 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR
+   // Be careful : Consumable, Cartridge action restore ...
+
    const CLASS_ACTION_SEPARATOR = ':';
 
    /**

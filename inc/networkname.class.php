@@ -734,7 +734,7 @@ class NetworkName extends FQDNLabel {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
                               'container'        => 'mass'.__CLASS__.$rand);
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
          }
 
          $table->display(array('display_title_for_each_group' => false,
@@ -743,7 +743,7 @@ class NetworkName extends FQDNLabel {
 
          if ($canedit && $number) {
             $paramsma['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
 

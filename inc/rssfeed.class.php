@@ -991,14 +991,15 @@ class RSSFeed extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed'    => $nb,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('delete' => _x('button',
+                           'specific_actions' => array('MassiveAction'.MassivzeAction::CLASS_ACTION_SEPARATOR.
+                                                       'delete' => _x('button',
                                                                       'Delete permanently')));
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm']
                = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -1116,7 +1117,7 @@ class RSSFeed extends CommonDBTM {
       echo "</table>";
       if ($canedit && $nb) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
 

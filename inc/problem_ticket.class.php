@@ -257,9 +257,10 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         // TODO MassiveAction: specific_actions
          $massiveactionparams = array('num_displayed'    => $numrows,
                                       'container'        => 'mass'.__CLASS__.$rand,
-                                      'specific_actions' => array('purge'
+                                      'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                                                     => _x('button',
                                                                           'Delete permanently'),
                                                                   'solveticket'
@@ -267,7 +268,7 @@ class Problem_Ticket extends CommonDBRelation{
                                       'extraparams'      => array('problems_id' => $problem->getID()),
                                       'width'            => 1000,
                                       'height'           => 500);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
@@ -293,7 +294,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</table>";
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";
@@ -369,7 +370,7 @@ class Problem_Ticket extends CommonDBRelation{
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $numrows,
                                       'container'      => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='12'>".Problem::getTypeName($numrows)."</th>";
@@ -395,7 +396,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</table>";
       if ($canedit && $numrows) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";

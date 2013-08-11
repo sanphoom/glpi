@@ -731,7 +731,7 @@ class NetworkPort extends CommonDBChild {
                                       'container'      => 'mass'.__CLASS__.$rand,
                                       'check_items_id' => $items_id);
 
-         Html::showMassiveActions('NetworkPort', $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       $table->display(array('display_thead' => false,
@@ -745,7 +745,7 @@ class NetworkPort extends CommonDBChild {
 
       if ($showmassiveactions) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions('NetworkPort', $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
 
          Html::closeForm();
       }

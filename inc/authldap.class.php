@@ -590,8 +590,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<div class='center'>";
          $massiveactionparams = array('num_displayed' => $nb,
                                       'container'     => 'massAuthLdapReplicate'.$rand);
-
-         Html::showMassiveActions('AuthLdapReplicate', $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
          echo "<table class='tab_cadre_fixe'>";
 
          echo "<input type='hidden' name='id' value='$ID'>";
@@ -624,7 +623,7 @@ class AuthLDAP extends CommonDBTM {
          }
          echo "</table>";
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions('AuthLdapReplicate', $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
 
          echo "</div>";
          Html::closeForm();
@@ -1312,13 +1311,14 @@ class AuthLDAP extends CommonDBTM {
                $textbutton  = _x('button','Import');
                $form_action = 'import';
             }
+            // TODO MassiveAction: specific_actions
 
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => min(count($ldap_users),
                                                         $_SESSION['glpilist_limit']),
                               'container'        => 'mass'.__CLASS__.$rand,
                               'specific_actions' => array($form_action => $textbutton));
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
@@ -1391,7 +1391,7 @@ class AuthLDAP extends CommonDBTM {
             echo "</table>";
 
             $paramsma['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
 
             Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
@@ -1697,11 +1697,12 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<div class='center'>";
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+            // TODO MassiveAction: specific_actions
             $paramsma = array('num_displayed'    => min($_SESSION['glpilist_limit'],
                                                         count($ldap_groups)),
                               'container'        => 'mass'.__CLASS__.$rand,
                               'specific_actions' => array('import_group' => _sx('button','Import')));
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
@@ -1746,7 +1747,7 @@ class AuthLDAP extends CommonDBTM {
             }
 
             $paramsma['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
             echo "</div>";
             Html::printPager($start, $numrows, $target, $parameters);

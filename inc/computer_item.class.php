@@ -485,9 +485,10 @@ class Computer_Item extends CommonDBRelation{
          if ($canedit) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams = array('num_displayed'    => $number,
-                                         'specific_actions' => array('purge' => _x('button', 'Disconnect')),
+                                         'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                                     'purge' => _x('button', 'Disconnect')),
                                          'container'        => 'mass'.__CLASS__.$rand);
-            Html::showMassiveActions(__CLASS__, $massiveactionparams);
+            Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
@@ -542,8 +543,8 @@ class Computer_Item extends CommonDBRelation{
 
          echo "</table>";
          if ($canedit && $number) {
-            $paramsma['ontop'] = false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            $massiveactionparams['ontop'] = false;
+            Html::showMassiveActions($massiveactionparams);
             Html::closeForm();
          }
          echo "</div>";
@@ -618,9 +619,10 @@ class Computer_Item extends CommonDBRelation{
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'    => $number,
-                                      'specific_actions' => array('purge' => _x('button', 'Disconnect')),
+                                      'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                                  'purge' => _x('button', 'Disconnect')),
                                       'container'        => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions(__CLASS__, $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixe'>";
 
@@ -669,8 +671,8 @@ class Computer_Item extends CommonDBRelation{
 
       echo "</table>";
       if ($canedit && $number) {
-         $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         $massiveactionparams['ontop'] = false;
+         Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
       echo "</div>";

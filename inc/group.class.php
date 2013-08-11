@@ -706,13 +706,14 @@ class Group extends CommonTreeDropdown {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          echo "<input type='hidden' name='field' value='$field'>";
 
+         // TODO MassiveAction: specific_actions
          $paramsma = array('num_displayed'    => $nb,
                            'check_itemtype'   => 'Group',
                            'check_items_id'   => $ID,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'extraparams'      => array('is_tech' => $tech),
                            'specific_actions' => array('changegroup' => __('Move')) );
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
@@ -760,7 +761,7 @@ class Group extends CommonTreeDropdown {
 
       if ($nb) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       Html::closeForm();
 

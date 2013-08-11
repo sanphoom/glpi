@@ -937,7 +937,7 @@ class Search {
                                                'fixed'         => false,
                                                'is_deleted'    => $p['is_deleted'],
                                                'container'     => 'massform'.$itemtype);
-                  Html::showMassiveActions($itemtype, $massiveactionparams);
+                  Html::showMassiveActions($massiveactionparams);
                }
             }
 
@@ -1424,7 +1424,7 @@ class Search {
             if ($output_type == self::HTML_OUTPUT) {
                if ($showmassiveactions) {
                   $massiveactionparams['ontop'] = false;
-                  Html::showMassiveActions($itemtype, $massiveactionparams);
+                  Html::showMassiveActions($massiveactionparams);
                   // End form for delete item
                   Html::closeForm();
                } else {

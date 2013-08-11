@@ -111,6 +111,8 @@ class Consumable extends CommonDBTM {
    function restore(array $input, $history=1) {
       global $DB;
 
+      // TODO: restore is not what we expect ! We should rename this method !
+
       $query = "UPDATE `".$this->getTable()."`
                 SET `date_out` = NULL
                 WHERE `id` = '".$input["id"]."'";
@@ -464,9 +466,12 @@ class Consumable extends CommonDBTM {
 
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $actions = array('delete'            => _x('button', 'Delete permanently'),
-                          'activate_infocoms' => __('Enable the financial and administrative information'));
+         $actions = array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                          'delete'   => _x('button', 'Delete permanently'),
+                          'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                          'activate' => __('Enable the financial and administrative information'));
          if ($show_old) {
+            // TODO : is restore the right action ?
             $actions['restore'] = __('Back to stock');
          } else {
             $actions['give'] = _x('button', 'Give');
@@ -479,7 +484,7 @@ class Consumable extends CommonDBTM {
                            'specific_actions' => $actions,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'extraparams'      => $entparam);
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
       }
 
@@ -546,7 +551,7 @@ class Consumable extends CommonDBTM {
       echo "</table>";
       if ($canedit && $number) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";

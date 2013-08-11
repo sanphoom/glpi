@@ -362,7 +362,7 @@ class CalendarSegment extends CommonDBChild {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $paramsma = array('num_displayed' => $numrows,
                            'container'     => 'mass'.__CLASS__.$rand);
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
@@ -399,7 +399,7 @@ class CalendarSegment extends CommonDBChild {
       echo "</table>";
       if ($canedit && $numrows) {
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
       }
       echo "</div>";

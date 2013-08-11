@@ -899,10 +899,11 @@ class Software extends CommonDBTM {
       if ($nb = $req->numrows()) {
          $link = Toolbox::getItemTypeFormURL('Software');
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         // TODO MassiveAction: specific_actions
          $paramsma = array('num_displayed'    => $nb,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'specific_actions' => array('mergesoftware' => __('Merge')) );
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
 
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th width='10'>";
@@ -924,7 +925,7 @@ class Software extends CommonDBTM {
          echo "</table>\n";
          echo "<input type='hidden' name='id' value='$ID'>";
          $paramsma['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
 
       } else {

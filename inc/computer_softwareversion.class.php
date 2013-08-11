@@ -435,10 +435,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+               // TODO MassiveAction: specific_actions
                $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
                                  'container'     => 'mass'.__CLASS__.$rand,
                                  'specific_actions' => array('move_version'
                                                                      => _x('button', 'Move'),
+                                                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                                              'purge' => _x('button',
                                                                            'Delete permanently')));
                // Options to update version
@@ -449,7 +451,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                   $paramsma['extraparams']['options']['move']['used'] = array($searchID);
                }
 
-               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::showMassiveActions($paramsma);
             }
 
             echo "<table class='tab_cadre_fixehov'><tr>";
@@ -561,7 +563,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             echo "</table>\n";
             if ($canedit) {
                $paramsma['ontop'] =false;
-               Html::showMassiveActions(__CLASS__, $paramsma);
+               Html::showMassiveActions($paramsma);
                Html::closeForm();
             }
 
@@ -738,10 +740,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
                               'container'        => 'mass'.__CLASS__.$rand,
-                              'specific_actions' => array('purge' => _x('button',
+                              'specific_actions' => array('MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                          'purge' => _x('button',
                                                                         'Delete permanently')));
 
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
          }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
@@ -792,7 +795,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] =false;
-            Html::showMassiveActions(__CLASS__, $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
       } else {
@@ -850,16 +853,18 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
+            // TODO MassiveAction: specific_actions
             $actions = array('install' => _x('button', 'Install'));
             if (SoftwareLicense::canUpdate()) {
-               $actions['purge'] = _x('button', 'Delete permanently');
+               $actions['MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                        'purge'] = _x('button', 'Delete permanently');
             }
 
             $paramsma = array('num_displayed'    => $number,
                               'container'        => 'massSoftwareLicense'.$rand,
                               'specific_actions' => $actions);
 
-            Html::showMassiveActions('Computer_SoftwareLicense', $paramsma);
+            Html::showMassiveActions($paramsma);
          }
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
@@ -889,7 +894,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "</table>";
          if ($canedit) {
             $paramsma['ontop'] = false;
-            Html::showMassiveActions('Computer_SoftwareLicense', $paramsma);
+            Html::showMassiveActions($paramsma);
             Html::closeForm();
          }
       }

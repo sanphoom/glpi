@@ -594,13 +594,14 @@ class DisplayPreference extends CommonDBTM {
          $rand = mt_rand();
          echo "<div class='spaced'>";
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         // TODO MassiveAction: specific_actions
          $paramsma = array('width'            => 400,
                            'height'           => 200,
                            'container'        => 'mass'.__CLASS__.$rand,
                            'specific_actions' => array('delete_for_user'
                                                          => _x('button', 'Delete permanently')));
 
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          echo "<input type='hidden' name='users_id' value='$users_id'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
@@ -622,7 +623,7 @@ class DisplayPreference extends CommonDBTM {
          }
          echo "</table>";
          $paramsma['ontop'] = false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
          Html::closeForm();
          echo "</div>";
 

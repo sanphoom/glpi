@@ -393,7 +393,7 @@ class RuleCollection extends CommonDBTM {
                                       'extraparams'   => array('entity' => $this->entity),
                                       'container'     => 'mass'.__CLASS__.$rand);
 
-         Html::showMassiveActions($this->getRuleClassName(), $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       echo "<table class='tab_cadre_fixehov'>";
@@ -455,7 +455,7 @@ class RuleCollection extends CommonDBTM {
 
       if ($canedit && $nb) {
          $massiveactionparams['ontop'] = false;
-         Html::showMassiveActions($this->getRuleClassName(), $massiveactionparams);
+         Html::showMassiveActions($massiveactionparams);
       }
 
       echo "</div>";
