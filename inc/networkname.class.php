@@ -81,41 +81,6 @@ class NetworkName extends FQDNLabel {
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case 'unaffect' :
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($this->can($key, UPDATE)) {
-                     if (NetworkName::unaffectAddressByID($key)) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                     }
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                  }
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
-
-
-   /**
     * Print the network name form
     *
     * @param $ID        integer ID of the item
@@ -688,7 +653,7 @@ class NetworkName extends FQDNLabel {
          _e('Not associated');
          echo "</td><td class='left'>";
          self::dropdown(array('name'      => 'addressID',
-                              'condition' => '`items_id`<=0'));
+                              'condition' => '`items_id`=0'));
          echo "</td><td class='left'>";
          echo "<input type='submit' name='assign_address' value='"._sx('button','Associate').
                 "' class='submit'>";
@@ -768,10 +733,7 @@ class NetworkName extends FQDNLabel {
          if ($canedit && $number) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $paramsma = array('num_displayed'    => $number,
-                              'container'        => 'mass'.__CLASS__.$rand,
-                              'specific_actions' => array('purge'    => _x('button',
-                                                                           'Delete permanently'),
-                                                          'unaffect' => __('Dissociate')));
+                              'container'        => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
 
