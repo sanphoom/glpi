@@ -45,7 +45,7 @@ class MassiveAction {
 
    // TODO MassiveAction: specific_actions
    // TODO : check that 'restore' is a good name for Consumable and Cartridge
-   // List off actions that haven't switch to new system :
+   // List of actions that haven't switch to new system :
    //    'add_actor'                 => 'CommonITILObject',
    //    'add_contact_supplier'      => 'Contact_Supplier',
    //    'add_delegatee_group'       => 'Group_User',

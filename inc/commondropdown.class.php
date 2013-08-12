@@ -387,109 +387,6 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
-
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
-
-      if ($isadmin
-          &&  $this->maybeRecursive()
-          && (count($_SESSION['glpiactiveentities']) > 1)) {
-         $actions['merge'] = __('Transfer and merge');
-      }
-
-      return $actions;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case 'merge' :
-            echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Merge')."'>\n";
-            return true;
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-    **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case 'merge' :
-            $fk = $this->getForeignKeyField();
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($this->can($key, UPDATE)) {
-                     if ($this->getEntityID() == $_SESSION['glpiactive_entity']) {
-                        if ($this->update(array('id'           => $key,
-                                                'is_recursive' => 1))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $input2 = $this->fields;
-
-                        // Remove keys (and name, tree dropdown will use completename)
-                        if ($this instanceof CommonTreeDropdown) {
-                           unset($input2['id'], $input2['name'], $input2[$fk]);
-                        } else {
-                           unset($input2['id']);
-                        }
-                        // Change entity
-                        $input2['entities_id']  = $_SESSION['glpiactive_entity'];
-                        $input2['is_recursive'] = 1;
-                        $input2 = Toolbox::addslashes_deep($input2);
-                        // Import new
-                        if ($newid = $this->import($input2)) {
-
-                           // Delete old
-                           if ($newid > 0) {
-                              // delete with purge for dropdown with dustbin (Budget)
-                              $this->delete(array('id'        => $key,
-                                                '_replace_by' => $newid), 1);
-                           }
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     }
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                  }
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
-   }
-
-
-   /**
     * Get search function for the class
     *
     * @return array of search option
@@ -778,6 +675,111 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       return ($add ? $this->import($input) : $this->findID($input));
    }
+
+
+   /**
+    * @see CommonDBTM::getSpecificMassiveActions()
+    **/
+   function getSpecificMassiveActions($checkitem=NULL) {
+
+      $isadmin = static::canUpdate();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+
+      if ($isadmin
+          &&  $this->maybeRecursive()
+          && (count($_SESSION['glpiactiveentities']) > 1)) {
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'] = __('Transfer and merge');
+      }
+
+      return $actions;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see MassiveAction::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+
+      switch ($action) {
+         case 'merge' :
+            MassiveAction::addHiddenFieldsFromInput($input);
+            echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
+            echo "<br><br>".Html::submit(_sx('button', 'Merge'), array('name' => 'massiveaction'));
+            return true;
+      }
+
+      return false;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($action) {
+         case 'merge' :
+            $fk = $item->getForeignKeyField();
+            foreach ($ids as $key => $val) {
+               if ($val == 1) {
+                  if ($item->can($key, UPDATE)) {
+                     if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                        if ($item->update(array('id'           => $key,
+                                                'is_recursive' => 1))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        }
+                     } else {
+                        $input2 = $item->fields;
+
+                        // Remove keys (and name, tree dropdown will use completename)
+                        if ($item instanceof CommonTreeDropdown) {
+                           unset($input2['id'], $input2['name'], $input2[$fk]);
+                        } else {
+                           unset($input2['id']);
+                        }
+                        // Change entity
+                        $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                        $input2['is_recursive'] = 1;
+                        $input2 = Toolbox::addslashes_deep($input2);
+                        // Import new
+                        if ($newid = $item->import($input2)) {
+
+                           // Delete old
+                           if ($newid > 0) {
+                              // delete with purge for dropdown with dustbin (Budget)
+                              $item->delete(array('id'        => $key,
+                                                '_replace_by' => $newid), 1);
+                           }
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        }
+                     }
+                  } else {
+                     $res['noright']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                  }
+               }
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+
 
 }
 ?>
