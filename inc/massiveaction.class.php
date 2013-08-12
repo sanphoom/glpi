@@ -44,8 +44,48 @@ if (!defined('GLPI_ROOT')) {
 class MassiveAction {
 
    // TODO MassiveAction: specific_actions
-   // 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR
-   // Be careful : Consumable, Cartridge action restore ...
+   // TODO : check that 'restore' is a good name for Consumable and Cartridge
+   // List off actions that haven't switch to new system :
+   //    'add_actor'                 => 'CommonITILObject',
+   //    'add_contact_supplier'      => 'Contact_Supplier',
+   //    'add_delegatee_group'       => 'Group_User',
+   //    'add_followup'              => 'Ticket',
+   //    'add_supervisor_group'      => 'Group_User',
+   //    'add_task'                  => 'CommonITILObject',
+   //    'add_user_group'            => 'Group_User',
+   //    'add_userprofile'           => 'User',
+   //    'assign_vlan'               => 'NetworkPort',
+   //    'change_authtype'           => 'User',
+   //    'changegroup'               => 'Group',
+   //    'compute_software_category' => 'Software',
+   //    'connect'                   => 'Computer_Item',
+   //    'delete_email'              => 'NotImportedEmail',
+   //    'delete_for_user'           => 'DisplayPreference',
+   //    'disconnect'                => 'Computer_Item',
+   //    'export'                    => 'Rule',
+   //    'force_user_ldap_update'    => 'User',
+   //    'give'                      => 'Consumable',
+   //    'import'                    => 'AuthLDAP',
+   //    'import_email'              => 'NotImportedEmail',
+   //    'import_group'              => 'AuthLDAP',
+   //    'link_ticket'               => 'Ticket',
+   //    'merge'                     => 'CommonDropdown',
+   //    'mergesoftware'             => 'Software',
+   //    'move_license'              => 'Computer_SoftwareLicense',
+   //    'move_port'                 => 'NetworkPort',
+   //    'move_rule'                 => 'Rule',
+   //    'move_under'                => 'CommonTreeDropdown',
+   //    'move_version'              => 'Computer_SoftwareVersion',
+   //    'replay_dictionnary'        => 'Software',
+   //    'reset'                     => 'CronTask',
+   //    'sendmail'                  => 'QueuedMail',
+   //    'solveticket'               => 'Problem_Ticket',
+   //    'submit_validation'         => 'Ticket',
+   //    'sync'                      => 'AuthLDAP',
+   //    'transform_to'              => 'NetworkPortMigration',
+   //    'updatepages'               => 'Cartridge',
+   //    'unassign_vlan'             => 'NetworkPort',
+   //    'uninstall'                 => 'Cartridge',
 
    const CLASS_ACTION_SEPARATOR = ':';
 
