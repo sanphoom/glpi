@@ -2896,6 +2896,9 @@ class User extends CommonDBTM {
             }
             $forcecentral = true;
             $where        = array();
+            /// TODO : Cette condition n'a pas de sens : Profile::$helpdesk_rights est un tableau
+            /// TODO : il me semble qu'il faut revoir avec la nouvelle gestion du controle des droits.
+            ///  TODO : par exemple en en appasant array(droit_a_verifier => valeur attendue) et un controle pour avoir au moins ce droit.
             if ((Profile::$helpdesk_rights == 'reservation')
                 & !ReservationItem::RESERVEANITEM) {
                return false;
@@ -2948,7 +2951,7 @@ class User extends CommonDBTM {
                                getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                           $entity_restrict, 1).") ";
                }
-               if (in_array($right, Profile::$helpdesk_rights)) {
+               if (in_array($r, Profile::$helpdesk_rights)) {
                   $forcecentral = false;
                }
             }
