@@ -66,20 +66,19 @@ class Cartridge extends CommonDBChild {
 
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since 0.85
+    * @see MassiveAction::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm($action, array $input) {
 
-      switch ($input['action']) {
-         case "updatepages" :
+      switch ($action) {
+         case 'updatepages' :
+            MassiveAction::addHiddenFieldsFromInput($input);
             if (!isset($input['maxpages'])) {
                $input['maxpages'] = '';
             }
             echo "<input type='text' name='pages' value=\"".$input['maxpages']."\" size='6'>";
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Update')."'>";
+            echo "<br><br>".Html::submit(_sx('button', 'Update'), array('name' => 'massiveaction'));
             return true;
       }
       return false;
@@ -152,50 +151,51 @@ class Cartridge extends CommonDBChild {
       return '';
    }
 
+
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
 
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
 
-      switch ($input['action']) {
-         case "uninstall" :
-            foreach ($input["item"] as $key => $val) {
+      switch ($action) {
+         case 'uninstall' :
+            foreach ($ids as $key => $val) {
                if ($val == 1) {
-                  if ($this->can($key, UPDATE)) {
-                     if ($this->uninstall($key)) {
+                  if ($item->can($key, UPDATE)) {
+                     if ($item->uninstall($key)) {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
-                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                      $res['noright']++;
                   }
                }
             }
             break;
 
-         case "updatepages" :
+         case 'updatepages' :
             if (isset($input['pages'])) {
-               foreach ($input["item"] as $key => $val) {
+               foreach ($ids as $key => $val) {
                   if ($val == 1) {
-                     if ($this->can($key, UPDATE)) {
-                        if ($this->update(array('id' => $key,
+                     if ($item->can($key, UPDATE)) {
+                        if ($item->update(array('id' => $key,
                                                 'pages' => $input['pages']))) {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                        $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                         $res['noright']++;
                      }
                   }
@@ -205,8 +205,6 @@ class Cartridge extends CommonDBChild {
             }
             break;
 
-         default :
-            return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
@@ -536,7 +534,8 @@ class Cartridge extends CommonDBChild {
                                        => _x('button', 'Delete permanently'),
                              'Infocom'.MassiveAction::CLASS_ACTION_SEPARATOR.'activate'
                                        => __('Enable the financial and administrative information'),
-                             'restore' => __('Back to stock'));
+                             'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore'
+                                       => __('Back to stock'));
             $paramsma = array('num_displayed'    => $number,
                               'specific_actions' => $actions,
                               'container'        => 'mass'.__CLASS__.$rand,
@@ -637,7 +636,7 @@ class Cartridge extends CommonDBChild {
                   $pages[$printer]  = $data['pages'];
                } else if ($data['pages'] != 0) {
                   echo "<span class='tab_bg_1_2'>".__('Counter error')."</span>";
-  	       }
+               }
                echo "</td>";
             }
             echo "<td class='center'>";
@@ -782,11 +781,13 @@ class Cartridge extends CommonDBChild {
       echo "<div class='spaced'>";
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         // TODO MassiveAction: specific_actions
          if (!$old) {
-            $actions = array('uninstall' => __('End of life'));
+            // TODO : add 'back to store' and 'update printer counter' here ?
+            $actions = array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'uninstall'
+                                       => __('End of life'));
          } else {
-            $actions = array('updatepages' => __('Update printer counter'),
+            $actions = array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'updatepages'
+                                      => __('Update printer counter'),
                              'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'purge'
                                       => _x('button', 'Delete permanently'));
          }

@@ -430,6 +430,7 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Port','Ports',2)."</td>";
       echo "<td>\n<table>";
+      // TODO : switch to checkbox ?
       // serial interface
       echo "<tr><td>".__('Serial')."</td><td>";
       Dropdown::showYesNo("have_serial", $this->fields["have_serial"]);

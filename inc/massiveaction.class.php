@@ -81,9 +81,7 @@ class MassiveAction {
    //    'submit_validation'         => 'Ticket',
    //    'sync'                      => 'AuthLDAP',
    //    'transform_to'              => 'NetworkPortMigration',
-   //    'updatepages'               => 'Cartridge',
    //    'unassign_vlan'             => 'NetworkPort',
-   //    'uninstall'                 => 'Cartridge',
 
    const CLASS_ACTION_SEPARATOR = ':';
 
