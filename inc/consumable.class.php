@@ -170,73 +170,66 @@ class Consumable extends CommonDBTM {
    }
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since 0.85
+    * @see MassiveAction::showMassiveActionsSubForm()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function showMassiveActionsSubForm($action, array $input) {
       global $CFG_GLPI;
 
-      switch ($input['action']) {
-         case "give" :
+      switch ($action) {
+         case 'give' :
             if (isset($input["entities_id"])) {
+               MassiveAction::addHiddenFieldsFromInput($input);
                Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'give_itemtype',
                                                            'items_id_name'   => 'give_items_id',
                                                            'entity_restrict' => $input["entities_id"],
                                                            'itemtypes'       => $CFG_GLPI["consumables_types"]));
-               echo "<br><br><input type='submit' class='submit' name='massiveaction' value='".
-                              _sx('button', 'Give')."'>";
+               echo "<br><br>".Html::submit(_sx('button', 'Give'),
+                                            array('name' => 'massiveaction'));
                return true;
             }
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
       }
       return false;
    }
 
 
    /**
-    * @since version 0.84
-    *
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
 
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
 
-      switch ($input['action']) {
-         case "give" :
+      switch ($action) {
+         case 'give' :
             if (($input["give_items_id"] > 0)
                 && !empty($input['give_itemtype'])) {
-               foreach ($input["item"] as $key => $val) {
+               foreach ($ids as $key => $val) {
                   if ($val == 1) {
-                     if ($this->can($key, UPDATE)) {
-                        if ($this->out($key, $input['give_itemtype'],$input["give_items_id"])) {
+                     if ($item->can($key, UPDATE)) {
+                        if ($item->out($key, $input['give_itemtype'],$input["give_items_id"])) {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
                         $res['noright']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+                        $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }
-               Event::log($this->fields['consumableitems_id'], "consumables", 5, "inventory",
+               Event::log($item->fields['consumableitems_id'], "consumables", 5, "inventory",
                           //TRANS: %s is the user login
                           sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
             } else {
                $res['ko']++;
             }
             break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
@@ -472,9 +465,9 @@ class Consumable extends CommonDBTM {
                           'activate' => __('Enable the financial and administrative information'));
          if ($show_old) {
             // TODO : is restore the right action ?
-            $actions['restore'] = __('Back to stock');
+            $actions['MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'restore'] = __('Back to stock');
          } else {
-            $actions['give'] = _x('button', 'Give');
+            $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'give'] = _x('button', 'Give');
          }
          $entparam = array('entities_id' => $consitem->getEntityID());
          if ($consitem->isRecursive()) {
