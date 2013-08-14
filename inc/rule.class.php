@@ -1578,7 +1578,7 @@ class Rule extends CommonDBTM {
 
                default:
                   //plugins actions
-                  $executeaction = new self();
+                  $executeaction = clone $this;
                   $ouput = $executeaction->executePluginsActions($action, $output, $params);
                   break;
             }
