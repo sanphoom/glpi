@@ -73,7 +73,6 @@ class Cartridge extends CommonDBChild {
 
       switch ($action) {
          case 'updatepages' :
-            MassiveAction::addHiddenFieldsFromInput($input);
             if (!isset($input['maxpages'])) {
                $input['maxpages'] = '';
             }

@@ -179,7 +179,6 @@ class Consumable extends CommonDBTM {
       switch ($action) {
          case 'give' :
             if (isset($input["entities_id"])) {
-               MassiveAction::addHiddenFieldsFromInput($input);
                Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'give_itemtype',
                                                            'items_id_name'   => 'give_items_id',
                                                            'entity_restrict' => $input["entities_id"],

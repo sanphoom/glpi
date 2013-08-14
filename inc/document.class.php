@@ -1278,8 +1278,6 @@ class Document extends CommonDBTM {
    static function showMassiveActionsSubForm($action, array $input) {
       global $CFG_GLPI;
 
-      MassiveAction::addHiddenFieldsFromInput($input);
-
       $showAllItemsOptions = array('itemtype_name'   => 'item_itemtype',
                                    'itemtypes'       => $CFG_GLPI["document_types"],
                                    'checkright'      => true);

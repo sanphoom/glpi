@@ -141,14 +141,18 @@ class MassiveAction {
    **/
    static function addHiddenFieldsFromInput(array $input) {
 
-      echo Html::hidden('action',          array('value' => $input['action']));
-      echo Html::hidden('specific_action', array('value' => $input['specific_action']));
-      echo Html::hidden('is_deleted',      array('value' => $input['is_deleted']));
+      if (!isset($GLOBALS['hidden_fields_defined'])) {
+         $GLOBALS['hidden_fields_defined'] = true;
 
-      if (isset($input['item']) && is_array($input['item'])) {
-         foreach ($input['item'] as $itemtype => $items_ids) {
-            foreach ($items_ids as $items_id => $val) {
-               echo Html::hidden('item['.$itemtype.']['.$items_id.']', array('value' => $val));
+         echo Html::hidden('action',          array('value' => $input['action']));
+         echo Html::hidden('specific_action', array('value' => $input['specific_action']));
+         echo Html::hidden('is_deleted',      array('value' => $input['is_deleted']));
+
+         if (isset($input['item']) && is_array($input['item'])) {
+            foreach ($input['item'] as $itemtype => $items_ids) {
+               foreach ($items_ids as $items_id => $val) {
+                  echo Html::hidden('item['.$itemtype.']['.$items_id.']', array('value' => $val));
+               }
             }
          }
       }
@@ -349,17 +353,16 @@ class MassiveAction {
 
          if (method_exists($processor, 'showMassiveActionsSubForm')) {
             if (!$processor::showMassiveActionsSubForm($action[1], $input)) {
-               self::showDefaultSubForm($action[1], $input, true);
+               self::showDefaultSubForm($action[1], $input);
             }
          } else {
-            self::showDefaultSubForm($action[1], $input, true);
+            self::showDefaultSubForm($action[1], $input);
          }
 
       } elseif (count($action) == 1) {
          // Old formalism
          // To prevent any error when the itemtype will be remove from input ...
 
-         self::addHiddenFieldsFromInput($input);
          $input['itemtype'] = self::getItemtypeFromInput($input, true);
 
          $split = explode('_',$input["action"]);
@@ -383,10 +386,11 @@ class MassiveAction {
                exit();
             }
             if (!$item->showSpecificMassiveActionsParameters($input)) {
-               self::showDefaultSubForm($input['action'], $input, false);
+               self::showDefaultSubForm($input['action'], $input);
             }
          }
       }
+      self::addHiddenFieldsFromInput($input);
    }
 
 
@@ -399,11 +403,7 @@ class MassiveAction {
     *
     * @return nothing (display only)
    **/
-   static function showDefaultSubForm($action, array $input, $set_hidden_fields) {
-
-      if ($set_hidden_fields) {
-         self::addHiddenFieldsFromInput($input);
-      }
+   static function showDefaultSubForm($action, array $input) {
 
       echo Html::submit(__s('Post'), array('name' => 'massiveaction'));
 
@@ -424,7 +424,6 @@ class MassiveAction {
       switch ($action) {
          case 'update':
             $itemtype = self::getItemtypeFromInput($input, true);
-            self::addHiddenFieldsFromInput($input);
             // Specific options for update fields
             if (!isset($input['options'])) {
                $input['options'] = array();
@@ -488,7 +487,6 @@ class MassiveAction {
                                           $paramsmassaction);
 
             echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
-            exit();
 
       }
       return false;

@@ -472,7 +472,6 @@ class Lock {
 
       switch ($action) {
          case 'unlock':
-            MassiveAction::addHiddenFieldsFromInput($input);
             $types = array('Monitor'                => _n('Monitor', 'Monitors', 2),
                            'Peripheral'             => _n('Device', 'Devices', 2),
                            'Printer'                => _n('Printer', 'Printers', 2),

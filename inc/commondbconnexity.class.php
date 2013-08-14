@@ -410,7 +410,6 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
       switch ($action) {
          case 'unaffect':
-            MassiveAction::addHiddenFieldsFromInput($input);
             foreach ($input['item'] as $itemtype => $ids) {
                if (is_a($itemtype, 'CommonDBRelation', true)) {
                   $peer_field = "peer[$itemtype]";

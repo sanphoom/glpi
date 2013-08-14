@@ -1406,7 +1406,6 @@ class Contract extends CommonDBTM {
 
       switch ($action) {
          case 'add_item' :
-            MassiveAction::addHiddenFieldsFromInput($input);
             if (isset($input['item']['Contract'])) {
                Dropdown::showSelectItemFromItemtypes(array('itemtype_name' => 'item_itemtype',
                                                            'checkright'    => true,
@@ -1419,7 +1418,6 @@ class Contract extends CommonDBTM {
             return true;
 
          case 'remove_item' :
-            MassiveAction::addHiddenFieldsFromInput($input);
             if (isset($input['item']['Contract'])) {
                Dropdown::showSelectItemFromItemtypes(array('itemtype_name' => 'item_itemtype',
                                                            'checkright'    => true,
