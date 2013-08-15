@@ -447,6 +447,7 @@ class MassiveAction {
                                           $paramsmassaction);
 
             echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
+            return true;
 
       }
       return false;
