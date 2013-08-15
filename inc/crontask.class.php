@@ -1182,46 +1182,46 @@ class CronTask extends CommonDBTM{
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['reset'] = __('Reset last run');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'reset'] = __('Reset last run');
       }
       return $actions;
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
 
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
 
-      switch ($input['action']) {
+      switch ($action) {
          case 'reset' :
             if (Config::canUpdate()) {
-               foreach ($input["item"] as $key => $val) {
+               foreach ($ids as $key => $val) {
                   if (($val == 1)
-                      && $this->getFromDB($key)) {
-                     if ($this->resetDate()) {
+                      && $item->getFromDB($key)) {
+                     if ($item->resetDate()) {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
                      $res['ko']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_NOT_FOUND);
+                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
                   }
                }
             } else {
                $res['noright']++;
-               $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
+               $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
             }
             break;
 
-         default :
-            return parent::doSpecificMassiveActions($input);
       }
       return $res;
    }
