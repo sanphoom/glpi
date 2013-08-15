@@ -1203,8 +1203,10 @@ class CronTask extends CommonDBTM{
          case 'reset' :
             if (Config::canUpdate()) {
                foreach ($ids as $key => $val) {
-                  if (($val == 1)
-                      && $item->getFromDB($key)) {
+                  if ($val != 1) {
+                     continue;
+                  }
+                  if ($item->getFromDB($key)) {
                      if ($item->resetDate()) {
                         $res['ok']++;
                      } else {

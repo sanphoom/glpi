@@ -1657,6 +1657,9 @@ class Infocom extends CommonDBChild {
             if ($ic->canCreate()) {
                $itemtype = $item->getType();
                foreach ($ids as  $key => $val) {
+                  if ($val != 1) {
+                     continue;
+                  }
                   if (!$ic->getFromDBforDevice($itemtype, $key)) {
                      $input = array('itemtype' => $itemtype,
                                     'items_id' => $key);

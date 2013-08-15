@@ -165,9 +165,32 @@ class Cartridge extends CommonDBChild {
       switch ($action) {
          case 'uninstall' :
             foreach ($ids as $key => $val) {
-               if ($val == 1) {
+               if ($val != 1) {
+                  continue;
+               }
+               if ($item->can($key, UPDATE)) {
+                  if ($item->uninstall($key)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                  }
+               } else {
+                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                  $res['noright']++;
+               }
+            }
+            break;
+
+         case 'updatepages' :
+            if (isset($input['pages'])) {
+               foreach ($ids as $key => $val) {
+                  if ($val != 1) {
+                     continue;
+                  }
                   if ($item->can($key, UPDATE)) {
-                     if ($item->uninstall($key)) {
+                     if ($item->update(array('id' => $key,
+                                             'pages' => $input['pages']))) {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
@@ -176,27 +199,6 @@ class Cartridge extends CommonDBChild {
                   } else {
                      $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                      $res['noright']++;
-                  }
-               }
-            }
-            break;
-
-         case 'updatepages' :
-            if (isset($input['pages'])) {
-               foreach ($ids as $key => $val) {
-                  if ($val == 1) {
-                     if ($item->can($key, UPDATE)) {
-                        if ($item->update(array('id' => $key,
-                                                'pages' => $input['pages']))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
-                        $res['noright']++;
-                     }
                   }
                }
             } else {

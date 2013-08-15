@@ -529,21 +529,22 @@ class Lock {
                   }
                }
                foreach ($ids as $id => $val) {
-                  if ($val == 1) {
-                     $action_valid = false;
-                     foreach ($links as $infos) {
-                        $infos['condition'][$infos['field']] = $id;
-                        foreach ($DB->request($infos['table'], $infos['condition']) as $data) {
-                           // Restore without history
-                           $action_valid = $infos['item']->restore(array('id' => $data['id']));
-                        }
+                  if ($val != 1) {
+                     continue;
+                  }
+                  $action_valid = false;
+                  foreach ($links as $infos) {
+                     $infos['condition'][$infos['field']] = $id;
+                     foreach ($DB->request($infos['table'], $infos['condition']) as $data) {
+                        // Restore without history
+                        $action_valid = $infos['item']->restore(array('id' => $data['id']));
                      }
-                     if ($action_valid) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $infos['item']->getErrorMessage(ERROR_ON_ACTION);
-                     }
+                  }
+                  if ($action_valid) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $infos['item']->getErrorMessage(ERROR_ON_ACTION);
                   }
                }
             }

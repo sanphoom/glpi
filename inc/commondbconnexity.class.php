@@ -462,32 +462,33 @@ abstract class CommonDBConnexity extends CommonDBTM {
       switch ($action) {
          case 'unaffect' :
             foreach ($ids as $key => $val) {
-               if ($val == 1) {
-                  if ($item->can($key, UPDATE)) {
-                     if ($item instanceof CommonDBRelation) {
-                        if (isset($input['peer'][$item->getType()])) {
-                           if ($item->affectRelation($key, $input['peer'][$item->getType()])) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else if ($item instanceof CommonDBChild) {
-                        if ($item->affectChild($key)) {
+               if ($val != 1) {
+                  continue;
+               }
+               if ($item->can($key, UPDATE)) {
+                  if ($item instanceof CommonDBRelation) {
+                     if (isset($input['peer'][$item->getType()])) {
+                        if ($item->affectRelation($key, $input['peer'][$item->getType()])) {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
                            $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                         }
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                      }
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                  } else if ($item instanceof CommonDBChild) {
+                     if ($item->affectChild($key)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                     }
                   }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                }
             }
             break;

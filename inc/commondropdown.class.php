@@ -727,55 +727,54 @@ abstract class CommonDropdown extends CommonDBTM {
          case 'merge' :
             $fk = $item->getForeignKeyField();
             foreach ($ids as $key => $val) {
-               if ($val == 1) {
-                  if ($item->can($key, UPDATE)) {
-                     if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
-                        if ($item->update(array('id'           => $key,
-                                                'is_recursive' => 1))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                        }
+               if ($val != 1) {
+                  continue;
+               }
+               if ($item->can($key, UPDATE)) {
+                  if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                     if ($item->update(array('id'           => $key,
+                                             'is_recursive' => 1))) {
+                        $res['ok']++;
                      } else {
-                        $input2 = $item->fields;
-
-                        // Remove keys (and name, tree dropdown will use completename)
-                        if ($item instanceof CommonTreeDropdown) {
-                           unset($input2['id'], $input2['name'], $input2[$fk]);
-                        } else {
-                           unset($input2['id']);
-                        }
-                        // Change entity
-                        $input2['entities_id']  = $_SESSION['glpiactive_entity'];
-                        $input2['is_recursive'] = 1;
-                        $input2 = Toolbox::addslashes_deep($input2);
-                        // Import new
-                        if ($newid = $item->import($input2)) {
-
-                           // Delete old
-                           if ($newid > 0) {
-                              // delete with purge for dropdown with dustbin (Budget)
-                              $item->delete(array('id'        => $key,
-                                                '_replace_by' => $newid), 1);
-                           }
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                        }
+                        $res['ko']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                      }
                   } else {
-                     $res['noright']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                     $input2 = $item->fields;
+
+                     // Remove keys (and name, tree dropdown will use completename)
+                     if ($item instanceof CommonTreeDropdown) {
+                        unset($input2['id'], $input2['name'], $input2[$fk]);
+                     } else {
+                        unset($input2['id']);
+                     }
+                     // Change entity
+                     $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                     $input2['is_recursive'] = 1;
+                     $input2 = Toolbox::addslashes_deep($input2);
+                     // Import new
+                     if ($newid = $item->import($input2)) {
+
+                        // Delete old
+                        if ($newid > 0) {
+                           // delete with purge for dropdown with dustbin (Budget)
+                           $item->delete(array('id'        => $key,
+                                               '_replace_by' => $newid), 1);
+                        }
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                     }
                   }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                }
             }
             break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
       }
+
       return $res;
    }
 

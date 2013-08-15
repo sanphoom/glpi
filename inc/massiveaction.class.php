@@ -597,36 +597,38 @@ class MassiveAction {
       switch ($action) {
          case 'delete':
             foreach ($ids as $id => $val) {
-               if ($val == 1) {
-                  if ($item->can($id, DELETE)) {
-                     if ($item->delete(array("id" => $id))) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                     }
+               if ($val != 1) {
+                  continue;
+               }
+               if ($item->can($id, DELETE)) {
+                  if ($item->delete(array("id" => $id))) {
+                     $res['ok']++;
                   } else {
-                     $res['noright']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                   }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                }
             }
             break;
 
          case 'restore' :
             foreach ($ids as $id => $val) {
-               if ($val == 1) {
-                  if ($item->can($id, PURGE)) {
-                     if ($item->restore(array("id" => $id))) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                     }
+               if ($val != 1) {
+                  continue;
+               }
+               if ($item->can($id, PURGE)) {
+                  if ($item->restore(array("id" => $id))) {
+                     $res['ok']++;
                   } else {
-                     $res['noright']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                   }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                }
             }
             break;
@@ -634,29 +636,30 @@ class MassiveAction {
          case 'purge_item_but_devices':
          case 'purge' :
             foreach ($ids as $id => $val) {
-               if ($val == 1) {
-                  if ($item->can($id, PURGE)) {
-                     $force = 1;
-                     // Only mark deletion for
-                     if ($item->maybeDeleted()
-                         && $item->useDeletedToLockIfDynamic()
-                         && $item->isDynamic()) {
-                        $force = 0;
-                     }
-                     $delete_array = array('id' => $id);
-                     if ($input['action'] == 'purge_item_but_devices') {
-                        $delete_array['keep_devices'] = true;
-                     }
-                     if ($item->delete($delete_array, $force)) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                     }
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+               if ($val != 1) {
+                  continue;
+               }
+               if ($item->can($id, PURGE)) {
+                  $force = 1;
+                  // Only mark deletion for
+                  if ($item->maybeDeleted()
+                      && $item->useDeletedToLockIfDynamic()
+                      && $item->isDynamic()) {
+                     $force = 0;
                   }
+                  $delete_array = array('id' => $id);
+                  if ($input['action'] == 'purge_item_but_devices') {
+                     $delete_array['keep_devices'] = true;
+                  }
+                  if ($item->delete($delete_array, $force)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                  }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                }
             }
             break;
@@ -679,47 +682,49 @@ class MassiveAction {
                      }
                   }
                   foreach ($ids as $key => $val) {
-                     if ($val == 1) {
-                        if ($item->getFromDB($key)) {
-                           if (($link_entity_type < 0)
-                               || ($link_entity_type == $item->getEntityID())
-                               || ($ent->fields["is_recursive"]
-                                   && in_array($link_entity_type, getAncestorsOf("glpi_entities",
-                                               $item->getEntityID())))) {
-                              $input2["items_id"] = $key;
-                              $input2["itemtype"] = $input["itemtype"];
+                     if ($val != 1) {
+                        continue;
+                     }
+                     if ($item->getFromDB($key)) {
+                        if (($link_entity_type < 0)
+                            || ($link_entity_type == $item->getEntityID())
+                            || ($ent->fields["is_recursive"]
+                                && in_array($link_entity_type,
+                                            getAncestorsOf("glpi_entities",
+                                                           $item->getEntityID())))) {
+                           $input2["items_id"] = $key;
+                           $input2["itemtype"] = $input["itemtype"];
 
-                              if ($ic->can(-1, CREATE, $input2)) {
-                                 // Add infocom if not exists
-                                 if (!$ic->getFromDBforDevice($input["itemtype"],$key)) {
-                                    $input2["items_id"] = $key;
-                                    $input2["itemtype"] = $input["itemtype"];
-                                    unset($ic->fields);
-                                    $ic->add($input2);
-                                    $ic->getFromDBforDevice($input["itemtype"], $key);
-                                 }
-                                 $id = $ic->fields["id"];
+                           if ($ic->can(-1, CREATE, $input2)) {
+                              // Add infocom if not exists
+                              if (!$ic->getFromDBforDevice($input["itemtype"],$key)) {
+                                 $input2["items_id"] = $key;
+                                 $input2["itemtype"] = $input["itemtype"];
                                  unset($ic->fields);
-                                 if ($ic->update(array('id'   => $id,
-                                                       $input["field"]
-                                                              => $input[$input["field"]]))) {
-                                    $res['ok']++;
-                                 } else {
-                                    $res['ko']++;
-                                    $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                                 }
+                                 $ic->add($input2);
+                                 $ic->getFromDBforDevice($input["itemtype"], $key);
+                              }
+                              $id = $ic->fields["id"];
+                              unset($ic->fields);
+                              if ($ic->update(array('id'   => $id,
+                                                    $input["field"]
+                                                           => $input[$input["field"]]))) {
+                                 $res['ok']++;
                               } else {
-                                 $res['noright']++;
-                                 $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                                 $res['ko']++;
+                                 $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                               }
                            } else {
-                              $res['ko']++;
-                              $res['messages'][] = $item->getErrorMessage(ERROR_COMPAT);
+                              $res['noright']++;
+                              $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                            }
                         } else {
                            $res['ko']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                           $res['messages'][] = $item->getErrorMessage(ERROR_COMPAT);
                         }
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
                      }
                   }
 
@@ -753,28 +758,29 @@ class MassiveAction {
                   }
 
                   foreach ($ids as $key => $val) {
-                     if ($val == 1) {
-                        if ($item->canEdit($key)
-                            && $item->canMassiveAction($input['action'], $input['field'],
-                                                       $input[$input["field"]])) {
-                           if ((count($link_entity_type) == 0)
-                               || in_array($item->fields["entities_id"], $link_entity_type)) {
-                              if ($item->update(array('id'   => $key,
-                                                      $input["field"]
-                                                             => $input[$input["field"]]))) {
-                                 $res['ok']++;
-                              } else {
-                                 $res['ko']++;
-                                 $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
-                              }
+                     if ($val != 1) {
+                        continue;
+                     }
+                     if ($item->canEdit($key)
+                         && $item->canMassiveAction($input['action'], $input['field'],
+                                                    $input[$input["field"]])) {
+                        if ((count($link_entity_type) == 0)
+                            || in_array($item->fields["entities_id"], $link_entity_type)) {
+                           if ($item->update(array('id'   => $key,
+                                                   $input["field"]
+                                                          => $input[$input["field"]]))) {
+                              $res['ok']++;
                            } else {
                               $res['ko']++;
-                              $res['messages'][] = $item->getErrorMessage(ERROR_COMPAT);
+                              $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
                            }
                         } else {
-                           $res['noright']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                           $res['ko']++;
+                           $res['messages'][] = $item->getErrorMessage(ERROR_COMPAT);
                         }
+                     } else {
+                        $res['noright']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
                      }
                   }
                }
@@ -790,10 +796,11 @@ class MassiveAction {
                $_SESSION['glpitransfer_list'][$itemtype] = array();
             }
             foreach ($ids as $key => $val) {
-               if ($val == 1) {
-                  $_SESSION['glpitransfer_list'][$itemtype][$key] = $key;
-                  $res['ok']++;
+               if ($val != 1) {
+                  continue;
                }
+               $_SESSION['glpitransfer_list'][$itemtype][$key] = $key;
+               $res['ok']++;
             }
             $res['REDIRECT'] = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
             break;

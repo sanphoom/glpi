@@ -1071,5 +1071,129 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       return $this->update($input);
    }
+
+
+   /**
+    *
+    * @warning this is not valid if $itemtype_1 == $itemtype_2 !
+    *
+    * @since 0.85
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      $link      = new static();
+      $fields   = array();
+      $nb_items = 0;
+
+      foreach ($ids as $key => $val) {
+         if ($val == 1) {
+            $nb_items ++;
+         }
+      }
+
+      foreach (array(static::$itemtype_1, static::$items_id_1,
+                     static::$itemtype_2, static::$items_id_2) as $field) {
+         if (isset($input['peer_'.$field])) {
+            $fields[$field] = $input['peer_'.$field];
+         }
+      }
+
+      // Get $item1
+      if (!($item1 = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $fields))) {
+         $item1 = &$item;
+         if (preg_match('/^itemtype/', static::$itemtype_1)) {
+            $fields[static::$itemtype_1] = $item1->getType();
+         }
+         $items_id_field = static::$items_id_1;
+      } else {
+         if ($item1->isNewItem()) {
+            $res['ko'] += $nb_items;
+            $res['messages'][] = $item1->getErrorMessage(ERROR_NOT_FOUND);
+            return $res;
+         }
+      }
+
+      // Get $item1
+      if (!($item2 = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $fields))) {
+         $item2 = &$item;
+         if (preg_match('/^itemtype/', static::$itemtype_2)) {
+            $fields[static::$itemtype_2] = $item2->getType();
+         }
+         $items_id_field = static::$items_id_2;
+      } else {
+         if ($item2->isNewItem()) {
+            $res['ko'] += $nb_items;
+            $res['messages'][] = $item2->getErrorMessage(ERROR_NOT_FOUND);
+            return $res;
+         }
+      }
+
+      switch ($action) {
+
+         case 'add' :
+         case 'add_item' :
+            foreach ($ids as $key => $val) {
+               if ($val != 1) {
+                  continue;
+               }
+               if ($item->getFromDB($key)) {
+                  $fields[$items_id_field] = $key;
+                  if ($link->can(-1, CREATE, $fields)) {
+                     if ($link->add($fields)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                     }
+                  } else {
+                     $res['noright']++;
+                     $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                  }
+               } else {
+                  $res['ko']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+               }
+            }
+            break;
+
+         case 'remove':
+         case 'remove_item':
+            foreach ($ids as $key => $val) {
+               if ($val != 1) {
+                  continue;
+               }
+               if ($item->getFromDB($key)) {
+                  if ($link->getFromDBForItems($item1, $item2)) {
+                     if ($link->can($link->getID(), DELETE)) {
+                        if ($link->delete(array('id' => $link->getID()))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                        }
+                     } else {
+                        $res['noright']++;
+                        $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                     }
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                  }
+               } else {
+                  $res['ko']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+               }
+            }
+            break;
+      }
+
+      return $res;
+   }
 }
 ?>
