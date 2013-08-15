@@ -314,9 +314,6 @@ class Item_Devices extends CommonDBRelation {
          $massiveactionparams = array('container'     => 'form_device_action'.$rand,
                                       'fixed'         => false,
                                       'display_arrow' => false);
-         if ($is_device) {
-            $massiveactionparams['specific_actions']['update_device'] = _x('button', 'Update');
-         }
          $content = array(array('function'   => 'Html::showMassiveActions',
                                 'parameters' => array($massiveactionparams)));
          $delete_column = $table->addHeader('delete one', $content);
@@ -466,7 +463,8 @@ class Item_Devices extends CommonDBRelation {
       }
 
       if ($options['canedit']) {
-         $content = '&nbsp;';
+         $group_checkbox_tag =  (empty($peer_type) ? '__' : $peer_type);
+         $content = Html::getCheckbox(array('tag_for_massive' => $group_checkbox_tag));
          $delete_one  = $table_group->addHeader('one', $content, $delete_column, $previous_column);
       }
 
@@ -490,6 +488,7 @@ class Item_Devices extends CommonDBRelation {
                    ORDER BY $fk";
 
       }
+
       if (!empty($peer_type)) {
          $peer = new $peer_type();
          $peer->getEmpty();
@@ -543,7 +542,8 @@ class Item_Devices extends CommonDBRelation {
          }
 
          if ($options['canedit']) {
-            $cell_value = Html::getMassiveActionCheckBox(static::getType(), $link['id']);
+            $cell_value = Html::getMassiveActionCheckBox(static::getType(), $link['id'],
+                                                         array('massive_tags' => $group_checkbox_tag));
             $current_row->addCell($delete_one, $cell_value, $previous_cell);
          }
       }
