@@ -1097,6 +1097,20 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
+    * @since 0.85
+    *
+    * @return the label of the Massive Action button regarding the action
+   **/
+   static function getMassiveActionsButtonLabel($action) {
+      if (($action == 'add') || ($action == 'add_item')) {
+         return _x('button','Add');
+      } else {
+         return _sx('button', 'Delete permanently');
+      }
+   }
+
+
+   /**
     *
     * @warning this is not valid if $itemtype_1 == $itemtype_2 !
     *
@@ -1145,12 +1159,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
             static::showMassiveActionsRelationSubForm($action, $input);
 
-            if (($action == 'add') || ($action == 'add_item')) {
-               echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
-            } else {
-               echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
-                                            array('name' => 'massiveaction'));
-            }
+            echo "<br><br>".Html::submit(static::getMassiveActionsButtonLabel($action,
+                                                                              array('name' => 'massiveaction')));
 
             return true;
       }

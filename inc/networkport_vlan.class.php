@@ -249,6 +249,18 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
    /**
     * @since 0.85
+    * @see CommonDBRelation::getMassiveActionsButtonLabel()
+   **/
+   static function getMassiveActionsButtonLabel($action) {
+      if (($action == 'add') || ($action == 'add_item')) {
+         return __s('Associate');
+      } else {
+         return __s('Dissociate');
+      }
+   }
+
+   /**
+    * @since 0.85
     * @see CommonDBRelation::showMassiveActionsRelationSubForm()
    **/
    static function showMassiveActionsRelationSubForm($action, array $input) {
