@@ -137,11 +137,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $items_id              the name of the field of the id of the item to get
     * @param $getFromDB   boolean   do we have to load the item from the DB ? (true by default)
     * @param $getEmpty    boolean   else : do we have to load an empty item ? (true by default)
+    * @param $getFromDBOrEmpty boolean get from DB if possible, else, getEmpty
     *
     * @return the item or false if we cannot load the item
    **/
-   function getConnexityItem($itemtype, $items_id, $getFromDB=true, $getEmpty=true) {
-      return static::getItemFromArray($itemtype, $items_id, $this->fields, $getFromDB, $getEmpty);
+   function getConnexityItem($itemtype, $items_id, $getFromDB=true,
+                             $getEmpty=true, $getFromDBOrEmpty = false) {
+      return static::getItemFromArray($itemtype, $items_id, $this->fields, $getFromDB,
+                                      $getEmpty, $getFromDBOrEmpty);
    }
 
 
@@ -153,11 +156,12 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @param $array      array   the array in we have to search ($input, $this->fields ...)
     * @param $getFromDB  boolean do we have to load the item from the DB ? (true by default)
     * @param $getEmpty   boolean else : do we have to load an empty item ? (true by default)
+    * @param $getFromDBOrEmpty boolean get from DB if possible, else, getEmpty
     *
     * @return the item or false if we cannot load the item
    **/
-   static function getItemFromArray($itemtype, $items_id, array $array,
-                                    $getFromDB=true, $getEmpty=true) {
+   static function getItemFromArray($itemtype, $items_id, array $array, $getFromDB=true,
+                                    $getEmpty=true, $getFromDBOrEmpty = false) {
 
       if (preg_match('/^itemtype/', $itemtype)) {
          if (isset($array[$itemtype])) {
@@ -170,12 +174,17 @@ abstract class CommonDBConnexity extends CommonDBTM {
       }
       $item = getItemForItemtype($type);
       if ($item !== false) {
-         if ($getFromDB) {
+         if (($getFromDB) || ($getFromDBOrEmpty)) {
             if ((isset($array[$items_id]))
                 && ($item->getFromDB($array[$items_id]))) {
                return $item;
             }
-         } else if ($getEmpty) {
+            if ($getFromDBOrEmpty) {
+               if ($item->getEmpty()) {
+                  return $item;
+               }
+            }
+         } elseif ($getEmpty) {
             if ($item->getEmpty()) {
                return $item;
             }
@@ -399,6 +408,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
             $actions[$action_name] = __('Dissociate');
          }
       }
+
+      parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
    }
 
 

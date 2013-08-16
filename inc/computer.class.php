@@ -631,7 +631,9 @@ class Computer extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['connect'] = _x('button', 'Connect');
+         $actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = _x('button', 'Connect');
+         // TODO : don't we need this action ?
+         //$actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove'] = _x('button', 'Disconnect');
          $actions['install'] = _x('button', 'Install');
       }
 
@@ -655,10 +657,6 @@ class Computer extends CommonDBTM {
                            __s('Install')."'>";
             return true;
 
-         case "connect" :
-            $ci = new Computer_Item();
-            return $ci->showSpecificMassiveActionsParameters($input);
-
          default :
             return parent::showSpecificMassiveActionsParameters($input);
       }
@@ -676,9 +674,6 @@ class Computer extends CommonDBTM {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case "connect" :
-            $ci = new Computer_Item();
-            return $ci->doSpecificMassiveActions($input);
 
          case "install" :
             if (isset($input['softwareversions_id']) && ($input['softwareversions_id'] > 0)) {

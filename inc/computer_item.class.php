@@ -264,117 +264,73 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * Get possible items for massive actions
+    *
+    * @since 0.85
+    *
+    * @return the array of possible types
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function getPossibleItems() {
+      return array('Monitor', 'Peripheral', 'Phone', 'Printer');
+   }
 
-      switch ($input['action']) {
-         case "connect" :
-            if ($input['itemtype'] == 'Computer') {
-               Dropdown::showSelectItemFromItemtypes(array('itemtype_name'
-                                                                 => 'item_itemtype',
-                                                           'entity_restrict'
-                                                                 => $_SESSION["glpiactive_entity"],
-                                                           'itemtypes'
-                                                                 => array('Monitor', 'Peripheral',
-                                                                          'Phone', 'Printer'),
-                                                           'onlyglobal'
-                                                                 => true,
-                                                           'checkright'
-                                                                 => true));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              __s('Connect')."'>";
-            } else {
-               Computer_Item::dropdownConnect('Computer', $input["itemtype"], "computers_id");
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              __s('Connect')."'>";
-            }
-            return true;
+   /**
+    * @since 0.85
+    * @see CommonDBTM::getMassiveActionsForItemtype()
+   **/
+   static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
+                                                CommonDBTM $checkitem = NULL) {
 
-         case "disconnect" :
-            echo "<input type='submit' name='massiveaction' class='submit' value='".
-                   __s('Disconnect')."'>";
-            return true;
+      $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-
+      if (in_array($itemtype, static::getPossibleItems())) {
+         $actions[$action_prefix.'add']    = _x('button', 'Connect');
+         $actions[$action_prefix.'remove'] = _x('button', 'Disconnect');
       }
-      return false;
+
+      parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
    }
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    *
+    * @warning this is not valid if $itemtype_1 == $itemtype_2 !
+    *
+    * @since 0.85
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function showMassiveActionsSubForm($action, array $input) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "connect" :
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if (isset($input["computers_id"])) {
-                     $input2 = array('computers_id' => $input["computers_id"],
-                                    'itemtype'      => $input["itemtype"],
-                                    'items_id'      => $key);
-                     if ($refitem = getItemForItemtype($input2["itemtype"])) {
-                        $refitem->getFromDB($input2['items_id']);
-                     }
-
-                  } else if (isset($input["items_id"])) {
-                     $input2 = array('computers_id' => $key,
-                                    'itemtype'      => $input["item_itemtype"],
-                                    'items_id'      => $input["items_id"]);
-                     if ($refitem = getItemForItemtype('Computer')) {
-                        $refitem->getFromDB($input2['computers_id']);
-                     }
-                  } else {
-                     return false;
-                  }
-                  if ($this->can(-1, CREATE, $input2)) {
-                     if ($this->add($input2)) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
-                     }
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
-                  }
-               }
+      switch ($action) {
+         case 'add' :
+            if (isset($input['item']['Computer'])) {
+               $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
+                                            'items_id_name'   => 'peer_items_id',
+                                            'entity_restrict' => $_SESSION["glpiactive_entity"],
+                                            'itemtypes'       => static::getPossibleItems(),
+                                            'onlyglobal'      => true,
+                                            'checkright'      => true);
+               Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
+            } else {
+               $itemtype = MassiveAction::getItemtypeFromInput($input, true);
+               Computer_Item::dropdownConnect('Computer', $itemtype, "peer_computers_id");
             }
-           break;
+            echo "<br><br>".Html::submit(__s('Connect'), array('name' => 'massiveaction'));
+            return true;
 
-         case "disconnect" :
-            if (!($item = getItemForItemtype($input["itemtype"]))) {
-               return false;
+         case 'remove' :
+            // TODO : don't we need this action ?
+            if (isset($input['item']['Computer'])) {
+               echo Html::hidden('peer_itemtype', array('value' => ''));
+               echo Html::hidden('peer_items_id', array('value' => -1));
+            } else {
+               echo Html::hidden('peer_computers_id', array('value' => '-1'));
             }
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if ($item->can($key, DELETE)) {
-                     if ($this->disconnectForItem($item)) {
-                        $res['ok']++;
-                     } else {
-                        $res['ko']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                     }
-                  } else {
-                     $res['noright']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                  }
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+            echo "<br><br>".Html::submit(__s('Disconnect'), array('name' => 'massiveaction'));
+            return true;
       }
-      return $res;
+
+      return parent::showMassiveActionsSubForm($action, $input);
    }
 
 

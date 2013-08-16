@@ -376,57 +376,13 @@ class Monitor extends CommonDBTM {
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
-      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-      if ($isadmin) {
-         $actions['connect']    = _x('button', 'Connect');
-         $actions['disconnect'] = _x('button', 'Disconnect');
-      }
-
-      if ($isadmin) {
+      if (static::canUpdate()) {
+         Computer_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
          MassiveAction::getAddTransferList($actions);
       }
 
       return $actions;
-   }
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "connect" :
-         case "disconnect" :
-            $ci = new Computer_Item();
-            return $ci->showSpecificMassiveActionsParameters($input);
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "connect" :
-         case "disconnect" :
-            $ci = new Computer_Item();
-            return $ci->doSpecificMassiveActions($input);
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return $res;
    }
 
 

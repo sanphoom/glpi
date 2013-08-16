@@ -1159,8 +1159,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
             static::showMassiveActionsRelationSubForm($action, $input);
 
-            echo "<br><br>".Html::submit(static::getMassiveActionsButtonLabel($action,
-                                                                              array('name' => 'massiveaction')));
+            echo "<br><br>".Html::submit(static::getMassiveActionsButtonLabel($action),
+                                         array('name' => 'massiveaction'));
 
             return true;
       }
@@ -1184,10 +1184,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
+      global $DB;
 
       $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
-      $link      = new static();
+      $link     = new static();
       $fields   = static::getFieldsForProcessingOfMassiveActions($action, $item, $ids, $input);
       $nb_items = 0;
 
@@ -1197,6 +1198,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
       }
 
+      $fields = array();
       foreach (array(static::$itemtype_1, static::$items_id_1,
                      static::$itemtype_2, static::$items_id_2) as $field) {
          if (isset($input['peer_'.$field])) {
@@ -1204,32 +1206,41 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
       }
 
-      // Get $item1
-      if (!($item1 = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $fields))) {
-         $item1 = &$item;
-         if (preg_match('/^itemtype/', static::$itemtype_1)) {
-            $fields[static::$itemtype_1] = $item1->getType();
-         }
-         $items_id_field = static::$items_id_1;
+      if ($item->getType() == static::$itemtype_1) {
+         $item_number = 1;
+      } elseif ($item->getType() == static::$itemtype_2) {
+         $item_number = 2;
+      } elseif (preg_match('/^itemtype/', static::$itemtype_1)) {
+         $item_number = 1;
+      } elseif (preg_match('/^itemtype/', static::$itemtype_2)) {
+         $item_number = 2;
       } else {
-         if ($item1->isNewItem()) {
-            $res['ko'] += $nb_items;
-            $res['messages'][] = $item1->getErrorMessage(ERROR_NOT_FOUND);
-            return $res;
-         }
+         $res['ko'] += $nb_items;
+         $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+         return $res;
       }
 
-      // Get $item1
-      if (!($item2 = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $fields))) {
-         $item2 = &$item;
-         if (preg_match('/^itemtype/', static::$itemtype_2)) {
-            $fields[static::$itemtype_2] = $item2->getType();
-         }
-         $items_id_field = static::$items_id_2;
+      if ($item_number == 1) {
+         $itemtype = static::$itemtype_1;
+         $items_id = static::$items_id_1;
+         $peertype = static::$itemtype_2;
+         $peers_id = static::$items_id_2;
       } else {
-         if ($item2->isNewItem()) {
+         $itemtype = static::$itemtype_2;
+         $items_id = static::$items_id_2;
+         $peertype = static::$itemtype_1;
+         $peers_id = static::$items_id_1;
+      }
+
+      $fields[$itemtype] = $item->getType();
+
+      $peer = static::getItemFromArray($peertype, $peers_id, $fields,
+                                       true, true, true);
+
+      if ($peer->isNewItem()) {
+         if ($fields[$peers_id] >= 0) {
             $res['ko'] += $nb_items;
-            $res['messages'][] = $item2->getErrorMessage(ERROR_NOT_FOUND);
+            $res['messages'][] = $peer->getErrorMessage(ERROR_NOT_FOUND);
             return $res;
          }
       }
@@ -1238,12 +1249,19 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          case 'add' :
          case 'add_item' :
+
+            if ($peer->isNewItem()) {
+               $res['ko'] += $nb_items;
+               $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+               break;
+            }
+
             foreach ($ids as $key => $val) {
                if ($val != 1) {
                   continue;
                }
                if ($item->getFromDB($key)) {
-                  $fields[$items_id_field] = $key;
+                  $fields[$items_id] = $key;
                   if ($link->can(-1, CREATE, $fields)) {
                      if ($link->add($fields)) {
                         $res['ok']++;
@@ -1264,14 +1282,22 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
          case 'remove':
          case 'remove_item':
+            if ($item_number == 1) {
+               $item_1 = &$item;
+               $item_2 = &$peer;
+            } else {
+               $item_1 = &$peer;
+               $item_2 = &$item;
+            }
             foreach ($ids as $key => $val) {
                if ($val != 1) {
                   continue;
                }
-               if ($item->getFromDB($key)) {
-                  if ($link->getFromDBForItems($item1, $item2)) {
-                     if ($link->can($link->getID(), DELETE)) {
-                        if ($link->delete(array('id' => $link->getID()))) {
+               if ($peer->isNewItem()) {
+                  $query = static::getSQLRequestToSearchForItem($item->getType(), $key);
+                  foreach ($DB->request($query) as $line) {
+                     if ($link->can($line[static::getIndexName()], DELETE)) {
+                        if ($link->delete(array('id' => $line[static::getIndexName()]))) {
                            $res['ok']++;
                         } else {
                            $res['ko']++;
@@ -1281,13 +1307,29 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                         $res['noright']++;
                         $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
                      }
+                  }
+               } else {
+                  if ($item->getFromDB($key)) {
+                     if ($link->getFromDBForItems($item_1, $item_2)) {
+                        if ($link->can($link->getID(), DELETE)) {
+                           if ($link->delete(array('id' => $link->getID()))) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                              $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                           }
+                        } else {
+                           $res['noright']++;
+                           $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                        }
+                     } else {
+                        $res['ko']++;
+                        $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                     }
                   } else {
                      $res['ko']++;
                      $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
                   }
-               } else {
-                  $res['ko']++;
-                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
                }
             }
             break;
