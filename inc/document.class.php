@@ -407,7 +407,7 @@ class Document extends CommonDBTM {
       }
 
       $initfileout = $fileout;
-      
+
       if (Toolbox::strlen($fileout) > $len) {
          $fileout = Toolbox::substr($fileout,0,$len)."&hellip;";
       }
@@ -1255,7 +1255,7 @@ class Document extends CommonDBTM {
                                                 CommonDBTM $checkitem = NULL) {
       global $CFG_GLPI;
 
-      $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+      $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
 
       if (in_array($itemtype, $CFG_GLPI["document_types"])) {
          if (Document::canView()) {
@@ -1269,58 +1269,5 @@ class Document extends CommonDBTM {
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }
    }
-
-
-   /**
-    * @since 0.85
-    * @see MassiveAction::showMassiveActionsSubForm()
-   **/
-   static function showMassiveActionsSubForm($action, array $input) {
-      global $CFG_GLPI;
-
-      $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
-                                   'items_id_name'   => 'peer_items_id',
-                                   'itemtypes'       => $CFG_GLPI["document_types"],
-                                   'checkright'      => true);
-
-      switch ($action) {
-
-         case 'add' :
-            self::dropdown(array('name' => 'peer_documents_id'));
-            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
-            return true;
-
-         case 'add_item' :
-            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
-            return true;
-
-         case 'remove' :
-            self::dropdown(array('name' => 'peer_documents_id'));
-            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
-                                         array('name' => 'massiveaction'));
-            return true;
-
-         case 'remove_item' :
-            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
-                                         array('name' => 'massiveaction'));
-            return true;
-
-      }
-
-      return false;
-   }
-
-
-   /**
-    * @since 0.85
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
-      return Document_Item::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
-   }
-
 }
 ?>

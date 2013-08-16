@@ -78,6 +78,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /// If both items must be in viewable each other entities
    static public $check_entity_coherency = true;
 
+   static public $list_of_possible_items = array();
+
    var $no_form_page = true;
 
 
@@ -1074,6 +1076,96 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
+    * Get possible items for massive actions
+    *
+    * @since 0.85
+    *
+    * @return the array of possible types
+   **/
+   static function getPossibleItems() {
+      return array();
+   }
+
+
+   /**
+    * @since 0.85
+    *
+    * @return nothing : display
+   **/
+   static function showMassiveActionsRelationSubForm($action, array $input) {
+   }
+
+
+   /**
+    *
+    * @warning this is not valid if $itemtype_1 == $itemtype_2 !
+    *
+    * @since 0.85
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+      global $CFG_GLPI;
+
+      if (isset($input['item'][static::$itemtype_1])) {
+         $itemtype = static::$itemtype_2;
+      } elseif (isset($input['item'][static::$itemtype_2])) {
+         $itemtype = static::$itemtype_1;
+      } else {
+         if (preg_match('/^itemtype/', static::$itemtype_1)) {
+            $itemtype = static::$itemtype_2;
+         }
+         if (preg_match('/^itemtype/', static::$itemtype_2)) {
+            $itemtype = static::$itemtype_1;
+         }
+      }
+
+      switch ($action) {
+         case 'add':
+         case 'add_item':
+         case 'remove':
+         case 'remove_item':
+
+            if (!isset($itemtype)) {
+               exit();
+            }
+
+            if (preg_match('/^itemtype/', $itemtype)) {
+               $list_of_possible_items = static::getPossibleItems();
+               if (count($list_of_possible_items) > 0) {
+                  $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
+                                               'items_id_name'   => 'peer_items_id',
+                                               'itemtypes'       => $list_of_possible_items,
+                                               'checkright'      => true);
+                  Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
+               }
+            } else {
+               $itemtype::dropdown(array('name' => 'peer_'.
+                                                   getForeignKeyFieldForItemType($itemtype)));
+            }
+
+            static::showMassiveActionsRelationSubForm($action, $input);
+
+            if (($action == 'add') || ($action == 'add_item')) {
+               echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
+            } else {
+               echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
+                                            array('name' => 'massiveaction'));
+            }
+
+            return true;
+      }
+
+      return parent::showMassiveActionsSubForm($action, $input);
+   }
+
+
+   static function getFieldsForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+                                                          array $input) {
+      return array();
+   }
+
+
+   /**
     *
     * @warning this is not valid if $itemtype_1 == $itemtype_2 !
     *
@@ -1083,12 +1175,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
+      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
       $link      = new static();
-      $fields   = array();
+      $fields   = static::getFieldsForProcessingOfMassiveActions($action, $item, $ids, $input);
       $nb_items = 0;
 
       foreach ($ids as $key => $val) {

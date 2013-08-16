@@ -46,8 +46,6 @@ class Contract extends CommonDBTM {
 
    static $rightname                   = 'contract';
 
-
-
    static function getTypeName($nb=0) {
       return _n('Contract', 'Contracts', $nb);
    }
@@ -489,8 +487,9 @@ class Contract extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item']    = _x('button', 'Add an item');
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'remove_item'] = _x('button', 'Remove an item');
+         $prefix = 'Contract_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $actions[$prefix.'add']    = _x('button', 'Add an item');
+         $actions[$prefix.'remove'] = _x('button', 'Remove an item');
       }
 
       if ($isadmin) {
@@ -1386,62 +1385,13 @@ class Contract extends CommonDBTM {
                                                 CommonDBTM $checkitem = NULL) {
       global $CFG_GLPI;
 
-      $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
-
       if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
          if (self::canUpdate()) {
-            $actions[$action_prefix.'add_item']    = _x('button', 'Add a contract');
-            $actions[$action_prefix.'remove_item'] = _x('button', 'Remove a contract');
+            $action_prefix = 'Contract_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
+            $actions[$action_prefix.'add']    = _x('button', 'Add a contract');
+            $actions[$action_prefix.'remove'] = _x('button', 'Remove a contract');
          }
       }
-   }
-
-
-   /**
-    * @since 0.85
-    * @see MassiveAction::showMassiveActionsSubForm()
-   **/
-   static function showMassiveActionsSubForm($action, array $input) {
-      global $CFG_GLPI;
-
-      $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
-                                   'items_id_name'   => 'peer_items_id',
-                                   'itemtypes'       => $CFG_GLPI["contract_types"],
-                                   'checkright'      => true);
-
-      switch ($action) {
-         case 'add_item' :
-            if (isset($input['item']['Contract'])) {
-               Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            } else {
-               Contract::dropdown(array('name' => "peer_contracts_id"));
-            }
-            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
-            return true;
-
-         case 'remove_item' :
-            if (isset($input['item']['Contract'])) {
-               Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            } else {
-               Contract::dropdown(array('name' => "peer_contracts_id"));
-            }
-            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
-                                         array('name' => 'massiveaction'));
-            return true;
-      }
-
-      return false;
-   }
-
-
-   /**
-    * @since 0.85
-    * @see CommonDBTM::processMassiveActionsForOneItemtype()
-   **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
-
-      return Contract_Item::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
    }
 }
 ?>

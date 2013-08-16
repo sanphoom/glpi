@@ -1195,9 +1195,7 @@ class CronTask extends CommonDBTM{
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
+      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
       switch ($action) {
          case 'reset' :

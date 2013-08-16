@@ -911,9 +911,10 @@ class NetworkPort extends CommonDBChild {
       $isadmin = $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
-         $actions['assign_vlan']   = __('Associate a VLAN');
-         $actions['unassign_vlan'] = __('Dissociate a VLAN');
-         $actions['move_port']     = _x('button', 'Move');
+         $vlan_prefix = 'NetworkPort_Vlan'.MassiveAction::CLASS_ACTION_SEPARATOR;
+         $actions[$vlan_prefix.'add']    = __('Associate a VLAN');
+         $actions[$vlan_prefix.'remove'] = __('Dissociate a VLAN');
+         $actions['move_port']           = _x('button', 'Move');
      }
       return $actions;
    }
@@ -924,19 +925,6 @@ class NetworkPort extends CommonDBChild {
    function showSpecificMassiveActionsParameters($input=array()) {
 
       switch ($input['action']) {
-         case "assign_vlan" :
-         Vlan::dropdown();
-         echo "&nbsp;". __('Tagged'). "&nbsp;<input type='checkbox' name='tagged' value='1'>";
-         echo "&nbsp;<input type='submit' name='assign_vlan' class='submit' value='".
-                      __s('Associate')."'>";
-            return true;
-
-         case "unassign_vlan" :
-            Vlan::dropdown();
-            echo "&nbsp;<input type='submit' name='unassign_vlan' class='submit' value='".
-                         __s('Dissociate')."'>";
-            return true;
-
          case "move_port" :
             Dropdown::show('NetworkEquipment', array('name' => 'items_id'));
             echo "&nbsp;<input type='submit' name='move' class='submit' value=\"". __s('Move')."\">";
@@ -958,65 +946,6 @@ class NetworkPort extends CommonDBChild {
                    'ko'      => 0,
                    'noright' => 0);
       switch ($input['action']) {
-
-         case "assign_vlan" :
-            if (!empty($input["vlans_id"])) {
-               $networkportvlan = new NetworkPort_Vlan();
-               $networkport     = new self();
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     if ($networkport->getFromDB($key)) {
-                        if ($this->can($key, UPDATE)) {
-                           if ($networkportvlan->assignVlan($key, $input["vlans_id"],
-                                                            (isset($input['tagged']) ? '1' : '0'))) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $networkport->getErrorMessage(ERROR_RIGHT);
-                        }
-                     } else {
-                        $res['messages'][] = $networkport->getErrorMessage(ERROR_NOT_FOUND);
-                        $res['ko']++;
-                     }
-                  }
-               }
-            } else {
-               $res['ko']++;
-            }
-            break;
-
-         case "unassign_vlan" :
-            if (!empty($input["vlans_id"])) {
-               $networkportvlan = new NetworkPort_Vlan();
-               $networkport     = new self();
-               foreach ($input["item"] as $key => $val) {
-                  if ($networkport->getFromDB($key)) {
-                     if ($val == 1) {
-                        if ($this->can($key, UPDATE)) {
-                           if ($networkportvlan->unassignVlan($key, $input["vlans_id"])) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $networkport->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $networkport->getErrorMessage(ERROR_RIGHT);
-                        }
-                     }
-                     } else {
-                        $res['messages'][] = $networkport->getErrorMessage(ERROR_NOT_FOUND);
-                        $res['ko']++;
-                     }
-               }
-            } else {
-               $res['ko']++;
-            }
-            break;
 
          // Interest of this massive action ? Replace switch by another : don't re-create manually all ports
          case "move_port" :

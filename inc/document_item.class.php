@@ -734,5 +734,48 @@ class Document_Item extends CommonDBRelation{
       echo "</div>";
    }
 
+
+   /**
+    * @since 0.85
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+      global $CFG_GLPI;
+
+      $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
+                                   'items_id_name'   => 'peer_items_id',
+                                   'itemtypes'       => $CFG_GLPI["document_types"],
+                                   'checkright'      => true);
+
+      switch ($action) {
+
+         case 'add' :
+            Document::dropdown(array('name' => 'peer_documents_id'));
+            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
+            return true;
+
+         case 'add_item' :
+            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
+            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
+            return true;
+
+         case 'remove' :
+            Document::dropdown(array('name' => 'peer_documents_id'));
+            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
+                                         array('name' => 'massiveaction'));
+            return true;
+
+         case 'remove_item' :
+            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
+            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
+                                         array('name' => 'massiveaction'));
+            return true;
+
+      }
+
+      return parent::showMassiveActionsSubForm($action, $input);
+   }
+
+
 }
 ?>

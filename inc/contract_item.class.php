@@ -682,5 +682,15 @@ class Contract_Item extends CommonDBRelation{
       echo "</div>";
    }
 
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getPossibleItems()
+   **/
+   static function getPossibleItems() {
+      global $CFG_GLPI;
+
+      return $CFG_GLPI['contract_types'];
+   }
 }
 ?>

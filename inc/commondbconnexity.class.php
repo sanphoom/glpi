@@ -404,7 +404,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
 
    /**
     * @since 0.85
-    * @see MassiveAction::showMassiveActionsSubForm()
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm($action, array $input) {
 
@@ -444,7 +444,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             return true;
       }
 
-      return false;
+      return parent::showMassiveActionsSubForm($action, $input);
    }
 
 
@@ -455,9 +455,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
+      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
       switch ($action) {
          case 'unaffect' :

@@ -466,7 +466,7 @@ class Lock {
 
    /**
     * @since 0.85
-    * @see MassiveAction::showMassiveActionsSubForm()
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm($action, array $input) {
 
@@ -501,16 +501,13 @@ class Lock {
 
    /**
     * @since 0.85
-    * @see MassiveAction::processMassiveActionsForOneItemtype()
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $baseitem, array $ids,
                                                        array $input) {
       global $DB;
 
-      $res = array('ok'       => 0,
-                   'ko'       => 0,
-                   'noright'  => 0,
-                   'messages' => array());
+      $res = CommonDBTM::processMassiveActionsForOneItemtype($action, $baseitem, $ids, $input);
 
       switch ($action) {
          case 'unlock':

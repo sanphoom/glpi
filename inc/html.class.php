@@ -2643,14 +2643,11 @@ class Html {
          echo "</td>";
 
          echo "</tr></table>";
-         // TODO : study how to force cleaning of the glpimassiveactionselected
-         /*
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             // Clean selection
-            $_SESSION['glpimassiveactionselected'][$itemtype] = array();
+            $_SESSION['glpimassiveactionselected'] = array();
          }
-         */
       }
    }
 

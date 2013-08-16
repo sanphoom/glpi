@@ -311,11 +311,7 @@ class MassiveAction {
       if (count($action) == 2) {
          $processor       = $action[0];
 
-         if (method_exists($processor, 'showMassiveActionsSubForm')) {
-            if (!$processor::showMassiveActionsSubForm($action[1], $input)) {
-               self::showDefaultSubForm($action[1], $input);
-            }
-         } else {
+         if (!$processor::showMassiveActionsSubForm($action[1], $input)) {
             self::showDefaultSubForm($action[1], $input);
          }
 
@@ -371,12 +367,7 @@ class MassiveAction {
 
 
    /**
-    * Class-specific method used to show the fields to specify the massive action
-    *
-    * @param $action the name of the action (not prefixed by the class name)
-    * @param $input the inputs (mainly $_POST or $_GET)
-    *
-    * @return false if parameters displayed ?
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm($action, array $input) {
       global $CFG_GLPI;
@@ -578,22 +569,13 @@ class MassiveAction {
 
 
    /**
-    * Class specific execution of the massive action (new system) by itemtypes
-    *
-    * @param $action the name of the action
-    * @param $item the item on which apply the massive action
-    * @param $ids an array of the ids of the item on which apply the action
-    * @param $input the array of the input provided by the form ($_POST, $_GET ...)
-    *
-    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
       global $CFG_GLPI;
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
+      $res = CommonDBTM::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
       switch ($action) {
          case 'delete':

@@ -3020,6 +3020,21 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Class-specific method used to show the fields to specify the massive action
+    *
+    * @since 0.85
+    *
+    * @param $action the name of the action (not prefixed by the class name)
+    * @param $input the inputs (mainly $_POST or $_GET)
+    *
+    * @return false if parameters displayed ?
+   **/
+   static function showMassiveActionsSubForm($action, array $input) {
+      return false;
+   }
+
+
+   /**
     * Class specific execution of the massive action (new system) by itemtypes
     *
     * @since 0.85
@@ -3034,9 +3049,10 @@ class CommonDBTM extends CommonGLPI {
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
 
-      return array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
+      return array('ok'       => 0,
+                   'ko'       => 0,
+                   'noright'  => 0,
+                   'messages' => array());
 
    }
 

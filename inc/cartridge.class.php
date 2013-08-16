@@ -67,7 +67,7 @@ class Cartridge extends CommonDBChild {
 
    /**
     * @since 0.85
-    * @see MassiveAction::showMassiveActionsSubForm()
+    * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm($action, array $input) {
 
@@ -80,7 +80,7 @@ class Cartridge extends CommonDBChild {
             echo "<br><br>".Html::submit(_sx('button', 'Update'), array('name' => 'massiveaction'));
             return true;
       }
-      return false;
+      return parent::showMassiveActionsSubForm($action, $input);
    }
 
 
@@ -158,9 +158,7 @@ class Cartridge extends CommonDBChild {
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
+      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
       switch ($action) {
          case 'uninstall' :
