@@ -185,49 +185,11 @@ class Supplier extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
-         $actions['add_contact_supplier'] = _x('button', 'Add a contact');
+         $actions['Contact_Supplier'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Add a contact');
 
          MassiveAction::getAddTransferList($actions);
       }
       return $actions;
-   }
-
-
-   /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
-   **/
-   function showSpecificMassiveActionsParameters($input=array()) {
-
-      switch ($input['action']) {
-         case "add_contact_supplier" :
-            $contactsupplier = new Contact_Supplier();
-            return $contactsupplier->showSpecificMassiveActionsParameters($input);
-
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
-      }
-      return false;
-   }
-
-
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "add_contact_supplier" :
-            $contactsupplier = new Contact_Supplier();
-            return $contactsupplier->doSpecificMassiveActions($input);
-
-         default :
-            return parent::doSpecificMassiveActions($input);
-      }
-      return false;
    }
 
 
