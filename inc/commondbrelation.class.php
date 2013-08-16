@@ -1097,16 +1097,31 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
+    *
     * @since 0.85
+    *
+    * @param $action the original action (not normalized)
     *
     * @return the label of the Massive Action button regarding the action
    **/
    static function getMassiveActionsButtonLabel($action) {
-      if (($action == 'add') || ($action == 'add_item')) {
+      if (static::getNormalizedMassiveActionFromAction($action) == 'add') {
          return _x('button','Add');
       } else {
          return _sx('button', 'Delete permanently');
       }
+   }
+
+
+   /**
+    * Somme massive actions can't have 'add' or 'remove' as name. Thus, we can transform them ...
+    *
+    * @since 0.85
+    *
+    * @return the normalized action name ('add' or 'remove')
+   **/
+   static function getNormalizedMassiveActionFromAction($action) {
+      return $action;
    }
 
 
@@ -1120,24 +1135,19 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static function showMassiveActionsSubForm($action, array $input) {
       global $CFG_GLPI;
 
-      if (isset($input['item'][static::$itemtype_1])) {
-         $itemtype = static::$itemtype_2;
-      } elseif (isset($input['item'][static::$itemtype_2])) {
-         $itemtype = static::$itemtype_1;
-      } else {
-         if (preg_match('/^itemtype/', static::$itemtype_1)) {
-            $itemtype = static::$itemtype_2;
-         }
-         if (preg_match('/^itemtype/', static::$itemtype_2)) {
-            $itemtype = static::$itemtype_1;
-         }
-      }
-
-      switch ($action) {
+      switch (static::getNormalizedMassiveActionFromAction($action)) {
          case 'add':
-         case 'add_item':
          case 'remove':
-         case 'remove_item':
+
+            if (isset($input['item'][static::$itemtype_1])) {
+               $itemtype = static::$itemtype_2;
+            } elseif (isset($input['item'][static::$itemtype_2])) {
+               $itemtype = static::$itemtype_1;
+            } elseif (preg_match('/^itemtype/', static::$itemtype_1)) {
+               $itemtype = static::$itemtype_2;
+            } elseif (preg_match('/^itemtype/', static::$itemtype_2)) {
+               $itemtype = static::$itemtype_1;
+            }
 
             if (!isset($itemtype)) {
                exit();
@@ -1198,7 +1208,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
       }
 
-      $fields = array();
       foreach (array(static::$itemtype_1, static::$items_id_1,
                      static::$itemtype_2, static::$items_id_2) as $field) {
          if (isset($input['peer_'.$field])) {
@@ -1245,10 +1254,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
       }
 
-      switch ($action) {
+      switch (static::getNormalizedMassiveActionFromAction($action)) {
 
          case 'add' :
-         case 'add_item' :
 
             if ($peer->isNewItem()) {
                $res['ko'] += $nb_items;
@@ -1281,7 +1289,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             break;
 
          case 'remove':
-         case 'remove_item':
             if ($item_number == 1) {
                $item_1 = &$item;
                $item_2 = &$peer;

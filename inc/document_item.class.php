@@ -777,5 +777,19 @@ class Document_Item extends CommonDBRelation{
    }
 
 
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getNormalizedMassiveActionFromAction()
+   **/
+   static function getNormalizedMassiveActionFromAction($action) {
+      switch ($action) {
+         case 'add_item':
+            return 'add';
+         case 'remove_item':
+            return 'remove';
+      }
+      return $action;
+   }
+
 }
 ?>
