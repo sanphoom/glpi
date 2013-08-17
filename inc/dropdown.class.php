@@ -1170,7 +1170,8 @@ class Dropdown {
     *    - checkright          : check to see if we can "view" the itemtype (false by default)
     *    - showItemSpecificity : given an item, the AJAX file to open if there is special
     *                            treatment. For instance, select a Item_Device* for CommonDevice
-    *
+    *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+   *
     * @return randomized value used to generate HTML IDs
    **/
    static function showSelectItemFromItemtypes(array $options=array()) {
@@ -1185,6 +1186,7 @@ class Dropdown {
       $params['onlyglobal']          = false;
       $params['checkright']          = false;
       $params['showItemSpecificity'] = '';
+      $params['emptylabel']          = self::EMPTY_VALUE;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1194,7 +1196,8 @@ class Dropdown {
 
       $rand = self::showItemType($params['itemtypes'],
                                  array('checkright' => $params['checkright'],
-                                       'name'       => $params['itemtype_name']));
+                                       'name'       => $params['itemtype_name'],
+                                       'emptylabel' => $params['emptylabel']));
 
       if ($rand) {
          $p = array('idtable'             => '__VALUE__',

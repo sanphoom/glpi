@@ -323,6 +323,16 @@ class Computer_Item extends CommonDBRelation{
             if (isset($input['item']['Computer'])) {
                echo Html::hidden('peer_itemtype', array('value' => ''));
                echo Html::hidden('peer_items_id', array('value' => -1));
+               /*
+                 // TODO : why not allowing such thing ?
+               $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
+                                            'items_id_name'   => 'peer_items_id',
+                                            'entity_restrict' => $_SESSION["glpiactive_entity"],
+                                            'itemtypes'       => static::getPossibleItems(),
+                                            'onlyglobal'      => true,
+                                            'checkright'      => true);
+               Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
+               */
             } else {
                echo Html::hidden('peer_computers_id', array('value' => '-1'));
             }

@@ -766,6 +766,7 @@ class Document_Item extends CommonDBRelation{
             return true;
 
          case 'remove_item' :
+            $showAllItemsOptions['emptylabel'] = __('Remove all occurences');
             Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
             echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
                                          array('name' => 'massiveaction'));

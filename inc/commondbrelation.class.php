@@ -1135,7 +1135,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    static function showMassiveActionsSubForm($action, array $input) {
       global $CFG_GLPI;
 
-      switch (static::getNormalizedMassiveActionFromAction($action)) {
+      $normalized_action = static::getNormalizedMassiveActionFromAction($action);
+
+      switch ($normalized_action) {
          case 'add':
          case 'remove':
 
@@ -1160,6 +1162,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                                                'items_id_name'   => 'peer_items_id',
                                                'itemtypes'       => $list_of_possible_items,
                                                'checkright'      => true);
+                  if ($normalized_action == 'remove') {
+                     $showAllItemsOptions['emptylabel'] = __('Remove all occurences');
+                  }
                   Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
                }
             } else {
@@ -1245,19 +1250,24 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $peer = static::getItemFromArray($peertype, $peers_id, $fields,
                                        true, true, true);
 
-      if ($peer->isNewItem()) {
-         if ($fields[$peers_id] >= 0) {
+      if (($peer === false) || ($peer->isNewItem())) {
+         if ((isset($fields[$peers_id])) && ($fields[$peers_id] >= 0)) {
             $res['ko'] += $nb_items;
-            $res['messages'][] = $peer->getErrorMessage(ERROR_NOT_FOUND);
+            if ($peer instanceof CommonDBTM) {
+               $res['messages'][] = $peer->getErrorMessage(ERROR_NOT_FOUND);
+            } else {
+               $res['messages'][] = $link->getErrorMessage(ERROR_NOT_FOUND);
+            }
             return $res;
          }
+         $peer = false;
       }
 
       switch (static::getNormalizedMassiveActionFromAction($action)) {
 
          case 'add' :
 
-            if ($peer->isNewItem()) {
+            if (!$peer) {
                $res['ko'] += $nb_items;
                $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
                break;
@@ -1299,7 +1309,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                if ($val != 1) {
                   continue;
                }
-               if ($peer->isNewItem()) {
+               if (!$peer) {
                   $query = static::getSQLRequestToSearchForItem($item->getType(), $key);
                   foreach ($DB->request($query) as $line) {
                      if ($link->can($line[static::getIndexName()], DELETE)) {
