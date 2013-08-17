@@ -1317,21 +1317,31 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                   }
                } else {
                   if ($item->getFromDB($key)) {
-                     if ($link->getFromDBForItems($item_1, $item_2)) {
-                        if ($link->can($link->getID(), DELETE)) {
-                           if ($link->delete(array('id' => $link->getID()))) {
-                              $res['ok']++;
-                           } else {
+                     if (!$link->getFromDBForItems($item_1, $item_2)) {
+                        // TODO : don't we need this, if both items are of the same type ?
+                        //if ($item_1->getType() == $item_2->getType()) {
+                        if (false) {
+                           if (!$link->getFromDBForItems($item_2, $item_1)) {
                               $res['ko']++;
-                              $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                              $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                              continue;
                            }
                         } else {
-                           $res['noright']++;
-                           $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                           $res['ko']++;
+                           $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                           continue;
+                        }
+                     }
+                     if ($link->can($link->getID(), DELETE)) {
+                        if ($link->delete(array('id' => $link->getID()))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
                         }
                      } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                        $res['noright']++;
+                        $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
                      }
                   } else {
                      $res['ko']++;
