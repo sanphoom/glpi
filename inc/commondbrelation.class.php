@@ -1208,22 +1208,21 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          }
       }
 
-      foreach (array(static::$itemtype_1, static::$items_id_1,
-                     static::$itemtype_2, static::$items_id_2) as $field) {
+      foreach (array(static::$itemtype_1, static::$items_id_1) as $field) {
          if (isset($input['peer_'.$field])) {
             $fields[$field] = $input['peer_'.$field];
+            $item_number = 2;
          }
       }
 
-      if ($item->getType() == static::$itemtype_1) {
-         $item_number = 1;
-      } elseif ($item->getType() == static::$itemtype_2) {
-         $item_number = 2;
-      } elseif (preg_match('/^itemtype/', static::$itemtype_1)) {
-         $item_number = 1;
-      } elseif (preg_match('/^itemtype/', static::$itemtype_2)) {
-         $item_number = 2;
-      } else {
+      foreach (array(static::$itemtype_2, static::$items_id_2) as $field) {
+         if (isset($input['peer_'.$field])) {
+            $fields[$field] = $input['peer_'.$field];
+            $item_number = 1;
+         }
+      }
+
+      if (!isset($item_number)) {
          $res['ko'] += $nb_items;
          $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
          return $res;

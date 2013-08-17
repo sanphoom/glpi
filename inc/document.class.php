@@ -1257,7 +1257,7 @@ class Document extends CommonDBTM {
 
       $action_prefix = 'Document_Item'.MassiveAction::CLASS_ACTION_SEPARATOR;
 
-      if (in_array($itemtype, $CFG_GLPI["document_types"]) && ($itemtype != 'Document')) {
+      if (in_array($itemtype, $CFG_GLPI["document_types"])) {
          if (Document::canView()) {
             $actions[$action_prefix.'add']    = _x('button', 'Add a document');
             $actions[$action_prefix.'remove'] = _x('button', 'Remove a document');
