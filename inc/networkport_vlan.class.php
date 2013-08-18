@@ -249,15 +249,20 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
    /**
     * @since 0.85
-    * @see CommonDBRelation::getMassiveActionsButtonLabel()
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
-   static function getMassiveActionsButtonLabel($action) {
-      if ($action == 'add') {
-         return __s('Associate');
-      } else {
-         return __s('Dissociate');
-      }
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
+
+      $specificities = parent::getRelationMassiveActionsSpecificities();
+
+      // Set the labels for add_item and remove_item
+      $specificities['button_labels']['add']    = __s('Associate');
+      $specificities['button_labels']['remove'] = __s('Dissociate');
+
+      return $specificities;
    }
+
 
    /**
     * @since 0.85
@@ -270,7 +275,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
-   static function getFieldsForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+   static function getInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
                                                           array $input) {
       if ($action == 'add') {
          return array('tagged' => $input['tagged']);

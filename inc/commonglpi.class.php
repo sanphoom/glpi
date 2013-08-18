@@ -1245,6 +1245,9 @@ class CommonGLPI {
 
          case ERROR_ON_ACTION :
             return sprintf(__('%1$s: %2$s'), $object,  __('Error on executing the action'));
+
+         case ERROR_ALREADY_DEFINED :
+            return sprintf(__('%1$s: %2$s'), $object,  __('Item already defined'));
       }
    }
 

@@ -685,12 +685,16 @@ class Contract_Item extends CommonDBRelation{
 
    /**
     * @since 0.85
-    * @see CommonDBRelation::getPossibleItems()
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
-   static function getPossibleItems() {
+   static function getRelationMassiveActionsSpecificities() {
       global $CFG_GLPI;
 
-      return $CFG_GLPI['contract_types'];
+      $specificities = parent::getRelationMassiveActionsSpecificities();
+
+      $specificities['itemtypes'] = $CFG_GLPI['contract_types'];
+
+      return $specificities;
    }
 }
 ?>

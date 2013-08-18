@@ -78,8 +78,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /// If both items must be in viewable each other entities
    static public $check_entity_coherency = true;
 
-   static public $list_of_possible_items = array();
-
    var $no_form_page = true;
 
 
@@ -1076,105 +1074,165 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
 
    /**
-    * Get possible items for massive actions
+    * Get all specificities of the current itemtype concerning the massive actions
     *
     * @since 0.85
     *
-    * @return the array of possible types
+    * @return array of the specificities :
+    *        'select_items_options_1' Base options for item_1 select
+    *        'select_items_options_2' Base options for item_2 select
+    *        'can_remove_all_at_once' Is it possible to remove all links at once ?
+    *        'only_remove_all_at_once' Do we only allow to remove all links at once ?
+    *                                  (implies 'can_remove_all_at_once')
+    *        'itemtypes'              array of kind of items in case of itemtype as one item
+    *        'button_labels'          array of the labels of the button indexed by the action name
+    *        'normalized'             array('add', 'remove') of arrays containing each action
+    *        'check_both_items_if_same_type' to check if the link already exists, also care of both
+    *                                        items are of the same type, then switch them
+    *        'can_link_several_times' Is it possible to link items several times ?
+    *        'update_id_different'    Do we update the link if it already exists (not used in case
+    *                                 of 'can_link_several_times')
    **/
-   static function getPossibleItems() {
-      return array();
+   static function getRelationMassiveActionsSpecificities() {
+      return array('select_items_options_1'  => array(),
+                   'select_items_options_2'  => array(),
+                   'can_remove_all_at_once'  => true,
+                   'only_remove_all_at_once' => false,
+                   'itemtypes'               => array(),
+                   'button_labels'  => array('add'    => _x('button','Add'),
+                                             'remove' => _sx('button', 'Delete permanently')),
+                   'normalized'     => array('add'    => array('add'),
+                                             'remove' => array('remove')),
+                   'check_both_items_if_same_type' => false,
+                   'can_link_several_times'        => false,
+                   'update_if_different'           => false,
+                   );
    }
 
 
    /**
-    * @since 0.85
-    *
-    * @return nothing : display
+    * Add relation specificities to the subForm of the massive action
    **/
    static function showMassiveActionsRelationSubForm($action, array $input) {
    }
 
 
    /**
+    * get the type of the item with the name of the action or the types of the input
     *
-    * @since 0.85
+    * @param $action the name of the action (not prefixed by the class name)
+    * @param $input the inputs (mainly $_POST or $_GET)
     *
-    * @param $action the original action (not normalized)
-    *
-    * @return the label of the Massive Action button regarding the action
+    * @return number of the peer
    **/
-   static function getMassiveActionsButtonLabel($action) {
-      if (static::getNormalizedMassiveActionFromAction($action) == 'add') {
-         return _x('button','Add');
-      } else {
-         return _sx('button', 'Delete permanently');
+   static function getRelationMassiveActionsPeerForSubForm($action, array $input) {
+
+      // If direct itemtype, then, its easy to find !
+      if (isset($input['item'][static::$itemtype_1])) {
+         return 2;
       }
+      if (isset($input['item'][static::$itemtype_2])) {
+         return 1;
+      }
+
+      // Else, check if one of both peer is 'itemtype*'
+      if (preg_match('/^itemtype/', static::$itemtype_1)) {
+         return 2;
+      }
+      if (preg_match('/^itemtype/', static::$itemtype_2)) {
+         return 1;
+      }
+
+      // Else we cannot define !
+      return 0;
    }
 
 
    /**
-    * Somme massive actions can't have 'add' or 'remove' as name. Thus, we can transform them ...
-    *
-    * @since 0.85
-    *
-    * @return the normalized action name ('add' or 'remove')
-   **/
-   static function getNormalizedMassiveActionFromAction($action) {
-      return $action;
-   }
-
-
-   /**
-    *
-    * @warning this is not valid if $itemtype_1 == $itemtype_2 !
-    *
     * @since 0.85
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
    static function showMassiveActionsSubForm($action, array $input) {
       global $CFG_GLPI;
 
-      $normalized_action = static::getNormalizedMassiveActionFromAction($action);
+      $specificities = static::getRelationMassiveActionsSpecificities();
+
+      // First, get normalized action : add or remove
+      if (in_array($action, $specificities['normalized']['add'])) {
+         $normalized_action = 'add';
+      } elseif (in_array($action, $specificities['normalized']['remove'])) {
+         $normalized_action = 'remove';
+      } else {
+         // If we cannot get normalized action, then, its not for this method !
+         return parent::showMassiveActionsSubForm($action, $input);
+      }
 
       switch ($normalized_action) {
          case 'add':
          case 'remove':
 
-            if (isset($input['item'][static::$itemtype_1])) {
-               $itemtype = static::$itemtype_2;
-            } elseif (isset($input['item'][static::$itemtype_2])) {
-               $itemtype = static::$itemtype_1;
-            } elseif (preg_match('/^itemtype/', static::$itemtype_1)) {
-               $itemtype = static::$itemtype_2;
-            } elseif (preg_match('/^itemtype/', static::$itemtype_2)) {
-               $itemtype = static::$itemtype_1;
+            // Get the peer number. For Document_Item, it depends of the action's name
+            $peer_number = static::getRelationMassiveActionsPeerForSubForm($action, $input);
+            switch ($peer_number) {
+               case 1:
+                  $peertype = static::$itemtype_1;
+                  $peers_id = static::$items_id_1;
+                  break;
+               case 2:
+                  $peertype = static::$itemtype_2;
+                  $peers_id = static::$items_id_2;
+                  break;
+               default:
+                  exit();
             }
 
-            if (!isset($itemtype)) {
-               exit();
-            }
+            if (($normalized_action == 'remove')
+                && ($specificities['only_remove_all_at_once'])) {
 
-            if (preg_match('/^itemtype/', $itemtype)) {
-               $list_of_possible_items = static::getPossibleItems();
-               if (count($list_of_possible_items) > 0) {
-                  $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
-                                               'items_id_name'   => 'peer_items_id',
-                                               'itemtypes'       => $list_of_possible_items,
-                                               'checkright'      => true);
-                  if ($normalized_action == 'remove') {
-                     $showAllItemsOptions['emptylabel'] = __('Remove all occurences');
-                  }
-                  Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-               }
+               // If we just want to remove all the items, then just set hidden fields
+               echo Html::hidden('peer_'.$peertype, array('value' => ''));
+               echo Html::hidden('peer_'.$peers_id, array('value' => -1));
+
             } else {
-               $itemtype::dropdown(array('name' => 'peer_'.
-                                                   getForeignKeyFieldForItemType($itemtype)));
+
+               // Else, it depends if the peer is an itemtype or not
+
+               $options = $specificities['select_items_options_'.$peer_number];
+
+               // Do we allow to remove all the items at once ? Then, rename the default value !
+               if (($normalized_action == 'remove')
+                   && ($specificities['can_remove_all_at_once'])) {
+                  $options['emptylabel'] = __('Remove all at once');
+               }
+
+               if (preg_match('/^itemtype/', $peertype)) {
+
+                  if (count($specificities['itemtypes']) > 0) {
+
+                     $options['itemtype_name'] = 'peer_'.$peertype;
+                     $options['items_id_name'] = 'peer_'.$peers_id;
+                     $options['itemtypes']     = $specificities['itemtypes'];
+
+                     // At least, if not forced by user, 'checkright' == true
+                     if (!isset($options['checkright'])) {
+                        $options['checkright']    = true;
+                     }
+
+                     Dropdown::showSelectItemFromItemtypes($options);
+                  }
+
+               } else {
+
+                  $options['name'] = 'peer_'.$peers_id;
+                  $peertype::dropdown($options);
+
+               }
             }
 
+            // Allow any relation to display its own fields (Networkport_Vlan for tagged ...)
             static::showMassiveActionsRelationSubForm($action, $input);
 
-            echo "<br><br>".Html::submit(static::getMassiveActionsButtonLabel($action),
+            echo "<br><br>".Html::submit($specificities['button_labels'][$action],
                                          array('name' => 'massiveaction'));
 
             return true;
@@ -1184,7 +1242,19 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 
-   static function getFieldsForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+   /**
+    * @since 0.85
+    * Set based array for static::add or static::update in case of massive actions are doing
+    * something.
+    *
+    * @param $action the name of the action
+    * @param $item the item on which apply the massive action
+    * @param $ids an array of the ids of the item on which apply the action
+    * @param $input the array of the input provided by the form ($_POST, $_GET ...)
+    *
+    * @return array containing the elements
+   **/
+   static function getInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
                                                           array $input) {
       return array();
    }
@@ -1203,33 +1273,50 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
-      $link     = new static();
-      $fields   = static::getFieldsForProcessingOfMassiveActions($action, $item, $ids, $input);
-      $nb_items = 0;
+      $specificities = static::getRelationMassiveActionsSpecificities();
 
+      // First, get normalized action : add or remove
+      if (in_array($action, $specificities['normalized']['add'])) {
+         $normalized_action = 'add';
+      } elseif (in_array($action, $specificities['normalized']['remove'])) {
+         $normalized_action = 'remove';
+      } else {
+         // If we cannot get normalized action, then, its not for this method !
+         return parent::showMassiveActionsSubForm($action, $input);
+      }
+
+      $link     = new static();
+
+      // Get the default 'input' entries from the relation
+      $input2   = static::getInputForProcessingOfMassiveActions($action, $item, $ids, $input);
+
+      $nb_items = 0;
       foreach ($ids as $key => $val) {
          if ($val == 1) {
             $nb_items ++;
          }
       }
 
+      // complete input2 with the right fields from input and define the peer with this information
+
       foreach (array(static::$itemtype_1, static::$items_id_1) as $field) {
          if (isset($input['peer_'.$field])) {
-            $fields[$field] = $input['peer_'.$field];
+            $input2[$field] = $input['peer_'.$field];
             $item_number = 2;
          }
       }
 
       foreach (array(static::$itemtype_2, static::$items_id_2) as $field) {
          if (isset($input['peer_'.$field])) {
-            $fields[$field] = $input['peer_'.$field];
+            $input2[$field] = $input['peer_'.$field];
             $item_number = 1;
          }
       }
 
+      // If the fields provided by showMassiveActionsSubForm are not valid then quit !
       if (!isset($item_number)) {
          $res['ko'] += $nb_items;
-         $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+         $res['messages'][] = $link->getErrorMessage(ERROR_NOT_FOUND);
          return $res;
       }
 
@@ -1245,13 +1332,17 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $peers_id = static::$items_id_1;
       }
 
-      $fields[$itemtype] = $item->getType();
+      if (preg_match('/^itemtype/', $itemtype)) {
+         $input2[$itemtype] = $item->getType();
+      }
 
-      $peer = static::getItemFromArray($peertype, $peers_id, $fields,
+      // Get the peer from the $input2 and the name of its fields
+      $peer = static::getItemFromArray($peertype, $peers_id, $input2,
                                        true, true, true);
 
+      // $peer not valid => not in DB or try to remove all at once !
       if (($peer === false) || ($peer->isNewItem())) {
-         if ((isset($fields[$peers_id])) && ($fields[$peers_id] >= 0)) {
+         if ((isset($input2[$peers_id])) && ($input2[$peers_id] > 0)) {
             $res['ko'] += $nb_items;
             if ($peer instanceof CommonDBTM) {
                $res['messages'][] = $peer->getErrorMessage(ERROR_NOT_FOUND);
@@ -1260,27 +1351,52 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             }
             return $res;
          }
+         if (!$specificities['can_remove_all_at_once']
+             && !$specificities['only_remove_all_at_once']) {
+            return false;
+         }
          $peer = false;
       }
 
-      switch (static::getNormalizedMassiveActionFromAction($action)) {
+      // Make a link between $item_1, $item_2 and $item and $peer. Thus, we will be able to update
+      // $item without having to care about the number of the item
+      if ($item_number == 1) {
+         $item_1 = &$item;
+         $item_2 = &$peer;
+      } else {
+         $item_1 = &$peer;
+         $item_2 = &$item;
+      }
+
+      switch ($normalized_action) {
 
          case 'add' :
 
+            // remove all at once only available for remove !
             if (!$peer) {
                $res['ko'] += $nb_items;
                $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
-               break;
+               return $res;
             }
 
             foreach ($ids as $key => $val) {
                if ($val != 1) {
                   continue;
                }
-               if ($item->getFromDB($key)) {
-                  $fields[$items_id] = $key;
-                  if ($link->can(-1, CREATE, $fields)) {
-                     if ($link->add($fields)) {
+
+               if (!$item->getFromDB($key)) {
+                  $res['ko']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                  continue;
+               }
+
+               $input2[$items_id] = $item->getID();
+
+               // If 'can_link_several_times', then, we add the elements !
+
+               if ($specificities['can_link_several_times']) {
+                  if ($link->can(-1, CREATE, $input2)) {
+                     if ($link->add($input2)) {
                         $res['ok']++;
                      } else {
                         $res['ko']++;
@@ -1290,73 +1406,142 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                      $res['noright']++;
                      $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
                   }
-               } else {
-                  $res['ko']++;
-                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
-               }
-            }
+
+               } else {;
+
+                  $link->getEmpty();
+
+                  if (!$link->getFromDBForItems($item_1, $item_2)) {
+                     if (($specificities['check_both_items_if_same_type'])
+                         && ($item_1->getType() == $item_2->getType())) {
+                        $link->getFromDBForItems($item_2, $item_1);
+                     }
+                  }
+
+                  if (!$link->isNewItem()) {
+
+                     if (!$specificities['update_if_different']) {
+                        $res['ko']++;
+                        $res['messages'][] = $link->getErrorMessage(ERROR_ALREADY_DEFINED);
+                        continue;
+                     }
+
+                     if ($link->can($link->getID(), UPDATE, $input2)) {
+                        $input2[static::getIndexName()] = $link->getID();
+                        if ($link->update($input2)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                        }
+
+                        // remove link index from $input2, otherwise, not possible to add other elements
+                        unset($input2[static::getIndexName()]);
+
+                     } else {
+                        $res['noright']++;
+                        $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                     }
+
+                  } else {
+
+                    if ($link->can(-1, CREATE, $input2)) {
+                        if ($link->add($input2)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                           $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                        }
+                     } else {
+                        $res['noright']++;
+                        $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                     }
+                  }
+                }
+           }
             break;
 
          case 'remove':
-            if ($item_number == 1) {
-               $item_1 = &$item;
-               $item_2 = &$peer;
-            } else {
-               $item_1 = &$peer;
-               $item_2 = &$item;
-            }
             foreach ($ids as $key => $val) {
                if ($val != 1) {
                   continue;
                }
+
+               // First, get the queyr to find all occurences of the link item<=>key
+
                if (!$peer) {
                   $query = static::getSQLRequestToSearchForItem($item->getType(), $key);
-                  foreach ($DB->request($query) as $line) {
-                     if ($link->can($line[static::getIndexName()], DELETE)) {
-                        if ($link->delete(array('id' => $line[static::getIndexName()]))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
-                     }
-                  }
                } else {
-                  if ($item->getFromDB($key)) {
-                     if (!$link->getFromDBForItems($item_1, $item_2)) {
-                        // TODO : don't we need this, if both items are of the same type ?
-                        //if ($item_1->getType() == $item_2->getType()) {
-                        if (false) {
-                           if (!$link->getFromDBForItems($item_2, $item_1)) {
-                              $res['ko']++;
-                              $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
-                              continue;
-                           }
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
-                           continue;
-                        }
-                     }
-                     if ($link->can($link->getID(), DELETE)) {
-                        if ($link->delete(array('id' => $link->getID()))) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
-                     }
-                  } else {
+                  if (!$item->getFromDB($key)) {
                      $res['ko']++;
                      $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                     continue;
+                  }
+                  $query = 'SELECT `'.static::getIndexName().'`
+                            FROM `'.static::getTable().'`';
+                  $WHERE = array();
+                  if (preg_match('/^itemtype/', static::$itemtype_1)) {
+                     $WHERE[] = " `".static::$itemtype_1."` = '".$item_1->getType()."'";
+                  }
+                  $WHERE[] = " `".static::$items_id_1."` = '".$item_1->getID()."'";
+                  if (preg_match('/^itemtype/', static::$itemtype_2)) {
+                     $WHERE[] = " `".static::$itemtype_2."` = '".$item_2->getType()."'";
+                  }
+                  $WHERE[] = " `".static::$items_id_2."` = '".$item_2->getID()."'";
+                  $query .= 'WHERE ('.implode(' AND ', $WHERE).')';
+                  if (($specificities['check_both_items_if_same_type'])
+                      && ($item_1->getType() == $item_2->getType())) {
+                     if (preg_match('/^itemtype/', static::$itemtype_1)) {
+                        $WHERE[] = " `".static::$itemtype_1."` = '".$item_2->getType()."'";
+                     }
+                     $WHERE[] = " `".static::$items_id_1."` = '".$item_2->getID()."'";
+                     if (preg_match('/^itemtype/', static::$itemtype_2)) {
+                        $WHERE[] = " `".static::$itemtype_2."` = '".$item_2->getType()."'";
+                     }
+                     $WHERE[] = " `".static::$items_id_2."` = '".$item_2->getID()."'";
+                     $query .= ' OR ('.implode(' AND ', $WHERE).')';
                   }
                }
+
+               $request        = $DB->request($query);
+
+               $number_results = $request->numrows();
+
+               if ($number_results == 0) {
+                  $res['ko']++;
+                  $res['messages'][] = $link->getErrorMessage(ERROR_NOT_FOUND);
+                  continue;
+               }
+
+               $ok      = 0;
+               $ko      = 0;
+               $noright = 0;
+
+               foreach ($DB->request($query) as $line) {
+                  if ($link->can($line[static::getIndexName()], DELETE)) {
+                     if ($link->delete(array('id' => $line[static::getIndexName()]))) {
+                        $ok++;
+                     } else {
+                        $ko++;
+                        $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                     }
+                  } else {
+                     $noright++;
+                     $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                  }
+               }
+
+               if ($ok == $number_results) {
+                  $res['ok']++;
+               } else {
+                  if ($ko > 0) {
+                     $res['ko']++;
+                  }
+                  if ($noright > 0) {
+                     $res['noright']++;
+                  }
+               }
+
             }
             break;
       }

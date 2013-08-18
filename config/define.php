@@ -138,6 +138,7 @@ define("ERROR_NOT_FOUND",1);
 define("ERROR_RIGHT",2);
 define("ERROR_COMPAT",3);
 define("ERROR_ON_ACTION",4);
+define("ERROR_ALREADY_DEFINED",5);
 
 
 // For plugins

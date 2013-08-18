@@ -264,17 +264,6 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    * Get possible items for massive actions
-    *
-    * @since 0.85
-    *
-    * @return the array of possible types
-   **/
-   static function getPossibleItems() {
-      return array('Monitor', 'Peripheral', 'Phone', 'Printer');
-   }
-
-   /**
     * @since 0.85
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
@@ -283,7 +272,9 @@ class Computer_Item extends CommonDBRelation{
 
       $action_prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
-      if (in_array($itemtype, static::getPossibleItems())) {
+      $specificities = self::getRelationMassiveActionsSpecificities();
+
+      if (in_array($itemtype, $specificities['itemtypes'])) {
          $actions[$action_prefix.'add']    = _x('button', 'Connect');
          $actions[$action_prefix.'remove'] = _x('button', 'Disconnect');
       }
@@ -293,85 +284,26 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-    *
-    * @warning this is not valid if $itemtype_1 == $itemtype_2 !
-    *
     * @since 0.85
-    * @see CommonDBTM::showMassiveActionsSubForm()
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
 
-      switch ($action) {
-         case 'add' :
-            if (isset($input['item']['Computer'])) {
-               $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
-                                            'items_id_name'   => 'peer_items_id',
-                                            'entity_restrict' => $_SESSION["glpiactive_entity"],
-                                            'itemtypes'       => static::getPossibleItems(),
-                                            'onlyglobal'      => true,
-                                            'checkright'      => true);
-               Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            } else {
-               $itemtype = MassiveAction::getItemtypeFromInput($input, true);
-               Computer_Item::dropdownConnect('Computer', $itemtype, "peer_computers_id");
-            }
-            echo "<br><br>".Html::submit(__s('Connect'), array('name' => 'massiveaction'));
-            return true;
+      $specificities = parent::getRelationMassiveActionsSpecificities();
 
-         case 'remove' :
-            // TODO : don't we need this action ?
-            if (isset($input['item']['Computer'])) {
-               echo Html::hidden('peer_itemtype', array('value' => ''));
-               echo Html::hidden('peer_items_id', array('value' => -1));
-               /*
-                 // TODO : why not allowing such thing ?
-               $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
-                                            'items_id_name'   => 'peer_items_id',
-                                            'entity_restrict' => $_SESSION["glpiactive_entity"],
-                                            'itemtypes'       => static::getPossibleItems(),
-                                            'onlyglobal'      => true,
-                                            'checkright'      => true);
-               Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-               */
-            } else {
-               echo Html::hidden('peer_computers_id', array('value' => '-1'));
-            }
-            echo "<br><br>".Html::submit(__s('Disconnect'), array('name' => 'massiveaction'));
-            return true;
-      }
+      $specificities['itemtypes'] = array('Monitor', 'Peripheral', 'Phone', 'Printer');
 
-      return parent::showMassiveActionsSubForm($action, $input);
-   }
+      $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
+      $specificities['select_items_options_2']['onlyglobal']      = true;
 
+      $specificities['only_remove_all_at_once'] = true;
 
-   /**
-   * Disconnect an item to its computer
-   *
-   * @param $item    CommonDBTM object: the Monitor/Phone/Peripheral/Printer
-   *
-   * @return boolean : action succeeded
-   */
-   function disconnectForItem(CommonDBTM $item) {
-      global $DB;
+      // Set the labels for add_item and remove_item
+      $specificities['button_labels']['add']    = __s('Connect');
+      $specificities['button_labels']['remove'] = __s('Disconnect');
 
-      if ($item->getField('id')) {
-         $query = "SELECT `id`
-                   FROM `glpi_computers_items`
-                   WHERE `itemtype` = '".$item->getType()."'
-                         AND `items_id` = '".$item->getField('id')."'";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 0) {
-            $ok = true;
-            while ($data = $DB->fetch_assoc($result)) {
-               if ($this->can($data["id"],UPDATE)) {
-                  $ok &= $this->delete($data);
-               }
-            }
-            return $ok;
-         }
-      }
-      return false;
+      return $specificities;
    }
 
 

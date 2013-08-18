@@ -737,60 +737,41 @@ class Document_Item extends CommonDBRelation{
 
    /**
     * @since 0.85
-    * @see CommonDBTM::showMassiveActionsSubForm()
+    * @see CommonDBRelation::getRelationMassiveActionsPeerForSubForm()
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
-      global $CFG_GLPI;
-
-      $showAllItemsOptions = array('itemtype_name'   => 'peer_itemtype',
-                                   'items_id_name'   => 'peer_items_id',
-                                   'itemtypes'       => $CFG_GLPI["document_types"],
-                                   'checkright'      => true);
-
+   static function getRelationMassiveActionsPeerForSubForm($action, array $input) {
       switch ($action) {
-
-         case 'add' :
-            Document::dropdown(array('name' => 'peer_documents_id'));
-            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
-            return true;
-
-         case 'add_item' :
-            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            echo "<br><br>".Html::submit(_x('button','Add'), array('name' => 'massiveaction'));
-            return true;
-
-         case 'remove' :
-            Document::dropdown(array('name' => 'peer_documents_id'));
-            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
-                                         array('name' => 'massiveaction'));
-            return true;
-
-         case 'remove_item' :
-            $showAllItemsOptions['emptylabel'] = __('Remove all occurences');
-            Dropdown::showSelectItemFromItemtypes($showAllItemsOptions);
-            echo "<br><br>".Html::submit(_sx('button', 'Delete permanently'),
-                                         array('name' => 'massiveaction'));
-            return true;
-
+         case 'add':
+         case 'remove':
+            return 1;
+         case 'add_item':
+         case 'remove_item':
+            return 2;
       }
-
-      return parent::showMassiveActionsSubForm($action, $input);
+      return 0;
    }
 
 
    /**
     * @since 0.85
-    * @see CommonDBRelation::getNormalizedMassiveActionFromAction()
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
-   static function getNormalizedMassiveActionFromAction($action) {
-      switch ($action) {
-         case 'add_item':
-            return 'add';
-         case 'remove_item':
-            return 'remove';
-      }
-      return $action;
-   }
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
 
+      $specificities = parent::getRelationMassiveActionsSpecificities();
+
+      $specificities['itemtypes'] = $CFG_GLPI['document_types'];
+
+      // Define normalized action for add_item and remove_item
+      $specificities['normalized']['add'][]    = 'add_item';
+      $specificities['normalized']['remove'][] = 'remove_item';
+
+      // Set the labels for add_item and remove_item
+      $specificities['button_labels']['add_item']    = $specificities['button_labels']['add'];
+      $specificities['button_labels']['remove_item'] = $specificities['button_labels']['remove'];
+
+      return $specificities;
+   }
 }
 ?>
