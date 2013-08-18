@@ -2443,7 +2443,7 @@ class Html {
    **/
    static function getMassiveActionCheckBox($itemtype, $id, array $options = array()) {
 
-      $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]));
+      $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$_SERVER['REQUEST_URI']][$itemtype][$id]));
       $options['id']            = "massaction_item_".$itemtype."_$id";
       $options['name']          = "item[$itemtype][".$id."]";
       $options['zero_on_empty'] = false;
@@ -2646,7 +2646,7 @@ class Html {
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             // Clean selection
-            $_SESSION['glpimassiveactionselected'] = array();
+            $_SESSION['glpimassiveactionselected'][$_SERVER['REQUEST_URI']] = array();
          }
       }
    }

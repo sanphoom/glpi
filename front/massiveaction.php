@@ -77,13 +77,23 @@ if (isset($_POST["action"])
     && count($_POST["item"])) {
 
    /// Save selection
+   $exploded_REFERER = parse_url ($_SERVER['HTTP_REFERER']);
+   if (isset($exploded_REFERER['query'])) {
+      $session_selected_entries_name = $exploded_REFERER['path'].'?'.$exploded_REFERER['query'];
+   } else {
+      $session_selected_entries_name = $exploded_REFERER['path'];
+   }
+   if (!isset($_SESSION['glpimassiveactionselected'][$session_selected_entries_name])) {
+      $_SESSION['glpimassiveactionselected'][$session_selected_entries_name] = array();
+   }
+   $session_selected_entries = &$_SESSION['glpimassiveactionselected'][$session_selected_entries_name];
    foreach ($_POST['item'] as $itemtype => $ids) {
-      if (!isset($_SESSION['glpimassiveactionselected'][$itemtype])
-          || (count($_SESSION['glpimassiveactionselected'][$itemtype]) == 0)) {
-         $_SESSION['glpimassiveactionselected'][$itemtype] = array();
+      if (!isset($session_selected_entries[$itemtype])
+          || (count($session_selected_entries[$itemtype]) == 0)) {
+         $session_selected_entries[$itemtype] = array();
          foreach ($ids as $key => $val) {
             if ($val == 1) {
-               $_SESSION['glpimassiveactionselected'][$itemtype][$key] = $key;
+               $session_selected_entries[$itemtype][$key] = $key;
             }
          }
       }
