@@ -1479,6 +1479,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                   }
                   $query = 'SELECT `'.static::getIndexName().'`
                             FROM `'.static::getTable().'`';
+
                   $WHERE = array();
                   if (preg_match('/^itemtype/', static::$itemtype_1)) {
                      $WHERE[] = " `".static::$itemtype_1."` = '".$item_1->getType()."'";
@@ -1489,8 +1490,10 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                   }
                   $WHERE[] = " `".static::$items_id_2."` = '".$item_2->getID()."'";
                   $query .= 'WHERE ('.implode(' AND ', $WHERE).')';
+
                   if (($specificities['check_both_items_if_same_type'])
                       && ($item_1->getType() == $item_2->getType())) {
+                     $WHERE = array();
                      if (preg_match('/^itemtype/', static::$itemtype_1)) {
                         $WHERE[] = " `".static::$itemtype_1."` = '".$item_2->getType()."'";
                      }
@@ -1501,6 +1504,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                      $WHERE[] = " `".static::$items_id_2."` = '".$item_2->getID()."'";
                      $query .= ' OR ('.implode(' AND ', $WHERE).')';
                   }
+
                }
 
                $request        = $DB->request($query);
