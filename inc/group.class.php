@@ -338,12 +338,6 @@ class Group extends CommonTreeDropdown {
       global $CFG_GLPI;
 
       switch ($input['action']) {
-         case "add_user_group" :
-         case "add_supervisor_group" :
-         case "add_delegatee_group" :
-            $gu = new Group_User();
-            return $gu->showSpecificMassiveActionsParameters($input);
-
          case "changegroup" :
             if (isset($input['is_tech'])
                 && isset($input['check_items_id'])
@@ -380,12 +374,6 @@ class Group extends CommonTreeDropdown {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case "add_user_group" :
-         case "add_supervisor_group" :
-         case "add_delegatee_group" :
-            $gu = new Group_User();
-            return $gu->doSpecificMassiveActions($input);
-
          case "changegroup" :
             if (isset($input["field"])
                 && isset($input['groups_id'])) {

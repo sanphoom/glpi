@@ -2390,10 +2390,6 @@ class User extends CommonDBTM {
             echo "</span>\n";
             return true;
 
-         case "add_user_group" :
-            $gu = new Group_User();
-            return $gu->showSpecificMassiveActionsParameters($input);
-
          case "add_userprofile" :
             Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
             echo ".&nbsp;"._n('Profile', 'Profiles', 1)."&nbsp;";
