@@ -528,120 +528,44 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @see CommonDBTM::showSpecificMassiveActionsParameters()
+    * @since 0.85
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
    **/
-   function showSpecificMassiveActionsParameters($input=array()) {
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
 
-      switch ($input['action']) {
-         case "add_user_group" :
-         case "add_supervisor_group" :
-         case "add_delegatee_group" :
-            if ($input['itemtype'] == 'User') {
-               Group::dropdown(array('condition' => '`is_usergroup`'));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Add')."'>";
-               return true;
-            }
-            if ($input['itemtype'] == 'Group') {
-               User::dropdown(array('right'  => "all"));
-               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                              _sx('button', 'Add')."'>";
-               return true;
-            }
-            break;
+      $specificities = parent::getRelationMassiveActionsSpecificities();
 
-         default :
-            return parent::showSpecificMassiveActionsParameters($input);
+      $specificities['select_items_options_1'] = array('right'     => 'all');
+      $specificities['select_items_options_2'] = array('condition' => '`is_usergroup`');
 
-      }
-      return false;
+      // Define normalized action for add_item and remove_item
+      $specificities['normalized']['add'][] = 'add_supervisor';
+      $specificities['normalized']['add'][] = 'add_delegatee';
+
+      $specificities['button_labels']['add_supervisor'] = $specificities['button_labels']['add'];
+      $specificities['button_labels']['add_delegatee']  = $specificities['button_labels']['add'];
+
+      $specificities['update_if_different'] = true;
+
+      return $specificities;
    }
 
 
-   /**
-    * @see CommonDBTM::doSpecificMassiveActions()
-   **/
-   function doSpecificMassiveActions($input=array()) {
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      switch ($input['action']) {
-         case "add_user_group" :
-         case "add_supervisor_group" :
-         case "add_delegatee_group" :
-            foreach ($input["item"] as $key => $val) {
-               if ($val == 1) {
-                  if (isset($input['users_id'])) {
-                     // Add users to groups
-                     $input2 = array('groups_id' => $key,
-                                     'users_id'  => $input['users_id']);
-                     $refitem = new Group();
-                     $refitem->getFromDB($key);
-                  } else if (isset($input['groups_id'])) { // Add groups to users
-                     $input2 = array('groups_id' => $input["groups_id"],
-                                     'users_id'  => $key);
-                     $refitem = new User();
-                     $refitem->getFromDB($key);
-                  } else {
-                     return false;
-                  }
-                  $updateifnotfound = false;
-                  if ($input["action"] == 'add_supervisor_group') {
-                     $input2['is_manager'] = 1;
-                     $updateifnotfound     = true;
-                  }
-                  if ($input["action"] == 'add_delegatee_group') {
-                     $input2['is_userdelegate'] = 1;
-                     $updateifnotfound          = true;
-                  }
-                  $group = new Group();
-                  $user  = new user();
-                  if ($group->getFromDB($input2['groups_id'])
-                     && $user->getFromDB($input2['users_id'])) {
-                     if ($updateifnotfound
-                        && $this->getFromDBForItems($user, $group)) {
-                        if ($this->can($this->getID(), UPDATE)) {
-                           $input2['id'] = $this->getID();
-                           if ($this->update($input2)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
-                        }
-                     } else {
-                        if ($this->can(-1, CREATE, $input2)) {
-                           if ($this->add($input2)) {
-                              $res['ok']++;
-                           } else {
-                              $res['ko']++;
-                              $res['messages'][] = $refitem->getErrorMessage(ERROR_ON_ACTION);
-                           }
-                        } else {
-                           $res['noright']++;
-                           $res['messages'][] = $refitem->getErrorMessage(ERROR_RIGHT);
-                        }
-                     }
-                  } else {
-                     $res['ko']++;
-                  }
-               }
-            }
-            break;
-
-         default :
-            return parent::doSpecificMassiveActions($input);
+   static function getInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+                                                          array $input) {
+      switch ($action) {
+         case 'add_supervisor':
+            return array('is_manager' => 1);
+         case 'add_delegatee':
+            return array('is_userdelegate' => 1);
       }
-      return $res;
+
+      return array();
    }
 
 
-   /**
+  /**
     * Get search function for the class
     *
     * @return array of search option

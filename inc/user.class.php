@@ -2356,7 +2356,8 @@ class User extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
-         $actions['add_user_group']  = __('Associate to a group');
+         $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = __('Associate to a group');
+         $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove'] = __('Dissociate from a group');
          $actions['add_userprofile'] = __('Associate to a profile');
       }
 
