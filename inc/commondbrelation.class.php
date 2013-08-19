@@ -1113,7 +1113,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Add relation specificities to the subForm of the massive action
    **/
-   static function showMassiveActionsRelationSubForm($action, array $input) {
+   static function showRelationMassiveActionsSubForm($action, array $input) {
    }
 
 
@@ -1230,7 +1230,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             }
 
             // Allow any relation to display its own fields (Networkport_Vlan for tagged ...)
-            static::showMassiveActionsRelationSubForm($action, $input);
+            static::showRelationMassiveActionsSubForm($action, $input);
 
             echo "<br><br>".Html::submit($specificities['button_labels'][$action],
                                          array('name' => 'massiveaction'));

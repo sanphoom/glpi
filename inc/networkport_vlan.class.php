@@ -266,9 +266,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
    /**
     * @since 0.85
-    * @see CommonDBRelation::showMassiveActionsRelationSubForm()
+    * @see CommonDBRelation::showRelationMassiveActionsSubForm()
    **/
-   static function showMassiveActionsRelationSubForm($action, array $input) {
+   static function showRelationMassiveActionsSubForm($action, array $input) {
       if ($action == 'add') {
          echo "<br><br>". __('Tagged'). Html::getCheckbox(array('name' => 'tagged'));
       }
