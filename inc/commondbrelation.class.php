@@ -1099,7 +1099,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                    'can_remove_all_at_once'  => true,
                    'only_remove_all_at_once' => false,
                    'itemtypes'               => array(),
-                   'button_labels'  => array('add'    => _x('button','Add'),
+                   'button_labels'  => array('add'    => _x('button', 'Add'),
                                              'remove' => _sx('button', 'Delete permanently')),
                    'normalized'     => array('add'    => array('add'),
                                              'remove' => array('remove')),
@@ -1282,7 +1282,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $normalized_action = 'remove';
       } else {
          // If we cannot get normalized action, then, its not for this method !
-         return parent::showMassiveActionsSubForm($action, $input);
+         return $res;
       }
 
       $link     = new static();
@@ -1426,8 +1426,8 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                         continue;
                      }
 
+                     $input2[static::getIndexName()] = $link->getID();
                      if ($link->can($link->getID(), UPDATE, $input2)) {
-                        $input2[static::getIndexName()] = $link->getID();
                         if ($link->update($input2)) {
                            $res['ok']++;
                         } else {
@@ -1435,13 +1435,13 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                            $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
                         }
 
-                        // remove link index from $input2, otherwise, not possible to add other elements
-                        unset($input2[static::getIndexName()]);
-
                      } else {
                         $res['noright']++;
                         $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
                      }
+
+                     // if index defined, then cannot not add any other link due to index unicity
+                     unset($input2[static::getIndexName()]);
 
                   } else {
 

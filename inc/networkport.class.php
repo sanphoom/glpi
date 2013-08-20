@@ -914,7 +914,6 @@ class NetworkPort extends CommonDBChild {
          $vlan_prefix = 'NetworkPort_Vlan'.MassiveAction::CLASS_ACTION_SEPARATOR;
          $actions[$vlan_prefix.'add']    = __('Associate a VLAN');
          $actions[$vlan_prefix.'remove'] = __('Dissociate a VLAN');
-         $actions['move_port']           = _x('button', 'Move');
      }
       return $actions;
    }
@@ -1157,6 +1156,24 @@ class NetworkPort extends CommonDBChild {
          self::showForItem($item);
          return true;
       }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBConnexity::getConnexityMassiveActionsSpecificities()
+   **/
+   static function getConnexityMassiveActionsSpecificities() {
+
+      $specificities = parent::getConnexityMassiveActionsSpecificities();
+
+      $specificities['reaffect']  = true;
+      $specificities['itemtypes'] = array('NetworkEquipment');
+
+      $specificities['normalized']['unaffect'] = array();
+      $specificities['action_name']['affect']  = _x('button', 'Move');
+
+      return $specificities;
    }
 
 }

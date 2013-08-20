@@ -2418,10 +2418,6 @@ class User extends CommonDBTM {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case "add_user_group" :
-            $gu = new Group_User();
-            return $gu->doSpecificMassiveActions($input);
-
          case "force_user_ldap_update" :
             if (self::canUpdate()) {
                $ids = array();

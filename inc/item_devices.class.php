@@ -781,6 +781,5 @@ class Item_Devices extends CommonDBRelation {
       unset($values[READ]);
       return $values;
    }
-
 }
 ?>

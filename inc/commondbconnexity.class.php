@@ -392,21 +392,66 @@ abstract class CommonDBConnexity extends CommonDBTM {
    }
 
    /**
+    * Get all specificities of the current itemtype concerning the massive actions
+    *
+    * @since 0.85
+    *
+    * @return array of the specificities :
+    *        'reaffect'   is it possible to reaffect the connexity (1 or 2 for CommonDBRelation)
+    *        'itemtypes'  the types of the item in cas of reaffectation
+    *        'normalized' array('affect', 'unaffect') of arrays containing each action
+    *        'button_labels'          array of the labels of the button indexed by the action name
+   **/
+   static function getConnexityMassiveActionsSpecificities() {
+
+      return array('reaffect'      => false,
+                   'itemtypes'     => array(),
+                   'normalized'    => array('affect'   => array('affect'),
+                                            'unaffect' => array('unaffect')),
+                   'action_name'   => array('affect'   => __('Associate'),
+                                            'unaffect' => __('Dissociate')),
+                   );
+
+   }
+
+
+   /**
     * @since 0.85
     * @see CommonDBTM::getMassiveActionsForItemtype()
    **/
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
                                                 CommonDBTM $checkitem = NULL) {
-      $action_name = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'unaffect';
 
+      $unaffect = false;
+      $affect   = false;
       if (is_a($itemtype, 'CommonDBChild', true)) {
+         $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
          if (!$itemtype::$mustBeAttached) {
-            $actions[$action_name] = __('Dissociate');
+            $unaffect = true;
+            $affect   = true;
+         } elseif ($specificities['reaffect']) {
+            $affect = true;
          }
       } elseif (is_a($itemtype, 'CommonDBRelation', true)) {
+         $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
          if ((!$itemtype::$mustBeAttached_1) || (!$itemtype::$mustBeAttached_2)) {
-            $actions[$action_name] = __('Dissociate');
+            $unaffect = true;
+            $affect   = true;
+         } elseif ($specificities['reaffect']) {
+            $affect = true;
          }
+      } else {
+         return;
+      }
+
+      $prefix = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+
+      if ($unaffect) {
+         $actions[$prefix.'unaffect'] = $specificities['action_name']['unaffect'];
+      }
+
+      if ($affect) {
+         $actions[$prefix.'affect'] = $specificities['action_name']['affect'];
       }
 
       parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
@@ -419,9 +464,36 @@ abstract class CommonDBConnexity extends CommonDBTM {
    **/
    static function showMassiveActionsSubForm($action, array $input) {
 
-      switch ($action) {
+      $itemtypes_affect   = array();
+      $itemtypes_unaffect = array();
+      foreach (array_keys($input['item']) as $itemtype) {
+         if (!is_a($itemtype, __CLASS__, true)) {
+            continue;
+         }
+         $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
+         if (in_array($action, $specificities['normalized']['affect'])) {
+            $itemtypes_affect[$itemtype] = $specificities;
+            continue;
+         }
+         if (in_array($action, $specificities['normalized']['unaffect'])) {
+            $itemtypes_unaffect[$itemtype] = $specificities;
+            continue;
+         }
+      }
+
+      if (count($itemtypes_affect) > count($itemtypes_unaffect)) {
+         $normalized_action = 'affect';
+         $itemtypes         = $itemtypes_affect;
+      } elseif (count($itemtypes_affect) < count($itemtypes_unaffect)) {
+         $normalized_action = 'unaffect';
+         $itemtypes         = $itemtypes_unaffect;
+      } else {
+         return parent::showMassiveActionsSubForm($action, $input);
+      }
+
+      switch ($normalized_action) {
          case 'unaffect':
-            foreach ($input['item'] as $itemtype => $ids) {
+            foreach ($itemtypes as $itemtype => $specificities) {
                if (is_a($itemtype, 'CommonDBRelation', true)) {
                   $peer_field = "peer[$itemtype]";
                   if ((!$itemtype::$mustBeAttached_1) && (!$itemtype::$mustBeAttached_2)) {
@@ -453,9 +525,72 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
             echo "<br><br>".Html::submit(__('Dissociate'), array('name' => 'massiveaction'));
             return true;
+
+         case 'affect':
+            $peertypes = array();
+            foreach ($itemtypes as $itemtype => $specificities) {
+               if (!$specificities['reaffect']) {
+                  continue;
+               }
+               if (is_a($itemtype, 'CommonDBRelation', true)) {
+                  if ($specificities['reaffect'] == 1) {
+                     $peertype = $itemtype::$itemtype_1;
+                  } else {
+                     $peertype = $itemtype::$itemtype_2;
+                  }
+               } else {
+                  $peertype = $itemtype::$itemtype;
+               }
+               if (preg_match('/^itemtype/', $peertype)) {
+                  $peertypes = array_merge($peertypes, $specificities['itemtypes']);
+               } else {
+                  $peertypes[] = $peertype;
+               }
+            }
+            $peertypes = array_unique($peertypes);
+            if (count($peertypes) == 0) {
+               exit();
+            }
+            $options = array();
+            if (count($peertypes) == 1) {
+               $options['name']   = 'peers_id';
+
+               $type_for_dropdown = $peertypes[0];
+
+               if (preg_match('/^itemtype/', $peertype)) {
+                  echo Html::hidden('peertype', array('value' => $type_for_dropdown));
+               }
+
+               $type_for_dropdown::dropdown($options);
+            } else {
+               $options['itemtype_name'] = 'peertype';
+               $options['items_id_name'] = 'peers_id';
+               $options['itemtypes']     = $peertypes;
+               Dropdown::showSelectItemFromItemtypes($options);
+            }
+            echo "<br><br>".Html::submit(__('Associate'), array('name' => 'massiveaction'));
+            return true;
       }
 
       return parent::showMassiveActionsSubForm($action, $input);
+   }
+
+
+   /**
+    * @since 0.85
+    * Set based array for static::add or static::update in case of massive actions are doing
+    * something.
+    *
+    * @param $action the name of the action
+    * @param $item the item on which apply the massive action
+    * @param $ids an array of the ids of the item on which apply the action
+    * @param $input the array of the input provided by the form ($_POST, $_GET ...)
+    *
+    * @return array containing the elements
+   **/
+   static function getConnexityInputForProcessingOfMassiveActions($action, CommonDBTM $item,
+                                                                  array $ids, array $input) {
+      return array();
    }
 
 
@@ -466,9 +601,30 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
 
-      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
+      $itemtype      = $item->getType();
 
-      switch ($action) {
+      $res            = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
+
+      $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
+
+      // First, get normalized action : affect or unaffect
+      if (in_array($action, $specificities['normalized']['affect'])) {
+         $normalized_action = 'affect';
+      } elseif (in_array($action, $specificities['normalized']['unaffect'])) {
+         $normalized_action = 'unaffect';
+      } else {
+         // If we cannot get normalized action, then, its not for this method !
+         return $res;
+      }
+
+      $nb_items = 0;
+      foreach ($ids as $key => $val) {
+         if ($val == 1) {
+            $nb_items ++;
+         }
+      }
+
+      switch ($normalized_action) {
          case 'unaffect' :
             foreach ($ids as $key => $val) {
                if ($val != 1) {
@@ -502,6 +658,86 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
             break;
 
+         case 'affect':
+
+            if (!$specificities['reaffect']) {
+               $res['ko'] += $nb_items;
+               $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+               break;
+            }
+
+            if (is_a($item->getType(), 'CommonDBRelation', true)) {
+               if ($specificities['reaffect'] == 1) {
+                  $peertype = $itemtype::$itemtype_1;
+                  $peers_id = $itemtype::$items_id_1;
+               } else {
+                  $peertype = $itemtype::$itemtype_2;
+                  $peers_id = $itemtype::$items_id_2;
+               }
+            } else {
+               $peertype = $itemtype::$itemtype;
+               $peers_id = $itemtype::$items_id;
+            }
+
+            $input2 = $itemtype::getConnexityInputForProcessingOfMassiveActions($action, $item,
+                                                                                $ids, $input);
+            $input2[$peers_id] = $input['peers_id'];
+
+            if (preg_match('/^itemtype/', $peertype)) {
+               if (!in_array($input['peertype'], $specificities['itemtypes'])) {
+                  $res['ko'] += $nb_items;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                  break;
+               }
+               $input2[$peertype] = $input['peertype'];
+            } else {
+               if ($peertype != $input['peertype']) {
+                  $res['ko'] += $nb_items;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                  break;
+               }
+            }
+
+            foreach ($ids as $key => $val) {
+               if ($val != 1) {
+                  continue;
+               }
+
+               if (!$item->getFromDB($key)) {
+                  $res['ko']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                  continue;
+               }
+
+               if (preg_match('/^itemtype/', $peertype)) {
+                  if (($input2[$peertype] == $item->fields[$peertype])
+                      && ($input2[$peers_id] == $item->fields[$peers_id])) {
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_ALREADY_DEFINED);
+                     continue;
+                  }
+               } else {
+                  if ($input2[$peers_id] == $item->fields[$peers_id]) {
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_ALREADY_DEFINED);
+                     continue;
+                  }
+               }
+
+               $input2[$item->getIndexName()] = $item->getID();
+               if ($item->can($item->getID(), UPDATE, $input2)) {
+                  if ($item->update($input2)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                  }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+               }
+            }
+            break;
       }
 
       return $res;
