@@ -104,9 +104,12 @@ class MassiveAction {
       if (empty($GLOBALS['hidden_fields_defined'])) {
          $GLOBALS['hidden_fields_defined'] = true;
 
-         echo Html::hidden('action',          array('value' => $input['action']));
-         echo Html::hidden('specific_action', array('value' => $input['specific_action']));
-         echo Html::hidden('is_deleted',      array('value' => $input['is_deleted']));
+         foreach (array('action', 'specific_action', 'is_deleted',
+                        'item_itemtype', 'item_items_id') as $field) {
+            if (isset($input[$field])) {
+               echo Html::hidden($field, array('value' => $input[$field]));
+            }
+         }
 
          if (isset($input['item']) && is_array($input['item'])) {
             foreach ($input['item'] as $itemtype => $items_ids) {

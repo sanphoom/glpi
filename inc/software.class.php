@@ -330,6 +330,47 @@ class Software extends CommonDBTM {
 
 
    /**
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
+      global $CFG_GLPI;
+
+      $res = CommonDBTM::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
+
+      switch ($action) {
+         case 'merge':
+            if (isset($input['item_items_id'])) {
+
+               $items = array();
+               foreach ($ids as $id => $val) {
+                  if ($val != 1) {
+                     continue;
+                  }
+                  $items[$id] = 1;
+               }
+
+               if ($item->can($input['item_items_id'], UPDATE)) {
+                  if ($item->merge($items)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                  }
+               } else {
+                  $res['noright']++;
+                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+      }
+      return $res;
+   }
+
+
+   /**
     * @see CommonDBTM::doSpecificMassiveActions()
    **/
    function doSpecificMassiveActions($input=array()) {
@@ -339,25 +380,6 @@ class Software extends CommonDBTM {
                    'noright' => 0);
 
       switch ($input['action']) {
-         case "mergesoftware":
-            if (isset($input["id"])
-                && isset($input["item"]) && is_array($input["item"]) && count($input["item"])) {
-
-               if ($this->can($_POST["id"], UPDATE)) {
-                  if ($this->merge($_POST["item"])) {
-                     $res['ok']++;
-                  } else {
-                     $res['ko']++;
-                     $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                  }
-               } else {
-                  $res['noright']++;
-                  $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-               }
-            } else {
-               $res['ko']++;
-            }
-            break;
 
          case "compute_software_category" :
             $softcatrule = new RuleSoftwareCategoryCollection();
@@ -902,7 +924,9 @@ class Software extends CommonDBTM {
          // TODO MassiveAction: specific_actions
          $paramsma = array('num_displayed'    => $nb,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('mergesoftware' => __('Merge')) );
+                           'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.
+                                                       'merge' => __('Merge')),
+                           'item'             => $this);
          Html::showMassiveActions($paramsma);
 
          echo "<table class='tab_cadre_fixehov'>";
@@ -923,7 +947,6 @@ class Software extends CommonDBTM {
             echo "<td class='right'>".SoftwareLicense::countForSoftware($data["id"])."</td></tr>\n";
          }
          echo "</table>\n";
-         echo "<input type='hidden' name='id' value='$ID'>";
          $paramsma['ontop'] =false;
          Html::showMassiveActions($paramsma);
          Html::closeForm();

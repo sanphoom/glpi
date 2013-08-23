@@ -2524,6 +2524,7 @@ class Html {
     *                         if ([extraparams]['hidden'] is set : add hidden fields to post)
     *    - specific_actions : array of specific actions (do not use standard one)
     *    - confirm          : string of confirm message before massive action
+    *    - item             : CommonDBTM object that has to be passed to the actions
     *
     * @return nothing
    **/
@@ -2548,6 +2549,7 @@ class Html {
       $p['container']         = '';
       $p['display_arrow']     = true;
       $p['title']             = _n('Action', 'Actions', 2);
+      $p['item']              = false;
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2570,6 +2572,10 @@ class Html {
       }
       if (is_array($p['specific_actions']) && count($p['specific_actions'])) {
          $p['extraparams']['specific_actions'] = $p['specific_actions'];
+      }
+      if ($p['item'] instanceof CommonDBTM) {
+         $p['extraparams']['item_itemtype'] = $p['item']->getType();
+         $p['extraparams']['item_items_id'] = $p['item']->getID();
       }
 
       // Manage modal window
