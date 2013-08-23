@@ -91,8 +91,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          case "move_license" :
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
-                  Toolbox::logDebug("`glpi_softwarelicenses`.`softwares_id` = '".$input['options']['move']['softwares_id']."'");
-                  Toolbox::logDebug($input['options']['move']['used']);
                   SoftwareLicense::dropdown(array('condition'
                                                   => "`glpi_softwarelicenses`.`softwares_id` = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
