@@ -552,7 +552,7 @@ class Group_User extends CommonDBRelation{
    }
 
 
-   static function getInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
                                                           array $input) {
       switch ($action) {
          case 'add_supervisor':

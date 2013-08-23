@@ -308,6 +308,37 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
+   * Disconnect an item to its computer
+   *
+   * @param $item    CommonDBTM object: the Monitor/Phone/Peripheral/Printer
+   *
+   * @return boolean : action succeeded
+   */
+   function disconnectForItem(CommonDBTM $item) {
+      global $DB;
+
+      if ($item->getField('id')) {
+         $query = "SELECT `id`
+                   FROM `glpi_computers_items`
+                   WHERE `itemtype` = '".$item->getType()."'
+                         AND `items_id` = '".$item->getField('id')."'";
+         $result = $DB->query($query);
+
+         if ($DB->numrows($result) > 0) {
+            $ok = true;
+            while ($data = $DB->fetch_assoc($result)) {
+               if ($this->can($data["id"],UPDATE)) {
+                  $ok &= $this->delete($data);
+               }
+            }
+            return $ok;
+         }
+      }
+      return false;
+   }
+
+
+   /**
     *
     * Print the form for computers or templates connections to printers, screens or peripherals
     *

@@ -330,21 +330,23 @@ class Software extends CommonDBTM {
 
 
    /**
-    * @see CommonDBTM::doSpecificMassiveActions()
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   function doSpecificMassiveActions($input=array()) {
+   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
+                                                       array $input) {
 
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
+      $res = CommonDBTM::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
-      switch ($input['action']) {
-         case "mergesoftware":
+      Toolbox::logDebug($input);
+      return $res;
+
+      switch ($action) {
+         case 'mergesoftware':
             if (isset($input["id"])
                 && isset($input["item"]) && is_array($input["item"]) && count($input["item"])) {
 
                if ($this->can($_POST["id"], UPDATE)) {
-                  if ($this->merge($_POST["item"])) {
+                  if ($this->merge($input["item"])) {
                      $res['ok']++;
                   } else {
                      $res['ko']++;
@@ -422,9 +424,9 @@ class Software extends CommonDBTM {
 
       // Only use for History (not by search Engine)
       $tab                       = array();
-      
+
       $tab['common']             = __('Characteristics');
-      
+
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Name');
@@ -902,7 +904,7 @@ class Software extends CommonDBTM {
          // TODO MassiveAction: specific_actions
          $paramsma = array('num_displayed'    => $nb,
                            'container'        => 'mass'.__CLASS__.$rand,
-                           'specific_actions' => array('mergesoftware' => __('Merge')) );
+                           'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'mergesoftware' => __('Merge')) );
          Html::showMassiveActions($paramsma);
 
          echo "<table class='tab_cadre_fixehov'>";

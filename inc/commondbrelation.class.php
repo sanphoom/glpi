@@ -1254,7 +1254,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return array containing the elements
    **/
-   static function getInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
                                                           array $input) {
       return array();
    }
@@ -1288,7 +1288,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       $link     = new static();
 
       // Get the default 'input' entries from the relation
-      $input2   = static::getInputForProcessingOfMassiveActions($action, $item, $ids, $input);
+      $input2   = static::getRelationInputForProcessingOfMassiveActions($action, $item, $ids, $input);
 
       $nb_items = 0;
       foreach ($ids as $key => $val) {

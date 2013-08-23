@@ -275,7 +275,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
-   static function getInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
                                                           array $input) {
       if ($action == 'add') {
          return array('tagged' => $input['tagged']);
