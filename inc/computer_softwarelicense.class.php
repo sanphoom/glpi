@@ -91,9 +91,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          case "move_license" :
             if (isset($input['options'])) {
                if (isset($input['options']['move'])) {
+                  Toolbox::logDebug("`glpi_softwarelicenses`.`softwares_id` = '".$input['options']['move']['softwares_id']."'");
+                  Toolbox::logDebug($input['options']['move']['used']);
                   SoftwareLicense::dropdown(array('condition'
-                                                   => "`glpi_softwarelicenses`.`softwares_id`
-                                                        = '".$input['options']['move']['softwares_id']."'",
+                                                  => "`glpi_softwarelicenses`.`softwares_id` = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
                                                    => $input['options']['move']['used']));
                      echo "<br><br><input type='submit' name='massiveaction' value=\"".
@@ -446,6 +447,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                // TODO MassiveAction: specific_actions
                $paramsma = array('num_displayed'    => $_SESSION['glpilist_limit'],
+                                 'container'        => 'mass'.__CLASS__.$rand,
                                  'specific_actions' => array('move_license'
                                                                       => _x('button', 'Move'),
                                                              'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.
