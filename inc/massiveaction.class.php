@@ -101,7 +101,7 @@ class MassiveAction {
    **/
    static function addHiddenFieldsFromInput(array $input) {
 
-      if (empty($GLOBALS['hidden_fields_defined'])) {
+      if (!isset($GLOBALS['hidden_fields_defined'])) {
          $GLOBALS['hidden_fields_defined'] = true;
 
          echo Html::hidden('action',          array('value' => $input['action']));
@@ -117,7 +117,6 @@ class MassiveAction {
          }
       }
    }
-
 
    /**
     * Extract itemtype from the input (ie.: $input['itemtype'] is defined or $input['item'] only
