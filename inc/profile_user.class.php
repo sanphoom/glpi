@@ -939,6 +939,7 @@ class Profile_User extends CommonDBRelation {
       $specificities = parent::getRelationMassiveActionsSpecificities();
 
       $specificities['dropdown_method_2'] = 'dropdownUnder';
+      $specificities['can_remove_all_at_once'] = false;
 
       return $specificities;
    }
