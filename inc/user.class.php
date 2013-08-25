@@ -2358,7 +2358,8 @@ class User extends CommonDBTM {
       if ($isadmin) {
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = __('Associate to a group');
          $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove'] = __('Dissociate from a group');
-         $actions['add_userprofile'] = __('Associate to a profile');
+         $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = __('Associate to a profile');
+         $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove'] = __('Dissociate from a profile');
       }
 
       if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
@@ -2388,16 +2389,6 @@ class User extends CommonDBTM {
             echo "<input type='submit' name='massiveaction' class='submit' value='".
                    _sx('button','Post')."'>";
             echo "</span>\n";
-            return true;
-
-         case "add_userprofile" :
-            Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
-            echo ".&nbsp;"._n('Profile', 'Profiles', 1)."&nbsp;";
-            Profile::dropdownUnder();
-            echo ".&nbsp;".__('Recursive')."&nbsp;";
-            Dropdown::showYesNo("is_recursive", 0);
-            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                           _sx('button', 'Add')."'>";
             return true;
 
          default :
@@ -2468,34 +2459,6 @@ class User extends CommonDBTM {
             } else {
                $res['noright']++;
                $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-            }
-            break;
-
-         case "add_userprofile" :
-            $right = new Profile_User();
-            if (isset($input['profiles_id']) && ($input['profiles_id'] > 0)
-                && isset($input['entities_id']) && ($input['entities_id'] >= 0)) {
-               $input2                 = array();
-               $input2['entities_id']  = $input['entities_id'];
-               $input2['profiles_id']  = $input['profiles_id'];
-               $input2['is_recursive'] = $input['is_recursive'];
-               foreach ($input["item"] as $key => $val) {
-                  if ($val == 1) {
-                     $input2['users_id'] = $key;
-                     $this->getFromDB($input2['users_id']);
-                     if ($right->can(-1, CREATE, $input2)) {
-                        if ($right->add($input2)) {
-                           $res['ok']++;
-                        } else {
-                           $res['ko']++;
-                           $res['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION);
-                        }
-                     } else {
-                        $res['noright']++;
-                        $res['messages'][] = $this->getErrorMessage(ERROR_RIGHT);
-                     }
-                  }
-               }
             }
             break;
 

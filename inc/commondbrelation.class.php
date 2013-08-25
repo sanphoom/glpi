@@ -1095,7 +1095,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    **/
    static function getRelationMassiveActionsSpecificities() {
       return array('select_items_options_1'  => array(),
+                   'dropdown_method_1'       => 'dropdown',
                    'select_items_options_2'  => array(),
+                   'dropdown_method_2'       => 'dropdown',
                    'can_remove_all_at_once'  => true,
                    'only_remove_all_at_once' => false,
                    'itemtypes'               => array(),
@@ -1112,8 +1114,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
    /**
     * Add relation specificities to the subForm of the massive action
+    *
+    * @param $action the type of the current action
+    * @param $input the inputs (mainly $_POST or $_GET)
+    * @param $peer_number the number of the concerned peer
+    *
+    * @return nothing (display only)
    **/
-   static function showRelationMassiveActionsSubForm($action, array $input) {
+   static function showRelationMassiveActionsSubForm($action, array $input, $peer_number) {
    }
 
 
@@ -1224,13 +1232,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                } else {
 
                   $options['name'] = 'peer_'.$peers_id;
-                  $peertype::dropdown($options);
 
+                  $dropdown_method = $specificities['dropdown_method_'.$peer_number];
+                  $peertype::$dropdown_method($options);
                }
             }
 
             // Allow any relation to display its own fields (Networkport_Vlan for tagged ...)
-            static::showRelationMassiveActionsSubForm($action, $input);
+            static::showRelationMassiveActionsSubForm($action, $input, $peer_number);
 
             echo "<br><br>".Html::submit($specificities['button_labels'][$action],
                                          array('name' => 'massiveaction'));
@@ -1255,7 +1264,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @return array containing the elements
    **/
    static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
-                                                          array $input) {
+                                                                 array $input) {
       return array();
    }
 

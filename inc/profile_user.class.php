@@ -67,7 +67,7 @@ class Profile_User extends CommonDBRelation {
       $forbidden[] = 'MassiveAction'.MassiveAction::CLASS_ACTION_SEPARATOR.'update';
       return $forbidden;
    }
-   
+
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
@@ -928,5 +928,51 @@ class Profile_User extends CommonDBRelation {
       return true;
    }
 
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
+   **/
+   static function getRelationMassiveActionsSpecificities() {
+      global $CFG_GLPI;
+
+      $specificities = parent::getRelationMassiveActionsSpecificities();
+
+      $specificities['dropdown_method_2'] = 'dropdownUnder';
+
+      return $specificities;
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::showRelationMassiveActionsSubForm()
+   **/
+   static function showRelationMassiveActionsSubForm($action, array $input, $peer_number) {
+      if (($action == 'add') && ($peer_number == 2)) {
+         echo "<br><br>"._n('Entity', 'Entities', 1).':&nbsp;';
+         Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
+         echo "<br><br>".__('Recursive').":&nbsp;";
+         Html::showCheckbox(array('name' => 'is_recursive'));
+      }
+   }
+
+
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
+   **/
+   static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
+                                                                 array $input) {
+      $result = array();
+      if (isset($input['entities_id'])) {
+         $result['entities_id'] = $input['entities_id'];
+      }
+      if (isset($input['is_recursive'])) {
+         $result['is_recursive'] = $input['is_recursive'];
+      }
+
+      return $result;
+   }
 }
 ?>

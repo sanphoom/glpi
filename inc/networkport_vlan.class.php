@@ -268,15 +268,19 @@ class NetworkPort_Vlan extends CommonDBRelation {
     * @since 0.85
     * @see CommonDBRelation::showRelationMassiveActionsSubForm()
    **/
-   static function showRelationMassiveActionsSubForm($action, array $input) {
+   static function showRelationMassiveActionsSubForm($action, array $input, $peer_number) {
       if ($action == 'add') {
          echo "<br><br>". __('Tagged'). Html::getCheckbox(array('name' => 'tagged'));
       }
    }
 
 
+   /**
+    * @since 0.85
+    * @see CommonDBRelation::getRelationInputForProcessingOfMassiveActions()
+   **/
    static function getRelationInputForProcessingOfMassiveActions($action, CommonDBTM $item, array $ids,
-                                                          array $input) {
+                                                                 array $input) {
       if ($action == 'add') {
          return array('tagged' => $input['tagged']);
       }
