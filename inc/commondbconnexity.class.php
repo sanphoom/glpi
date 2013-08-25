@@ -601,10 +601,13 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
                                                        array $input) {
 
-      $itemtype      = $item->getType();
-
       $res            = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
 
+      if (!is_a($item, __CLASS__, true)) {
+         return $res;
+      }
+
+      $itemtype      = $item->getType();
       $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
 
       // First, get normalized action : affect or unaffect
