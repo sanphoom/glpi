@@ -497,6 +497,7 @@ class Document_Item extends CommonDBRelation{
       $is_recursive  = $item->isRecursive();
 
       $query = "SELECT `glpi_documents_items`.`id` AS assocID,
+                       `glpi_documents_items`.`date_mod` AS assocdate,
                        `glpi_entities`.`id` AS entity,
                        `glpi_documents`.`name` AS assocName,
                        `glpi_documents`.*
@@ -518,6 +519,7 @@ class Document_Item extends CommonDBRelation{
       if ($item->getType() == 'Document') {
          $query .= "UNION
                     SELECT `glpi_documents_items`.`id` AS assocID,
+                           `glpi_documents_items`.`date_mod` AS assocdate,
                            `glpi_entities`.`id` AS entity,
                            `glpi_documents`.`name` AS assocName,
                            `glpi_documents`.*
@@ -536,7 +538,7 @@ class Document_Item extends CommonDBRelation{
             $query .= " AND `glpi_documents`.`entities_id`='0' ";
          }
       }
-      $query .= " ORDER BY `assocName`";
+      $query .= " ORDER BY `assocdate` DESC, `assocName`";
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -665,6 +667,7 @@ class Document_Item extends CommonDBRelation{
       echo "<th>".__('Heading')."</th>";
       echo "<th>".__('MIME type')."</th>";
       echo "<th>".__('Tag')."</th>";
+      echo "<th>".__('Date')."</th>";
       echo "</tr>";
       $used = array();
 
@@ -719,6 +722,7 @@ class Document_Item extends CommonDBRelation{
             echo "</td>";
             echo "<td class='center'>".$data["mime"]."</td>";
             echo "<td class='center'>".$data["tag"]."</td>";
+            echo "<td class='center'>".Html::convDateTime($data["assocdate"])."</td>";
             echo "</tr>";
             $i++;
          }
