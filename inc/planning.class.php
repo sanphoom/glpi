@@ -170,7 +170,7 @@ class Planning extends CommonGLPI {
     * @param $display  display of send string ? (true by default)
    **/
    static function dropdownState($name, $value='', $display=true) {
-      /// TODO : move Information to value 3 : to fix search engine
+
       $values = array(0 => _n('Information', 'Information', 1),
                       1 => __('To do'),
                       2 => __('Done'));
