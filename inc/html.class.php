@@ -2357,6 +2357,7 @@ class Html {
     *                - massive_tags  the tag to set for massive checkbox update
     *                - checked       is it checked or not ?
     *                - zero_on_empty do we send 0 on submit when it is not checked ?
+    *                - specific_tags HTML5 tags to add
     *             all options provided to Html::getCriterionForMassiveCheckboxes()
     *
     * @return the HTML code for the checkbox
@@ -2373,6 +2374,7 @@ class Html {
       $params['massive_tags']    = '';
       $params['checked']         = false;
       $params['zero_on_empty']   = true;
+      $params['specific_tags']   = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2400,10 +2402,16 @@ class Html {
       }
 
       if (!empty($params['massive_tags'])) {
-         if (is_array($params['massive_tags'])) {
-            $params['massive_tags'] = implode(' ', $params['massive_tags']);
+         $params['specific_tags']['data-glpicore-cb-massive-tags'] = $params['massive_tags'];
+      }
+
+      if (!empty($params['specific_tags'])) {
+         foreach ($params['specific_tags'] as $tag => $values) {
+            if (is_array($values)) {
+               $value = implode(' ', $values);
+            }
+            $out .= " $tag='$values'";
          }
-         $out .= " data-glpicore-cb-massive-tags='".$params['massive_tags']."'";
       }
 
       if ($params['readonly']) {
@@ -2444,7 +2452,9 @@ class Html {
    static function getMassiveActionCheckBox($itemtype, $id, array $options = array()) {
 
       $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$_SERVER['REQUEST_URI']][$itemtype][$id]));
-      $options['id']            = "massaction_item_".$itemtype."_$id";
+      if (!isset($options['specific_tags']['data-glpicore-ma-tag'])) {
+         $options['specific_tags']['data-glpicore-ma-tag'] = 'common';
+      }
       $options['name']          = "item[$itemtype][".$id."]";
       $options['zero_on_empty'] = false;
 
@@ -2525,6 +2535,7 @@ class Html {
     *    - specific_actions : array of specific actions (do not use standard one)
     *    - confirm          : string of confirm message before massive action
     *    - item             : CommonDBTM object that has to be passed to the actions
+    *    - checkbox_tag     : the tag of the elements to send to the ajax window (default: common)
     *
     * @return nothing
    **/
@@ -2550,6 +2561,7 @@ class Html {
       $p['display_arrow']     = true;
       $p['title']             = _n('Action', 'Actions', 2);
       $p['item']              = false;
+      $p['checkbox_tag']      = 'common';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2612,15 +2624,17 @@ class Html {
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             echo "<div id='massiveactioncontent$identifier'></div>";
 
-            if (!empty($p['container'])) {
-               $js_modal_fields  = "                  var items = $('[id=";
-               $js_modal_fields .= $p['container'];
-               $js_modal_fields .= "] [id*=massaction_item_]:checked')";
+            if (!empty($p['checkbox_tag'])) {
+               $js_modal_fields  = "                  var items = $('";
+               if (!empty($p['container'])) {
+                  $js_modal_fields .= '[id='.$p['container'].'] ';
+               }
+               $js_modal_fields .= "[data-glpicore-ma-tag~=".$p['checkbox_tag']."]')";
                $js_modal_fields .= ".each(function( index ) {\n";
-               $js_modal_fields .= "                    fields[$(this).attr('name')] = 1;\n";
+               $js_modal_fields .= "                    fields[$(this).attr('name')] = $(this).attr('value');\n";
                $js_modal_fields .= "        });";
             } else {
-               $js_modal_fields = '';
+               $js_modal_fields = "";
             }
 
             Ajax::createModalWindow('massiveaction_window'.$identifier,
