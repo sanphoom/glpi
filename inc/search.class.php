@@ -3191,8 +3191,10 @@ class Search {
       // Default case
       if (in_array($searchtype, array('equals', 'notequals','under', 'notunder'))) {
 
-         if (($table != getTableForItemType($itemtype))
-             || ($itemtype == 'AllAssets')) {
+         if ((!isset($searchopt[$ID]['searchequalsonfield'])
+               || !$searchopt[$ID]['searchequalsonfield'])
+            && ($table != getTableForItemType($itemtype))
+               || ($itemtype == 'AllAssets')) {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
             $out = " $link (`$table`.`$field`".$SEARCH;
@@ -4591,7 +4593,13 @@ class Search {
                if (isset($searchopt[$ID]['withdays'])) {
                   $withdays = $searchopt[$ID]['withdays'];
                }
-               return Html::timestampToString($data[$NAME.$num],$withseconds, $withdays);
+
+               $split = explode("$$$$", $data[$NAME.$num]);
+               $out   = '';
+               foreach ($split as $val) {
+                   $out .= (empty($out)?'':'<br>').Html::timestampToString($val,$withseconds, $withdays);
+               }
+               return $out;
 
             case "email" :
                $split         = explode('$$$$', $data[$NAME.$num]);
@@ -4727,7 +4735,17 @@ class Search {
                }
                $withoutid = self::explodeWithID("$$", $split[$k]);
                $count_display++;
-               $out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
+               // Get specific display if available
+               $itemtype = getItemTypeForTable($table);
+               if ($item = getItemForItemtype($itemtype)) {
+                  $tmpdata  = array($field => $withoutid[0]);
+                  $specific = $item->getSpecificValueToDisplay($field, $tmpdata, array('html' => true));
+               }
+               if (!empty($specific)) {
+                  $out .= $specific;
+               } else {
+                  $out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
+               }
             }
          }
          return $out;
