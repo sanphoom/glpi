@@ -2016,10 +2016,10 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             if ($canedit) {
                echo "&nbsp;";
-               Html::showSimpleForm($this->getFormURL(), 'delete_group',
+               $linkclass = new $this->grouplinkclass();
+               Html::showSimpleForm($linkclass->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
-                                    array('id'                        => $d['id'],
-                                          $this->getForeignKeyField() => $this->fields['id']),
+                                    array('id'                        => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo '<br>';
@@ -2645,10 +2645,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($canedit) {
                echo "&nbsp;";
-               Html::showSimpleForm($this->getFormURL(), 'delete_user',
+               $linkuser = new $this->userlinkclass();
+               Html::showSimpleForm($linkuser->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
-                                    array('id'                        => $d['id'],
-                                          $this->getForeignKeyField() => $this->fields['id']),
+                                    array('id'                        => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo "<br>";

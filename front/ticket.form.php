@@ -124,26 +124,6 @@ if (isset($_POST["add"])) {
 
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 
-} else if (isset($_POST['delete_user'])) {
-   ///TODO try to move it to specific form page
-   $ticket_user = new Ticket_User();
-   $ticket_user->check($_POST['id'], DELETE);
-   $ticket_user->delete($_POST);
-
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
-
-} else if (isset($_POST['delete_group'])) {
-   $group_ticket = new Group_Ticket();
-   $group_ticket->check($_POST['id'], DELETE);
-   $group_ticket->delete($_POST);
-
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
-
 } else if (isset($_POST['delete_supplier'])) {
    $supplier_ticket = new Supplier_Ticket();
    $supplier_ticket->check($_POST['id'], DELETE);
