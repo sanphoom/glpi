@@ -775,7 +775,7 @@ class CommonGLPI {
 
 
          $name = $this->getTypeName(1);
-         if ($this instanceof CommonDBTM) {
+         if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {
             $name = sprintf(__('%1$s - %2$s'), $name,
                             sprintf(__('%1$s - ID %2$d'),
                                     $this->getName(), $this->fields['id']));
@@ -989,7 +989,9 @@ class CommonGLPI {
 
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
-         $this->getFromDB($options['id']);
+         if (!$this->getFromDB($options['id'])) {
+            Html::displayNotFoundError();
+         }
       }
 
       $this->showNavigationHeader($options);
