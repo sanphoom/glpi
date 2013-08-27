@@ -95,15 +95,6 @@ if (isset($_POST["add"])) {
       Html::back();
    }
 
-} else if (isset($_POST['delete_supplier'])) {
-   $problem_supplier = new Problem_Supplier();
-   $problem_supplier->check($_POST['id'], DELETE);
-   $problem_supplier->delete($_POST);
-
-   Event::log($_POST['problems_id'], "problem", 4, "maintain",
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_POST['problems_id']);
-
 } else {
    Html::header(Problem::getTypeName(2), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    $problem->display($_GET);

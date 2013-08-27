@@ -2006,7 +2006,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $groupicon = self::getActorIcon('group',$type);
       $group     = new Group();
-
+      $linkclass = new $this->grouplinkclass();
+               
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $d) {
             $k = $d['groups_id'];
@@ -2016,10 +2017,9 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             if ($canedit) {
                echo "&nbsp;";
-               $linkclass = new $this->grouplinkclass();
                Html::showSimpleForm($linkclass->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
-                                    array('id'                        => $d['id']),
+                                    array('id' => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo '<br>';
@@ -2047,7 +2047,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $suppliericon = self::getActorIcon('supplier',$type);
       $supplier     = new Supplier();
-
+      $linkclass = new $this->supplierlinkclass();
+      
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
             $k = $d['suppliers_id'];
@@ -2057,10 +2058,9 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             if ($canedit) {
                echo "&nbsp;";
-               Html::showSimpleForm($this->getFormURL(), 'delete_supplier',
+               Html::showSimpleForm($linkclass->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
-                                    array('id'                        => $d['id'],
-                                          $this->getForeignKeyField() => $this->fields['id']),
+                                    array('id' => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo '<br>';
@@ -2594,6 +2594,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       $usericon = self::getActorIcon('user',$type);
       $user     = new User();
+      $linkuser = new $this->userlinkclass();
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $d) {
@@ -2636,7 +2637,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if ($canedit
                    || ($d['users_id'] == Session::getLoginUserID())) {
-                  $linkuser = new $this->userlinkclass();
                   $opt      = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
                                     'popup' => $linkuser->getFormURL()."?id=".$d['id']);
                   Html::showToolTip($text, $opt);
@@ -2645,10 +2645,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($canedit) {
                echo "&nbsp;";
-               $linkuser = new $this->userlinkclass();
                Html::showSimpleForm($linkuser->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
-                                    array('id'                        => $d['id']),
+                                    array('id' => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo "<br>";

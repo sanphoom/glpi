@@ -124,15 +124,6 @@ if (isset($_POST["add"])) {
 
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 
-} else if (isset($_POST['delete_supplier'])) {
-   $supplier_ticket = new Supplier_Ticket();
-   $supplier_ticket->check($_POST['id'], DELETE);
-   $supplier_ticket->delete($_POST);
-
-   Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
-
 } else if (isset($_POST['addme_observer'])) {
    $ticket_user = new Ticket_User();
    $track->check($_POST['tickets_id'], READ);
