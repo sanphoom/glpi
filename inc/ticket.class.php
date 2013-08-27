@@ -4795,6 +4795,8 @@ class Ticket extends CommonITILObject {
                             AND `glpi_tickets_users`.`type` = '".CommonITILActor::REQUESTER."') ";
       $search_assign   = " (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
                             AND `glpi_tickets_users`.`type` = '".CommonITILActor::ASSIGN."')";
+      $search_observer = " (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
+                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::OBSERVER."')";
       $is_deleted      = " `glpi_tickets`.`is_deleted` = 0 ";
 
 
@@ -4811,6 +4813,9 @@ class Ticket extends CommonITILObject {
                $search_users_id = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
                                      AND `glpi_groups_tickets`.`type`
                                            = '".CommonITILActor::REQUESTER."') ";
+               $search_observer = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
+                                     AND `glpi_groups_tickets`.`type`
+                                           = '".CommonITILActor::OBSERVER."') ";
             }
          }
       }
@@ -4868,7 +4873,18 @@ class Ticket extends CommonITILObject {
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
-
+         case "observed" :
+            $query .= "WHERE $is_deleted
+                             AND ($search_observer)
+                             AND (`status` IN ('".self::INCOMING."',
+                                               '".self::PLANNED."',
+                                               '".self::ASSIGNED."',
+                                               '".self::WAITING."'))
+                             AND NOT ( $search_assign )
+                             AND NOT ( $search_users_id ) ".
+                             getEntitiesRestrictRequest("AND","glpi_tickets");
+            break;
+            
          case "requestbyself" : // on affiche les tickets demandés le user qui sont planifiés ou assignés
                // à quelqu'un d'autre (exclut les self-tickets)
 
@@ -4958,7 +4974,25 @@ class Ticket extends CommonITILObject {
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Tickets to be processed'), $number, $numrows)."</a>";
                   break;
-
+                  
+               case "observed":
+                  foreach ($_SESSION['glpigroups'] as $gID) {
+                     $options['field'][$num]      = 65; // groups_id
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = $gID;
+                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'notold';
+                     $options['link'][$num]       = 'AND';
+                     $num++;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
+                  break;
+                  
                case "requestbyself" :
                default :
                   foreach ($_SESSION['glpigroups'] as $gID) {
@@ -5080,6 +5114,22 @@ class Ticket extends CommonITILObject {
                         Html::makeTitle(__('Your tickets to close'), $number, $numrows)."</a>";
                   break;
 
+               case "observed" :
+                  $options['field'][0]      = 66; // users_id
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = Session::getLoginUserID();
+                  $options['link'][0]       = 'AND';
+
+                  $options['field'][1]      = 12; // status
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = 'notold';
+                  $options['link'][1]       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
+                  break;
+                  
                case "requestbyself" :
                default :
                   $options['field'][0]      = 4; // users_id
