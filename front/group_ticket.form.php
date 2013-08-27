@@ -40,7 +40,6 @@ $link = new Group_Ticket();
 Session ::checkLoginUser();
 
 if (isset($_POST['delete'])) {
-   $link = new Group_Ticket();
    $link->check($_POST['id'], DELETE);
    $link->delete($_POST);
 

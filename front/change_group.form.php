@@ -29,36 +29,24 @@
 
 /** @file
 * @brief
-* @since version 0.83
 */
 
 if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }
 
-$link = new Problem_User();
+$link = new Change_Group();
 
 Session ::checkLoginUser();
-Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
 
-if (isset($_POST["update"])) {
-   $link->check($_POST["id"], UPDATE);
-   $link->update($_POST);
-
-} else if (isset($_POST['delete'])) {
+if (isset($_POST['delete'])) {
    $link->check($_POST['id'], DELETE);
    $link->delete($_POST);
 
-   Event::log($link->fields['problems_id'], "problem", 4, "maintain",
-              //TRANS: %s is the user login
+   Event::log($link->fields['changes_id'], "change", 4, "maintain",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$link->fields['problems_id']);
-
-} else if (isset($_GET["id"])) {
-   $link->showUserNotificationForm($_GET["id"]);
-} else {
-   Html::displayErrorAndDie('Lost');
+   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$link->fields['changes_id']);
 }
 
-Html::popFooter();
+Html::displayErrorAndDie('Lost');
 ?>

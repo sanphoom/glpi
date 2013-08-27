@@ -49,6 +49,15 @@ if (isset($_POST["update"])) {
    echo "window.parent.location.reload();";
    echo "</script>";
 
+} else if (isset($_POST['delete'])) {
+   $link->check($_POST['id'], DELETE);
+   $link->delete($_POST);
+
+   Event::log($link->fields['changes_id'], "change", 4, "maintain",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$link->fields['changes_id']);
+
 } else if (isset($_GET["id"])) {
    $link->showUserNotificationForm($_GET["id"]);
 } else {

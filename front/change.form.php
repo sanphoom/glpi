@@ -90,24 +90,6 @@ if (isset($_POST["add"])) {
 
    Html::back();
 
-} else if (isset($_POST['delete_user'])) {
-   $change_user = new Change_User();
-   $change_user->check($_POST['id'], DELETE);
-   $change_user->delete($_POST);
-
-   Event::log($_POST['changes_id'], "change", 4, "maintain",
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
-
-} else if (isset($_POST['delete_group'])) {
-   $change_group = new Change_Group();
-   $change_group->check($_POST['id'], DELETE);
-   $change_group->delete($_POST);
-
-   Event::log($_POST['changes_id'], "change", 4, "maintain",
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
-
 } else if (isset($_POST['delete_supplier'])) {
    $change_supplier = new Change_Supplier();
    $change_supplier->check($_POST['id'], DELETE);
