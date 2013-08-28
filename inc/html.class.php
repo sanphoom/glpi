@@ -2625,14 +2625,17 @@ class Html {
             echo "<div id='massiveactioncontent$identifier'></div>";
 
             if (!empty($p['checkbox_tag'])) {
-               $js_modal_fields  = "                  var items = $('";
+               $js_modal_fields  = "            var items = $('";
                if (!empty($p['container'])) {
                   $js_modal_fields .= '[id='.$p['container'].'] ';
                }
                $js_modal_fields .= "[data-glpicore-ma-tags~=".$p['checkbox_tag']."]')";
                $js_modal_fields .= ".each(function( index ) {\n";
-               $js_modal_fields .= "                    fields[$(this).attr('name')] = $(this).attr('value');\n";
-               $js_modal_fields .= "        });";
+               $js_modal_fields .= "              fields[$(this).attr('name')] = $(this).attr('value');\n";
+               $js_modal_fields .= "              if (($(this).attr('type') == 'checkbox') && (!$(this).is(':checked'))) {\n";
+               $js_modal_fields .= "                 fields[$(this).attr('name')] = 0;\n";
+               $js_modal_fields .= "              }\n";
+               $js_modal_fields .= "            });";
             } else {
                $js_modal_fields = "";
             }

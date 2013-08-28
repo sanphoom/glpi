@@ -100,9 +100,10 @@ class Ajax {
       if (!empty($param['js_modal_fields'])) {
          $out .= $param['js_modal_fields']."\n";
       }
-      $out .= "            $(this).load('$url', fields);\n}\n
-         });\n";
-      $out .= "</script>";
+      $out .= "            $(this).load('$url', fields);
+         }
+      });\n";
+      $out .= "</script>\n";
 
       if ($param['display']) {
          echo $out;
