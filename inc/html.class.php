@@ -2452,8 +2452,8 @@ class Html {
    static function getMassiveActionCheckBox($itemtype, $id, array $options = array()) {
 
       $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$_SERVER['REQUEST_URI']][$itemtype][$id]));
-      if (!isset($options['specific_tags']['data-glpicore-ma-tag'])) {
-         $options['specific_tags']['data-glpicore-ma-tag'] = 'common';
+      if (!isset($options['specific_tags']['data-glpicore-ma-tags'])) {
+         $options['specific_tags']['data-glpicore-ma-tags'] = 'common';
       }
       $options['name']          = "item[$itemtype][".$id."]";
       $options['zero_on_empty'] = false;
@@ -2629,7 +2629,7 @@ class Html {
                if (!empty($p['container'])) {
                   $js_modal_fields .= '[id='.$p['container'].'] ';
                }
-               $js_modal_fields .= "[data-glpicore-ma-tag~=".$p['checkbox_tag']."]')";
+               $js_modal_fields .= "[data-glpicore-ma-tags~=".$p['checkbox_tag']."]')";
                $js_modal_fields .= ".each(function( index ) {\n";
                $js_modal_fields .= "                    fields[$(this).attr('name')] = $(this).attr('value');\n";
                $js_modal_fields .= "        });";
@@ -4266,7 +4266,16 @@ class Html {
       unset($params['value']);
       unset($params['valuename']);
 
-      $output = Html::hidden($name, array('value' => $value, 'id' => $field_id));
+      $options = array('value' => $value, 'id' => $field_id);
+      if (!empty($params['specific_tags'])) {
+         foreach ($params['specific_tags'] as $tag => $value) {
+            if (is_array($value)) {
+               $value = implode(' ', $value);
+            }
+            $options[$tag] = $value;
+         }
+      }
+      $output = Html::hidden($name, $options);
 
       $js = "";
       $js .= " $('#$field_id').select2({

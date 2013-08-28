@@ -70,6 +70,7 @@ class Dropdown {
     *    - width                : specific width needed (default 80%)
     *    - permit_select_parent : boolean / for tree dropdown permit to see parent items
     *                                       not available by default (default false)
+    *    - specific_tags        : array of HTML5 tags to add the the field
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -103,6 +104,7 @@ class Dropdown {
       $params['display']              = true;
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
+      $params['specific_tags']        = array();
 
 
       if (is_array($options) && count($options)) {
@@ -179,6 +181,7 @@ class Dropdown {
                  'limit'                => $limit_length,
                  'on_change'            => $params['on_change'],
                  'permit_select_parent' => $params['permit_select_parent'],
+                 'specific_tags'        => $params['specific_tags'],
                 );
       $output = Html::jsAjaxDropdown($params['name'], $field_id,
                                      $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
