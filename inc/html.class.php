@@ -2535,7 +2535,7 @@ class Html {
     *    - specific_actions : array of specific actions (do not use standard one)
     *    - confirm          : string of confirm message before massive action
     *    - item             : CommonDBTM object that has to be passed to the actions
-    *    - checkbox_tag     : the tag of the elements to send to the ajax window (default: common)
+    *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
     *
     * @return nothing
    **/
@@ -2561,7 +2561,7 @@ class Html {
       $p['display_arrow']     = true;
       $p['title']             = _n('Action', 'Actions', 2);
       $p['item']              = false;
-      $p['checkbox_tag']      = 'common';
+      $p['tag_to_send']      = 'common';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -2624,12 +2624,12 @@ class Html {
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             echo "<div id='massiveactioncontent$identifier'></div>";
 
-            if (!empty($p['checkbox_tag'])) {
+            if (!empty($p['tag_to_send'])) {
                $js_modal_fields  = "            var items = $('";
                if (!empty($p['container'])) {
                   $js_modal_fields .= '[id='.$p['container'].'] ';
                }
-               $js_modal_fields .= "[data-glpicore-ma-tags~=".$p['checkbox_tag']."]')";
+               $js_modal_fields .= "[data-glpicore-ma-tags~=".$p['tag_to_send']."]')";
                $js_modal_fields .= ".each(function( index ) {\n";
                $js_modal_fields .= "              fields[$(this).attr('name')] = $(this).attr('value');\n";
                $js_modal_fields .= "              if (($(this).attr('type') == 'checkbox') && (!$(this).is(':checked'))) {\n";
@@ -4459,6 +4459,32 @@ class Html {
 
       return sprintf('<input type="hidden" name="%1$s" %2$s>',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
+   }
+
+
+   /**
+    * Recursively creates a hidden input field. If the value is an array, then recursively parse it
+    * to generate as many hidden input as necessary
+    *
+    * @since version 0.85
+    *
+    * @param $fieldName          Name of a field
+    * @param $values             the value: an array or a direct value
+    * @param $options    Array   of HTML attributes.
+    *
+    * @return string A generated hidden input
+   **/
+   static function recursiveHidden($fieldName, array $options = array()) {
+      if ((isset($options['value'])) && (is_array($options['value']))) {
+         $result = '';
+         foreach ($options['value'] as $key => $value) {
+            $options2 = $options;
+            $options2['value'] = $value;
+            $result .= static::recursiveHidden($fieldName.'['.$key.']', $options2)."\n";
+         }
+         return $result;
+      }
+      return static::hidden($fieldName, $options);
    }
 
 

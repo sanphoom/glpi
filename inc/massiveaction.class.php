@@ -104,18 +104,16 @@ class MassiveAction {
       if (empty($GLOBALS['hidden_fields_defined'])) {
          $GLOBALS['hidden_fields_defined'] = true;
 
-         foreach (array('action', 'specific_action', 'is_deleted',
-                        'item_itemtype', 'item_items_id') as $field) {
-            if (isset($input[$field])) {
-               echo Html::hidden($field, array('value' => $input[$field]));
-            }
+         $common_fields = array('action', 'specific_action', 'is_deleted',
+                                'item_itemtype', 'item_items_id', 'item');
+
+         if (!empty($input['massive_action_fields'])) {
+            $common_fields = array_merge($common_fields, $input['massive_action_fields']);
          }
 
-         if (isset($input['item']) && is_array($input['item'])) {
-            foreach ($input['item'] as $itemtype => $items_ids) {
-               foreach ($items_ids as $items_id => $val) {
-                  echo Html::hidden('item['.$itemtype.']['.$items_id.']', array('value' => $val));
-               }
+         foreach ($common_fields as $field) {
+            if (isset($input[$field])) {
+               echo Html::recursiveHidden($field, array('value' => $input[$field]));
             }
          }
       }
@@ -449,6 +447,14 @@ class MassiveAction {
    }
 
 
+   /**
+    * Merge the results of different massive actions.
+    *
+    * @param $global (by reference) the result of the different massive actions
+    * @param $local the result to add to the global result
+    *
+    * @return nothing
+   **/
    static function mergeProcessResult(array &$global, $local) {
       if (is_array($local)) {
          $global['ok']      += $local['ok'];
@@ -461,6 +467,7 @@ class MassiveAction {
          }
       }
    }
+
 
    /**
     * Process the massive actions for all passed items. This a switch between different methods:
@@ -497,7 +504,12 @@ class MassiveAction {
          // Actually, there should be only one itemtype in old system version
          foreach ($input['item'] as $itemtype => $data) {
             $input['itemtype'] = $itemtype;
-            $input['item']     = $data;
+            $input['item'] = array();
+            foreach ($data as $key => $value) {
+               if ($value == 1) {
+                  $input['item'][$key] = 1;
+               }
+            }
 
             // Check if action is available for this itemtype
             if ($item = getItemForItemtype($itemtype)) {
