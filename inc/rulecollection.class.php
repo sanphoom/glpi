@@ -1579,9 +1579,12 @@ class RuleCollection extends CommonDBTM {
    **/
    function cleanTestOutputCriterias(array $output) {
 
+      $rule   = $this->getRuleClass();
+      $actions = $rule->getAllActions();
+
       //If output array contains keys begining with _ : drop it
       foreach ($output as $criteria => $value) {
-         if ($criteria[0] == '_') {
+         if ($criteria[0] == '_'&& !isset($actions[$criteria])) {
             unset($output[$criteria]);
          }
       }
