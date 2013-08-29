@@ -2348,7 +2348,7 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $options array of parameters :
+    * @param $options array of parameters:
     *                - title         its title
     *                - name          its name
     *                - id            its id
@@ -2396,7 +2396,7 @@ class Html {
       }
 
       if ($params['zero_on_empty']) {
-         $out .= " data-glpicore-cb-zero-on-empty='1'";
+         $out                               .= " data-glpicore-cb-zero-on-empty='1'";
          $CFG_GLPI['checkbox-zero-on-empty'] = true;
 
       }
@@ -2432,9 +2432,11 @@ class Html {
     * @brief display a checkbox that $_POST 0 or 1 depending on if it is checked or not.
     * @see Html::getCheckbox()
     *
+    * @since version 0.85
+    *
     * @return nothing (display only)
    **/
-   static function showCheckbox(array $options = array()) {
+   static function showCheckbox(array $options=array()) {
       echo self::getCheckbox($options);
    }
 
@@ -4746,22 +4748,22 @@ class Html {
     * Display choice matrix
     *
     * @since version 0.85
-    * @param $columns array of column field name => column label
-    * @param $rows string or array of field name => array(
-    *                        'label' the label of the row
-    *                        'columns' an array of specific information regaring current row and given column indexed by column field_name
-    *                                    * a string if only have to display a string
-    *                                    * an array('value' => ???, 'readonly' => ???) that is used to Dropdown::showYesNo()
-    * @param $options :
-    *             'title'         of the matrix
-    *             'first_cell'    the content of the upper-left cell
-    *             'row_check_all' set to true to display a checkbox to check all elements of the row
-    *             'col_check_all' set to true to display a checkbox to check all elements of the col
-    *             'rand'          random number to use for ids
+    * @param $columns   array   of column field name => column label
+    * @param $rows      array    of field name => array(
+    *      'label' the label of the row
+    *       'columns' an array of specific information regaring current row and given column indexed by column field_name
+    *                 * a string if only have to display a string
+    *                 * an array('value' => ???, 'readonly' => ???) that is used to Dropdown::showYesNo()
+    * @param $options   array   possible:
+    *       'title'         of the matrix
+    *       'first_cell'    the content of the upper-left cell
+    *       'row_check_all' set to true to display a checkbox to check all elements of the row
+    *       'col_check_all' set to true to display a checkbox to check all elements of the col
+    *       'rand'          random number to use for ids
     *
     * @return random value used to generate the ids
    **/
-   static function showCheckboxMatrix(array $columns, array $rows, array $options = array()) {
+   static function showCheckboxMatrix(array $columns, array $rows, array $options=array()) {
 
       $param['title']                = '';
       $param['first_cell']           = '&nbsp;';
@@ -4808,7 +4810,8 @@ class Html {
          if (!is_array($column)) {
             $columns[$col_name] = $column = array('label' => $column);
          }
-         if (isset($column['short']) && isset($column['long'])) {
+         if (isset($column['short'])
+             && isset($column['long'])) {
             echo $column['short'];
             self::showToolTip($column['long'], array('applyto' => $col_id));
          } else {
@@ -4888,7 +4891,8 @@ class Html {
                         $content['massive_tags'][] = 'table_'.$param['rand'];
                      }
                      $content['name'] = $row_name."[$col_name]";
-                     $content['id']   = Html::cleanId('cb_'.$row_name.'_'.$col_name.'_'.$param['rand']);
+                     $content['id']   = Html::cleanId('cb_'.$row_name.'_'.$col_name.'_'.
+                                                      $param['rand']);
                      Html::showCheckbox($content);
                      $nb_cb_per_col[$col_name]['total'] ++;
                      $nb_cb_per_row['total'] ++;
@@ -4908,11 +4912,15 @@ class Html {
                echo "</td>\n";
             }
          }
-         if (($param['row_check_all']) && (!is_string($row)) && ($nb_cb_per_row['total'] > 1)){
+         if (($param['row_check_all'])
+             && (!is_string($row))
+             && ($nb_cb_per_row['total'] > 1)) {
             $cb_options['tag_for_massive'] = 'row_'.$row_name.'_'.$param['rand'];
             $cb_options['massive_tags']    = 'table_'.$param['rand'];
-            $cb_options['id']              = Html::cleanId('cb_checkall_row_'.$row_name.'_'.$param['rand']);
-            $cb_options['checked']         = ($nb_cb_per_row['checked'] > ($nb_cb_per_row['total'] / 2));
+            $cb_options['id']              = Html::cleanId('cb_checkall_row_'.$row_name.'_'.
+                                                           $param['rand']);
+            $cb_options['checked']         = ($nb_cb_per_row['checked']
+                                                > ($nb_cb_per_row['total'] / 2));
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
          }
          echo "\t</tr>\n";
@@ -4926,8 +4934,10 @@ class Html {
             if ($nb_cb_per_col[$col_name]['total'] > 1) {
                $cb_options['tag_for_massive'] = 'col_'.$col_name.'_'.$param['rand'];
                $cb_options['massive_tags']    = 'table_'.$param['rand'];
-               $cb_options['id']              = Html::cleanId('cb_checkall_col_'.$col_name.'_'.$param['rand']);
-               $cb_options['checked']         = ($nb_cb_per_col[$col_name]['checked'] > ($nb_cb_per_col[$col_name]['total'] / 2));
+               $cb_options['id']              = Html::cleanId('cb_checkall_col_'.$col_name.'_'.
+                                                              $param['rand']);
+               $cb_options['checked']         = ($nb_cb_per_col[$col_name]['checked']
+                                                   > ($nb_cb_per_col[$col_name]['total'] / 2));
                echo Html::getCheckbox($cb_options);
             } else {
                echo "&nbsp;";

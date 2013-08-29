@@ -615,15 +615,17 @@ class Dropdown {
                           'id'   => Html::cleanId("dropdown_".$name.$rand));
 
          switch ($restrict_to) {
-            case 0:
+            case 0 :
                $options['checked']  = false;
                $options['readonly'] = true;
                break;
-            case 1:
+
+            case 1 :
                $options['checked']  = true;
                $options['readonly'] = true;
                break;
-            default:
+
+            default :
                $options['checked']  = ($value ? 1 : 0);
                $options['readonly'] = false;
                break;

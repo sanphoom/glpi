@@ -1730,7 +1730,7 @@ class Rule extends CommonDBTM {
 
       $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditAction".
                          $fields['rules_id'].$fields["id"]."$rand();\""
-                      : '');
+                        : '');
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td width='10'>";
@@ -1854,7 +1854,7 @@ class Rule extends CommonDBTM {
 
       $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditCriteria".
                          $fields['rules_id'].$fields["id"]."$rand();\""
-                       : '');
+                        : '');
       echo "<tr class='tab_bg_1' >";
       if ($canedit) {
          echo "<td width='10'>";
@@ -1879,30 +1879,32 @@ class Rule extends CommonDBTM {
 
    /**
     * @param $fields
-    * @param $addtotd
+    * @param $addtotd   (default '')
    **/
    function getMinimalCriteriaText($fields, $addtotd='') {
 
       $text  = "<td $addtotd>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-      $text .= "<td $addtotd>" . RuleCriteria::getConditionByID($fields["condition"], get_class($this),
-                                                       $fields["criteria"])."</td>";
-      $text .= "<td $addtotd>" . $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"],
-                                                         $fields["pattern"]) . "</td>";
+      $text .= "<td $addtotd>" . RuleCriteria::getConditionByID($fields["condition"],
+                                                                get_class($this),
+                                                                $fields["criteria"])."</td>";
+      $text .= "<td $addtotd>" . $this->getCriteriaDisplayPattern($fields["criteria"],
+                                                                  $fields["condition"],
+                                                                  $fields["pattern"]) . "</td>";
       return $text;
    }
 
 
    /**
     * @param $fields
-    * @param $addtotd
+    * @param $addtotd   (default '')
    **/
-   function getMinimalActionText($fields, $addtotd = '') {
+   function getMinimalActionText($fields, $addtotd='') {
 
       $text  = "<td $addtotd>" . $this->getActionName($fields["field"]) . "</td>";
       $text .= "<td $addtotd>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
       if (isset($fields["value"])) {
          $text .= "<td $addtotd>" . $this->getActionValue($fields["field"], $fields['action_type'],
-                                                $fields["value"]) . "</td>";
+                                                          $fields["value"]) . "</td>";
       } else {
          $text .= "<td $addtotd>&nbsp;</td>";
       }
@@ -2135,7 +2137,7 @@ class Rule extends CommonDBTM {
 
             case "dropdown_groups_validate" :
                return Dropdown::getDropdownName('glpi_groups', $value);
-               
+
             case "dropdown_validation_percent" :
                return TicketValidation_User::showValidationRequired($value, false);
 

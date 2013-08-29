@@ -276,6 +276,10 @@ class ProfileRight extends CommonDBChild {
 
    /**
     * @since version 085
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
    **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
@@ -302,7 +306,7 @@ class ProfileRight extends CommonDBChild {
 
 
    /**
-    * @since version 0.858
+    * @since version 0.85
     *
     * @see CommonDBTM::getLogTypeID()
    **/

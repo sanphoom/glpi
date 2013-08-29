@@ -1070,11 +1070,11 @@ class Profile extends CommonDBTM {
     *
     * @since 0.85
     *
-    * @param $title the kind of lifecycle
-    * @param $html_field field that is sent to _POST
-    * @param $db_field field inside the DB (to get current state)
-    * @param $statuses all available statuses for the given cycle (obj::getAllStatusArray())
-    * @param $canedit can we edit the elements ?
+    * @param $title          the kind of lifecycle
+    * @param $html_field     field that is sent to _POST
+    * @param $db_field       field inside the DB (to get current state)
+    * @param $statuses       all available statuses for the given cycle (obj::getAllStatusArray())
+    * @param $canedit        can we edit the elements ?
     *
     * @return nothing
    **/
@@ -1087,6 +1087,7 @@ class Profile extends CommonDBTM {
          $columns[$index_1] = $status_1;
          $row               = array('label'      => $status_1,
                                     'columns'    => array());
+
          foreach ($statuses as $index_2 => $status_2) {
             $content = array('checked' => true);
             if (isset($this->fields[$db_field][$index_1][$index_2])) {
@@ -2296,7 +2297,7 @@ class Profile extends CommonDBTM {
     * @since version 0.85
     *
     * @param $itemtype   string   itemtype
-    * @param $interface  string   (defautl 'central')
+    * @param $interface  string   (default 'central')
     *
     * @return rights
    **/
@@ -2315,22 +2316,22 @@ class Profile extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param $rights array :
+    * @param $rights array    possible:
     *             'itemtype'   => the type of the item to check (as passed to self::getRightsFor())
     *             'rights'     => when use of self::getRightsFor() is impossible
     *             'label'      => the label for the right
     *             'field'      => the name of the field inside the DB and HTML form (prefixed by '_')
     *             'html_field' => when $html_field != '_'.$field
-    * @param $options array
+    * @param $options array   possible:
     *                 'title'         the title of the matrix
     *                 'canedit'
     *                 'default_class' the default CSS class used for the row
     *
     * @return random value used to generate the ids
    **/
-   function displayRightsChoiceMatrix(array $rights, array $options = array()) {
+   function displayRightsChoiceMatrix(array $rights, array $options=array()) {
 
-      $param = array();
+      $param                  = array();
       $param['title']         = '';
       $param['canedit']       = true;
       $param['default_class'] = '';
@@ -2342,8 +2343,8 @@ class Profile extends CommonDBTM {
       }
 
       $column_labels = array();
-      $columns = array();
-      $rows = array();
+      $columns       = array();
+      $rows          = array();
 
       foreach ($rights as $info) {
 
@@ -2351,8 +2352,10 @@ class Profile extends CommonDBTM {
             $rows[] = $info;
             continue;
          }
-         if (is_array($info) && ((!empty($info['itemtype'])) || (!empty($info['rights'])))
-             && (!empty($info['label'])) && (!empty($info['field']))) {
+         if (is_array($info)
+             && ((!empty($info['itemtype'])) || (!empty($info['rights'])))
+             && (!empty($info['label']))
+             && (!empty($info['field']))) {
 
             $row = array('label'   => $info['label'],
                          'columns' => array());
@@ -2413,10 +2416,11 @@ class Profile extends CommonDBTM {
             }
          });
 
-      return Html::showCheckboxMatrix($columns, $rows, array('title'                => $param['title'],
-                                                             'row_check_all'        => count($columns) > 1,
-                                                             'col_check_all'        => count($rows) > 1,
-                                                             'rotate_column_titles' => count($columns) > 5));
+      return Html::showCheckboxMatrix($columns, $rows,
+                                      array('title'                => $param['title'],
+                                            'row_check_all'        => count($columns) > 1,
+                                            'col_check_all'        => count($rows) > 1,
+                                            'rotate_column_titles' => count($columns) > 5));
    }
 
 
@@ -2425,8 +2429,8 @@ class Profile extends CommonDBTM {
     *
     * @since version 0.85
     *
-    * @param $elements all pair identifier => label
-    * @param $options
+    * @param $elements          all pair identifier => label
+    * @param $options   array   possible:
     *             'canedit'
     *             'field'         name of the HTML field
     *             'value'         the value inside the database
@@ -2441,7 +2445,7 @@ class Profile extends CommonDBTM {
    **/
    static function getLinearRightChoice(array $elements, array $options = array()) {
 
-      $param = array();
+      $param                  = array();
       $param['canedit']       = true;
       $param['field']         = '';
       $param['value']         = '';
@@ -2511,7 +2515,8 @@ class Profile extends CommonDBTM {
          if ($nb_checked > (count($elements) / 2)) {
             $cb_options['checked'] = true;
          }
-         $out .= "&nbsp;-&nbsp;<i><b>".__('Select/unselect all')."</b></i>&nbsp;".Html::getCheckbox($cb_options);
+         $out .= "&nbsp;-&nbsp;<i><b>".__('Select/unselect all')."</b></i>&nbsp;".
+                  Html::getCheckbox($cb_options);
       }
 
       if (!$param['display']) {
@@ -2520,5 +2525,6 @@ class Profile extends CommonDBTM {
 
       echo $out;
    }
+
 }
 ?>

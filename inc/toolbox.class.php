@@ -1233,36 +1233,46 @@ class Toolbox {
     * @param $dest_path     string   path of the new resized picture
     * @param $new_width     string   new width after resized (default 71)
     * @param $new_height    string   new height after resized (default 71)
-    * @param $img_y         string   y axis of picture
-    * @param $img_x         string   x axis of picture
-    * @param $img_width     string   width of picture
-    * @param $img_height    string   height of picture
-    * 
+    * @param $img_y         string   y axis of picture (default 0)
+    * @param $img_x         string   x axis of picture (default 0)
+    * @param $img_width     string   width of picture (default 0)
+    * @param $img_height    string   height of picture (default 0)
+    *
     * @return bool : true or false
    **/
-   static function resizePicture($source_path, $dest_path, $new_width=71, $new_height=71, $img_y=0, $img_x=0, $img_width=0, $img_height=0) {
+   static function resizePicture($source_path, $dest_path, $new_width=71, $new_height=71,
+                                 $img_y=0, $img_x=0, $img_width=0, $img_height=0) {
 
       //get img informations (dimensions and extension)
       $img_infos  = getimagesize($source_path);
-      if(empty($img_width)) $img_width  = $img_infos[0];
-      if(empty($img_height)) $img_height = $img_infos[1];
-      if(empty($new_width))  $new_width  = $img_infos[0];
-      if(empty($new_height)) $new_height = $img_infos[1];
-      
+      if (empty($img_width)) {
+         $img_width  = $img_infos[0];
+      }
+      if (empty($img_height)) {
+         $img_height = $img_infos[1];
+      }
+      if (empty($new_width)) {
+         $new_width  = $img_infos[0];
+      }
+      if (empty($new_height)) {
+         $new_height = $img_infos[1];
+      }
+
       // Image max size is 500 pixels
       $max_size = 500;
-      if($img_width > $max_size || $img_height > $max_size){
+      if (($img_width > $max_size)
+          || ($img_height > $max_size)) {
          $source_aspect_ratio = $img_width / $img_height;
          if ($source_aspect_ratio < 1) {
-           $new_width = $max_size * $source_aspect_ratio;
+           $new_width  = $max_size * $source_aspect_ratio;
            $new_height = $max_size;
          } else {
-           $new_width = $max_size;
+           $new_width  = $max_size;
            $new_height = $max_size / $source_aspect_ratio;
          }
       }
-      
-      $img_type   = $img_infos[2];
+
+      $img_type = $img_infos[2];
 
       switch ($img_type) {
          case IMAGETYPE_BMP :
@@ -1548,7 +1558,6 @@ class Toolbox {
    **/
    static function getItemTypeTabsURL($itemtype, $full=true) {
       global $CFG_GLPI;
-
 
       $filename = "/ajax/common.tabs.php";
 
