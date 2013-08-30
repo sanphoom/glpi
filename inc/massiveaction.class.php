@@ -175,6 +175,20 @@ class MassiveAction {
                            $POST['items'] = $items;
                         }
                      }
+
+                     // Don't affect items that forbid the action
+                     $items = array();
+                     foreach ($POST['items'] as $itemtype => $ids) {
+                        if ($item = getItemForItemtype($itemtype)) {
+                           $forbidden = $item->getForbiddenStandardMassiveAction();
+                           if (in_array($POST['action'], $forbidden)) {
+                              continue;
+                           }
+                           $items[$itemtype] = $ids;
+                        }
+                     }
+                     $POST['items'] = $items;
+
                      $remove_from_post[] = 'dont_filter_for';
                      $remove_from_post[] = 'action_filter';
                   }
