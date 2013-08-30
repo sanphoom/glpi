@@ -2458,7 +2458,7 @@ class Html {
    **/
    static function getMassiveActionCheckBox($itemtype, $id, array $options = array()) {
 
-      $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$_SERVER['REQUEST_URI']][$itemtype][$id]));
+      $options['checked']       = (isset($_SESSION['glpimassiveactionselected'][$itemtype][$id]));
       if (!isset($options['specific_tags']['data-glpicore-ma-tags'])) {
          $options['specific_tags']['data-glpicore-ma-tags'] = 'common';
       }
@@ -2683,7 +2683,7 @@ class Html {
          if (!$p['ontop']
              || (isset($p['forcecreate']) && $p['forcecreate'])) {
             // Clean selection
-            $_SESSION['glpimassiveactionselected'][$_SERVER['REQUEST_URI']] = array();
+            $_SESSION['glpimassiveactionselected'] = array();
          }
       }
    }

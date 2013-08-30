@@ -210,15 +210,10 @@ class MassiveAction {
                   break;
                case 'process':
 
-                  $exploded_REFERER = parse_url ($_SERVER['HTTP_REFERER']);
-                  $selected_entry = $exploded_REFERER['path'];
-                  if (isset($exploded_REFERER['query'])) {
-                     $selected_entry .= '?'.$exploded_REFERER['query'];
-                  }
                   if (isset($POST['initial_items'])) {
-                     $_SESSION['glpimassiveactionselected'][$selected_entry] = $POST['initial_items'];
+                     $_SESSION['glpimassiveactionselected'] = $POST['initial_items'];
                   } else {
-                     $_SESSION['glpimassiveactionselected'][$selected_entry] = array();
+                     $_SESSION['glpimassiveactionselected'] = array();
                   }
 
                   $remove_from_post = array('items', 'action', 'action_name', 'processor',
@@ -302,7 +297,7 @@ class MassiveAction {
       if (isset($this->items)) {
          return $this->items;
       }
-      return NULL;
+      return array();
    }
 
 
