@@ -198,7 +198,7 @@ class MassiveAction {
                         $POST['processor'] = '';
                         $POST['action']    = $POST['action'];
                      }
-                     if ($POST['processor'] != __CLASS__) {
+                     if ($POST['processor'] == '') {
                         throw new Exception(__('Not re-implemented for the moment !'));
                      }
                   }
@@ -720,6 +720,19 @@ class MassiveAction {
     * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
    **/
    function process() {
+
+      if ($this->processor != __CLASS__) {
+         global $CFG_GLPI;
+         Toolbox::logDebug($this->POST);
+
+         echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
+            __s('Warning')."'><br><br>";
+         echo "<span class='b'>".__('Not re-implemented for the moment !')."</span><br>";
+         Html::displayBackLink();
+         echo "</div>";
+         Html::popFooter();
+         exit();
+      }
 
       if (!empty($this->items)) {
 

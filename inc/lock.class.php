@@ -468,9 +468,9 @@ class Lock {
     * @since 0.85
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
 
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'unlock':
             $types = array('Monitor'                => _n('Monitor', 'Monitors', 2),
                            'Peripheral'             => _n('Device', 'Devices', 2),

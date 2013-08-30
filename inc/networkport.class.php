@@ -1168,7 +1168,7 @@ class NetworkPort extends CommonDBChild {
       $specificities = parent::getConnexityMassiveActionsSpecificities();
 
       $specificities['reaffect']  = true;
-      $specificities['itemtypes'] = array('NetworkEquipment');
+      $specificities['itemtypes'] = array('Computer', 'NetworkEquipment');
 
       $specificities['normalized']['unaffect'] = array();
       $specificities['action_name']['affect']  = _x('button', 'Move');

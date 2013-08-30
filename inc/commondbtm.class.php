@@ -3024,12 +3024,11 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 0.85
     *
-    * @param $action the name of the action (not prefixed by the class name)
-    * @param $input the inputs (mainly $_POST or $_GET)
+    * @param $ma the current massive action object
     *
     * @return false if parameters displayed ?
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
       return false;
    }
 

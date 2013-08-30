@@ -173,10 +173,11 @@ class Consumable extends CommonDBTM {
     * @since 0.85
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $CFG_GLPI;
 
-      switch ($action) {
+      $input = $ma->getInput();
+      switch ($ma->getAction()) {
          case 'give' :
             if (isset($input["entities_id"])) {
                Dropdown::showSelectItemFromItemtypes(array('itemtype_name'   => 'give_itemtype',
@@ -188,7 +189,7 @@ class Consumable extends CommonDBTM {
                return true;
             }
       }
-      return parent::showMassiveActionsSubForm($action, $input);
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 

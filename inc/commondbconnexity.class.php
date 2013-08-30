@@ -462,11 +462,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
     * @since 0.85
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      $action = $ma->getAction();
+      $items  = $ma->getItems();
 
       $itemtypes_affect   = array();
       $itemtypes_unaffect = array();
-      foreach (array_keys($input['item']) as $itemtype) {
+      foreach (array_keys($items) as $itemtype) {
          if (!is_a($itemtype, __CLASS__, true)) {
             continue;
          }
@@ -488,7 +491,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
          $normalized_action = 'unaffect';
          $itemtypes         = $itemtypes_unaffect;
       } else {
-         return parent::showMassiveActionsSubForm($action, $input);
+         return parent::showMassiveActionsSubForm($ma);
       }
 
       switch ($normalized_action) {
@@ -549,6 +552,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             }
             $peertypes = array_unique($peertypes);
             if (count($peertypes) == 0) {
+               echo __('Cannot reaffect given elements !');
                exit();
             }
             $options = array();
@@ -572,7 +576,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
             return true;
       }
 
-      return parent::showMassiveActionsSubForm($action, $input);
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 

@@ -772,8 +772,8 @@ class Document_Item extends CommonDBRelation{
     * @since 0.85
     * @see CommonDBRelation::getRelationMassiveActionsPeerForSubForm()
    **/
-   static function getRelationMassiveActionsPeerForSubForm($action, array $input) {
-      switch ($action) {
+   static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma) {
+      switch ($ma->getAction()) {
          case 'add':
          case 'remove':
             return 1;

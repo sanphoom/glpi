@@ -699,16 +699,16 @@ abstract class CommonDropdown extends CommonDBTM {
     * @since 0.85
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
 
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'merge' :
             echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
             echo "<br><br>".Html::submit(_sx('button', 'Merge'), array('name' => 'massiveaction'));
             return true;
       }
 
-      return parent::showMassiveActionsSubForm($action, $input);
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 

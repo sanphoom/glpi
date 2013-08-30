@@ -69,10 +69,11 @@ class Cartridge extends CommonDBChild {
     * @since 0.85
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
 
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'updatepages' :
+            $input = $ma->getInput();
             if (!isset($input['maxpages'])) {
                $input['maxpages'] = '';
             }
@@ -80,7 +81,7 @@ class Cartridge extends CommonDBChild {
             echo "<br><br>".Html::submit(_sx('button', 'Update'), array('name' => 'massiveaction'));
             return true;
       }
-      return parent::showMassiveActionsSubForm($action, $input);
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 

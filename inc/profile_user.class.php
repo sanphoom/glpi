@@ -949,8 +949,8 @@ class Profile_User extends CommonDBRelation {
     * @since 0.85
     * @see CommonDBRelation::showRelationMassiveActionsSubForm()
    **/
-   static function showRelationMassiveActionsSubForm($action, array $input, $peer_number) {
-      if (($action == 'add') && ($peer_number == 2)) {
+   static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
+      if (($ma->getAction() == 'add') && ($peer_number == 2)) {
          echo "<br><br>"._n('Entity', 'Entities', 1).':&nbsp;';
          Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
          echo "<br><br>".__('Recursive').":&nbsp;";

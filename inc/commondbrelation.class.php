@@ -1115,31 +1115,30 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /**
     * Add relation specificities to the subForm of the massive action
     *
-    * @param $action the type of the current action
-    * @param $input the inputs (mainly $_POST or $_GET)
+    * @param $ma current massive action
     * @param $peer_number the number of the concerned peer
     *
     * @return nothing (display only)
    **/
-   static function showRelationMassiveActionsSubForm($action, array $input, $peer_number) {
+   static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {
    }
 
 
    /**
     * get the type of the item with the name of the action or the types of the input
     *
-    * @param $action the name of the action (not prefixed by the class name)
-    * @param $input the inputs (mainly $_POST or $_GET)
+    * @param $ma current massive action
     *
     * @return number of the peer
    **/
-   static function getRelationMassiveActionsPeerForSubForm($action, array $input) {
+   static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma) {
 
+      $items = $ma->getItems();
       // If direct itemtype, then, its easy to find !
-      if (isset($input['item'][static::$itemtype_1])) {
+      if (isset($items[static::$itemtype_1])) {
          return 2;
       }
-      if (isset($input['item'][static::$itemtype_2])) {
+      if (isset($items[static::$itemtype_2])) {
          return 1;
       }
 
@@ -1160,10 +1159,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since 0.85
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
-   static function showMassiveActionsSubForm($action, array $input) {
+   static function showMassiveActionsSubForm(MassiveAction $ma) {//$action, array $input) {
       global $CFG_GLPI;
 
       $specificities = static::getRelationMassiveActionsSpecificities();
+
+      $action = $ma->getAction();
 
       // First, get normalized action : add or remove
       if (in_array($action, $specificities['normalized']['add'])) {
@@ -1172,7 +1173,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $normalized_action = 'remove';
       } else {
          // If we cannot get normalized action, then, its not for this method !
-         return parent::showMassiveActionsSubForm($action, $input);
+         return parent::showMassiveActionsSubForm($ma);
       }
 
       switch ($normalized_action) {
@@ -1180,7 +1181,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          case 'remove':
 
             // Get the peer number. For Document_Item, it depends of the action's name
-            $peer_number = static::getRelationMassiveActionsPeerForSubForm($action, $input);
+            $peer_number = static::getRelationMassiveActionsPeerForSubForm($ma);
             switch ($peer_number) {
                case 1:
                   $peertype = static::$itemtype_1;
@@ -1239,7 +1240,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             }
 
             // Allow any relation to display its own fields (Networkport_Vlan for tagged ...)
-            static::showRelationMassiveActionsSubForm($action, $input, $peer_number);
+            static::showRelationMassiveActionsSubForm($ma, $peer_number);
 
             echo "<br><br>".Html::submit($specificities['button_labels'][$action],
                                          array('name' => 'massiveaction'));
@@ -1247,7 +1248,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             return true;
       }
 
-      return parent::showMassiveActionsSubForm($action, $input);
+      return parent::showMassiveActionsSubForm($ma);
    }
 
 
