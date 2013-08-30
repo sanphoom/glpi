@@ -377,7 +377,7 @@ class Profile extends CommonDBTM {
       if ((self::$helpdesk_rights == 'followup')
           && !Session::haveRightsOr('followup',
                                     array(TicketFollowup::ADDMYTICKET, TicketFollowup::UPDATEMY,
-                                          TicketFollowup::SEEPUBLIC))) {
+                                          TicketFollowup::SEEPUBLIC, TicketFollowup::ADDGROUPTICKET))) {
          return false;
       }
       if ((self::$helpdesk_rights == 'task')
