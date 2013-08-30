@@ -849,7 +849,7 @@ function update084to085() {
                          "`name` = 'edit_all_problem' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . CREATE ." | ". UPDATE ." | ". DELETE ." | ". PURGE ."
+                 SET `rights` = `rights` | " . CREATE ." | ". UPDATE . PURGE ."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                       AND `name` = 'problem'";
          $DB->queryOrDie($query, "0.85 update problem with edit_all_problem right");
@@ -858,6 +858,22 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'edit_all_problem'";
    $DB->queryOrDie($query, "0.85 delete edit_all_problem right");
+
+
+   // delete delete_problem
+   foreach ($DB->request("glpi_profilerights",
+         "`name` = 'delete_problem' AND `rights` = '1'") as $profrights) {
+
+      $query  = "UPDATE `glpi_profilerights`
+                 SET `rights` = `rights` | " . DELETE ."
+                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                      AND `name` = 'problem'";
+      $DB->queryOrDie($query, "0.85 update problem with delete_problem");
+   }
+   $query = "DELETE
+             FROM `glpi_profilerights`
+             WHERE `name` = 'delete_problem'";
+   $DB->queryOrDie($query, "0.85 delete problem right");
 
 
    // update search_config
@@ -902,7 +918,6 @@ function update084to085() {
              FROM `glpi_profilerights`
              WHERE `name` = 'check_update'";
    $DB->queryOrDie($query, "0.85 delete check_update right");
-
 
    // entity_dropdown => right by object
 
