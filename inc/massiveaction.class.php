@@ -198,9 +198,6 @@ class MassiveAction {
                         $POST['processor'] = '';
                         $POST['action']    = $POST['action'];
                      }
-                     if ($POST['processor'] == '') {
-                        throw new Exception(__('Not re-implemented for the moment !'));
-                     }
                   }
 
                   // Count number of items !
@@ -351,7 +348,7 @@ class MassiveAction {
             $common_fields = array_merge($common_fields, $this->POST['massive_action_fields']);
          }
 
-         foreach ($common_fields as $field) {
+        foreach ($common_fields as $field) {
             if (isset($this->POST[$field])) {
                echo Html::recursiveHidden($field, array('value' => $this->POST[$field]));
             }
@@ -545,20 +542,21 @@ class MassiveAction {
             $this->showDefaultSubForm();
          }
       } else {
-         $input['itemtype'] = $ma->getItemType(true);
-
          $input = $this->POST;
-         foreach ($this->items as $itemtype => $ids) {
-            $input['item'][$itemtype] = array_fill_keys(array_keys($ids), 1);
-         }
          unset($input['items']);
+         unset($input['initial_items']);
+         unset($input['processor']);
+         unset($input['action_name']);
+         $input['itemtype'] = $this->getItemType(true);
+         $input['action']   = $this->action;
+         $input['item']     = array_fill_keys(array_keys($this->items[$input['itemtype']]), 1);
 
-         $split = explode('_', $this->action);
+         $split = explode('_', $input['action']);
 
          if (($split[0] == 'plugin') && isset($split[1])) {
             // Normalized name plugin_name_action
             // Allow hook from any plugin on any (core or plugin) type
-            $plugin_input = array('action'   => $this->action,
+            $plugin_input = array('action'   => $input['action'],
                                   'itemtype' => $input['itemtype']);
             Plugin::doOneHook($split[1], 'MassiveActionsDisplay', $plugin_input);
 
@@ -730,15 +728,49 @@ class MassiveAction {
             }
             $this->processForSeveralItemtype();
          } else {
-            global $CFG_GLPI;
-            Toolbox::logDebug($this->POST);
-            echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
-               __s('Warning')."'><br><br>";
-            echo "<span class='b'>".__('Not re-implemented for the moment !')."</span><br>";
-            Html::displayBackLink();
-            echo "</div>";
-            Html::popFooter();
-            exit();
+            $input = $this->POST;
+            $input['itemtype'] = $this->getItemType(false);
+            $input['action']   = $this->action;
+            $input['item']     = array_fill_keys(array_keys($this->items[$input['itemtype']]), 1);
+
+            if ($item = getItemForItemtype($input['itemtype'])) {
+               $split = explode('_', $input["action"]);
+               if ($split[0] == 'plugin' && isset($split[1])) {
+                  // Normalized name plugin_name_action
+                  // Allow hook from any plugin on any (core or plugin) type
+                  $res = Plugin::doOneHook($split[1], 'MassiveActionsProcess', $input);
+
+                  //} else if ($plug=isPluginItemType($inputs["itemtype"])) {
+                  // non-normalized name
+                  // hook from the plugin defining the type
+                  //$res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
+               } else {
+                  $res = $item->doSpecificMassiveActions($input);
+               }
+
+               if (is_array($res)) {
+                  foreach (array('ok', 'ko', 'noright') as $element) {
+                     if (isset($res[$element])) {
+                        $this->results[$element] += $res[$element];
+                     }
+                  }
+
+                  if (isset($res['messages'])) {
+                     foreach($res['messages'] as $message) {
+                        $this->addMessage($message);
+                     }
+                  }
+
+                  if (isset($res['REDIRECT'])) {
+                     $this->setRedirect($res['REDIRECT']);
+                  }
+
+                  $this->itemDone($input['itemtype'], $input['item'], self::NO_ACTION);
+               }
+
+            } else {
+               $ma->itemDone($item->getType(), $input['item'], MassiveAction::ACTION_KO);
+            }
          }
       }
 
