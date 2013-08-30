@@ -3038,21 +3038,14 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since 0.85
     *
-    * @param $action the name of the action
+    * @param $ma the current massive action object
     * @param $item the item on which apply the massive action
     * @param $ids an array of the ids of the item on which apply the action
-    * @param $input the array of the input provided by the form ($_POST, $_GET ...)
     *
-    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
+    * @return nothing (direct submit to $ma object)
    **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
-
-      return array('ok'       => 0,
-                   'ko'       => 0,
-                   'noright'  => 0,
-                   'messages' => array());
-
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
    }
 
 

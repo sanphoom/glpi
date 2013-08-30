@@ -156,57 +156,50 @@ class Cartridge extends CommonDBChild {
     * @since 0.85
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
-
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'uninstall' :
-            foreach ($ids as $key => $val) {
-               if ($val != 1) {
-                  continue;
-               }
+            foreach ($ids as $key) {
                if ($item->can($key, UPDATE)) {
                   if ($item->uninstall($key)) {
-                     $res['ok']++;
+                     $ma->itemDone($item->getType(), $key, self::ACTION_OK);
                   } else {
-                     $res['ko']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                     $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
                } else {
-                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
-                  $res['noright']++;
+                  $ma->itemDone($item->getType(), $key, self::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
-            break;
+            return;
 
          case 'updatepages' :
+            $input = $ma->getInput();
             if (isset($input['pages'])) {
-               foreach ($ids as $key => $val) {
-                  if ($val != 1) {
-                     continue;
-                  }
+               foreach ($ids as $key) {
                   if ($item->can($key, UPDATE)) {
                      if ($item->update(array('id' => $key,
                                              'pages' => $input['pages']))) {
-                        $res['ok']++;
+                        $ma->itemDone($item->getType(), $key, self::ACTION_OK);
                      } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
-                     $res['noright']++;
+                     $ma->itemDone($item->getType(), $key, self::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
                }
             } else {
-               $res['ko']++;
+               $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
             }
-            break;
+            return;
 
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 

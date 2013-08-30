@@ -716,26 +716,21 @@ abstract class CommonDropdown extends CommonDBTM {
     * @since 0.85
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
-
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'merge' :
             $fk = $item->getForeignKeyField();
-            foreach ($ids as $key => $val) {
-               if ($val != 1) {
-                  continue;
-               }
+            foreach ($ids as $key) {
                if ($item->can($key, UPDATE)) {
                   if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
                      if ($item->update(array('id'           => $key,
                                              'is_recursive' => 1))) {
-                        $res['ok']++;
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
                      $input2 = $item->fields;
@@ -759,23 +754,20 @@ abstract class CommonDropdown extends CommonDBTM {
                            $item->delete(array('id'        => $key,
                                                '_replace_by' => $newid), 1);
                         }
-                        $res['ok']++;
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   }
                } else {
-                  $res['noright']++;
-                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             }
-            break;
+            return;
       }
-
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
-
-
 }
 ?>

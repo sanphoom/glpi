@@ -197,40 +197,36 @@ class Consumable extends CommonDBTM {
     * @since 0.85
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
-
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'give' :
+            $input = $ma->getInput();
             if (($input["give_items_id"] > 0)
                 && !empty($input['give_itemtype'])) {
-               foreach ($ids as $key => $val) {
-                  if ($val != 1) {
-                     continue;
-                  }
+               foreach ($ids as $key) {
                   if ($item->can($key, UPDATE)) {
                      if ($item->out($key, $input['give_itemtype'],$input["give_items_id"])) {
-                        $res['ok']++;
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $res['noright']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
                }
                Event::log($item->fields['consumableitems_id'], "consumables", 5, "inventory",
                           //TRANS: %s is the user login
                           sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
             } else {
-               $res['ko']++;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
-            break;
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 

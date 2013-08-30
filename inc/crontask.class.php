@@ -1192,38 +1192,32 @@ class CronTask extends CommonDBTM{
     * @since 0.85
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
-
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'reset' :
             if (Config::canUpdate()) {
-               foreach ($ids as $key => $val) {
-                  if ($val != 1) {
-                     continue;
-                  }
+               foreach ($ids as $key) {
                   if ($item->getFromDB($key)) {
                      if ($item->resetDate()) {
-                        $res['ok']++;
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
-                        $res['ko']++;
-                        $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $res['ko']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   }
                }
             } else {
-               $res['noright']++;
-               $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+               $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
             }
-            break;
-
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 

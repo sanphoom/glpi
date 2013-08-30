@@ -721,29 +721,24 @@ class MassiveAction {
    **/
    function process() {
 
-      if ($this->processor != __CLASS__) {
-         global $CFG_GLPI;
-         Toolbox::logDebug($this->POST);
-
-         echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
-            __s('Warning')."'><br><br>";
-         echo "<span class='b'>".__('Not re-implemented for the moment !')."</span><br>";
-         Html::displayBackLink();
-         echo "</div>";
-         Html::popFooter();
-         exit();
-      }
-
       if (!empty($this->items)) {
 
-         if ($this->processor !== NULL) {
+         if (!empty($this->processor)) {
             $processor = $this->processor;
             if (method_exists($processor, 'processMassiveActionsForSeveralItemtype')) {
                $processor::processMassiveActionsForSeveralItemtype($this);
             }
             $this->processForSeveralItemtype();
          } else {
-            // Manage mainly for the old plugins ...
+            global $CFG_GLPI;
+            Toolbox::logDebug($this->POST);
+            echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
+               __s('Warning')."'><br><br>";
+            echo "<span class='b'>".__('Not re-implemented for the moment !')."</span><br>";
+            Html::displayBackLink();
+            echo "</div>";
+            Html::popFooter();
+            exit();
          }
       }
 
@@ -834,7 +829,6 @@ class MassiveAction {
       global $CFG_GLPI;
 
       $action = $ma->getAction();
-      $input  = $ma->getInput();
 
       switch ($action) {
          case 'delete':
@@ -898,6 +892,7 @@ class MassiveAction {
             break;
 
          case 'update' :
+            $input             = $ma->getInput();
             $input['itemtype'] = $ma->getItemtype(false);
             $searchopt         = Search::getCleanedOptions($input["itemtype"], UPDATE);
             if (isset($searchopt[$input["id_field"]])) {
@@ -1045,27 +1040,35 @@ class MassiveAction {
 
    function itemDone($itemtype, $id, $result) {
 
-      switch ($result) {
-         case self::ACTION_OK:
-            $this->results['ok'] ++;
-            break;
-         case self::ACTION_KO:
-            $this->results['ko'] ++;
-            break;
-         case self::ACTION_NORIGHT:
-            $this->results['noright'] ++;
-            break;
+      if (!isset($this->done[$itemtype])) {
+         $this->done[$itemtype] = array();
       }
 
-      unset($this->items[$itemtype][$id]);
+      if (is_array($id)) {
+         $number = count($id);
+         foreach ($id as $single) {
+            unset($this->items[$itemtype][$single]);
+            $this->done[$itemtype][] = $single;
+         }
+      } else {
+         unset($this->items[$itemtype][$id]);
+         $this->done[$itemtype][] = $id;
+         $number = 1;
+      }
       if (count($this->items[$itemtype]) == 0) {
          unset($this->items[$itemtype]);
       }
 
-      if (!isset($this->done[$itemtype])) {
-         $this->done[$itemtype] = array($id);
-      } else {
-         $this->done[$itemtype][] = $id;
+      switch ($result) {
+         case self::ACTION_OK:
+            $this->results['ok'] += $number;
+            break;
+         case self::ACTION_KO:
+            $this->results['ko'] += $number;
+            break;
+         case self::ACTION_NORIGHT:
+            $this->results['noright'] += $number;
+            break;
       }
 
       // TODO: manage the beautiful progress bar ...

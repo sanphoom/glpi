@@ -332,41 +332,36 @@ class Software extends CommonDBTM {
    /**
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
-      global $CFG_GLPI;
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
 
-      $res = CommonDBTM::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
-
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'merge':
+            $input = $ma->getInput();
             if (isset($input['item_items_id'])) {
 
                $items = array();
-               foreach ($ids as $id => $val) {
-                  if ($val != 1) {
-                     continue;
-                  }
+               foreach ($ids as $id) {
                   $items[$id] = 1;
                }
 
                if ($item->can($input['item_items_id'], UPDATE)) {
                   if ($item->merge($items)) {
-                     $res['ok']++;
+                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
                   } else {
-                     $res['ko']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_ON_ACTION);
+                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
                } else {
-                  $res['noright']++;
-                  $res['messages'][] = $item->getErrorMessage(ERROR_RIGHT);
+                  $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                }
             } else {
-               $res['ko']++;
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
-            break;
+            return;
       }
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
 

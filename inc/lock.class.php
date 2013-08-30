@@ -503,14 +503,13 @@ class Lock {
     * @since 0.85
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $baseitem, array $ids,
-                                                       array $input) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $baseitem,
+                                                       array $ids) {
       global $DB;
 
-      $res = CommonDBTM::processMassiveActionsForOneItemtype($action, $baseitem, $ids, $input);
-
-      switch ($action) {
+      switch ($ma->getAction()) {
          case 'unlock':
+            $input = $ma->getInput();
             if (isset($input['attached_item'])) {
                $attached_items = $input['attached_item'];
                if (($device_key = array_search('Device', $attached_items)) !== false) {
@@ -525,10 +524,7 @@ class Lock {
                      $links[$attached_item] = $infos;
                   }
                }
-               foreach ($ids as $id => $val) {
-                  if ($val != 1) {
-                     continue;
-                  }
+               foreach ($ids as $id) {
                   $action_valid = false;
                   foreach ($links as $infos) {
                      $infos['condition'][$infos['field']] = $id;
@@ -538,17 +534,18 @@ class Lock {
                      }
                   }
                   if ($action_valid) {
-                     $res['ok']++;
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                   } else {
-                     $res['ko']++;
-                     $res['messages'][] = $infos['item']->getErrorMessage(ERROR_ON_ACTION);
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($infos['item']->getErrorMessage(ERROR_ON_ACTION));
                   }
                }
             }
-            break;
+            return;
       }
 
-      return $res;
+
+      parent::processMassiveActionsForOneItemtype($ma, $baseitem, $ids);
    }
 }
 ?>

@@ -1277,11 +1277,12 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     * @since 0.85
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
-   static function processMassiveActionsForOneItemtype($action, CommonDBTM $item, array $ids,
-                                                       array $input) {
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
       global $DB;
 
-      $res = parent::processMassiveActionsForOneItemtype($action, $item, $ids, $input);
+      $action = $ma->getAction();
+      $input  = $ma->getInput();
 
       $specificities = static::getRelationMassiveActionsSpecificities();
 
@@ -1292,20 +1293,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $normalized_action = 'remove';
       } else {
          // If we cannot get normalized action, then, its not for this method !
-         return $res;
+         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+         return;
       }
 
       $link     = new static();
 
       // Get the default 'input' entries from the relation
       $input2   = static::getRelationInputForProcessingOfMassiveActions($action, $item, $ids, $input);
-
-      $nb_items = 0;
-      foreach ($ids as $key => $val) {
-         if ($val == 1) {
-            $nb_items ++;
-         }
-      }
 
       // complete input2 with the right fields from input and define the peer with this information
 
@@ -1325,9 +1320,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
       // If the fields provided by showMassiveActionsSubForm are not valid then quit !
       if (!isset($item_number)) {
-         $res['ko'] += $nb_items;
-         $res['messages'][] = $link->getErrorMessage(ERROR_NOT_FOUND);
-         return $res;
+         $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+         $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
+         return;
       }
 
       if ($item_number == 1) {
@@ -1353,13 +1348,13 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       // $peer not valid => not in DB or try to remove all at once !
       if (($peer === false) || ($peer->isNewItem())) {
          if ((isset($input2[$peers_id])) && ($input2[$peers_id] > 0)) {
-            $res['ko'] += $nb_items;
+            $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
             if ($peer instanceof CommonDBTM) {
-               $res['messages'][] = $peer->getErrorMessage(ERROR_NOT_FOUND);
+               $ma->addMessage($peer->getErrorMessage(ERROR_NOT_FOUND));
             } else {
-               $res['messages'][] = $link->getErrorMessage(ERROR_NOT_FOUND);
+               $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
             }
-            return $res;
+            return;
          }
          if (!$specificities['can_remove_all_at_once']
              && !$specificities['only_remove_all_at_once']) {
@@ -1384,19 +1379,16 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
             // remove all at once only available for remove !
             if (!$peer) {
-               $res['ko'] += $nb_items;
-               $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
-               return $res;
+               $ma->itemDone($item->getType(), $ids, self::ACTION_KO);
+               $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
+               return;
             }
 
-            foreach ($ids as $key => $val) {
-               if ($val != 1) {
-                  continue;
-               }
+            foreach ($ids as $key) {
 
                if (!$item->getFromDB($key)) {
-                  $res['ko']++;
-                  $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                  $ma->itemDone($item->getType(), $key, self::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   continue;
                }
 
@@ -1407,14 +1399,14 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                if ($specificities['can_link_several_times']) {
                   if ($link->can(-1, CREATE, $input2)) {
                      if ($link->add($input2)) {
-                        $res['ok']++;
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
-                        $res['ko']++;
-                        $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
-                     $res['noright']++;
-                     $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                   }
 
                } else {;
@@ -1431,23 +1423,23 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                   if (!$link->isNewItem()) {
 
                      if (!$specificities['update_if_different']) {
-                        $res['ko']++;
-                        $res['messages'][] = $link->getErrorMessage(ERROR_ALREADY_DEFINED);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($link->getErrorMessage(ERROR_ALREADY_DEFINED));
                         continue;
                      }
 
                      $input2[static::getIndexName()] = $link->getID();
                      if ($link->can($link->getID(), UPDATE, $input2)) {
                         if ($link->update($input2)) {
-                           $res['ok']++;
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                         } else {
-                           $res['ko']++;
-                           $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                           $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                         }
 
                      } else {
-                        $res['noright']++;
-                        $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                      }
 
                      // if index defined, then cannot not add any other link due to index unicity
@@ -1455,36 +1447,33 @@ abstract class CommonDBRelation extends CommonDBConnexity {
 
                   } else {
 
-                    if ($link->can(-1, CREATE, $input2)) {
+                     if ($link->can(-1, CREATE, $input2)) {
                         if ($link->add($input2)) {
-                           $res['ok']++;
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                         } else {
-                           $res['ko']++;
-                           $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                           $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                         }
                      } else {
-                        $res['noright']++;
-                        $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                      }
                   }
                 }
-           }
-            break;
+            }
+            return;
 
          case 'remove':
-            foreach ($ids as $key => $val) {
-               if ($val != 1) {
-                  continue;
-               }
+            foreach ($ids as $key) {
 
-               // First, get the queyr to find all occurences of the link item<=>key
+               // First, get the query to find all occurences of the link item<=>key
 
                if (!$peer) {
                   $query = static::getSQLRequestToSearchForItem($item->getType(), $key);
                } else {
                   if (!$item->getFromDB($key)) {
-                     $res['ko']++;
-                     $res['messages'][] = $item->getErrorMessage(ERROR_NOT_FOUND);
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                      continue;
                   }
                   $query = 'SELECT `'.static::getIndexName().'`
@@ -1518,12 +1507,11 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                }
 
                $request        = $DB->request($query);
-
                $number_results = $request->numrows();
 
                if ($number_results == 0) {
-                  $res['ko']++;
-                  $res['messages'][] = $link->getErrorMessage(ERROR_NOT_FOUND);
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                  $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
                   continue;
                }
 
@@ -1531,36 +1519,35 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                $ko      = 0;
                $noright = 0;
 
-               foreach ($DB->request($query) as $line) {
+               foreach ($request as $line) {
                   if ($link->can($line[static::getIndexName()], DELETE)) {
                      if ($link->delete(array('id' => $line[static::getIndexName()]))) {
                         $ok++;
                      } else {
                         $ko++;
-                        $res['messages'][] = $link->getErrorMessage(ERROR_ON_ACTION);
+                        $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                      }
                   } else {
                      $noright++;
-                     $res['messages'][] = $link->getErrorMessage(ERROR_RIGHT);
+                     $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                   }
                }
 
                if ($ok == $number_results) {
-                  $res['ok']++;
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                } else {
-                  if ($ko > 0) {
-                     $res['ko']++;
-                  }
                   if ($noright > 0) {
-                     $res['noright']++;
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                  } elseif ($ko > 0) {
+                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                   }
                }
 
             }
-            break;
+            return;
       }
 
-      return $res;
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 }
 ?>
