@@ -718,7 +718,7 @@ function update084to085() {
                          "`name` = 'create_request_validation' AND `rights` = '1'") as $profrights) {
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketValidation::CREATEREQUEST ." | ".PURGE." 
+                 SET `rights` = `rights` | " . TicketValidation::CREATEREQUEST ." | ".PURGE."
                  WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'validation'";
       $DB->queryOrDie($query, "0.85 update validation with create_request_validation right");
@@ -1287,12 +1287,12 @@ function update084to085() {
                              `comment_validation`,
                              `status`,
                              `validation_date`)
-                      VALUES ('$count', 
-                              '".$value['users_id_validate']."', 
-                              '".$value['tickets_id']."', 
-                              '".$value['id']."', 
-                              '".addslashes($value['comment_validation'])."', 
-                              '".$value['status']."', 
+                      VALUES ('$count',
+                              '".$value['users_id_validate']."',
+                              '".$value['tickets_id']."',
+                              '".$value['id']."',
+                              '".addslashes($value['comment_validation'])."',
+                              '".$value['status']."',
                               ".$value['validation_date'].");";
             $DB->query($query);
             $count++;
@@ -1304,7 +1304,7 @@ function update084to085() {
       $migration->dropTable('origin_glpi_ticketvalidations');
    }
    $migration->addField('glpi_tickets', 'validation_percent', 'integer', array('value' => 0));
-   
+
    /// TODO add changetasktypes table as dropdown
    /// TODO review users linked to changetask
    /// TODO add display prefs
@@ -1650,7 +1650,7 @@ function update084to085() {
                         0, 24, 30, NULL, NULL, NULL)";
       $DB->queryOrDie($query, "0.85 populate glpi_crontasks for circularlogs");
    }
-   
+
    $migration->addField('glpi_documents', 'is_blacklisted', 'bool');
 
    if (!TableExists("glpi_blacklistedmailcontents")) {
@@ -1663,7 +1663,7 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.85 add table glpi_blacklistedmailcontents");
    }
-   
+
    $migration->addField('glpi_documents', 'tag', 'string');
    $migration->addField('glpi_queuedmails', 'documents', 'text');
    $migration->addKey('glpi_documents', 'tag');
@@ -1706,11 +1706,12 @@ function update084to085() {
    $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
 
    // Pref to comme back ticket created
-   $migration->addField('glpi_users', 'backcreated', 'TINYINT(1) DEFAULT NULL');
-   $query = "INSERT INTO `glpi_configs`
-                    (`context`, `name`, `value`)
-             VALUES ('core', 'backcreated', 0)";
-   $DB->queryOrDie($query, "update glpi_configs with backcreated");
+   if ($migration->addField('glpi_users', 'backcreated', 'TINYINT(1) DEFAULT NULL')) {
+      $query = "INSERT INTO `glpi_configs`
+                       (`context`, `name`, `value`)
+                VALUES ('core', 'backcreated', 0)";
+      $DB->queryOrDie($query, "update glpi_configs with backcreated");
+   }
 
 
    // ************ Keep it at the end **************
