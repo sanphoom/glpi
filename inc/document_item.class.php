@@ -46,11 +46,11 @@ class Document_Item extends CommonDBRelation{
    // From CommonDBRelation
    static public $itemtype_1    = 'Document';
    static public $items_id_1    = 'documents_id';
-   static public $take_entity_1 = false ;
+   static public $take_entity_1 = true ;
 
    static public $itemtype_2    = 'itemtype';
    static public $items_id_2    = 'items_id';
-   static public $take_entity_2 = true ;
+   static public $take_entity_2 = false ;
 
 
    /**
@@ -504,7 +504,7 @@ class Document_Item extends CommonDBRelation{
       } else {
          $sort = "`assocdate`";
       }
-      
+
       $canedit       =  $item->canadditem('Document');
       $rand          = mt_rand();
       $is_recursive  = $item->isRecursive();
@@ -546,7 +546,7 @@ class Document_Item extends CommonDBRelation{
                     LEFT JOIN `glpi_entities`
                               ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
                     LEFT JOIN `glpi_documentcategories`
-                              ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)                              
+                              ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
                     WHERE `glpi_documents_items`.`documents_id` = '$ID'
                           AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
@@ -676,7 +676,7 @@ class Document_Item extends CommonDBRelation{
 
       $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
             (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
-            
+
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr>";

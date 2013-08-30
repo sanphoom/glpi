@@ -93,6 +93,17 @@ function update084to0841() {
    $DB->queryOrDie($query_doc_i,
                   "0.84.1 update date_mod in glpi_documents_items");
 
+
+   // correct entities_id in documents_items
+   $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
+                   INNER JOIN `glpi_documents` as `doc`
+                     ON  `doc`.`id` = `doc_i`.`documents_id`
+                   SET `doc_i`.`entities_id` = `doc`.`entities_id`,
+                       `doc_i`.`is_recursive` = `doc`.`is_recursive`
+                   WHERE `doc_i`.`entities_id` <> `doc`.`entities_id`";
+   $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
