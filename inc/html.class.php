@@ -2523,6 +2523,8 @@ class Html {
     *
     * @since 0.84 (before Search::displayMassiveActions)
     *
+    * @TODO: replace 'hidden' by data-glpicore-ma-tags ?
+    *
     * @param $itemtype  string itemtype for massive actions
     * @param $options   array    of parameters
     * must contains :
@@ -2540,6 +2542,7 @@ class Html {
     *    - extraparams      : string extra URL parameters to pass to massive actions (default empty)
     *                         if ([extraparams]['hidden'] is set : add hidden fields to post)
     *    - specific_actions : array of specific actions (do not use standard one)
+    *    - add_actions      : array of actions to add (do not use standard one)
     *    - confirm          : string of confirm message before massive action
     *    - item             : CommonDBTM object that has to be passed to the actions
     *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
@@ -2562,6 +2565,7 @@ class Html {
       $p['width']             = 800;
       $p['height']            = 400;
       $p['specific_actions']  = array();
+      $p['add_actions']       = array();
       $p['confirm']           = '';
       $p['rand']              = '';
       $p['container']         = '';
@@ -2591,6 +2595,9 @@ class Html {
       }
       if (is_array($p['specific_actions']) && count($p['specific_actions'])) {
          $p['extraparams']['specific_actions'] = $p['specific_actions'];
+      }
+      if (is_array($p['add_actions']) && count($p['add_actions'])) {
+         $p['extraparams']['add_actions'] = $p['add_actions'];
       }
       if ($p['item'] instanceof CommonDBTM) {
          $p['extraparams']['item_itemtype'] = $p['item']->getType();

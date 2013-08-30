@@ -39,63 +39,52 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['item'])) {
+try {
+   $ma = new MassiveAction($_POST, $_GET, 'initial');
+} catch (Exception $e) {
 
-   if (!isset($_POST['is_deleted'])) {
-      $_POST['is_deleted'] = 0;
-   }
-
-   $actions = MassiveAction::getAllActionsFromInput($_POST, false);
-
-   if (count($actions) == 0) {
-      exit();
-   }
-
-   echo "<div width='90%' class='center'><br>";
-   Html::openMassiveActionsForm();
-   $params = array('action'           => '__VALUE__');
-   foreach ($_POST as $key => $val) {
-      $params[$key] = $val;
-   }
-
-   if (isset($_POST['specific_actions'])
-       && is_array($_POST['specific_actions'])
-       && count($_POST['specific_actions'])) {
-      $specific_actions = Toolbox::stripslashes_deep($_POST['specific_actions']);
-
-      // If specific actions is used to limit display
-      if (count($specific_actions) != count(array_intersect_key($actions,$specific_actions))) {
-         $params['specific_action'] = 1;
-      }
-      $actions = $specific_actions;
-   }
-
-
-   if (count($actions)) {
-      if (isset($params['hidden']) && is_array($params['hidden'])) {
-         foreach ($params['hidden'] as $key => $val) {
-            echo Html::hidden($key, array('value' => $val));
-         }
-
-      }
-      _e('Action');
-      echo "&nbsp;";
-
-      $actions = array_merge(array(-1 => Dropdown::EMPTY_VALUE), $actions);
-      $rand    = Dropdown::showFromArray('massiveaction', $actions);
-
-      echo "<br><br>";
-
-      Ajax::updateItemOnSelectEvent("dropdown_massiveaction$rand", "show_massiveaction$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
-                                    $params);
-
-      echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
-   }
-
-   // Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
-   $CFG_GLPI['checkbox-zero-on-empty'] = true;
-   Html::closeForm();
+   echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
+      __s('Warning')."'><br><br>";
+   echo "<span class='b'>".$e->getMessage()."</span><br>";
    echo "</div>";
+   exit();
+
 }
+
+echo "<div width='90%' class='center'><br>";
+Html::openMassiveActionsForm();
+$params = array('action'           => '__VALUE__');
+$input = $ma->getInput();
+foreach ($input as $key => $val) {
+   $params[$key] = $val;
+}
+
+$actions = $params['actions'];
+
+if (count($actions)) {
+   if (isset($params['hidden']) && is_array($params['hidden'])) {
+      foreach ($params['hidden'] as $key => $val) {
+         echo Html::hidden($key, array('value' => $val));
+      }
+   }
+   _e('Action');
+   echo "&nbsp;";
+
+   $actions = array('-1' => Dropdown::EMPTY_VALUE) + $actions;
+   $rand    = Dropdown::showFromArray('massiveaction', $actions);
+
+   echo "<br><br>";
+
+   Ajax::updateItemOnSelectEvent("dropdown_massiveaction$rand", "show_massiveaction$rand",
+                                 $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
+                                 $params);
+
+   echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
+}
+
+// Force 'checkbox-zero-on-empty', because some massive actions can use checkboxes
+$CFG_GLPI['checkbox-zero-on-empty'] = true;
+Html::closeForm();
+echo "</div>";
+
 ?>

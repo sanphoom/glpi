@@ -38,127 +38,53 @@ Session::checkCentralAccess();
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (isset($_GET['multiple_actions'])) {
-   if (isset($_SESSION['glpi_massiveaction']) && isset($_SESSION['glpi_massiveaction']['POST'])) {
-      $_POST = $_SESSION['glpi_massiveaction']['POST'];
-   }
-}
+try {
+   $ma = new MassiveAction($_POST, $_GET, 'process');
+} catch (Exception $e) {
+   Html::popHeader(__('Bulk modification error'), $_SERVER['PHP_SELF']);
 
-$actions = MassiveAction::getAllActionsFromInput($_POST, false);
-
-if (!isset($_POST['specific_action']) || !$_POST['specific_action']) {
-   if (!isset($actions[$_POST['action']])) {
-      Html::displayRightError();
-      exit();
-   }
-} else {
-   // No standard massive action for specific one
-   if (isset($actions[$_POST['action']])) {
-      Html::displayRightError();
-      exit();
-   }
-}
-
-Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
-
-if (isset($_GET['multiple_actions'])) {
-   if (isset($_SESSION['glpi_massiveaction'])
-       && isset($_SESSION['glpi_massiveaction']['items'])) {
-
-      $percent = min(100,round(100*($_SESSION['glpi_massiveaction']['item_count']
-                                    - count($_SESSION['glpi_massiveaction']['items']))
-                                 /$_SESSION['glpi_massiveaction']['item_count'],0));
-      Html::displayProgressBar(400, $percent);
-   }
-}
-
-if (isset($_POST["action"])
-    && isset($_POST["item"])
-    && count($_POST["item"])) {
-
-   /// Save selection
-   $exploded_REFERER = parse_url ($_SERVER['HTTP_REFERER']);
-   if (isset($exploded_REFERER['query'])) {
-      $session_selected_entries_name = $exploded_REFERER['path'].'?'.$exploded_REFERER['query'];
-   } else {
-      $session_selected_entries_name = $exploded_REFERER['path'];
-   }
-   if (!isset($_SESSION['glpimassiveactionselected'][$session_selected_entries_name])) {
-      $_SESSION['glpimassiveactionselected'][$session_selected_entries_name] = array();
-   }
-   $session_selected_entries = &$_SESSION['glpimassiveactionselected'][$session_selected_entries_name];
-   foreach ($_POST['item'] as $itemtype => $ids) {
-      if (!isset($session_selected_entries[$itemtype])
-          || (count($session_selected_entries[$itemtype]) == 0)) {
-         $session_selected_entries[$itemtype] = array();
-         foreach ($ids as $key => $val) {
-            if ($val == 1) {
-               $session_selected_entries[$itemtype][$key] = $key;
-            }
-         }
-      }
-   }
-   if (isset($_SERVER['HTTP_REFERER'])) {
-      $REDIRECT = $_SERVER['HTTP_REFERER'];
-   } else { /// Security : not used if no problem
-      $REDIRECT = $CFG_GLPI['root_doc']."/front/central.php";
-   }
-
-   $nbok      = 0;
-   $nbnoright = 0;
-   $nbko      = 0;
-   $res = MassiveAction::process($_POST);
-
-   if (is_array($res)
-         && isset($res['ok'])
-         && isset($res['ko'])
-         && isset($res['noright'])) {
-      $nbok      = $res['ok'];
-      $nbko      = $res['ko'];
-      $nbnoright = $res['noright'];
-   } else {
-      if ($res) {
-         $nbok++;
-      } else {
-         $nbko++;
-      }
-   }
-   if (isset($res['REDIRECT'])) {
-      $REDIRECT = $res['REDIRECT'];
-   }
-   // Default message : all ok
-   $message = __('Operation successful');
-   // All failed. operations failed
-   if ($nbok == 0) {
-      $message = __('Failed operation');
-      if ($nbnoright) {
-         //TRANS: %$1d and %$2d are numbers
-         $message .= "<br>".sprintf(__('(%1$d authorizations problems, %2$d failures)'),
-                                     $nbnoright, $nbko);
-      }
-   } else if ($nbnoright || $nbko) {
-      // Partial success
-      $message = __('Operation performed partially successful');
-      $message .= "<br>".sprintf(__('(%1$d authorizations problems, %2$d failures)'),
-                                 $nbnoright, $nbko);
-   }
-   Session::addMessageAfterRedirect($message);
-   if (isset($res['messages'])
-        && is_array($res['messages'])
-        && count($res['messages'])) {
-      foreach($res['messages'] as $message) {
-         Session::addMessageAfterRedirect($message, false, ERROR);
-      }
-   }
-   Html::redirect($REDIRECT);
-
-} else { //action, itemtype or item not defined
-   echo "<div class='center'>".
-         "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".__s('Warning')."'><br><br>";
-   echo "<span class='b'>".__('No selected element or badly defined operation')."</span><br>";
+   echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
+      __s('Warning')."'><br><br>";
+   echo "<span class='b'>".$e->getMessage()."</span><br>";
    Html::displayBackLink();
    echo "</div>";
+
+   Html::popFooter();
+   exit();
+
 }
+Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
+
+// TODO: add a beautiful progress bar !
+
+$results = $ma->process();
+
+$nbok = $results['ok'];
+$nbko = $results['ko'];
+$nbnoright = $results['noright'];
+
+if ($nbok == 0) {
+   $message = __('Failed operation');
+} elseif ($nbnoright || $nbko) {
+   $message = __('Operation performed partially successful');
+} else {
+   $message = __('Operation successful');
+}
+if ($nbnoright || $nbko) {
+   //TRANS: %$1d and %$2d are numbers
+   $message .= "<br>".sprintf(__('(%1$d authorizations problems, %2$d failures)'),
+                              $nbnoright, $nbko);
+}
+Session::addMessageAfterRedirect($message);
+if (isset($results['messages'])
+    && is_array($results['messages'])
+    && count($results['messages'])) {
+   foreach($results['messages'] as $message) {
+      Session::addMessageAfterRedirect($message, false, ERROR);
+   }
+}
+Html::redirect($results['redirect']);
 
 Html::popFooter();
+
 ?>
