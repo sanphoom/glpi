@@ -464,7 +464,7 @@ class Item_Devices extends CommonDBRelation {
 
       if ($options['canedit']) {
          $group_checkbox_tag =  (empty($peer_type) ? '__' : $peer_type);
-         $content = Html::getCheckbox(array('tag_for_massive' => $group_checkbox_tag));
+         $content = Html::getCheckbox(array('massive_tags' => $group_checkbox_tag));
          $delete_one  = $table_group->addHeader('one', $content, $delete_column, $previous_column);
       }
 
