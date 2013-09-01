@@ -291,7 +291,7 @@ class TicketValidation  extends CommonDBChild {
       $input["submission_date"] = $_SESSION["glpi_currenttime"];
       $input["status"]          = 'waiting';
 
-      if (isset($input["validation_percent"])){
+      if (isset($input["validation_percent"])) {
          $job = new Ticket();
          $job->getFromDB($input["tickets_id"]);
          $job->update(array('id'                 => $input["tickets_id"],
@@ -314,7 +314,7 @@ class TicketValidation  extends CommonDBChild {
                          'validation_date'      => 'NULL',
                          'users_id_validate'    => $this->input["users_id_validate"]);
          $user_ticketvalidation = new TicketValidation_User();
-         foreach($this->input['users_id_validate'] as $users){
+         foreach ($this->input['users_id_validate'] as $users) {
             $params['users_id_validate'] = $users;
             $user_ticketvalidation->add($params);
          }
@@ -352,7 +352,7 @@ class TicketValidation  extends CommonDBChild {
 
             // Validation message
             if (isset($this->input["users_id_validate"])
-                && !empty($this->input["users_id_validate"])){
+                && !empty($this->input["users_id_validate"])) {
                $users = TicketValidation_User::getUsersValidation($this->fields['id']);
                foreach ($users as $user_data) {
                   $user->getFromDB($user_data['id']);
@@ -518,7 +518,7 @@ class TicketValidation  extends CommonDBChild {
 
       if ($field == 'status') {
          $name = array();
-         foreach($this->users_id_validate as $data){
+         foreach ($this->users_id_validate as $data) {
             $name[] = formatUserName($data['id'], $data['name'], $data['realname'],
                                      $data['firstname']);
          }

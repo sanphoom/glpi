@@ -795,7 +795,7 @@ class RuleCollection extends CommonDBTM {
 
          //find criterias
          $criterias = $rulecritera->find("`rules_id` = '$ID'");
-         foreach($criterias as &$criteria) {
+         foreach ($criterias as &$criteria) {
             unset($criteria['id']);
             unset($criteria['rules_id']);
 
@@ -816,7 +816,7 @@ class RuleCollection extends CommonDBTM {
 
          //find actions
          $actions = $ruleaction->find("`rules_id` = '$ID'");
-         foreach($actions as &$action) {
+         foreach ($actions as &$action) {
             unset($action['id']);
             unset($action['rules_id']);
 
@@ -948,7 +948,7 @@ class RuleCollection extends CommonDBTM {
             }
 
             //process direct attributes
-            foreach($rule as &$val) {
+            foreach ($rule as &$val) {
                if (empty($val)) {
                   $val = "";
                }
@@ -957,11 +957,11 @@ class RuleCollection extends CommonDBTM {
             //check criterias
             if (isset($rule['rulecriteria'])) {
                //check and correct criterias array format
-               if (isset($rule['rulecriteria']['criteria'])){
+               if (isset($rule['rulecriteria']['criteria'])) {
                   $rule['rulecriteria'] = array($rule['rulecriteria']);
                }
 
-               foreach($rule['rulecriteria'] as $k_crit => $criteria) {
+               foreach ($rule['rulecriteria'] as $k_crit => $criteria) {
                   $available_criteria = $tmprule->getCriterias();
                   $crit               = $criteria['criteria'];
                   //check FK (just in case of "is", "is_not" and "under" criteria)
@@ -989,11 +989,11 @@ class RuleCollection extends CommonDBTM {
             //check actions
             if (isset($rule['ruleaction'])) {
                //check and correct actions array format
-               if (isset($rule['ruleaction']['field'])){
+               if (isset($rule['ruleaction']['field'])) {
                   $rule['ruleaction'] = array($rule['ruleaction']);
                }
 
-               foreach($rule['ruleaction'] as $k_action => $action) {
+               foreach ($rule['ruleaction'] as $k_action => $action) {
                   $available_actions = $tmprule->getActions();
                   $act               = $action['field'];
 
@@ -1050,7 +1050,7 @@ class RuleCollection extends CommonDBTM {
          echo "</tr>";
 
          $odd = true;
-         foreach($rules_refused as $k_rule => $refused) {
+         foreach ($rules_refused as $k_rule => $refused) {
             $odd = !$odd;
             if ($odd) {
                $class = " class='tab_bg_1' ";
@@ -1263,7 +1263,7 @@ class RuleCollection extends CommonDBTM {
          if ($add_criteria_and_actions) {
             //Add criteria
             if (isset($current_rule['rulecriteria'])) {
-               foreach($current_rule['rulecriteria'] as $criteria) {
+               foreach ($current_rule['rulecriteria'] as $criteria) {
                   $criteria['rules_id'] = $rules_id;
                   //fix array in value key
                   //(simplexml bug, empty xml node are converted in empty array instead of null)
@@ -1275,7 +1275,7 @@ class RuleCollection extends CommonDBTM {
 
             //Add actions
             if (isset($current_rule['ruleaction'])) {
-               foreach($current_rule['ruleaction'] as $action) {
+               foreach ($current_rule['ruleaction'] as $action) {
                   $action['rules_id'] = $rules_id;
                   //fix array in value key
                   //(simplexml bug, empty xml node are converted in empty array instead of null)

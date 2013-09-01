@@ -507,8 +507,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                $validator = array();
 
                $users_validate = TicketValidation_User::getUsersValidation($validation['id']);
-               if (count($users_validate)){
-                  foreach($users_validate as $data){
+               if (count($users_validate)) {
+                  foreach ($users_validate as $data) {
                      $validator[] = formatUserName($data['id'], $data['name'],
                                                    $data['realname'], $data['firstname']);
                   }

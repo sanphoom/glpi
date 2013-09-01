@@ -164,7 +164,7 @@ class TicketValidation_User  extends CommonDBRelation {
       $content          = '';
       $ticketvalidation = new TicketValidation();
 
-      if (count($data) > 1){
+      if (count($data) > 1) {
          $content .= "<table style='border-collapse:collapse;'>";
          foreach ($data as $status) {
             if (!empty($status['status'])
@@ -289,7 +289,7 @@ class TicketValidation_User  extends CommonDBRelation {
     *
     * @return html
    **/
-   static function showMyValidationStatus($ticketvalidations_id){
+   static function showMyValidationStatus($ticketvalidations_id) {
 
       $data = self::getUsersValidationStatus($ticketvalidations_id);
 
@@ -327,10 +327,10 @@ class TicketValidation_User  extends CommonDBRelation {
       $status = self::getUsersValidationStatus($ticketvalidations_id);
 
       // Percent of validation
-      if ($validation_percent > 0){
+      if ($validation_percent > 0) {
          $percent = self::showValidationRequired($validation_percent);
-         foreach ($status as $data){
-            switch ($data['status']){
+         foreach ($status as $data) {
+            switch ($data['status']) {
                case 'accepted' :
                   $accepted++;
                   break;
@@ -352,7 +352,7 @@ class TicketValidation_User  extends CommonDBRelation {
       } else {
          // One user validate, we get the last validation
          $data = reset($status);
-         switch ($data['status']){
+         switch ($data['status']) {
             case 'accepted' :
                $accepted++;
                break;

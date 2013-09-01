@@ -3916,7 +3916,7 @@ class User extends CommonDBTM {
                     'is_active' => 1,
                     'name'      => array_keys($passwords));
 
-      foreach($DB->request('glpi_users', $crit) as $data) {
+      foreach ($DB->request('glpi_users', $crit) as $data) {
          if (Auth::checkPassword($passwords[$data['name']], $data['password'])) {
             $default_password_set[] = $data['name'];
          }

@@ -1360,14 +1360,14 @@ class CronTask extends CommonDBTM{
       // first look for bak to delete
       $dir       = GLPI_LOG_DIR."/*.bak" ;
       $findfiles = glob( $dir ) ;
-      foreach($findfiles as $file) {
+      foreach ($findfiles as $file) {
          $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
          // now depending on the format of the name we delete the file (for agging archives) or rename it (will add Ymd.log to the end of the file)
          $match = null;
-         if( preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0 ){
-            if( $match[1] < $firstdate ) {
+         if ( preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0 ) {
+            if ( $match[1] < $firstdate ) {
                $task->addVolume(1);
-               if( unlink($file) ) {
+               if ( unlink($file) ) {
                   $task->log( sprintf(__('Delete archived log file: %s'), $shortfile)) ;
                   $actionCode = 1 ;
                } else {
@@ -1381,14 +1381,14 @@ class CronTask extends CommonDBTM{
       // second look for log to archive
       $dir       = GLPI_LOG_DIR."/*.log" ;
       $findfiles = glob( $dir ) ;
-      foreach($findfiles as $file){
+      foreach ($findfiles as $file) {
          $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
          // rename the file
          $newfilename  = $file.".".date("Ymd", time()).".bak"; // will add to filename a string with format YYYYMMDD (= current date)
          $shortnewfile = str_replace(GLPI_LOG_DIR.'/','',$newfilename);
 
          $task->addVolume(1);
-         if( !file_exists($newfilename) && rename($file, $newfilename ) ) {
+         if (!file_exists($newfilename) && rename($file, $newfilename )) {
             $task->log( sprintf(__('Archive log file: %1$s to %2$s'), $shortfile, $shortnewfile));
             $actionCode = 1 ;
          } else {

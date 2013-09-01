@@ -943,11 +943,11 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if(isset($this->input['content'])) {
-         if(isset($this->input['stock_image'])) {
+      if (isset($this->input['content'])) {
+         if (isset($this->input['stock_image'])) {
             $this->addImagePaste();
             $input['content'] = $this->input['content'];
-         } elseif($CFG_GLPI["use_rich_text"]) {
+         } else if ($CFG_GLPI["use_rich_text"]) {
             $input['content'] = $this->convertTagToImage($input['content']);
          }
       }
@@ -1367,8 +1367,8 @@ class Ticket extends CommonITILObject {
    function post_addItem() {
       global $CFG_GLPI;
 
-      if(isset($this->input['content'])){
-         if(isset($this->input['stock_image'])){
+      if (isset($this->input['content'])) {
+         if (isset($this->input['stock_image'])) {
             $this->addImagePaste();
          }
       }
@@ -2644,7 +2644,9 @@ class Ticket extends CommonITILObject {
          case 'content' :
             $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($values[$field]));
             $content = Html::clean($content);
-            if(empty($content)) $content = ' ';
+            if (empty($content)) {
+               $content = ' ';
+            }
             return nl2br($content);
 
          case 'global_validation' :
@@ -3583,12 +3585,12 @@ class Ticket extends CommonITILObject {
 
          $cols = 90;
          $rows = 6;
-         if($CFG_GLPI["use_rich_text"]){
+         if ($CFG_GLPI["use_rich_text"]) {
             $cols = 110;
             $rows = 20;
          }
 
-         if($CFG_GLPI["use_rich_text"]) {
+         if ($CFG_GLPI["use_rich_text"]) {
             Html::initEditorSystem("content$rand", $this->getType());
             $values["content"] = $this->setRichTextContent("content$rand", $values["content"]);
             $cols = 110;
@@ -3789,10 +3791,10 @@ class Ticket extends CommonITILObject {
          $newtype              = $type;
          $newitilcategories_id = $itilcategories_id;
          // Get predefined values for ticket template
-         if (isset($tt->predefined['itilcategories_id']) && $tt->predefined['itilcategories_id']){
+         if (isset($tt->predefined['itilcategories_id']) && $tt->predefined['itilcategories_id']) {
             $newitilcategories_id = $tt->predefined['itilcategories_id'];
          }
-         if (isset($tt->predefined['type']) && $tt->predefined['type']){
+         if (isset($tt->predefined['type']) && $tt->predefined['type']) {
             $newtype = $tt->predefined['type'];
          }
          if ($newtype
@@ -4581,7 +4583,7 @@ class Ticket extends CommonITILObject {
 
          $cols = 90;
          $rows = 6;
-         if($CFG_GLPI["use_rich_text"]) {
+         if ($CFG_GLPI["use_rich_text"]) {
             $this->fields["content"] = $this->setRichTextContent("content$rand", $this->fields["content"]);
             $cols = 110;
             $rows = 20;
@@ -4632,7 +4634,7 @@ class Ticket extends CommonITILObject {
                echo "<br>";
                $doc = new Document();
                foreach ($values['_documents_id'] as $key => $val) {
-                  if ($doc->getFromDB($val)){
+                  if ($doc->getFromDB($val)) {
                      echo "<input type='hidden' name='_documents_id[$key]' value='$val'>";
                      echo "- ".$doc->getNameID()."<br>";
                   }
@@ -5935,58 +5937,62 @@ class Ticket extends CommonITILObject {
       return $values;
    }
 
+
    /**
     * Actions done after ADD and before UPDATE of the item in the database
     *
+    * @since version 0.85
+    *
     * @return nothing
    **/
-   function addImagePaste(){
-      $file_put_contents_ok = false;
-      $count_files = 0;
+   function addImagePaste() {
 
-      if(isset($this->input['_filename']))
+      $file_put_contents_ok = false;
+      $count_files          = 0;
+
+      if (isset($this->input['_filename'])) {
          $count_files = count($this->input['_filename']);
+      }
 
       // Adding each image in textarea as Glpi document
-      if(count($this->input['stock_image']) > 0){
-         foreach($this->input['stock_image'] as $image_name => $image){
+      if (count($this->input['stock_image']) > 0) {
+         foreach ($this->input['stock_image'] as $image_name => $image) {
 
             // Create a temporary file
             $tempfile = GLPI_DOC_DIR."/_tmp/".$image_name.".png";
 
             // IE decode : the tmp file content
             if (isset($this->input['IE_support'])) {
-               if(file_put_contents($tempfile,
-                       base64_decode(str_replace('%0A', '', $image['data'])))){
+               if (file_put_contents($tempfile,
+                                     base64_decode(str_replace('%0A', '', $image['data'])))) {
                   $file_put_contents_ok = true;
                }
 
             // FF, Chrome : decode the tmp file content
             } else {
                $image['data'] = substr($image['data'], strpos($image['data'], ",") + 1);
-               if(file_put_contents($tempfile,
-                       base64_decode(str_replace(' ', '+', $image['data'])))){
+               if (file_put_contents($tempfile,
+                                     base64_decode(str_replace(' ', '+', $image['data'])))) {
                   $file_put_contents_ok = true;
                }
 
                // Crop image (coordinates get with Jcrop plugin)
-               if(isset($image['coordinates']) && !empty($image['coordinates'])){
+               if (isset($image['coordinates']) && !empty($image['coordinates'])) {
                   $image_coordinates = json_decode(urldecode($image['coordinates']), true);
-                  Toolbox::resizePicture($tempfile,
-                          $tempfile,
-                          $image_coordinates['img_w'],
-                          $image_coordinates['img_h'],
-                          $image_coordinates['img_y'],
-                          $image_coordinates['img_x'],
-                          $image_coordinates['img_w'],
-                          $image_coordinates['img_h']);
+                  Toolbox::resizePicture($tempfile, $tempfile,
+                                         $image_coordinates['img_w'],
+                                         $image_coordinates['img_h'],
+                                         $image_coordinates['img_y'],
+                                         $image_coordinates['img_x'],
+                                         $image_coordinates['img_w'],
+                                         $image_coordinates['img_h']);
                } else {
                   Toolbox::resizePicture($tempfile, $tempfile,0,0,0,0,0,0);
                }
             }
 
             // Prepare file data for Document add
-            if($file_put_contents_ok){
+            if ($file_put_contents_ok) {
                $this->input['_filename'][$count_files] =  $image_name.".png";
                $this->input['_tag'][$count_files]      = '#'.$image_name;// Add a tag on each image
 
@@ -5999,49 +6005,51 @@ class Ticket extends CommonITILObject {
       }
    }
 
+
    /**
     * Convert tag to image
     *
-    * @param $content_text : text content of input
-    * @param $force_update : force update of content in item
-    * @param $doc_data : array file names and tags
+    * @since version 0.85
+    *
+    * @param $content_text         text content of input
+    * @param $force_update         force update of content in item (false by default
+    * @param $doc_data       array file names and tags
     *
     * @return nothing
    **/
-   function convertTagToImage($content_text, $force_update=false, $doc_data=array()){
+   function convertTagToImage($content_text, $force_update=false, $doc_data=array()) {
       global $CFG_GLPI;
 
       $matches = array();
 
       // If no doc data available we match all tags in content
-      if(!count($doc_data)){
+      if (!count($doc_data)) {
          $doc = new Document();
          preg_match_all('/#([a-z0-9]+)/', $content_text, $matches, PREG_PATTERN_ORDER);
-         if(count($matches[0]) > 0)
+         if (count($matches[0]) > 0) {
             $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[0]))."')");
+         }
       }
 
-      if(count($doc_data)){
-         foreach($doc_data as $id => $image){
-            if(isset($image['tag'])){
+      if (count($doc_data)) {
+         foreach ($doc_data as $id => $image) {
+            if (isset($image['tag'])) {
                // Replace tags by image in textarea
                $img = "<img id='".str_replace('#', '', $image['tag'])."' src='".$CFG_GLPI['root_doc'].
-                           "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
+                        "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
 
                // Replace tag by the image
                $content_text = preg_replace('/'.$image['tag'].'/',
-                       Html::entities_deep($img),
-                       $content_text);
+                                            Html::entities_deep($img), $content_text);
 
                // Replace <br> TinyMce bug
-               $content_text = str_replace(
-                       array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'), '&gt;&lt;',
-                          $content_text);
+               $content_text = str_replace(array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'),
+                                           '&gt;&lt;', $content_text);
             }
          }
       }
 
-      if($force_update){
+      if ($force_update) {
          $this->fields['content'] = $content_text;
          $this->updateInDB(array('content'));
       }
@@ -6049,17 +6057,21 @@ class Ticket extends CommonITILObject {
       return $content_text;
    }
 
+
    /**
     * Convert image to tag
     *
-    * @param $content_html : html content of input
-    * @param $force_update : force update of content in item
+    * @since version 0.85
+    *
+    * @param $content_html   html content of input
+    * @param $force_update   force update of content in item (false by default
     *
     * @return htlm content
    **/
-   function convertImageToTag($content_html, $force_update=false){
+   function convertImageToTag($content_html, $force_update=false) {
+
       $html = str_replace('&', '&amp;', $content_html);
-      if(!empty($html)){
+      if (!empty($html)) {
          // We parse HTML with dom
          libxml_use_internal_errors(true);
          $dom = new DOMDocument();
@@ -6068,13 +6080,15 @@ class Ticket extends CommonITILObject {
 
          // We replace each html element by its tag
          $htmlTags = array('img', 'object');
-         foreach($htmlTags as $htmlTag){
-            $nodes = $dom->getElementsByTagName($htmlTag);
+         foreach ($htmlTags as $htmlTag) {
+            $nodes          = $dom->getElementsByTagName($htmlTag);
             $nodeListLength = $nodes->length;
             // If config display image
-            for ($i = 0; $i < $nodeListLength; $i ++){
+            for ($i = 0; $i < $nodeListLength; $i ++) {
                $node = $nodes->item(0);
-               if($node->getAttribute('id')) $tag = $dom->createTextNode('#'.$node->getAttribute('id'));
+               if ($node->getAttribute('id')) {
+                  $tag = $dom->createTextNode('#'.$node->getAttribute('id'));
+               }
                $p = $dom->createElement('p');
                $p->appendChild($tag);
                $node->parentNode->replaceChild($p, $node);
@@ -6087,7 +6101,7 @@ class Ticket extends CommonITILObject {
          foreach ($body->childNodes as $child)
             $doc->appendChild($doc->importNode($child, true));
 
-         if($force_update){
+         if ($force_update) {
             $this->fields['content'] = utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
             $this->updateInDB(array('content'));
          }
@@ -6096,16 +6110,20 @@ class Ticket extends CommonITILObject {
       }
    }
 
+
    /**
     * Convert img of the collector for ticket
     *
-    * @param $content_html : html content of input
-    * @param $files : array of file name
-    * @param $tags : array of image tag
+    * @since version 0.85
+    *
+    * @param $content_html         html content of input
+    * @param $files         array  of file name
+    * @param $tags          array  of image tag
     *
     * @return htlm content
    **/
-   static function convertContentForTicket($content_html, $files, $tags){
+   static function convertContentForTicket($content_html, $files, $tags) {
+
       $html = str_replace('&', '&amp;', $content_html);
 
       // We parse HTML with dom
@@ -6118,12 +6136,12 @@ class Ticket extends CommonITILObject {
       $nodes = $dom->getElementsByTagName('img');
       $nodeListLength = $nodes->length;
       // If config display image
-      for ($i = 0; $i < $nodeListLength; $i ++){
+      for ($i = 0; $i < $nodeListLength; $i ++) {
          $node = $nodes->item(0);
-         $src = $node->getAttribute('src');
-         foreach($files as $id => $data){
-            if (preg_match("/".$data."/i", $src)){
-               $p = $dom->createElement('p');
+         $src  = $node->getAttribute('src');
+         foreach ($files as $id => $data) {
+            if (preg_match("/".$data."/i", $src)) {
+               $p   = $dom->createElement('p');
                $tag = $dom->createTextNode($tags[$id]);
                $p->appendChild($tag);
 
@@ -6141,22 +6159,26 @@ class Ticket extends CommonITILObject {
       return utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
    }
 
+
    /**
     * Convert img or tag of ticket for notification mails
+    *
+    * @since version 0.85
     *
     * @param $content : html content of input
     * @param $item : item to store filenames and tags found for each image in $content
     *
     * @return htlm content
    **/
-   function convertContentForNotification($content, $item){
+   function convertContentForNotification($content, $item) {
       global $CFG_GLPI, $DB;
 
-      $tag = '';
-      $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '), html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
+      $tag  = '';
+      $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
+                          html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
 
       // If is html content
-      if($CFG_GLPI["use_rich_text"]) {
+      if ($CFG_GLPI["use_rich_text"]) {
          // We parse HTML with dom
          libxml_use_internal_errors(true);
          $dom = new DOMDocument();
@@ -6164,12 +6186,12 @@ class Ticket extends CommonITILObject {
          $dom->preserveWhiteSpace = false;
 
          // We replace each img by compatible embeded img for mail
-         $nodes = $dom->getElementsByTagName('img');
+         $nodes          = $dom->getElementsByTagName('img');
          $nodeListLength = $nodes->length;
          // If config display image
-         for ($i = 0; $i < $nodeListLength; $i++){
+         for ($i = 0; $i < $nodeListLength; $i++) {
             $node = $nodes->item($i);
-            if($node->getAttribute('id')){
+            if ($node->getAttribute('id')) {
                $tag =  '#'.$node->getAttribute('id');
                $img = $dom->createElement('img');
                $img->setAttribute('src', 'cid:'.$tag);
@@ -6182,42 +6204,44 @@ class Ticket extends CommonITILObject {
       } else {
          $doc = new Document();
          preg_match_all('/#([a-z0-9]+)/', $content, $matches, PREG_PATTERN_ORDER);
-         if(count($matches[0]) > 0)
+         if (count($matches[0]) > 0) {
             $doc_data = $doc->find("tag IN('".implode("','", array_unique($matches[0]))."')");
+         }
 
-         if(count($doc_data)){
-            foreach($doc_data as $image){
+         if (count($doc_data)) {
+            foreach ($doc_data as $image) {
                // Replace tags by image in textarea
                $img = "<img src='cid:".$image['tag']."'/>";
 
                // Replace tag by the image
-               $content = preg_replace('/'.$image['tag'].'/',
-                       $img,
-                       $content);
+               $content = preg_replace('/'.$image['tag'].'/', $img, $content);
             }
          }
       }
 
       // Get all attached documents of ticket
-      if($CFG_GLPI['attach_ticket_documents_to_mail']){
+      if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
 
          $query = "SELECT `glpi_documents_items`.`id` AS assocID,
                        `glpi_entities`.`id` AS entity,
                        `glpi_documents`.`name` AS assocName,
                        `glpi_documents`.*
-                FROM `glpi_documents_items`
-                LEFT JOIN `glpi_documents`
+                   FROM `glpi_documents_items`
+                   LEFT JOIN `glpi_documents`
                      ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
-                LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                WHERE `glpi_documents_items`.`items_id` = '".$item->fields['id']."'
-                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
+                   LEFT JOIN `glpi_entities`
+                     ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                   WHERE `glpi_documents_items`.`items_id` = '".$item->fields['id']."'
+                         AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
          $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
          $result = $DB->query($query);
 
-         if($DB->numrows($result)){
-            while ($data = $DB->fetch_assoc($result)){
-               if(!empty($data['id'])) $item->documents[] = $data['id'];
+         if ($DB->numrows($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               if (!empty($data['id'])) {
+                  $item->documents[] = $data['id'];
+               }
             }
          }
       }
@@ -6225,51 +6249,61 @@ class Ticket extends CommonITILObject {
       return $content;
    }
 
+
+
    /**
     * Convert rich text content to simple text content
+    *
+    * @since version 0.85
     *
     * @param $content : content to convert in html
     *
     * @return $content
-    */
-   function setSimpleTextContent($content){
+   **/
+   function setSimpleTextContent($content) {
+
       $content = Html::entity_decode_deep($content);
 
       // If is html content
-      if($content != strip_tags($content)) {
+      if ($content != strip_tags($content)) {
          $content = Html::clean($this->convertImageToTag($content));
       }
 
       return $content;
    }
 
+
+
    /**
     * Convert simple text content to rich text content, init html editor
     *
-    * @param $name : name of textarea
-    * @param $content : content to convert in html
+    * @since version 0.85
+    *
+    * @param $name       name of textarea
+    * @param $content    content to convert in html
     *
     * @return $content
-    */
+   **/
+   function setRichTextContent($name, $content) {
 
-   function setRichTextContent($name, $content){
       $content = Html::entity_decode_deep($content);
 
       // Init html editor
       Html::initEditorSystem($name, $this->getType());
 
       // If no html
-      if($content == strip_tags($content)) {
+      if ($content == strip_tags($content)) {
          $content = $this->convertTagToImage($content);
       }
 
       // If content does not contain <br> html tag, use nl2br
       $content = Html::entity_decode_deep($content);
-      if(!preg_match("/<br\s?\/?>/", $content)) {
+      if (!preg_match("/<br\s?\/?>/", $content)) {
          $content = nl2br($content);
       }
 
       return $content;
    }
+
 }
 ?>

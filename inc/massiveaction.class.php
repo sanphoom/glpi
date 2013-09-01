@@ -446,7 +446,7 @@ class MassiveAction {
          if (!($item = getItemForItemtype($itemtype))) {
             return false;
          }
-      } elseif ($item instanceof CommonDBTM) {
+      } else if ($item instanceof CommonDBTM) {
          $itemtype = $item->getType();
       } else {
          return false;
@@ -503,7 +503,7 @@ class MassiveAction {
             if ($candelete) {
                $actions[$self_pref.'delete'] = _x('button', 'Put in dustbin');
             }
-         } else if ($canpurge){
+         } else if ($canpurge) {
             $actions[$self_pref.'purge'] = _x('button', 'Delete permanently');
          }
 
@@ -575,7 +575,7 @@ class MassiveAction {
             Plugin::doOneHook($split[1], 'MassiveActionsDisplay', $plugin_input);
 
             /*
-         } elseif ($plug=isPluginItemType($_POST["itemtype"])) {
+         } else if ($plug=isPluginItemType($_POST["itemtype"])) {
             // non-normalized name
             // hook from the plugin defining the type
             Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
@@ -707,7 +707,7 @@ class MassiveAction {
          }
 
          if (isset($result['messages'])) {
-            foreach($result['messages'] as $message) {
+            foreach ($result['messages'] as $message) {
                $this->addMessage($message);
             }
          }
@@ -770,7 +770,7 @@ class MassiveAction {
                   }
 
                   if (isset($res['messages'])) {
-                     foreach($res['messages'] as $message) {
+                     foreach ($res['messages'] as $message) {
                         $this->addMessage($message);
                      }
                   }

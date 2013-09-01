@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} elseif (isset($_GET['popup'])) {
+} else if (isset($_GET['popup'])) {
    $doc->showImagePaste($_GET["name"]);
 } else {
    Html::header(Document::getTypeName(2), $_SERVER['PHP_SELF'], "management","document");

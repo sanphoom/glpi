@@ -310,7 +310,7 @@ class Auth extends CommonGLPI {
       } else if (strlen($hash)==32) {
          $ok = md5($pass) == $hash;
 
-      } else if (strlen($hash)==40){
+      } else if (strlen($hash)==40) {
          $ok = sha1($pass) == $hash;
 
       } else {

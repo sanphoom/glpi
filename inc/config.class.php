@@ -704,22 +704,22 @@ class Config extends CommonDBTM {
       echo "</td><td>" . __('Allow anonymous followups (receiver)') . "</td><td>";
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"]);
       echo "</td></tr>";
-       
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Use rich text for helpdesk') . "</td><td>";
       $id = 'alert'.mt_rand();
       $param['on_change'] = '$("#'.$id.'").html("");
-            if($(this).val() == 0){
+            if ($(this).val() == 0) {
                $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
             }';
       Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
       echo "<span class='red' id='".$id."'></span>";
       echo "</td>";
-      
+
       echo "<td>" . __('Add documents into ticket notifications') . "</td><td>";
       Dropdown::showYesNo("attach_ticket_documents_to_mail", $CFG_GLPI["attach_ticket_documents_to_mail"]);
       echo "</td></tr>";
-      
+
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe'>";
@@ -1125,7 +1125,7 @@ class Config extends CommonDBTM {
       echo "<script type='text/javascript' >\n";
       echo "function passwordCheck() {\n";
       echo "var pwd = ".Html::jsGetElementbyID($field).";";
-      echo "if(pwd.value.length < ".$CFG_GLPI['password_min_length'].") {
+      echo "if (pwd.value.length < ".$CFG_GLPI['password_min_length'].") {
             ".Html::jsGetElementByID('password_min_length').".addClass('red');
             ".Html::jsGetElementByID('password_min_length').".removeClass('green');
       } else {
@@ -1136,7 +1136,7 @@ class Config extends CommonDBTM {
       if ($CFG_GLPI["password_need_number"]) {
          $needs[] = "<span id='password_need_number' class='red'>".__('Digit')."</span>";
          echo "var numberRegex = new RegExp('[0-9]', 'g');
-         if(false == numberRegex.test(pwd.value)) {
+         if (false == numberRegex.test(pwd.value)) {
                ".Html::jsGetElementByID('password_need_number').".addClass('red');
                ".Html::jsGetElementByID('password_need_number').".removeClass('green');
          } else {
@@ -1147,7 +1147,7 @@ class Config extends CommonDBTM {
       if ($CFG_GLPI["password_need_letter"]) {
          $needs[] = "<span id='password_need_letter' class='red'>".__('Lowercase')."</span>";
          echo "var letterRegex = new RegExp('[a-z]', 'g');
-         if(false == letterRegex.test(pwd.value)) {
+         if (false == letterRegex.test(pwd.value)) {
                ".Html::jsGetElementByID('password_need_letter').".addClass('red');
                ".Html::jsGetElementByID('password_need_letter').".removeClass('green');
          } else {
@@ -1158,7 +1158,7 @@ class Config extends CommonDBTM {
       if ($CFG_GLPI["password_need_caps"]) {
          $needs[] = "<span id='password_need_caps' class='red'>".__('Uppercase')."</span>";
          echo "var capsRegex = new RegExp('[A-Z]', 'g');
-         if(false == capsRegex.test(pwd.value)) {
+         if (false == capsRegex.test(pwd.value)) {
                ".Html::jsGetElementByID('password_need_caps').".addClass('red');
                ".Html::jsGetElementByID('password_need_caps').".removeClass('green');
          } else {
@@ -1169,7 +1169,7 @@ class Config extends CommonDBTM {
       if ($CFG_GLPI["password_need_symbol"]) {
          $needs[] = "<span id='password_need_symbol' class='red'>".__('Symbol')."</span>";
          echo "var capsRegex = new RegExp('[^a-zA-Z0-9_]', 'g');
-         if(false == capsRegex.test(pwd.value)) {
+         if (false == capsRegex.test(pwd.value)) {
                ".Html::jsGetElementByID('password_need_symbol').".addClass('red');
                ".Html::jsGetElementByID('password_need_symbol').".removeClass('green');
          } else {

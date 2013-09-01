@@ -1169,7 +1169,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       // First, get normalized action : add or remove
       if (in_array($action, $specificities['normalized']['add'])) {
          $normalized_action = 'add';
-      } elseif (in_array($action, $specificities['normalized']['remove'])) {
+      } else if (in_array($action, $specificities['normalized']['remove'])) {
          $normalized_action = 'remove';
       } else {
          // If we cannot get normalized action, then, its not for this method !
@@ -1289,7 +1289,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       // First, get normalized action : add or remove
       if (in_array($action, $specificities['normalized']['add'])) {
          $normalized_action = 'add';
-      } elseif (in_array($action, $specificities['normalized']['remove'])) {
+      } else if (in_array($action, $specificities['normalized']['remove'])) {
          $normalized_action = 'remove';
       } else {
          // If we cannot get normalized action, then, its not for this method !
@@ -1538,7 +1538,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                } else {
                   if ($noright > 0) {
                      $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
-                  } elseif ($ko > 0) {
+                  } else if ($ko > 0) {
                      $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                   }
                }

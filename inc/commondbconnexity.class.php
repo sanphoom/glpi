@@ -184,7 +184,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
                   return $item;
                }
             }
-         } elseif ($getEmpty) {
+         } else if ($getEmpty) {
             if ($item->getEmpty()) {
                return $item;
             }
@@ -429,15 +429,15 @@ abstract class CommonDBConnexity extends CommonDBTM {
          if (!$itemtype::$mustBeAttached) {
             $unaffect = true;
             $affect   = true;
-         } elseif ($specificities['reaffect']) {
+         } else if ($specificities['reaffect']) {
             $affect = true;
          }
-      } elseif (is_a($itemtype, 'CommonDBRelation', true)) {
+      } else if (is_a($itemtype, 'CommonDBRelation', true)) {
          $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
          if ((!$itemtype::$mustBeAttached_1) || (!$itemtype::$mustBeAttached_2)) {
             $unaffect = true;
             $affect   = true;
-         } elseif ($specificities['reaffect']) {
+         } else if ($specificities['reaffect']) {
             $affect = true;
          }
       } else {
@@ -487,7 +487,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       if (count($itemtypes_affect) > count($itemtypes_unaffect)) {
          $normalized_action = 'affect';
          $itemtypes         = $itemtypes_affect;
-      } elseif (count($itemtypes_affect) < count($itemtypes_unaffect)) {
+      } else if (count($itemtypes_affect) < count($itemtypes_unaffect)) {
          $normalized_action = 'unaffect';
          $itemtypes         = $itemtypes_unaffect;
       } else {
@@ -619,7 +619,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       // First, get normalized action : affect or unaffect
       if (in_array($action, $specificities['normalized']['affect'])) {
          $normalized_action = 'affect';
-      } elseif (in_array($action, $specificities['normalized']['unaffect'])) {
+      } else if (in_array($action, $specificities['normalized']['unaffect'])) {
          $normalized_action = 'unaffect';
       } else {
          // If we cannot get normalized action, then, its not for this method !

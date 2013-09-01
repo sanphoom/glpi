@@ -1447,7 +1447,8 @@ abstract class CommonITILObject extends CommonDBTM {
             }
 
             // check sum already exist, we replace the tag by the existing one
-            if(isset($this->input['_tag'][$key]) && $docID > 0){
+            if (isset($this->input['_tag'][$key])
+                && ($docID > 0)) {
                $this->input['content'] = preg_replace('/'.$this->input['_tag'][$key].'/',
                        $doc->fields["tag"],
                        $this->input['content']);
@@ -1462,7 +1463,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($this->getType() == 'Ticket') {
                $input2["tickets_id"]           = $this->getID();
-               if(isset($this->input['_tag'][$key])){
+               if (isset($this->input['_tag'][$key])) {
                   $input2["tag"]               = $this->input['_tag'][$key];
                }
             }
@@ -1483,7 +1484,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]),
                                        stripslashes($doc->fields["filename"]));
 
-               if(isset($input2["tag"])){
+               if (isset($input2["tag"])) {
                   $docadded[$docID]['tag'] = $input2["tag"];
                   unset($this->input['_filename'][$key]);
                   unset($this->input['_tag'][$key]);
@@ -1494,7 +1495,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $donotif = 0;
       }
 
-      if($CFG_GLPI["use_rich_text"]){
+      if ($CFG_GLPI["use_rich_text"]) {
          $this->input['content'] = $this->convertTagToImage($this->input['content'], true, $docadded);
       }
 

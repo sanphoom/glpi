@@ -746,11 +746,12 @@ class MailCollector  extends CommonDBTM {
       }
 
       //If files are present and content is html
-      if(isset($this->files) 
-              && count($this->files) 
-              && $tkt['content'] != strip_tags($tkt['content'])){
+      if (isset($this->files)
+          && count($this->files)
+          && $tkt['content'] != strip_tags($tkt['content'])) {
 
-         $tkt['content'] = Ticket::convertContentForTicket($tkt['content'], $this->files, $this->tags);
+         $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
+                                                           $this->files, $this->tags);
       }
 
       $tkt['content'] = nl2br($this->cleanMailContent($tkt['content']));
@@ -1383,7 +1384,7 @@ class MailCollector  extends CommonDBTM {
             if (file_put_contents($path.$filename, $message)) {
                $this->files[] = $filename;
                // If embeded image, we add a tag
-               if($structure->type == 5 && $structure->subtype) {
+               if (($structure->type == 5) && $structure->subtype) {
                   end($this->files);
                   $this->tags[key($this->files)]  = '#'.Toolbox::getRandomString(8);
                }

@@ -274,10 +274,13 @@ class NotificationTemplate extends CommonDBTM {
                $signature_html = Html::entities_deep($this->signature);
                $signature_html = Html::nl2br_deep($signature_html);
 
-               $template_datas['content_html'] = self::process($template_datas['content_html'], $data_html);
-               if(get_class($target->obj) == 'Ticket'){
+               $template_datas['content_html'] = self::process($template_datas['content_html'],
+                                                               $data_html);
+               if (get_class($target->obj) == 'Ticket') {
                   $Ticket = new Ticket();
-                  $template_datas['content_html'] = $Ticket->convertContentForNotification($template_datas['content_html'], $options['item']);
+                  $template_datas['content_html']
+                          = $Ticket->convertContentForNotification($template_datas['content_html'],
+                                                                   $options['item']);
                }
 
                $lang['content_html'] =
@@ -507,8 +510,10 @@ class NotificationTemplate extends CommonDBTM {
       $mailing_options['content_html'] = $template_data['content_html'];
       $mailing_options['content_text'] = $template_data['content_text'];
       $mailing_options['items_id']     = $target->obj->getField('id');
-      if($target->obj->getType() == 'Ticket'){
-         if(isset($target->obj->documents)) $mailing_options['documents'] = $target->obj->documents;
+      if ($target->obj->getType() == 'Ticket') {
+         if (isset($target->obj->documents)) {
+            $mailing_options['documents'] = $target->obj->documents;
+         }
       }
 
       return $mailing_options;

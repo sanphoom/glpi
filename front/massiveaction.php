@@ -65,7 +65,7 @@ $nbnoright = $results['noright'];
 
 if ($nbok == 0) {
    $message = __('Failed operation');
-} elseif ($nbnoright || $nbko) {
+} else if ($nbnoright || $nbko) {
    $message = __('Operation performed partially successful');
 } else {
    $message = __('Operation successful');
@@ -79,7 +79,7 @@ Session::addMessageAfterRedirect($message);
 if (isset($results['messages'])
     && is_array($results['messages'])
     && count($results['messages'])) {
-   foreach($results['messages'] as $message) {
+   foreach ($results['messages'] as $message) {
       Session::addMessageAfterRedirect($message, false, ERROR);
    }
 }
