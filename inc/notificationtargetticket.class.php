@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+/**
+ * NotificationTarget Class
+**/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
    var $private_profiles = array();
@@ -80,7 +82,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          if (!parent::validateSendTo($event, $infos, $notify_me)) {
             return false;
          }
-   
+
          // Private object and no right to see private items : do not send
          if ($this->isPrivate()
             && (!isset($infos['additionnaloption']['show_private'])
@@ -505,41 +507,43 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                $validator = array();
 
                $users_validate = TicketValidation_User::getUsersValidation($validation['id']);
-               if(count($users_validate)){
+               if (count($users_validate)){
                   foreach($users_validate as $data){
-                     $validator[] = formatUserName($data['id'], $data['name'], 
-                                          $data['realname'], $data['firstname']);
+                     $validator[] = formatUserName($data['id'], $data['name'],
+                                                   $data['realname'], $data['firstname']);
                   }
                }
                $validator = implode(', ',$validator);
 
-               $tmp = array();
+               $tmp        = array();
                $tmp['##validation.submission.title##']
-                     //TRANS: %s is the user name
-                     = sprintf(__('An approval request has been submitted by %s'),
+                           //TRANS: %s is the user name
+                           = sprintf(__('An approval request has been submitted by %s'),
                                Html::clean(getUserName($validation['users_id'])));
                $tmp['##validation.answer.title##']
-                     //TRANS: %s is the user name
-                     = sprintf(__('An answer to an an approval request was produced by %s'),
-                               Html::clean($validator));
+                           //TRANS: %s is the user name
+                           = sprintf(__('An answer to an an approval request was produced by %s'),
+                                     Html::clean($validator));
 
-               $tmp['##validation.author##'] = Html::clean(getUserName($validation['users_id']));
+               $tmp['##validation.author##']
+                           = Html::clean(getUserName($validation['users_id']));
 
-               $tmp['##validation.status##'] = TicketValidation::getStatus($validation['status']);
+               $tmp['##validation.status##']
+                           = TicketValidation::getStatus($validation['status']);
                $tmp['##validation.storestatus##']
-                                             = $validation['status'];
+                           = $validation['status'];
                $tmp['##validation.submissiondate##']
-                                             = Html::convDateTime($validation['submission_date']);
+                           = Html::convDateTime($validation['submission_date']);
                $tmp['##validation.commentsubmission##']
-                                             = $validation['comment_submission'];
+                           = $validation['comment_submission'];
                $tmp['##validation.validationdate##']
-                                             = Html::convDateTime($validation['validation_date']);
+                           = Html::convDateTime($validation['validation_date']);
                $tmp['##validation.validator##']
-                                             =  Html::clean($validator);
+                           =  Html::clean($validator);
                $tmp['##validation.commentvalidation##']
-                                             = TicketValidation_User::getUsersValidationComments(
-                                                     $validation['id'], true);
-               $datas['validations'][]       = $tmp;
+                          = TicketValidation_User::getUsersValidationComments($validation['id'],
+                                                                              true);
+               $datas['validations'][] = $tmp;
             }
          }
 

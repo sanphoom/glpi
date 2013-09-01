@@ -60,6 +60,7 @@ class TicketValidation  extends CommonDBChild {
    const VALIDATEREQUEST             = 4096;
    const VALIDATEINCIDENT            = 8192;
 
+
    function getForbiddenStandardMassiveAction() {
 
       $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -160,7 +161,7 @@ class TicketValidation  extends CommonDBChild {
       $query = "SELECT `users_id_validate`
                 FROM `glpi_ticketvalidations_users`
                 WHERE `glpi_ticketvalidations_users`.`tickets_id` = '$tickets_id'
-                AND `users_id_validate` = '".Session::getLoginUserID()."'";
+                      AND `users_id_validate` = '".Session::getLoginUserID()."'";
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
@@ -204,6 +205,14 @@ class TicketValidation  extends CommonDBChild {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @param $table
+    * @param $condition   (default '')
+    *
+    * @return number
+   **/
    function countValidations($table, $condition="") {
       global $DB;
 
@@ -214,10 +223,11 @@ class TicketValidation  extends CommonDBChild {
       $query = "SELECT `$table`.`id` AS cpt
                 FROM `$table`
                 LEFT JOIN `glpi_ticketvalidations_users`
-                ON (`$table`.`id` = `glpi_ticketvalidations_users`.`ticketvalidations_id`)";
+                   ON (`$table`.`id` = `glpi_ticketvalidations_users`.`ticketvalidations_id`)";
 
       if (!empty($condition)) {
-         $query .= " WHERE $condition GROUP BY `".$table."`.`id`";
+         $query .= " WHERE $condition
+                     GROUP BY `".$table."`.`id`";
       }
 
       $result = $DB->query($query);
@@ -239,24 +249,29 @@ class TicketValidation  extends CommonDBChild {
       $this->fields["users_id"] = Session::getLoginUserID();
       $this->fields["status"]   = 'waiting';
    }
-   
-   
 
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::post_getFromDB()
+   **/
    function post_getFromDB() {
-      
       $this->users_id_validate = TicketValidation_User::getUsersValidation($this->fields['id']);
    }
 
+
    /**
+    * @since version 0.85
+    *
     * @see CommonDBTM::cleanDBonPurge()
    **/
    function cleanDBonPurge() {
-      
+
       $class = new TicketValidation_User();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-   
 
    function prepareInputForAdd($input) {
 
@@ -276,10 +291,10 @@ class TicketValidation  extends CommonDBChild {
       $input["submission_date"] = $_SESSION["glpi_currenttime"];
       $input["status"]          = 'waiting';
 
-      if(isset($input["validation_percent"])){
+      if (isset($input["validation_percent"])){
          $job = new Ticket();
          $job->getFromDB($input["tickets_id"]);
-         $job->update(array('id'                 => $input["tickets_id"], 
+         $job->update(array('id'                 => $input["tickets_id"],
                             'validation_percent' => $input["validation_percent"]));
       }
 
@@ -292,18 +307,18 @@ class TicketValidation  extends CommonDBChild {
 
       $job      = new Ticket();
       $mailsend = false;
-      if ($job->getFromDB($this->fields["tickets_id"])) { 
+      if ($job->getFromDB($this->fields["tickets_id"])) {
          $params = array('ticketvalidations_id' => $this->fields["id"],
                          'tickets_id'           => $this->fields["tickets_id"],
                          'status'               => $this->input['status'],
                          'validation_date'      => 'NULL',
                          'users_id_validate'    => $this->input["users_id_validate"]);
          $user_ticketvalidation = new TicketValidation_User();
-         foreach($this->input['users_id_validate'] as $users){    
+         foreach($this->input['users_id_validate'] as $users){
             $params['users_id_validate'] = $users;
             $user_ticketvalidation->add($params);
          }
-                  
+
          // Set global validation to waiting
          if (($job->fields['global_validation'] == 'accepted')
              || ($job->fields['global_validation'] == 'none')) {
@@ -332,29 +347,32 @@ class TicketValidation  extends CommonDBChild {
          }
          if ($mailsend) {
             $message = array();
-            $error = array();
-            $user = new User();
-            
+            $error   = array();
+            $user    = new User();
+
             // Validation message
-            if(isset($this->input["users_id_validate"]) && !empty($this->input["users_id_validate"])){
+            if (isset($this->input["users_id_validate"])
+                && !empty($this->input["users_id_validate"])){
                $users = TicketValidation_User::getUsersValidation($this->fields['id']);
-               foreach($users as $user_data){
+               foreach ($users as $user_data) {
                   $user->getFromDB($user_data['id']);
                   $email = $user->getDefaultEmail();
                   if (!empty($email)) {
                      $message[] = sprintf(__('Approval request send to %s'), $user->getName());
                   } else {
-                     $error[] = sprintf(__('The selected user (%s) has no valid email address. 
-                        The request has been created, without email confirmation.'), $user->getName());
+                     $error[] = sprintf(__('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
+                                        $user->getName());
                   }
                }
             }
-            
-            if(!empty($message))
+
+            if (!empty($message)) {
                Session::addMessageAfterRedirect((implode('<br>', $message)));
-            
-            if(!empty($error))
+            }
+
+            if (!empty($error)) {
                Session::addMessageAfterRedirect((implode('<br>', $error)), false, ERROR);
+            }
          }
       }
       parent::post_addItem();
@@ -362,22 +380,24 @@ class TicketValidation  extends CommonDBChild {
 
 
    function prepareInputForUpdate($input) {
+
       $job              = new Ticket();
       $forbid_fields    = array();
       $validation_admin = (($this->fields["users_id"] == Session::getLoginUserID())
                            && static::canCreate()
                            && ($this->fields['status'] == 'waiting'));
-      
+
       // If admin and no users, we clean it
       $user_ticketvalidation = new TicketValidation_User();
-      if($validation_admin && !isset($this->input['users_id_validate'])) {
+      if ($validation_admin
+          && !isset($this->input['users_id_validate'])) {
          $this->input['ticketvalidations_id'] = $this->input['id'];
-         $this->input['users_id_validate'] = array();
-         $this->users_id_validate = array();
+         $this->input['users_id_validate']    = array();
+         $this->users_id_validate             = array();
          $user_ticketvalidation->updateValidationUsers($this->input);
       }
 
-      if (TicketValidation_User::isUserInValidation($this->input['id'])) { 
+      if (TicketValidation_User::isUserInValidation($this->input['id'])) {
          if (($input["status"] == "rejected")
              && (!isset($input["comment_validation"])
                  || ($input["comment_validation"] == ''))) {
@@ -386,7 +406,7 @@ class TicketValidation  extends CommonDBChild {
             return false;
          }
 
-         $forbid_fields = array('entities_id', 'users_id', 'tickets_id', 'users_id_validate', 
+         $forbid_fields = array('entities_id', 'users_id', 'tickets_id', 'users_id_validate',
                                 'validation_percent','comment_submission', 'submission_date');
 
       } else if (Session::haveRightsOr(self::$rightname, array(self::CREATEINCIDENT,
@@ -394,7 +414,7 @@ class TicketValidation  extends CommonDBChild {
          $forbid_fields = array('entities_id', 'tickets_id', 'status', 'comment_validation',
                                 'validation_date');
       }
-      
+
       if (count($forbid_fields)) {
          foreach ($forbid_fields as $key => $val) {
             if (isset($input[$key])) {
@@ -402,10 +422,10 @@ class TicketValidation  extends CommonDBChild {
             }
          }
       }
-      
-      if(isset($this->input["validation_percent"])){
+
+      if (isset($this->input["validation_percent"])) {
          $job->getFromDB($this->fields["tickets_id"]);
-         $job->update(array('id'                => $this->fields["tickets_id"], 
+         $job->update(array('id'                => $this->fields["tickets_id"],
                             'validation_percent' => $this->input["validation_percent"]));
       }
 
@@ -421,20 +441,21 @@ class TicketValidation  extends CommonDBChild {
       if (isset($this->input['_disablenotif'])) {
          $donotif = false;
       }
-      
+
       $user_ticketvalidation = new TicketValidation_User();
-      
+
       if ($job->getFromDB($this->fields["tickets_id"])) {
-         
-         $this->input["users_id_validate"] = (!isset($this->input["users_id_validate"])) 
-            ? array_keys($this->users_id_validate):$this->input["users_id_validate"];
-         
-         if (!empty($this->input['users_id_validate'])){
-            $this->input["status"] = (!isset($this->input["status"])) 
-               ? $this->fields["status"]:$this->input["status"];
-            $this->input["comment_validation"] = (!isset($this->input["comment_validation"])) 
-               ? '':$this->input["comment_validation"];
-            
+
+         $this->input["users_id_validate"] = (!isset($this->input["users_id_validate"]))
+                                                ? array_keys($this->users_id_validate)
+                                                : $this->input["users_id_validate"];
+
+         if (!empty($this->input['users_id_validate'])) {
+            $this->input["status"] = (!isset($this->input["status"]))
+                                       ? $this->fields["status"] : $this->input["status"];
+            $this->input["comment_validation"] = (!isset($this->input["comment_validation"]))
+                                                   ? '' : $this->input["comment_validation"];
+
             if ($this->input["status"] == "waiting") {
                $this->input["validation_date"] = 'NULL';
             } else {
@@ -452,22 +473,23 @@ class TicketValidation  extends CommonDBChild {
 
             // Validation status treatment for each users
             $old_status = $this->fields["status"];
-            $this->fields["status"] = TicketValidation_User::getValidationStatus(
-                    $this->fields["id"], 
-                    $this->input["users_id_validate"], 
-                    $job->fields["validation_percent"]);
-            if($this->fields["status"] == 'accepted'){
+            $this->fields["status"]
+                        = TicketValidation_User::getValidationStatus($this->fields["id"],
+                                                                     $this->input["users_id_validate"],
+                                                                     $job->fields["validation_percent"]);
+            if ($this->fields["status"] == 'accepted') {
                 $this->fields["validation_date"] = $this->input["validation_date"];
             }
 
             // If status changed, we update
-            if($old_status != $this->fields["status"]){
+            if ($old_status != $this->fields["status"]) {
                $this->updateInDB(array('status', 'validation_date'));
             }
-            
+
          }
-         
-         if (count($this->updates) && $donotif) {
+
+         if (count($this->updates)
+             && $donotif) {
             $options  = array('validation_id'     => $this->fields["id"],
                               'validation_status' => $this->fields["status"]);
             NotificationEvent::raiseEvent('validation_answer', $job, $options);
@@ -497,12 +519,10 @@ class TicketValidation  extends CommonDBChild {
       if ($field == 'status') {
          $name = array();
          foreach($this->users_id_validate as $data){
-            $name[] = formatUserName($data['id'], 
-                                           $data['name'], 
-                                           $data['realname'], 
-                                           $data['firstname']);
+            $name[] = formatUserName($data['id'], $data['name'], $data['realname'],
+                                     $data['firstname']);
          }
-         
+
          $result   = array('0', '', '');
          if ($this->fields["status"] == 'accepted') {
             //TRANS: %s is the username
@@ -523,19 +543,18 @@ class TicketValidation  extends CommonDBChild {
     * @see CommonDBChild::getHistoryNameForItem
    **/
    function getHistoryNameForItem(CommonDBTM $item, $case) {
+
       $name = array();
-      foreach($this->users_id_validate as $data){
-         $name[] = formatUserName($data['id'], 
-                                  $data['name'], 
-                                  $data['realname'], 
+      foreach ($this->users_id_validate as $data) {
+         $name[] = formatUserName($data['id'], $data['name'], $data['realname'],
                                   $data['firstname']);
       }
 
       switch ($case) {
-         case 'add':
+         case 'add' :
             return sprintf(__('Approval request send to %s'), implode(", ", $name));
 
-         case 'delete':
+         case 'delete' :
             return sprintf(__('Cancel the approval request to %s'), implode(", ", $name));
       }
       return '';
@@ -692,9 +711,10 @@ class TicketValidation  extends CommonDBChild {
       $query = "SELECT COUNT(`id`) AS 'total'
                 FROM `glpi_ticketvalidations`
                 LEFT JOIN `glpi_ticketvalidations_users`
-                  ON(`glpi_ticketvalidations`.`id` = `glpi_ticketvalidations_users`.`ticketvalidations_id`)
+                  ON (`glpi_ticketvalidations`.`id`
+                        = `glpi_ticketvalidations_users`.`ticketvalidations_id`)
                 WHERE `glpi_ticketvalidations`.`status` = 'waiting'
-                AND `glpi_ticketvalidations_users`.`users_id_validate` = '$users_id'";
+                      AND `glpi_ticketvalidations_users`.`users_id_validate` = '$users_id'";
 
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
@@ -732,22 +752,22 @@ class TicketValidation  extends CommonDBChild {
    static function showFormMassiveAction() {
 
       global $CFG_GLPI;
-      
-      $types = array(0       => Dropdown::EMPTY_VALUE,
-                     'user'  => __('User'),
-                     'group' => __('Group'));
-      
-      $rand  = Dropdown::showFromArray("validatortype", $types);
 
-      $paramsmassaction = array('validatortype'        => '__VALUE__',
-                                'entity'               => $_SESSION['glpiactive_entity'],
-                                'right'                => array('validate_request', 'validate_incident'));
+      $types            = array(0       => Dropdown::EMPTY_VALUE,
+                                'user'  => __('User'),
+                                'group' => __('Group'));
+
+      $rand             = Dropdown::showFromArray("validatortype", $types);
+
+      $paramsmassaction = array('validatortype' => '__VALUE__',
+                                'entity'        => $_SESSION['glpiactive_entity'],
+                                'right'         => array('validate_request', 'validate_incident'));
 
       Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", "show_massiveaction_field",
                                     $CFG_GLPI["root_doc"].
                                        "/ajax/dropdownMassiveActionAddValidator.php",
                                     $paramsmassaction);
-      
+
       echo "<br><span id='show_massiveaction_field'>&nbsp;</span>\n";
 
    }
@@ -798,7 +818,8 @@ class TicketValidation  extends CommonDBChild {
       $query = "SELECT `".$this->getTable()."`.*
                 FROM `".$this->getTable()."`
                 LEFT JOIN `glpi_ticketvalidations_users`
-                  ON(`".$this->getTable()."`.`id` = `glpi_ticketvalidations_users`.`ticketvalidations_id`)
+                  ON (`".$this->getTable()."`.`id`
+                        = `glpi_ticketvalidations_users`.`ticketvalidations_id`)
                 WHERE `".$this->getTable()."`.`tickets_id` = '".$ticket->getField('id')."'";
       if (!$canadd) {
          $query .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
@@ -891,7 +912,7 @@ class TicketValidation  extends CommonDBChild {
     **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
-      
+
       if ($ID > 0) {
          $this->check($ID, CREATE);
       } else {
@@ -900,18 +921,19 @@ class TicketValidation  extends CommonDBChild {
       }
 
       // No update validation is answer set
-      $validation_admin = (($this->fields["users_id"] == Session::getLoginUserID())
-                          && static::canCreate()
-                          && ($this->fields['status'] == 'waiting'));
+      $validation_admin   = (($this->fields["users_id"] == Session::getLoginUserID())
+                             && static::canCreate()
+                             && ($this->fields['status'] == 'waiting'));
 
-      $validator        = (TicketValidation_User::isUserInValidation($this->fields["id"]));
-      
+      $validator          = (TicketValidation_User::isUserInValidation($this->fields["id"]));
+
       $comment_validation = '';
-      $comments = TicketValidation_User::getUsersValidationComments($this->fields["id"], false);
-      if(isset($comments[Session::getLoginUserID()])){
+      $comments           = TicketValidation_User::getUsersValidationComments($this->fields["id"],
+                                                                              false);
+      if (isset($comments[Session::getLoginUserID()])) {
          $comment_validation = $comments[Session::getLoginUserID()]['comment_validation'];
       }
-      
+
       $options['colspan'] = 1;
 
       $this->showFormHeader($options);
@@ -934,11 +956,11 @@ class TicketValidation  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>";
-         $params = array('id'                    => $this->fields["id"],
-                         'validation_percent'     => $ticket->fields["validation_percent"],
-                         'entity'                => $this->getEntityID(),
-                         'right'                 => $validation_right,
-                         'users_id_validate'     => $this->users_id_validate);
+         $params = array('id'                 => $this->fields["id"],
+                         'validation_percent' => $ticket->fields["validation_percent"],
+                         'entity'             => $this->getEntityID(),
+                         'right'              => $validation_right,
+                         'users_id_validate'  => $this->users_id_validate);
          self::dropdownValidator($params);
          echo "</td></tr>";
 
@@ -955,16 +977,16 @@ class TicketValidation  extends CommonDBChild {
          echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>";
          $param['showprogressbar'] = false;
-         TicketValidation_User::showUsersValidationStatus($this->fields["id"], $this->users_id_validate, $param);
-         echo "</td>";
-         echo "</tr>";
-         
+         TicketValidation_User::showUsersValidationStatus($this->fields["id"],
+                                                          $this->users_id_validate, $param);
+         echo "</td></tr>";
+
          echo "<tr>";
          echo "<td>".__('Minimum validation required')."</td>";
          echo "<td>";
-         echo TicketValidation_User::showValidationRequired($ticket->fields["validation_percent"], false);
-         echo "</td>";
-         echo "</tr>";
+         echo TicketValidation_User::showValidationRequired($ticket->fields["validation_percent"],
+                                                            false);
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Comments')."</td>";
@@ -975,11 +997,11 @@ class TicketValidation  extends CommonDBChild {
 
       if ($ID > 0) {
          echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;</td></tr>";
-         
+
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Status of the approval request')."</td>";
          echo "<td>". self::getStatus($this->fields["status"])."</td></tr>";
-            
+
          if ($validator) {
 
             echo "<tr class='tab_bg_1'>";
@@ -987,7 +1009,7 @@ class TicketValidation  extends CommonDBChild {
             echo "<td>";
             self::dropdownStatus("status", array('value' => TicketValidation_User::showMyValidationStatus($this->fields["id"])));
             echo "</td></tr>";
-            
+
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Approval comments')."<br>(".__('Optional when approved').")</td>";
             echo "<td><textarea cols='60' rows='3' name='comment_validation'>".
@@ -995,7 +1017,7 @@ class TicketValidation  extends CommonDBChild {
             echo "</td></tr>";
 
          } else {
-            
+
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Comments')."</td>";
@@ -1125,11 +1147,12 @@ class TicketValidation  extends CommonDBChild {
 
       return $values;
    }
-   
-   
+
+
    /**
     * Dropdown of validator
     *
+    * @since version 0.85
     *
     * @param $options   array of options
     *  - name                    : select name
@@ -1141,27 +1164,27 @@ class TicketValidation  extends CommonDBChild {
     *
     * @return nothing (display)
     * */
-   static function dropdownValidator(array $options = array()) {
+   static function dropdownValidator(array $options=array()) {
       global $CFG_GLPI;
 
-      $params['name'] = '';
-      $params['id'] = 0;
+      $params['name']               = '';
+      $params['id']                 = 0;
       $params['validation_percent'] = 0;
-      $params['entity'] = $_SESSION['glpiactive_entity'];
-      $params['right'] = array('validate_request', 'validate_incident');
-      $params['groups_id'] = 0;
-      $params['users_id_validate'] = array();
-      $params['applyto'] = 'show_validator_field';
+      $params['entity']             = $_SESSION['glpiactive_entity'];
+      $params['right']              = array('validate_request', 'validate_incident');
+      $params['groups_id']          = 0;
+      $params['users_id_validate']  = array();
+      $params['applyto']            = 'show_validator_field';
 
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
 
-      $types = array(0 => Dropdown::EMPTY_VALUE,
-          'user' => __('User'),
-          'group' => __('Group'));
+      $types = array(0       => Dropdown::EMPTY_VALUE,
+                     'user'  => __('User'),
+                     'group' => __('Group'));
 
-      $type = '__VALUE__';
+      $type  = '__VALUE__';
       if (!empty($params['users_id_validate'])) {
          $type = 'list_users';
       }
@@ -1169,16 +1192,17 @@ class TicketValidation  extends CommonDBChild {
 
       if ($params['id'] > 0) {
          $params['validatortype'] = $type;
-         Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params);
+         Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+                          $params);
       }
       $params['validatortype'] = '__VALUE__';
-      Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", 
-              $params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params);
+      Ajax::updateItemOnSelectEvent("dropdown_validatortype$rand", $params['applyto'],
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php", $params);
 
       if (!isset($options['applyto'])) {
          echo "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
       }
    }
-   
+
 }
 ?>

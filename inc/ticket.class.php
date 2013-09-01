@@ -1516,23 +1516,25 @@ class Ticket extends CommonITILObject {
 
          foreach ($validations_to_send as $validate_id) {
             $values = array();
-            if(is_array($validate_id)){
+            if (is_array($validate_id)) {
                $values["users_id_validate"] = array();
-               foreach($validate_id as $type => $array_id){
-                  switch($type){
-                     case 'group':
-                        foreach($array_id as $groups_id){
-                           foreach(Group_User::getGroupUsers($groups_id) as $user){
+               foreach ($validate_id as $type => $array_id) {
+                  switch ($type) {
+                     case 'group' :
+                        foreach ($array_id as $groups_id) {
+                           foreach (Group_User::getGroupUsers($groups_id) as $user) {
                               $values["users_id_validate"][] = $user['id'];
                            }
                         }
                         break;
-                     case 'user':
-                        foreach($array_id as $users_id){
+
+                     case 'user' :
+                        foreach ($array_id as $users_id) {
                            $values["users_id_validate"][] = $users_id;
                         }
                         break;
-                     case 'validation':
+
+                     case 'validation' :
                         $values['validation_percent'] = $array_id[0];
                         break;
                   }
@@ -1540,11 +1542,9 @@ class Ticket extends CommonITILObject {
                $values["users_id_validate"] = array_unique($values["users_id_validate"]);
             }
 
-
             if (!empty($validate_id)) {
-
-               $values['tickets_id']        = $this->fields['id'];
-               $values['_ticket_add']       = true;
+               $values['tickets_id']  = $this->fields['id'];
+               $values['_ticket_add'] = true;
 
                // to know update by rules
                if (isset($this->input["_rule_process"])) {
@@ -4856,12 +4856,14 @@ class Ticket extends CommonITILObject {
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
                         LEFT JOIN `glpi_ticketvalidations_users`
-                           ON (`glpi_ticketvalidations`.`id` = `glpi_ticketvalidations_users`.`ticketvalidations_id`)
+                           ON (`glpi_ticketvalidations`.`id`
+                               = `glpi_ticketvalidations_users`.`ticketvalidations_id`)
                         WHERE $is_deleted
-                        AND `glpi_ticketvalidations_users`.`users_id_validate` = '".Session::getLoginUserID()."'
-                        AND `glpi_ticketvalidations`.`status` = 'waiting'
-                        AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."',
-                                                            '".self::SOLVED."')) ".
+                              AND `glpi_ticketvalidations_users`.`users_id_validate`
+                                    = '".Session::getLoginUserID()."'
+                              AND `glpi_ticketvalidations`.`status` = 'waiting'
+                              AND (`glpi_tickets`.`status` NOT IN ('".self::CLOSED."',
+                                                                   '".self::SOLVED."')) ".
                        getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 

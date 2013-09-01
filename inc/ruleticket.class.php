@@ -133,11 +133,11 @@ class RuleTicket extends Rule {
                      case 'groups_id_validate' :
                         $output['_add_validation']['validation_users']['group'][] = $action->fields["value"];
                         break;
-                     
+
                      case 'users_id_validate' :
                         $output['_add_validation']['validation_users']['user'][] = $action->fields["value"];
                         break;
-                     
+
                      case 'validation_percent' :
                         $output['_add_validation']['validation_users']['validation'][] = $action->fields["value"];
                         break;
@@ -459,31 +459,37 @@ class RuleTicket extends Rule {
       $actions['slas_id']['name']                           = __('SLA');
       $actions['slas_id']['type']                           = 'dropdown';
 
-      $actions['users_id_validate']['name']                 = __('Send an approval request').' - '.__('User');
+      $actions['users_id_validate']['name']                 = sprintf(__('%1$s - %2$s'),
+                                                                      __('Send an approval request'),
+                                                                      __('User'));
       $actions['users_id_validate']['type']                 = 'dropdown_users_validate';
       $actions['users_id_validate']['force_actions']        = array('add_validation');
 
-      $actions['groups_id_validate']['name']                = __('Send an approval request').' - '.__('Group');
+      $actions['groups_id_validate']['name']                = sprintf(__('%1$s - %2$s'),
+                                                                         __('Send an approval request'),
+                                                                         __('Group'));
       $actions['groups_id_validate']['type']                = 'dropdown_groups_validate';
       $actions['groups_id_validate']['force_actions']       = array('add_validation');
-      
-      $actions['validation_percent']['name']                = __('Send an approval request').' - '.__('Minimum validation required');
+
+      $actions['validation_percent']['name']                = sprintf(__('%1$s - %2$s'),
+                                                                      __('Send an approval request'),
+                                                                      __('Minimum validation required'));
       $actions['validation_percent']['type']                = 'dropdown_validation_percent';
       $actions['validation_percent']['force_actions']       = array('add_validation');
-      
+
       $actions['users_id_validate_requester_supervisor']['name']
-                                          = __('Approval request to requester group supervisor');
+                                             = __('Approval request to requester group supervisor');
       $actions['users_id_validate_requester_supervisor']['type']
-                                          = 'yesno';
+                                             = 'yesno';
       $actions['users_id_validate_requester_supervisor']['force_actions']
-                                          = array('add_validation');
+                                             = array('add_validation');
 
       $actions['users_id_validate_assign_supervisor']['name']
-                                          = __('Approval request to technician group supervisor');
+                                             = __('Approval request to technician group supervisor');
       $actions['users_id_validate_assign_supervisor']['type']
-                                          = 'yesno';
+                                             = 'yesno';
       $actions['users_id_validate_assign_supervisor']['force_actions']
-                                          = array('add_validation');
+                                             = array('add_validation');
 
       $actions['locations_id']['name']                      = __('Location');
       $actions['locations_id']['type']                      = 'dropdown';
