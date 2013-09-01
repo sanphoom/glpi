@@ -2363,7 +2363,7 @@ class Html {
     *                - checked       is it checked or not ?
     *                - zero_on_empty do we send 0 on submit when it is not checked ?
     *                - specific_tags HTML5 tags to add
-    *             all options provided to Html::getCriterionForMassiveCheckboxes()
+    *                - criterion     the criterion for massive checkbox
     *
     * @return the HTML code for the checkbox
    **/
@@ -2380,6 +2380,7 @@ class Html {
       $params['checked']         = false;
       $params['zero_on_empty']   = true;
       $params['specific_tags']   = array();
+      $params['criterion']       = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2395,7 +2396,7 @@ class Html {
          }
       }
 
-      $criterion = self::getCriterionForMassiveCheckboxes($options);
+      $criterion = self::getCriterionForMassiveCheckboxes($params['criterion']);
       if (!empty($criterion)) {
          $out .= " onClick='massiveUpdateCheckbox(\"$criterion\", this)'";
       }
@@ -4932,12 +4933,13 @@ class Html {
          if (($param['row_check_all'])
              && (!is_string($row))
              && ($nb_cb_per_row['total'] > 1)) {
-            $cb_options['tag_for_massive'] = 'row_'.$row_name.'_'.$param['rand'];
-            $cb_options['massive_tags']    = 'table_'.$param['rand'];
-            $cb_options['id']              = Html::cleanId('cb_checkall_row_'.$row_name.'_'.
-                                                           $param['rand']);
-            $cb_options['checked']         = ($nb_cb_per_row['checked']
-                                                > ($nb_cb_per_row['total'] / 2));
+            $cb_options['criterion']    = array('tag_for_massive' => 'row_'.$row_name.'_'.
+                                                $param['rand']);
+            $cb_options['massive_tags'] = 'table_'.$param['rand'];
+            $cb_options['id']           = Html::cleanId('cb_checkall_row_'.$row_name.'_'.
+                                                        $param['rand']);
+            $cb_options['checked']      = ($nb_cb_per_row['checked']
+                                             > ($nb_cb_per_row['total'] / 2));
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
          }
          echo "\t</tr>\n";
@@ -4949,12 +4951,13 @@ class Html {
          foreach ($columns as $col_name => $column) {
             echo "\t\t<td class='center'>";
             if ($nb_cb_per_col[$col_name]['total'] > 1) {
-               $cb_options['tag_for_massive'] = 'col_'.$col_name.'_'.$param['rand'];
-               $cb_options['massive_tags']    = 'table_'.$param['rand'];
-               $cb_options['id']              = Html::cleanId('cb_checkall_col_'.$col_name.'_'.
-                                                              $param['rand']);
-               $cb_options['checked']         = ($nb_cb_per_col[$col_name]['checked']
-                                                   > ($nb_cb_per_col[$col_name]['total'] / 2));
+               $cb_options['criterion']    = array('tag_for_massive' => 'col_'.$col_name.'_'.
+                                                   $param['rand']);
+               $cb_options['massive_tags'] = 'table_'.$param['rand'];
+               $cb_options['id']           = Html::cleanId('cb_checkall_col_'.$col_name.'_'.
+                                                           $param['rand']);
+               $cb_options['checked']      = ($nb_cb_per_col[$col_name]['checked']
+                                                > ($nb_cb_per_col[$col_name]['total'] / 2));
                echo Html::getCheckbox($cb_options);
             } else {
                echo "&nbsp;";
@@ -4963,9 +4966,9 @@ class Html {
          }
 
          if ($param['row_check_all']) {
-            $cb_options['tag_for_massive'] = 'table_'.$param['rand'];
-            $cb_options['massive_tags']    = '';
-            $cb_options['id']              = Html::cleanId('cb_checkall_table_'.$param['rand']);
+            $cb_options['criterion']    = array('tag_for_massive' => 'table_'.$param['rand']);
+            $cb_options['massive_tags'] = '';
+            $cb_options['id']           = Html::cleanId('cb_checkall_table_'.$param['rand']);
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
          }
          echo "\t</tr>\n";
