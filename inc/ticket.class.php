@@ -5315,7 +5315,7 @@ class Ticket extends CommonITILObject {
 
          while ($data = $DB->fetch_assoc($result)) {
             Session::addToNavigateListItems('Ticket',$data["id"]);
-            self::showShort($data["id"], array('followups' => 0));
+            self::showShort($data["id"]);
          }
          echo "</table></div>";
 
@@ -5488,7 +5488,7 @@ class Ticket extends CommonITILObject {
 
          while ($data = $DB->fetch_assoc($result)) {
             Session::addToNavigateListItems('Ticket',$data["id"]);
-            self::showShort($data["id"], array('followups' => 0));
+            self::showShort($data["id"]);
          }
       }
 
@@ -5513,7 +5513,7 @@ class Ticket extends CommonITILObject {
             self::commonListHeader(Search::HTML_OUTPUT);
             while ($data = $DB->fetch_assoc($result)) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
-               self::showShort($data["id"], array('followups' => 0));
+               self::showShort($data["id"]);
             }
          } else {
             echo "<tr><th>".__('No ticket found.')."</th></tr>";
