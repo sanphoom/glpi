@@ -704,7 +704,6 @@ function deselectAll(id) {
  * @param criterion jquery criterion
  * @param reference the new reference object, boolean, id ... (default toggle)
  *
- * @param reference the checkbox object that provide the associated class and the new state
 **/
 function massiveUpdateCheckbox(criterion, reference) {
     if (typeof(reference) == 'undefined') {

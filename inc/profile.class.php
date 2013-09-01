@@ -1001,7 +1001,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See hardware of my groups')."</td><td>";
-      Html::showCheckbox(array('name' => '_show_group_hardware',
+      Html::showCheckbox(array('name'    => '_show_group_hardware',
                                'checked' => $this->fields['show_group_hardware']));
       echo "</td></tr>";
 
@@ -2383,11 +2383,11 @@ class Profile extends CommonDBTM {
                if (!isset($column_labels[$right][$long_label])) {
                   $column_labels[$right][$long_label] = count($column_labels[$right]);
                }
-               $right_value = $right.'_'.$column_labels[$right][$long_label];
+               $right_value                  = $right.'_'.$column_labels[$right][$long_label];
 
-               $columns[$right_value] = $label;
+               $columns[$right_value]        = $label;
 
-               $checked = ((($profile_right & $right) == $right) ? 1 : 0);
+               $checked                      = ((($profile_right & $right) == $right) ? 1 : 0);
                $row['columns'][$right_value] = array('checked' => $checked);
                if (!$param['canedit']) {
                   $row['columns'][$right_value]['readonly'] = true;
@@ -2402,19 +2402,22 @@ class Profile extends CommonDBTM {
       }
 
       uksort($columns, function ($a, $b) {
-            $a = explode('_', $a);
-            $b = explode('_', $b);
+                           $a = explode('_', $a);
+                           $b = explode('_', $b);
 
-            // For standard rights sort by right
-            if ($a[0] < 1024 || $b[0] < 1024) {
-               if ($a[0] > $b[0]) return true;
-               if ($a[0] < $b[0]) return false;
-               return ($a[1] > $b[1]);
-            // For extra right sort by type
-            } else {
-               return ($a[1] > $b[1]);
-            }
-         });
+                           // For standard rights sort by right
+                           if (($a[0] < 1024) || ($b[0] < 1024)) {
+                              if ($a[0] > $b[0]) {
+                                 return true;
+                              }
+                              if ($a[0] < $b[0]) {
+                                 return false;
+                              }
+                              return ($a[1] > $b[1]);
+                              // For extra right sort by type
+                           }
+                           return ($a[1] > $b[1]);
+                        });
 
       return Html::showCheckboxMatrix($columns, $rows,
                                       array('title'                => $param['title'],

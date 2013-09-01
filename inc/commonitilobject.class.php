@@ -1448,8 +1448,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
             // check sum already exist, we replace the tag by the existing one
             if(isset($this->input['_tag'][$key]) && $docID > 0){
-               $this->input['content'] = preg_replace('/'.$this->input['_tag'][$key].'/', 
-                       $doc->fields["tag"], 
+               $this->input['content'] = preg_replace('/'.$this->input['_tag'][$key].'/',
+                       $doc->fields["tag"],
                        $this->input['content']);
 
                $docadded[$docID]['tag'] = $doc->fields["tag"];
@@ -1493,7 +1493,7 @@ abstract class CommonITILObject extends CommonDBTM {
          // Only notification for the first New doc
          $donotif = 0;
       }
-      
+
       if($CFG_GLPI["use_rich_text"]){
          $this->input['content'] = $this->convertTagToImage($this->input['content'], true, $docadded);
       }
@@ -2007,7 +2007,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $groupicon = self::getActorIcon('group',$type);
       $group     = new Group();
       $linkclass = new $this->grouplinkclass();
-               
+
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $d) {
             $k = $d['groups_id'];
@@ -2048,7 +2048,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $suppliericon = self::getActorIcon('supplier',$type);
       $supplier     = new Supplier();
       $linkclass = new $this->supplierlinkclass();
-      
+
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
             $k = $d['suppliers_id'];
@@ -3656,7 +3656,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function showStats() {
 
-      /// TODO : right check trouble : Why Ticket ??? maybe Problem or Change
       if (!$this->canUpdate()
           || !isset($this->fields['id'])) {
          return false;
@@ -4111,7 +4110,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $linkclass = new $this->userlinkclass();
       $linktable = $linkclass->getTable();
       $showlink = User::canView();
-      
+
       $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
                                 `glpi_users`.`name` AS name,
                                 `glpi_users`.`realname` AS realname,
@@ -4298,15 +4297,17 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Display a line for an object
     *
+    * @since version 0.85 (befor in each object with differents parameters)
+    *
     * @param $id                 Integer  ID of the object
     * @param $options            array of options
-    *      output_type : interger : Default output type (see Search class / default Search::HTML_OUTPUT)
-    *      row_num : integer : row num used for display (default 0)
-    *      type_for_massiveaction : string : itemtype for massive action (default __CLASS__)
-    *      id_for_massaction : integer : default 0 means no massive action (default 0)
-    *      followups : boolean : only for Tickets : show followup columns
+    *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
+    *      row_num                : row num used for display
+    *      type_for_massiveaction : itemtype for massive action
+    *      id_for_massaction      : default 0 means no massive action
+    *      followups              : only for Tickets : show followup columns
     */
-   static function showShort($id, $options = array()) {
+   static function showShort($id, $options=array()) {
       global $CFG_GLPI, $DB;
 
 
@@ -4321,7 +4322,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $p[$key] = $val;
          }
       }
-      
+
       $rand = mt_rand();
 
       /// TODO to be cleaned. Get datas and clean display links
@@ -4600,11 +4601,9 @@ abstract class CommonITILObject extends CommonDBTM {
       // New Line for Header Items Line
       echo Search::showNewLine($output_type);
       // $show_sort if
-      $header_num = 1;
+      $header_num                      = 1;
 
       $items                           = array();
-
-
       $items[(empty($mass_id)?'&nbsp':Html::getCheckAllAsCheckbox($mass_id))] = '';
       $items[__('Status')]             = "status";
       $items[__('Date')]               = "date";
@@ -4632,6 +4631,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // End Line for column headers
       echo Search::showEndLine($output_type);
-   }   
+   }
 }
 ?>

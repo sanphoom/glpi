@@ -730,7 +730,7 @@ class CronTask extends CommonDBTM{
       if (isset($CFG_GLPI['maintenance_mode']) && $CFG_GLPI['maintenance_mode']) {
          return false;
       }
-      
+
       $crontask = new self();
       $taskname = '';
       if (abs($mode) == self::MODE_EXTERNAL) {
@@ -1340,23 +1340,27 @@ class CronTask extends CommonDBTM{
       return 0;
    }
 
+
    /**
     * Circular logs
+    *
+    * @since version 0.85
     *
     * @param $task for log
    **/
    static function cronCircularlogs($task) {
+
       $actionCode = 0; // by default
-      $error = false ;
+      $error      = false ;
       $task->setVolume(0); // start with zero
 
       // compute date in the past for the archived log to be deleted
       $firstdate = date("Ymd", time() - ($task->fields['param'] * DAY_TIMESTAMP)); // compute current date - param as days and format it like YYYYMMDD
 
       // first look for bak to delete
-      $dir = GLPI_LOG_DIR."/*.bak" ;
+      $dir       = GLPI_LOG_DIR."/*.bak" ;
       $findfiles = glob( $dir ) ;
-      foreach($findfiles as $file){
+      foreach($findfiles as $file) {
          $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
          // now depending on the format of the name we delete the file (for agging archives) or rename it (will add Ymd.log to the end of the file)
          $match = null;
@@ -1364,10 +1368,10 @@ class CronTask extends CommonDBTM{
             if( $match[1] < $firstdate ) {
                $task->addVolume(1);
                if( unlink($file) ) {
-                  $task->log( sprintf(__('Delete archived log file: %1$s'), $shortfile)) ;
+                  $task->log( sprintf(__('Delete archived log file: %s'), $shortfile)) ;
                   $actionCode = 1 ;
                } else {
-                  $task->log( sprintf(__('Unable to delete archived log file: %1$s'), $shortfile)) ;
+                  $task->log( sprintf(__('Unable to delete archived log file: %s'), $shortfile)) ;
                   $error = true ;
                }
             }
@@ -1375,20 +1379,20 @@ class CronTask extends CommonDBTM{
       }
 
       // second look for log to archive
-      $dir = GLPI_LOG_DIR."/*.log" ;
+      $dir       = GLPI_LOG_DIR."/*.log" ;
       $findfiles = glob( $dir ) ;
       foreach($findfiles as $file){
          $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
          // rename the file
-         $newfilename = $file.".".date("Ymd", time()).".bak"; // will add to filename a string with format YYYYMMDD (= current date)
+         $newfilename  = $file.".".date("Ymd", time()).".bak"; // will add to filename a string with format YYYYMMDD (= current date)
          $shortnewfile = str_replace(GLPI_LOG_DIR.'/','',$newfilename);
-         
+
          $task->addVolume(1);
          if( !file_exists($newfilename) && rename($file, $newfilename ) ) {
-            $task->log( sprintf(__('Archive log file: %1$s to %2$s'), $shortfile, $shortnewfile)) ;
+            $task->log( sprintf(__('Archive log file: %1$s to %2$s'), $shortfile, $shortnewfile));
             $actionCode = 1 ;
          } else {
-            $task->log( sprintf(__('Unable to archive log file: %1$s. %2$s already exists. Wait till next day.'),
+            $task->log(sprintf(__('Unable to archive log file: %1$s. %2$s already exists. Wait till next day.'),
                                  $shortfile, $shortnewfile)) ;
             $error = true ;
          }
@@ -1396,11 +1400,11 @@ class CronTask extends CommonDBTM{
 
       if ($error) {
          return -1 ;
-      } else {
-         return $actionCode;
       }
+      return $actionCode;
    }
-   
+
+
    /**
     * Garbage collector for cleaning graph files
     *
@@ -1464,7 +1468,7 @@ class CronTask extends CommonDBTM{
 
       return 0;
    }
-   
+
    /**
     * Clean log cron function
     *
@@ -1580,13 +1584,13 @@ class CronTask extends CommonDBTM{
 
          case 'temp' :
             return array('description' => __('Clean temporary files'));
-            
+
          case 'watcher' :
             return array('description' => __('Monitoring of automatic actions'));
+
          case 'circularlogs' :
             return array('description' => __("Archives log files and deletes agging ones"),
-               'parameter' => __("Number of days to keep archived logs")
-            );
+                         'parameter'   => __("Number of days to keep archived logs"));
       }
    }
 

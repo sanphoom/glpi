@@ -34,7 +34,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Rule class for Rights management
+/**
+ * RuleRight Class
+ *
+ * Rule class for Rights management
+**/
 class RuleRight extends Rule {
 
    // From Rule
@@ -205,7 +209,7 @@ class RuleRight extends Rule {
             if ($right != '') {
                foreach ($entity as $entID) {
                   $output["_ldap_rules"]["rules_entities_rights"][] = array($entID, $right,
-                                                                           $is_recursive);
+                                                                            $is_recursive);
                }
             } else {
                foreach ($entity as $entID) {

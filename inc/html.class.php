@@ -2303,7 +2303,7 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $options array of parameters :
+    * @param $options array of parameters:
     *                - tag_for_massive tag of the checkboxes to update
     *                - container_id    if of the container of the checkboxes
     *
@@ -2439,6 +2439,8 @@ class Html {
     * @see Html::getCheckbox()
     *
     * @since version 0.85
+    *
+    * @param $options   array
     *
     * @return nothing (display only)
    **/
@@ -4117,6 +4119,7 @@ class Html {
       return $out;
    }
 
+
    /**
     * Get javascript code for hide an item
     *
@@ -4484,18 +4487,18 @@ class Html {
     * @since version 0.85
     *
     * @param $fieldName          Name of a field
-    * @param $values             the value: an array or a direct value
     * @param $options    Array   of HTML attributes.
     *
     * @return string A generated hidden input
    **/
-   static function recursiveHidden($fieldName, array $options = array()) {
+   static function recursiveHidden($fieldName, array $options=array()) {
+
       if ((isset($options['value'])) && (is_array($options['value']))) {
          $result = '';
          foreach ($options['value'] as $key => $value) {
-            $options2 = $options;
+            $options2          = $options;
             $options2['value'] = $value;
-            $result .= static::recursiveHidden($fieldName.'['.$key.']', $options2)."\n";
+            $result           .= static::recursiveHidden($fieldName.'['.$key.']', $options2)."\n";
          }
          return $result;
       }
@@ -4799,7 +4802,7 @@ class Html {
       if ($param['row_check_all']) {
          $number_columns += 1;
       }
-      $width=round(100/$number_columns);
+      $width = round(100/$number_columns);
       echo "\n<table class='".$param['table_class']."'>\n";
 
       if (!empty($param['title'])) {
