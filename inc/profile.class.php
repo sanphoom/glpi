@@ -2513,8 +2513,8 @@ class Profile extends CommonDBTM {
       }
 
       if ($param['check_all']) {
-         $cb_options = array('tag_for_massive' => $massive_tag,
-                             'id'              => Html::cleanId('checkbox_linear_'.$param['rand']));
+         $cb_options = array('criterion' => array('tag_for_massive' => $massive_tag),
+                             'id'        => Html::cleanId('checkbox_linear_'.$param['rand']));
          if ($nb_checked > (count($elements) / 2)) {
             $cb_options['checked'] = true;
          }
