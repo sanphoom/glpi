@@ -55,8 +55,6 @@ try {
 }
 Html::popHeader(__('Bulk modification'), $_SERVER['PHP_SELF']);
 
-// TODO: add a beautiful progress bar !
-
 $results = $ma->process();
 
 $nbok = $results['ok'];

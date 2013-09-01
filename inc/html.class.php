@@ -787,6 +787,59 @@ class Html {
 
 
    /**
+    * Manage progresse bars
+    *
+    * @since 0.85
+    *
+    * @param $id HTML ID of the progress bar
+    * @param $options progress status
+    *                    - create    do we have to create it ?
+    *                    - message   add or change the message
+    *                    - percent   current level
+    *
+    *
+    * @return nothing (display)
+    **/
+   static function progressBar($id, array $options = array()) {
+
+      $params = array();
+      $params['create']  = false;
+      $params['message'] = NULL;
+      $params['percent'] = -1;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      if ($params['create']) {
+         echo "<div class='doaction_cadre'>";
+         echo "<div class='doaction_progress' id='$id'>";
+         echo "<div class='doaction_progress_text' id='".$id."_text' >&nbsp;</div>";
+         echo "</div>";
+         echo "</div><br>";
+         echo Html::scriptBlock(self::jsGetElementbyID($id).".progressbar();");
+      }
+
+      if ($params['message'] !== NULL) {
+         echo Html::scriptBlock(self::jsGetElementbyID($id.'_text').".text(\"".
+                                addslashes($params['message'])."\");");
+      }
+
+      if (($params['percent'] >= 0)
+          && ($params['percent'] <= 100)) {
+         echo Html::scriptBlock(self::jsGetElementbyID($id).".progressbar('option', 'value', ".
+                                $params['percent']." );");
+      }
+
+      if (!$params['create']) {
+         Html::glpi_flush();
+      }
+   }
+
+
+   /**
     * Create a Dynamic Progress Bar
     *
     * @param $msg initial message (under the bar) (default '&nbsp;')
@@ -795,15 +848,12 @@ class Html {
     **/
    static function createProgressBar($msg="&nbsp;") {
 
-      echo "<div class='doaction_cadre'>";
-      echo "<div class='doaction_progress' id='doaction_progress'>";
-      echo "<div class='doaction_progress_text' id='doaction_progress_text' >";
-      echo $msg.'</div>';
-      echo "</div>";
-      echo "</div><br>";
+      $options = array('create' => true);
+      if ($msg != "&nbsp;") {
+         $options['message'] = $msg;
+      }
 
-       echo Html::scriptBlock(self::jsGetElementbyID('doaction_progress').".progressbar();");
-       self::changeProgressBarMessage($msg);
+      self::progressBar('doaction_progress', $options);
    }
 
    /**
@@ -814,7 +864,8 @@ class Html {
     * @return nothing
    **/
    static function changeProgressBarMessage($msg="&nbsp;") {
-      echo Html::scriptBlock(self::jsGetElementbyID('doaction_progress_text').".text(\"".addslashes($msg)."\");");
+
+      self::progressBar('doaction_progress', array('message' => $msg));
       self::glpi_flush();
    }
 
@@ -830,20 +881,22 @@ class Html {
    **/
    static function changeProgressBarPosition($crt, $tot, $msg="") {
 
-       if (!$tot) {
-          $pct = 0;
+      $options = array();
 
-       } else if ($crt>$tot) {
-          $pct = 100;
+      if (!$tot) {
+         $options['percent'] = 0;
+      } else if ($crt>$tot) {
+         $options['percent'] = 100;
+      } else {
+         $options['percent'] = 100*$crt/$tot;
+      }
 
-       } else {
-          $pct = 100*$crt/$tot;
-       }
-       echo Html::scriptBlock(self::jsGetElementbyID('doaction_progress').".progressbar('option', 'value', $pct );");
-       if (!empty($msg)) {
-         self::changeProgressBarMessage($msg);
-       }
-       self::glpi_flush();
+      if ($msg != "") {
+         $options['message'] = $msg;
+      }
+
+      self::progressBar('doaction_progress', $options);
+      self::glpi_flush();
    }
 
 

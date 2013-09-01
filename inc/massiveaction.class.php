@@ -72,8 +72,9 @@ class MassiveAction {
       global $CFG_GLPI;
 
       // Attributs to add to $_SESSION
-      $this->attributes  = array('identifier', 'items', 'nb_items', 'results', 'messages',
-                                 'redirect', 'POST', 'done', 'action', 'processor', 'action_name');
+      $this->attributes  = array('items', 'nb_items', 'done', 'nb_done', 'remainings',
+                                 'identifier', 'results', 'messages', 'redirect', 'POST', 'done',
+                                 'action', 'processor', 'action_name', 'manage_progress_bar');
       $this->timer = new Timer();
       $this->timer->start();
 
@@ -233,6 +234,7 @@ class MassiveAction {
                   $this->identifier  = mt_rand();
                   $this->messages    = array();
                   $this->done        = array();
+                  $this->nb_done     = 0;
                   $this->action_name = $POST['action_name'];
                   $this->results     = array('ok'      => 0,
                                              'ko'      => 0,
@@ -248,6 +250,8 @@ class MassiveAction {
                      $this->redirect = $CFG_GLPI['root_doc']."/front/central.php";
                   }
 
+                  $this->manage_progress_bar = true;
+
                  break;
             }
             $this->POST = $POST;
@@ -255,6 +259,9 @@ class MassiveAction {
                if (isset($this->POST[$field])) {
                   $this->$field = $this->POST[$field];
                }
+            }
+            if ($stage == 'process') {
+               $this->remainings = $this->items;
             }
             foreach ($remove_from_post as $field) {
                if (isset($this->POST[$field])) {
@@ -307,6 +314,14 @@ class MassiveAction {
    function getItems() {
       if (isset($this->items)) {
          return $this->items;
+      }
+      return array();
+   }
+
+
+   function getRemainings() {
+      if (isset($this->remainings)) {
+         return $this->remainings;
       }
       return array();
    }
@@ -729,13 +744,21 @@ class MassiveAction {
     *
     * @param $input array of input datas
     *
-    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
+    * @return an array of results (ok, ko, noright counts, redirect ...)
    **/
    function process() {
 
-      if (!empty($this->items)) {
+      if (!empty($this->remainings)) {
 
          if (!empty($this->processor)) {
+
+            if ($this->manage_progress_bar) {
+               Html::progressBar('main_'.$this->identifier, array('create'  => true,
+                                                                  'message' => $this->action_name));
+               $percent = 100 * $this->nb_done / $this->nb_items;
+               Html::progressBar('main_'.$this->identifier, array('percent' => $percent));
+            }
+
             $processor = $this->processor;
             if (method_exists($processor, 'processMassiveActionsForSeveralItemtype')) {
                $processor::processMassiveActionsForSeveralItemtype($this);
@@ -794,62 +817,6 @@ class MassiveAction {
       unset($this->identifier);
 
       return $this->results;
-
-      $res = array('ok'      => 0,
-                   'ko'      => 0,
-                   'noright' => 0);
-
-      if (count($action) == 1) {
-
-         // Actually, there should be only one itemtype in old system version
-         foreach ($this->POST['item'] as $itemtype => $data) {
-            $this->POST['itemtype'] = $itemtype;
-            $this->POST['item'] = array();
-            foreach ($data as $key => $value) {
-               if ($value == 1) {
-                  $this->POST['item'][$key] = 1;
-               }
-            }
-
-            // Check if action is available for this itemtype
-            if ($item = getItemForItemtype($itemtype)) {
-               $checkitem = NULL;
-               if (isset($this->POST['check_itemtype'])) {
-                  if ($checkitem = getItemForItemtype($this->POST['check_itemtype'])) {
-                     if (isset($this->POST['check_items_id'])) {
-                        $checkitem->getFromDB($this->POST['check_items_id']);
-                     }
-                  }
-               }
-               $actions = self::getAllMassiveActions($item, $this->POST['is_deleted'], $checkitem);
-
-               if ($this->POST['specific_action'] || isset($actions[$this->POST['action']])) {
-                  $itemtype_res   = '';
-
-                  $split = explode('_', $this->POST["action"]);
-                  if ($split[0] == 'plugin' && isset($split[1])) {
-                     // Normalized name plugin_name_action
-                     // Allow hook from any plugin on any (core or plugin) type
-                     $itemtype_res = Plugin::doOneHook($split[1], 'MassiveActionsProcess', $this->POST);
-
-                     //} else if ($plug=isPluginItemType($this->POST["itemtype"])) {
-                     // non-normalized name
-                     // hook from the plugin defining the type
-                     //$itemtype_res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $this->POST);
-                  } else {
-                     $itemtype_res = $item->doSpecificMassiveActions($this->POST);
-                  }
-
-                  $this->mergeProcessResult($itemtype_res);
-
-               } else {
-                  $res['noright'] += count($this->POST['item']);
-               }
-            }
-         }
-      }
-
-      return $res;
    }
 
 
@@ -859,7 +826,7 @@ class MassiveAction {
    **/
    function processForSeveralItemtype() {
       $processor = $this->processor;
-      foreach ($this->items as $itemtype => $ids) {
+      foreach ($this->remainings as $itemtype => $ids) {
          if ($item = getItemForItemtype($itemtype)) {
             $processor::processMassiveActionsForOneItemtype($this, $item, $ids);
          }
@@ -1093,16 +1060,16 @@ class MassiveAction {
       if (is_array($id)) {
          $number = count($id);
          foreach ($id as $single) {
-            unset($this->items[$itemtype][$single]);
+            unset($this->remainings[$itemtype][$single]);
             $this->done[$itemtype][] = $single;
          }
       } else {
-         unset($this->items[$itemtype][$id]);
+         unset($this->remainings[$itemtype][$id]);
          $this->done[$itemtype][] = $id;
          $number = 1;
       }
-      if (count($this->items[$itemtype]) == 0) {
-         unset($this->items[$itemtype]);
+      if (count($this->remainings[$itemtype]) == 0) {
+         unset($this->remainings[$itemtype]);
       }
 
       switch ($result) {
@@ -1116,11 +1083,18 @@ class MassiveAction {
             $this->results['noright'] += $number;
             break;
       }
+      $this->nb_done += $number;
 
-      // TODO: manage the beautiful progress bar ...
 
-      // TODO: change the timeout !
-      if ($this->timer->getTime() > 30) {
+      if ($this->manage_progress_bar) {
+         if (($this->nb_done >= 0) && ($this->nb_done <= $this->nb_items)) {
+            $percent = 100 * $this->nb_done / $this->nb_items;
+            Html::progressBar('main_'.$this->identifier, array('percent'  => $percent));
+         }
+      }
+
+      // If delay is to big, then reload !
+      if ($this->timer->getTime() > (get_cfg_var("max_execution_time") - 3)) {
          Html::redirect($_SERVER['PHP_SELF'].'?identifier='.$this->identifier);
       }
    }
