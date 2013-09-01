@@ -2527,7 +2527,7 @@ class Ticket extends CommonITILObject {
          $tab[33]['massiveaction']  = false;
          $tab[33]['forcegroupby']   = true;
          $tab[33]['joinparams']     = array('jointype' => 'child');
-         
+
          $tab['solution']           = _n('Solution', 'Solutions', 1);
 
          $tab[23]['table']          = 'glpi_solutiontypes';
@@ -3325,7 +3325,7 @@ class Ticket extends CommonITILObject {
             $values = Html::cleanPostForTextArea($_POST);
          }
       }
-      
+
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
       foreach ($default_values as $name => $value) {
@@ -3596,7 +3596,7 @@ class Ticket extends CommonITILObject {
          } else {
             $values["content"] = $this->setSimpleTextContent($values["content"]);
          }
-         
+
          echo "<div id='content$rand_text'>";
          echo "<textarea id='content$rand' name='content' cols='80' rows='14'>".
                 $values['content']."</textarea></div>";
@@ -3836,7 +3836,7 @@ class Ticket extends CommonITILObject {
             $values = Html::cleanPostForTextArea($_GET);
          }
       }
-      
+
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
 
@@ -4884,7 +4884,7 @@ class Ticket extends CommonITILObject {
                              AND NOT ( $search_users_id ) ".
                              getEntitiesRestrictRequest("AND","glpi_tickets");
             break;
-            
+
          case "requestbyself" : // on affiche les tickets demandés le user qui sont planifiés ou assignés
                // à quelqu'un d'autre (exclut les self-tickets)
 
@@ -4974,7 +4974,7 @@ class Ticket extends CommonITILObject {
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Tickets to be processed'), $number, $numrows)."</a>";
                   break;
-                  
+
                case "observed":
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 65; // groups_id
@@ -4992,7 +4992,7 @@ class Ticket extends CommonITILObject {
                          Toolbox::append_params($options,'&amp;')."\">".
                          Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
                   break;
-                  
+
                case "requestbyself" :
                default :
                   foreach ($_SESSION['glpigroups'] as $gID) {
@@ -5129,7 +5129,7 @@ class Ticket extends CommonITILObject {
                         Toolbox::append_params($options,'&amp;')."\">".
                         Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
                   break;
-                  
+
                case "requestbyself" :
                default :
                   $options['field'][0]      = 4; // users_id
@@ -5313,7 +5313,7 @@ class Ticket extends CommonITILObject {
 
          while ($data = $DB->fetch_assoc($result)) {
             Session::addToNavigateListItems('Ticket',$data["id"]);
-            self::showShort($data["id"], 0);
+            self::showShort($data["id"], array('followups' => 0));
          }
          echo "</table></div>";
 
@@ -5486,7 +5486,7 @@ class Ticket extends CommonITILObject {
 
          while ($data = $DB->fetch_assoc($result)) {
             Session::addToNavigateListItems('Ticket',$data["id"]);
-            self::showShort($data["id"], 0);
+            self::showShort($data["id"], array('followups' => 0));
          }
       }
 
@@ -5511,7 +5511,7 @@ class Ticket extends CommonITILObject {
             self::commonListHeader(Search::HTML_OUTPUT);
             while ($data = $DB->fetch_assoc($result)) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
-               self::showShort($data["id"], 0);
+               self::showShort($data["id"], array('followups' => 0));
             }
          } else {
             echo "<tr><th>".__('No ticket found.')."</th></tr>";
