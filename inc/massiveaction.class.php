@@ -71,13 +71,6 @@ class MassiveAction {
    function __construct (array $POST, array $GET, $stage) {
       global $CFG_GLPI;
 
-      // Attributs to add to $_SESSION
-      $this->attributes  = array('items', 'nb_items', 'done', 'nb_done', 'remainings',
-                                 'identifier', 'results', 'messages', 'redirect', 'POST', 'done',
-                                 'action', 'processor', 'action_name', 'manage_progress_bar');
-      $this->timer = new Timer();
-      $this->timer->start();
-
       if (!empty($POST)) {
 
          if (!isset($POST['is_deleted'])) {
@@ -222,6 +215,9 @@ class MassiveAction {
                   break;
                case 'process':
 
+                  $this->timer = new Timer();
+                  $this->timer->start();
+
                   if (isset($POST['initial_items'])) {
                      $_SESSION['glpimassiveactionselected'] = $POST['initial_items'];
                   } else {
@@ -278,13 +274,15 @@ class MassiveAction {
             Toolbox::logDebug('Implementation error !');
             throw new Exception(__('Implementation error !'));
          }
+         $this->timer = new Timer();
+         $this->timer->start();
+         if (!isset($_SESSION['current_massive_action'][$GET['identifier']])) {
+            Toolbox::logDebug('Implementation error !');
+            throw new Exception(__('Implementation error !'));
+         }
          $identifier = $GET['identifier'];
-         foreach ($this->attributes as $attribute) {
-            if (!isset($_SESSION['current_massive_action'][$identifier][$attribute])) {
-               $this->error = __('Invalid processus');
-               return;
-            }
-            $this->$attribute = $_SESSION['current_massive_action'][$identifier][$attribute];
+         foreach ($_SESSION['current_massive_action'][$identifier] as $attribute => $value) {
+            $this->$attribute = $value;
          }
          if ($this->identifier != $identifier) {
             $this->error = __('Invalid processus');
@@ -330,10 +328,8 @@ class MassiveAction {
    function __destruct() {
       if (isset($this->identifier)) {
          // $this->identifier is unset by self::process() when the massive actions are finished
-         $_SESSION['current_massive_action'][$this->identifier] = array();
-         foreach ($this->attributes as $attribute) {
-            $_SESSION['current_massive_action'][$this->identifier][$attribute] = $this->$attribute;
-         }
+         unset($this->timer);
+         $_SESSION['current_massive_action'][$this->identifier] = get_object_vars ($this);
       }
    }
 
@@ -437,7 +433,8 @@ class MassiveAction {
 
       if (Session::haveRight('transfer', READ)
           && Session::isMultiEntitiesMode()) {
-         $actions[__CLASS__.self::CLASS_ACTION_SEPARATOR.'add_transfer_list'] = _x('button', 'Add to transfer list');
+         $actions[__CLASS__.self::CLASS_ACTION_SEPARATOR.'add_transfer_list'] =
+            _x('button', 'Add to transfer list');
       }
 
    }
@@ -693,7 +690,8 @@ class MassiveAction {
                }
             }
             Ajax::updateItemOnSelectEvent("dropdown_id_field$rand", "show_massiveaction_field",
-                                          $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
+                                          $CFG_GLPI["root_doc"].
+                                                             "/ajax/dropdownMassiveActionField.php",
                                           $paramsmassaction);
 
             echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";

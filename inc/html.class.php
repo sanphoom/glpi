@@ -2467,8 +2467,7 @@ class Html {
       if (!empty($params['specific_tags'])) {
          foreach ($params['specific_tags'] as $tag => $values) {
             if (is_array($values)) {
-               $value = implode(' ', $values);
-               $values = $value;
+               $values = implode(' ', $values);
             }
             $out .= " $tag='$values'";
          }
