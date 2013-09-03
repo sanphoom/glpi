@@ -3607,11 +3607,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='top'>".sprintf(__('%1$s (%2$s)'), __('File'), Document::getMaxUploadSize());
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt='".
-             __s('Help')."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
-             "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
-//       echo "&nbsp;";
-//       self::showDocumentAddButton(60);
+      DocumentType::showAvailableTypesLink();
       echo "</td>";
       echo "<td>";
       echo Html::file(array('multiple' => true));
@@ -4612,12 +4608,7 @@ class Ticket extends CommonITILObject {
          printf(__('%1$s%2$s'), $doctitle, $tt->getMandatoryMark('_documents_id'));
          // Do not show if hidden.
          if (!$tt->isHiddenField('_documents_id')) {
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
-                  __s('Help')."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
-                  "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,".
-                  "height=800')\">";
-//             echo "&nbsp;";
-//             self::showDocumentAddButton();
+            DocumentType::showAvailableTypesLink();
          }
          echo $tt->getEndHiddenFieldText('_documents_id');
          echo "</th>";

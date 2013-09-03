@@ -143,6 +143,17 @@ class DocumentType  extends CommonDropdown {
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
-
+   static function showAvailableTypesLink() {
+      global $CFG_GLPI;
+                  
+      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').".dialog('open');\">";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png'
+             title=\"".__s('Help')."\" alt=\"".__s('Help')."\"
+             class='calendrier'>";
+      echo "</a>";
+      Ajax::createIframeModalWindow('documenttypelist',
+                                    $CFG_GLPI["root_doc"]."/front/documenttype.list.php",
+                                    array('title'         => static::getType(2)));
+   }
 }
 ?>
