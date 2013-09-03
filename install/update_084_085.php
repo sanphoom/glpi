@@ -1461,6 +1461,11 @@ function update084to085() {
    Config::deleteConfigurationValues('core', array('ajax_min_textsearch_load'));
    Config::deleteConfigurationValues('core', array('ajax_buffertime_load'));
 
+   Config::deleteConfigurationValues('core', array('is_categorized_soft_expanded'));
+   Config::deleteConfigurationValues('core', array('is_not_categorized_soft_expanded'));
+   $migration->dropField("glpi_users", 'is_categorized_soft_expanded');
+   $migration->dropField("glpi_users", 'is_not_categorized_soft_expanded');
+   
 // Config::setConfigurationValues('core', array('use_unicodefont' => 0));
 // $migration->addField("glpi_users", 'use_unicodefont', "int(11) DEFAULT NULL");
    Config::deleteConfigurationValues('core', array('use_unicodefont'));
@@ -1468,6 +1473,7 @@ function update084to085() {
    Config::setConfigurationValues('core', array('pdffont' => 'helvetica'));
    $migration->addField("glpi_users", 'pdffont', "string");
 
+ 
    $migration->addField("glpi_users", 'picture', "string");
 
    $migration->addField("glpi_authldaps", 'picture_field','string');
