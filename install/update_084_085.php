@@ -1542,7 +1542,7 @@ function update084to085() {
          // Add Tech in charge
             $query = "INSERT INTO `glpi_notificationtargets`
                              (`notifications_id`, `type`, `items_id`)
-                      VALUES ($newID, '".Notification::USER_TYPE."', '".Notification::ITEM_TECH_IN_CHARGE."')";
+                      VALUES ($newID, '".Notification::USER_TYPE."', '".Notification::ASSIGN_TECH."')";
             $DB->queryOrDie($query, "0.85 insert tech in charge target for replysatisfaction notification");
       }
    }
