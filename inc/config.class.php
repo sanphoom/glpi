@@ -101,7 +101,6 @@ class Config extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
-
       // Update only an item
       if (isset($input['context'])) {
          return $input;
@@ -212,7 +211,7 @@ class Config extends CommonDBTM {
 
       // Add skipMaintenance if maintenance mode update
       if (isset($input['maintenance_mode']) && $input['maintenance_mode']) {
-         $_SESSION['glpiskipMaintenace'] = 1;
+         $_SESSION['glpiskipMaintenance'] = 1;
          $url = $CFG_GLPI['root_doc']."/index.php?skipMaintenance=1";
          Session::addMessageAfterRedirect(sprintf(__('Maintenance mode activated. Backdoor using: %s'),
                                                   "<a href='$url'>$url</a>"),
