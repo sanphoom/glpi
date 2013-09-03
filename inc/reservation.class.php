@@ -43,7 +43,7 @@ class Reservation extends CommonDBChild {
    static public $items_id = 'reservationitems_id';
 
    static $rightname                = 'reservation';
-
+   static public $checkParentRights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
    /**
     * @param $nb  integer  for singular or plural
@@ -293,25 +293,36 @@ class Reservation extends CommonDBChild {
     * @since version 0.84
    **/
    static function canCreate() {
-
-      return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM)
-              && parent::canCreate());
+      return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
    }
 
+   /**
+    * @since version 0.84
+   **/
+   static function canUpdate() {
+      return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+   }
 
+   /**
+    * @since version 0.84
+   **/
+   static function canDelete() {
+      return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
+   }
+   
    /**
     * Overload canChildItem to make specific checks
     * @since version 0.84
    **/
    function canChildItem($methodItem, $methodNotItem) {
 
-      if (!parent::canChildItem($methodItem, $methodNotItem)) {
-         return false;
-      }
-
       // Original user always have right
       if ($this->fields['users_id'] === Session::getLoginUserID()) {
          return true;
+      }
+      
+      if (!parent::canChildItem($methodItem, $methodNotItem)) {
+         return false;
       }
 
       $ri = $this->getItem();
