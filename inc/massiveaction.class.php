@@ -214,10 +214,6 @@ class MassiveAction {
                   }
                   break;
                case 'process':
-
-                  $this->timer = new Timer();
-                  $this->timer->start();
-
                   if (isset($POST['initial_items'])) {
                      $_SESSION['glpimassiveactionselected'] = $POST['initial_items'];
                   } else {
@@ -246,7 +242,9 @@ class MassiveAction {
                      $this->redirect = $CFG_GLPI['root_doc']."/front/central.php";
                   }
 
-                  $this->manage_progress_bar = true;
+                  $this->display_progress_bars = (isset($POST['display_progress_bars'])
+                                                && ($POST['display_progress_bars']));
+                  $remove_from_post[] = 'display_progress_bars';
 
                  break;
             }
@@ -255,9 +253,6 @@ class MassiveAction {
                if (isset($this->POST[$field])) {
                   $this->$field = $this->POST[$field];
                }
-            }
-            if ($stage == 'process') {
-               $this->remainings = $this->items;
             }
             foreach ($remove_from_post as $field) {
                if (isset($this->POST[$field])) {
@@ -274,8 +269,7 @@ class MassiveAction {
             Toolbox::logDebug('Implementation error !');
             throw new Exception(__('Implementation error !'));
          }
-         $this->timer = new Timer();
-         $this->timer->start();
+
          if (!isset($_SESSION['current_massive_action'][$GET['identifier']])) {
             Toolbox::logDebug('Implementation error !');
             throw new Exception(__('Implementation error !'));
@@ -289,6 +283,23 @@ class MassiveAction {
             return;
          }
          unset($_SESSION['current_massive_action'][$identifier]);
+      }
+
+      // Add process elements
+      if ($stage == 'process') {
+
+         if (!isset($this->remainings)) {
+            $this->remainings = $this->items;
+         }
+
+         $this->fields_to_remove_when_reload = array('fields_to_remove_when_reload');
+
+         $this->timer = new Timer();
+         $this->timer->start();
+         $this->fields_to_remove_when_reload[] = 'timer';
+
+         $this->timeout_delay = (get_cfg_var("max_execution_time") - 3);
+         $this->fields_to_remove_when_reload[] = 'timeout_delay';
       }
    }
 
@@ -328,7 +339,9 @@ class MassiveAction {
    function __destruct() {
       if (isset($this->identifier)) {
          // $this->identifier is unset by self::process() when the massive actions are finished
-         unset($this->timer);
+         foreach ($this->fields_to_remove_when_reload as $field) {
+            unset($this->$field);
+         }
          $_SESSION['current_massive_action'][$this->identifier] = get_object_vars ($this);
       }
    }
@@ -631,6 +644,7 @@ class MassiveAction {
       switch ($ma->getAction()) {
          case 'update':
             $itemtype = $ma->getItemType(true);
+            // TODO: review it to remove use of ajax/dropdownMassiveActionField.php
             // Specific options for update fields
             if (!isset($input['options'])) {
                $input['options'] = array();
@@ -736,6 +750,20 @@ class MassiveAction {
    }
 
 
+   function updateProgressBars() {
+      if ($this->display_progress_bars) {
+         if (!isset($this->progress_bar_displayed)) {
+            Html::progressBar('main_'.$this->identifier, array('create'  => true,
+                                                               'message' => $this->action_name));
+            $this->progress_bar_displayed = true;
+            $this->fields_to_remove_when_reload[] = 'progress_bar_displayed';
+         }
+         $percent = 100 * $this->nb_done / $this->nb_items;
+         Html::progressBar('main_'.$this->identifier, array('percent' => $percent));
+      }
+   }
+
+
    /**
     * Process the massive actions for all passed items. This a switch between different methods:
     * new system, old one and plugins ...
@@ -750,12 +778,7 @@ class MassiveAction {
 
          if (!empty($this->processor)) {
 
-            if ($this->manage_progress_bar) {
-               Html::progressBar('main_'.$this->identifier, array('create'  => true,
-                                                                  'message' => $this->action_name));
-               $percent = 100 * $this->nb_done / $this->nb_items;
-               Html::progressBar('main_'.$this->identifier, array('percent' => $percent));
-            }
+            $this->updateProgressBars();
 
             $processor = $this->processor;
             if (method_exists($processor, 'processMassiveActionsForSeveralItemtype')) {
@@ -1083,18 +1106,12 @@ class MassiveAction {
       }
       $this->nb_done += $number;
 
-
-      if ($this->manage_progress_bar) {
-         if (($this->nb_done >= 0) && ($this->nb_done <= $this->nb_items)) {
-            $percent = 100 * $this->nb_done / $this->nb_items;
-            Html::progressBar('main_'.$this->identifier, array('percent'  => $percent));
-         }
-      }
-
       // If delay is to big, then reload !
-      if ($this->timer->getTime() > (get_cfg_var("max_execution_time") - 3)) {
+      if ($this->timer->getTime() > $this->timeout_delay) {
          Html::redirect($_SERVER['PHP_SELF'].'?identifier='.$this->identifier);
       }
+
+      $this->updateProgressBars();
    }
 }
 
