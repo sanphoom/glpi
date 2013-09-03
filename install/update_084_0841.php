@@ -87,9 +87,9 @@ function update084to0841() {
    $migration->addField('glpi_documents_items', 'date_mod', 'datetime');
    $migration->migrationOneTable('glpi_documents_items');
    $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
-                  INNER JOIN `glpi_documents` as `doc`
-                  ON  `doc`.`id` = `doc_i`.`documents_id`
-                  SET `doc_i`.`date_mod` = `doc`.`date_mod`";
+                   INNER JOIN `glpi_documents` as `doc`
+                     ON  `doc`.`id` = `doc_i`.`documents_id`
+                   SET `doc_i`.`date_mod` = `doc`.`date_mod`";
    $DB->queryOrDie($query_doc_i,
                   "0.84.1 update date_mod in glpi_documents_items");
 
@@ -102,6 +102,11 @@ function update084to0841() {
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
    $DB->queryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
 
+
+   // add delet_problem
+   $migration->addField('glpi_profiles', 'delete_problem', 'char',
+                        array('after' => 'edit_all_problem',
+                              'update' => 'edit_all_problem'));
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
