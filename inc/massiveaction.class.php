@@ -298,7 +298,9 @@ class MassiveAction {
          $this->timer->start();
          $this->fields_to_remove_when_reload[] = 'timer';
 
-         $this->timeout_delay = (get_cfg_var("max_execution_time") - 3);
+         $max_time = get_cfg_var("max_execution_time")==0 ? 60: get_cfg_var("max_execution_time");
+         
+         $this->timeout_delay = ($max_time - 3);
          $this->fields_to_remove_when_reload[] = 'timeout_delay';
       }
    }
@@ -1105,7 +1107,7 @@ class MassiveAction {
             break;
       }
       $this->nb_done += $number;
-
+      
       // If delay is to big, then reload !
       if ($this->timer->getTime() > $this->timeout_delay) {
          Html::redirect($_SERVER['PHP_SELF'].'?identifier='.$this->identifier);
