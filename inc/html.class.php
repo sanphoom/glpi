@@ -1032,7 +1032,7 @@ class Html {
       if (isset($_SESSION['glpilanguage'])) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
-         $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/localization/jquery-ui-timepicker-".
+         $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
                       $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
@@ -2978,12 +2978,6 @@ class Html {
          $p['timestep'] = $CFG_GLPI['time_step'];
       }
 
-      $output = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".self::convDateTime($p['value'])."'>";
-      $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "showdate".$p['rand']));
-      if ($p['maybeempty']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
-      }
-
       $minHour   = 0;
       $maxHour   = 23;
       $minMinute = 0;
@@ -3020,6 +3014,12 @@ class Html {
          $p['value'] = $date_value.' '.$hour_value;
       }
 
+      $output = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".self::convDateTime($p['value']).":00'>";
+      $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "showdate".$p['rand']));
+      if ($p['maybeempty']) {
+         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
+      }
+      
       $js = "";
       if ($p['maybeempty']) {
          $js .= "$('#resetdate".$p['rand']."').click(function(){
@@ -3034,6 +3034,7 @@ class Html {
                   altTimeFormat: 'HH:mm:ss',
                   altFieldTimeOnly: false,
                   firstDay: 1,
+                  showSecond: false,
                   showOtherMonths: true,
                   selectOtherMonths: true,
                   showButtonPanel: true,
@@ -3065,7 +3066,7 @@ class Html {
             $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
       }
       $js .= ",dateFormat: '".$format."'";
-      $js .= ",timeFormat: 'HH:mm'";
+      $js .= ",timeFormat: 'HH:mm:ss'";
 
       $js .= "});";
 
