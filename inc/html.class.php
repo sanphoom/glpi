@@ -3014,7 +3014,7 @@ class Html {
          $p['value'] = $date_value.' '.$hour_value;
       }
 
-      $output = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".self::convDateTime($p['value']).":00'>";
+      $output = "<input id='_showdate".$p['rand']."' type='text' name='_$name' value='".self::convDateTime($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "showdate".$p['rand']));
       if ($p['maybeempty']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
@@ -3031,9 +3031,11 @@ class Html {
       $js .= "$( '#_showdate".$p['rand']."' ).datetimepicker({
                   altField: '#showdate".$p['rand']."',
                   altFormat: 'yy-mm-dd',
-                  altTimeFormat: 'HH:mm:ss',
+                  altTimeFormat: 'HH:mm',
+                  pickerTimeFormat : 'HH:mm',
                   altFieldTimeOnly: false,
                   firstDay: 1,
+                  parse: 'loose',
                   showSecond: false,
                   showOtherMonths: true,
                   selectOtherMonths: true,
@@ -3066,7 +3068,7 @@ class Html {
             $p['showyear'] ? $format='yy-mm-dd' : $format='mm-dd';
       }
       $js .= ",dateFormat: '".$format."'";
-      $js .= ",timeFormat: 'HH:mm:ss'";
+      $js .= ",timeFormat: 'HH:mm'";
 
       $js .= "});";
 
