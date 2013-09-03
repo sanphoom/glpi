@@ -108,6 +108,7 @@ class Search {
       $p['field2']      = '';//
       $p['itemtype2']   = '';
       $p['searchtype2'] = '';
+      $p['target']      = Toolbox::getItemTypeSearchURL($itemtype);
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
@@ -141,8 +142,6 @@ class Search {
             }
          }
       }
-
-      $target           = Toolbox::getItemTypeSearchURL($itemtype);
 
       $limitsearchopt   = self::getCleanedOptions($itemtype);
 
@@ -835,9 +834,9 @@ class Search {
 
          // Not more used : clean pages : try to comment it
          /*
-         $tmp=explode('?',$target,2);
+         $tmp=explode('?',$p['target'],2);
          if (count($tmp)>1) {
-            $target = $tmp[0];
+            $p['target'] = $tmp[0];
             $parameters = $tmp[1].'&amp;'.$parameters;
          }
          */
@@ -846,7 +845,7 @@ class Search {
                echo "<div class='center'><h2>".$item->getTypeName();
                // More items
                if ($numrows > ($p['start'] + self::GLOBAL_DISPLAY_COUNT)) {
-                  echo " <a href='$target?$parameters'>".__('All')."</a>";
+                  echo " <a href='".$p['target']."?$parameters'>".__('All')."</a>";
                }
                echo "</h2></div>\n";
             } else {
@@ -899,7 +898,7 @@ class Search {
                                                              => false));
                }
 
-               Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype, 0,
+               Html::printPager($p['start'], $numrows, $p['target'], $parameters, $itemtype, 0,
                                 $search_config);
             }
 
@@ -993,7 +992,7 @@ class Search {
                if (!isset($searchopt[$itemtype][$val]['nosort'])
                    || !$searchopt[$itemtype][$val]['nosort']) {
 
-                  $linkto = "$target?itemtype=$itemtype&amp;sort=".$val."&amp;order=".
+                  $linkto = $p['target']."?itemtype=$itemtype&amp;sort=".$val."&amp;order=".
                              (($p['order'] == "ASC") ?"DESC":"ASC")."&amp;start=".$p['start'].
                              $globallinkto;
                }
@@ -1432,7 +1431,7 @@ class Search {
                }
             }
             if ($output_type == self::HTML_OUTPUT) { // In case of HTML display
-               Html::printPager($p['start'], $numrows, $target, $parameters, '', 0, $search_config);
+               Html::printPager($p['start'], $numrows, $p['target'], $parameters, '', 0, $search_config);
 
             }
          } else {
@@ -1502,13 +1501,13 @@ class Search {
       $p['field2']      = '';
       $p['itemtype2']   = '';
       $p['searchtype2'] = '';
+      $p['target']      = Toolbox::getItemTypeSearchURL($itemtype);
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
       }
 
       $options = self::getCleanedOptions($itemtype);
-      $target  = Toolbox::getItemTypeSearchURL($itemtype);
 
       // Instanciate an object to access method
       $item = NULL;
@@ -1518,7 +1517,7 @@ class Search {
 
       $linked =  self::getMetaItemtypeAvailable($itemtype);
 
-      echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
+      echo "<form name='searchform$itemtype' method='get' action=\"".$p['target']."\">";
       echo "<div id='searchcriterias'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
@@ -1761,7 +1760,7 @@ class Search {
       echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit' >";
       echo "</td><td>";
       Bookmark::showSaveButton(Bookmark::SEARCH, $itemtype);
-      echo "<a href='$target?reset=reset' >";
+      echo "<a href='".$p['target']."?reset=reset' >";
       echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 

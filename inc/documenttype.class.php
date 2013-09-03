@@ -153,7 +153,7 @@ class DocumentType  extends CommonDropdown {
       echo "</a>";
       Ajax::createIframeModalWindow('documenttypelist',
                                     $CFG_GLPI["root_doc"]."/front/documenttype.list.php",
-                                    array('title'         => static::getType(2)));
+                                    array('title'         => static::getTypeName(2)));
    }
 }
 ?>
