@@ -4841,7 +4841,7 @@ class Html {
       $param['col_check_all']        = false;
       $param['rotate_column_titles'] = false;
       $param['rand']                 = mt_rand();
-      $param['table_class']          = 'tab_cadre_fixe';
+      $param['table_class']          = 'tab_cadre_fixehov';
       $param['cell_class_method']    = NULL;
 
       if (is_array($options) && count($options)) {

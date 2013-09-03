@@ -676,7 +676,7 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = __('Assistance');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixehov'>";
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>\n";
 
       // TODO : switch to matrix

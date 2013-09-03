@@ -726,3 +726,26 @@ function massiveUpdateCheckbox(criterion, reference) {
     });
     return true;
 }
+
+
+$(function(){
+
+        $("body").delegate('td','mouseover mouseleave', function(e) {
+                var table = $(this).parent().parent();
+                var col = $(this).parent().children().index($(this));
+                var row = $(this).parent().parent().children().index($(this).parent());
+                if (e.type == 'mouseover') {
+                        $(this).addClass("hover");
+//                         $(this).parent().addClass("rowHover");
+                        $(this).parent().children().addClass("columnHover");
+                        $("tr td:nth-child("+(col+1)+")", table).addClass("columnHover");
+                }
+                else {
+                        $(this).removeClass("hover");
+                        $(this).parent().children().removeClass("columnHover");
+//                         $(this).parent().removeClass("rowHover");
+                        $("tr td:nth-child("+(col+1)+")", table).removeClass("columnHover");
+                }
+        });
+
+});
