@@ -132,7 +132,20 @@ if (isset($_POST["add"])) {
       // modifier un item dans la base de connaissance
       $kb->check($_GET["id"], READ);
 
-      Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
+      if (Session::getLoginUserID()) {
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+            Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "tools", "knowbaseitem");
+         } else {
+            Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF']);
+         }
+         Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
+      } else {
+         $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
+         // Anonymous FAQ
+         Html::simpleHeader(__('FAQ'), array(__('Authentication') => $CFG_GLPI['root_doc'].'/',
+                                             __('FAQ')            => $CFG_GLPI['root_doc'].'/front/helpdesk.faq.php'));
+      }
+   
       $available_options = array('item_itemtype', 'item_items_id', 'id');
       $options           = array();
       foreach ($available_options as $key) {
@@ -141,7 +154,16 @@ if (isset($_POST["add"])) {
          }
       }
       $kb->display($options);
-      Html::footer();
+      
+      if (Session::getLoginUserID()) {
+         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+            Html::footer();
+         } else {
+            Html::helpFooter();
+         }
+      } else {
+         Html::helpFooter();
+      }
    }
 }
 ?>
