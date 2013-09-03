@@ -1133,8 +1133,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "function showPlanUpdate() {\n";
             echo Html::jsHide('plan');
             $params = array('form'     => 'followups',
-                            'users_id' => Session::getLoginUserID(),
                             'entity'   => $_SESSION["glpiactive_entity"],
+                            'rand_user' => $rand_user,
                             'itemtype' => $this->getType(),
                             'items_id' => $this->getID());
             Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
