@@ -549,7 +549,7 @@ class Reservation extends CommonDBChild {
          if (!empty($ID)) {
             echo "<tr><td class='center'>";
             echo "<a href='reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
-                  "date=".$annee_courante."-".$mois_courant."-".$ii."'>";
+                  "begin=".$annee_courante."-".$mois_courant."-".$ii." 12:00:00'>";
             echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt=\"".
                   __s('Reserve')."\" title=\"".__s('Reserve')."\"></a></td></tr>\n";
          }
@@ -613,8 +613,12 @@ class Reservation extends CommonDBChild {
 
       } else {
          $resa->getEmpty();
-         $resa->fields["begin"] = $options['date']." 12:00:00";
-         $resa->fields["end"]   = $options['date']." 13:00:00";
+         $resa->fields["begin"] = $options['begin'];
+         if (!isset($options['end'])) {
+            $resa->fields["end"]   = date("Y-m-d H:00:00", strtotime($resa->fields["begin"])+HOUR_TIMESTAMP);
+         } else {
+            $resa->fields["end"] = $options['end'];
+         }
       }
 
       // No item : problem
@@ -686,7 +690,6 @@ class Reservation extends CommonDBChild {
       $default_delay = floor((strtotime($resa->fields["end"])-strtotime($resa->fields["begin"]))
                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
                        *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
-
       echo "<tr class='tab_bg_2'><td>".__('Duration')."</td><td>";
       $rand = Dropdown::showTimeStamp("resa[_duration]",
                                       array('min'        => 0,

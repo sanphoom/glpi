@@ -357,6 +357,7 @@ class ReservationItem extends CommonDBChild {
       if (isset($_SESSION['glpi_saved']['ReservationItem'])) {
          $_POST = $_SESSION['glpi_saved']['ReservationItem'];
       }
+
       if (isset($_POST['reserve'])) {
          echo "<div id='viewresasearch'  class='center'>";
          Toolbox::manageBeginAndEndPlanDates($_POST['reserve']);
@@ -411,8 +412,8 @@ class ReservationItem extends CommonDBChild {
       $result = $DB->query($sql);
 
       $values[0] = Dropdown::EMPTY_VALUE;
-      foreach ($result AS $data => $val) {
-         $values[$val['itemtype']] = $val['itemtype'];
+      while ($data = $DB->fetch_assoc($result)) {
+         $values[$data['itemtype']] = $data['itemtype']::getTypeName();
       }
 
       $query = "SELECT `glpi_peripheraltypes`.`name`, `glpi_reservationitems`.`id`
@@ -432,15 +433,8 @@ class ReservationItem extends CommonDBChild {
          $values["Peripheral#$id"] = $ptype['name'];
       }
 
-      if ($DB->numrows($result) > 1) {
-         Dropdown::showFromArray("reservation_types", $values,
-                                 array('value' => $_POST['reservation_types']));
-      } else {
-         unset($values[0]);
-         foreach ($values as $key => $val) {
-            echo $val;
-         }
-      }
+      Dropdown::showFromArray("reservation_types", $values,
+                              array('value' => $_POST['reservation_types']));
 
 
       echo "</td></tr>";

@@ -184,15 +184,15 @@ if (isset($_POST["update"])) {
 //    }
 
 } else if (isset($_GET["id"])) {
-   if (!isset($_GET['date'])) {
-      $_GET['date'] = date('Y-m-d');
+   if (!isset($_GET['begin'])) {
+      $_GET['begin'] = date('Y-m-d H:00:00');
    }
    if (empty($_GET["id"])
        && (!isset($_GET['item']) || (count($_GET['item']) == 0 ))) {
       Html::back();
    }
    if (!empty($_GET["id"])
-       || (isset($_GET['item']) && isset($_GET['date']))) {
+       || (isset($_GET['item']) && isset($_GET['begin']))) {
       $rr->showForm($_GET['id'], $_GET);
    }
 }
