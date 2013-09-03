@@ -532,7 +532,12 @@ class ReservationItem extends CommonDBChild {
       }
       if ($ok) {
          echo "<tr class='tab_bg_1 center'><td colspan='".($showentity?"5":"4")."'>";
+         if (isset($_POST['reserve'])) {
+            echo Html::hidden('begin', array('value' => $_POST['reserve']["begin"]));
+            echo Html::hidden('end', array('value'   => $_POST['reserve']["end"]));
+         }
          echo "<input type='submit' value=\""._sx('button','Add')."\" class='submit'></td></tr>\n";
+         
       }
       echo "</table>\n";
       echo "<input type='hidden' name='id' value=''>";
