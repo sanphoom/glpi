@@ -39,6 +39,7 @@ $config = new Config();
 
 //Update CAS configuration
 if (isset($_POST["update"])) {
+   $_POST['id'] = 1;
    $config->update($_POST);
    Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }

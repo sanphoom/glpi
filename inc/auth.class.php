@@ -1204,9 +1204,7 @@ class Auth extends CommonGLPI {
       if (!Config::canUpdate()) {
          return false;
       }
-      /// TODO manage this like others config fields 
       echo "<form name=cas action='".$CFG_GLPI['root_doc']."/front/auth.others.php' method='post'>";
-      echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
 
