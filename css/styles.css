@@ -1943,3 +1943,13 @@ div#show_all_menu .tab_bg_1 a:hover {
 #debug table, #debugajax table {
    margin:0;
 }
+
+
+/* Restore default behavior : drop user agent CSS*/
+:focus {
+  outline-width: 0;
+}
+
+.nostyle:focus {
+  outline-width: 5px;
+}
