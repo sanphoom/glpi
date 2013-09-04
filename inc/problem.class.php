@@ -1006,8 +1006,7 @@ class Problem extends CommonITILObject {
       if (!static::canView()) {
          return false;
       }
-      /// TODO SEEALL does not exists
-      if (!Session::haveRight(self::$rightname, self::SEEALL)) {
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
          $foruser = true;
       }
 
