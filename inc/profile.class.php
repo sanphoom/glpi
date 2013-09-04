@@ -2423,7 +2423,7 @@ class Profile extends CommonDBTM {
                                       array('title'                => $param['title'],
                                             'row_check_all'        => count($columns) > 1,
                                             'col_check_all'        => count($rows) > 1,
-                                            'rotate_column_titles' => count($columns) > 5));
+                                            'rotate_column_titles' => false));
    }
 
 
