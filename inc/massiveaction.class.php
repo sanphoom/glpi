@@ -759,9 +759,26 @@ class MassiveAction {
                                                                'message' => $this->action_name));
             $this->progress_bar_displayed = true;
             $this->fields_to_remove_when_reload[] = 'progress_bar_displayed';
+            if (count($this->items) > 1) {
+               Html::progressBar('itemtype_'.$this->identifier, array('create'  => true));
+            }
          }
          $percent = 100 * $this->nb_done / $this->nb_items;
          Html::progressBar('main_'.$this->identifier, array('percent' => $percent));
+         if ((count($this->items) > 1) && isset($this->current_itemtype)) {
+            $itemtype = $this->current_itemtype;
+            if (isset($this->items[$itemtype])) {
+               if (isset($this->done[$itemtype])) {
+                  $nb_done = count($this->done[$itemtype]);
+               } else {
+                  $nb_done = 0;
+               }
+               $percent = 100 * $nb_done / count($this->items[$itemtype]);
+               Html::progressBar('itemtype_'.$this->identifier,
+                                 array('message' => $itemtype::getTypeName(2),
+                                       'percent' => $percent));
+            }
+         }
       }
    }
 
@@ -1075,6 +1092,8 @@ class MassiveAction {
 
 
    function itemDone($itemtype, $id, $result) {
+
+      $this->current_itemtype = $itemtype;
 
       if (!isset($this->done[$itemtype])) {
          $this->done[$itemtype] = array();

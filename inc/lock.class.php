@@ -302,6 +302,9 @@ class Lock {
          }
       }
       if ($header) {
+         echo "<tr><th>";
+         Html::checkAllAsCheckbox('lock_form');
+         echo "</th><th>&nbsp</th></tr>\n";
          echo "</table>";
          Html::openArrowMassives('lock_form', true);
          Html::closeArrowMassives(array('unlock' => _sx('button', 'Unlock')));
