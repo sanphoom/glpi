@@ -1742,9 +1742,16 @@ class CommonDBTM extends CommonGLPI {
    **/
    function canViewItem() {
 
-      if (!$this->checkEntity()) {
-         return false;
+      // Is an item assign to an entity
+      if ($this->isEntityAssign()) {
+         // Can be recursive check
+         if ($this->maybeRecursive()) {
+            return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
+         }
+         //  else : No recursive item
+         return Session::haveAccessToEntity($this->getEntityID());
       }
+      // else : Global item
       return true;
    }
 
@@ -2443,11 +2450,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Is an item assign to an entity
       if ($this->isEntityAssign()) {
-         // Can be recursive check
-         if ($this->maybeRecursive()) {
-            return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
-         }
-         //  else : No recursive item
+         // Have access to entity
          return Session::haveAccessToEntity($this->getEntityID());
       }
       // else : Global item
