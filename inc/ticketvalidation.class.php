@@ -39,8 +39,7 @@ if (!defined('GLPI_ROOT')) {
  * TicketValidation class
  */
 class TicketValidation  extends CommonDBChild {
-   
-   protected $users_id_validate  = array();
+
    // From CommonDBTM
    public $auto_message_on_action    = false;
 
@@ -794,7 +793,7 @@ class TicketValidation  extends CommonDBChild {
       if ($ID > 0) {
          $this->check($ID, CREATE);
       } else {
-         $options['tickets_id'] = $options['parent']->fields["id"];;
+         $options['tickets_id'] = $options['parent']->fields["id"];
          $this->check(-1, CREATE, $options);
       }
 
@@ -828,16 +827,15 @@ class TicketValidation  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>";
+         $users_id_validate = array();
          if ($ID > 0) {
-            echo getUserName($this->fields["users_id_validate"]);
-            echo "<input type='hidden' name='users_id_validate' value='".$this->fields['users_id_validate']."'>";
-         } else {
-            $params = array('id'                 => $this->fields["id"],
+            $users_id_validate = self::getUsersDataValidation($ID);
+         }
+         $params = array('id'                 => $this->fields["id"],
                             'entity'             => $this->getEntityID(),
                             'right'              => $validation_right,
-                            'users_id_validate'  => $this->users_id_validate);
-            self::dropdownValidator($params);
-         }
+                            'users_id_validate'  => $users_id_validate);
+         self::dropdownValidator($params);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -1166,6 +1164,34 @@ class TicketValidation  extends CommonDBChild {
       return $users;
    }
    
+   
+      /**
+    * Get users data for a ticketvalidation
+    *
+    * @param $ticketvalidations_id ID of the ticketvalidation
+    *
+    * @return array of users linked to a ticketvalidation
+   **/
+   static function getUsersDataValidation($ticketvalidations_id) {
+      global $DB;
+
+      $users = array();
+      $query = "SELECT `glpi_ticketvalidations`.`users_id_validate` as id, 
+                       `glpi_ticketvalidations`.`status`,
+                       `glpi_ticketvalidations`.`comment_validation`,
+                       `glpi_users`.`name`,
+                       `glpi_users`.`realname`,
+                       `glpi_users`.`firstname`
+                   FROM `glpi_ticketvalidations`
+                   LEFT JOIN `glpi_users`
+                     ON(`glpi_ticketvalidations`.`users_id_validate` = `glpi_users`.`id`)
+                   WHERE `glpi_ticketvalidations`.`id` = '".$ticketvalidations_id."'";
+
+      foreach ($DB->request($query) as $data) {
+         $users[$data['id']] = $data;
+      }
+      return $users;
+   }
 
    /**
     * Get the validation status
