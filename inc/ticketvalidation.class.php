@@ -349,7 +349,7 @@ class TicketValidation  extends CommonDBChild {
             NotificationEvent::raiseEvent('validation_answer', $job, $options);
          }
          
-         $this->fields["status"] = self::getValidationStatus($this->fields["id"], $job);
+         $this->fields["status"] = self::getValidationStatus($job);
 
           //Set global validation to accepted to define one
          if (($job->fields['global_validation'] == 'waiting')
@@ -640,7 +640,7 @@ class TicketValidation  extends CommonDBChild {
       $rand   = mt_rand();
       
       if ($canadd) {
-         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL($this->getType())."'>";
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL('Ticket')."'>";
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -650,9 +650,16 @@ class TicketValidation  extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Global approval status')."</td>";
       echo "<td colspan='2'>";
-      echo self::getStatus($ticket->fields["global_validation"]);
+      self::dropdownStatus("global_validation", array('value' => $ticket->fields["global_validation"]));
       echo "</td>";
       echo "</td></tr>";
+      
+      echo "<tr>";
+      echo "<th colspan='2'>".__('State')."</th>";
+      echo "<th colspan='2'>";
+      echo self::getValidationStats($tID);
+      echo "</th>";
+      echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Minimum validation required')."</td>";
@@ -661,7 +668,7 @@ class TicketValidation  extends CommonDBChild {
          TicketValidation::dropdownValidationRequired(array('value' => $ticket->fields["validation_percent"],
                                                             'name' => 'validation_percent'));
       echo "</td>";
-      echo "<td><input type='submit' name='update_percent' class='submit' value='".
+      echo "<td><input type='submit' name='update' class='submit' value='".
                            _sx('button','Save')."'>";
       if (!empty($tID)) {
          echo "<input type='hidden' name='id' value='$tID'>";
@@ -827,15 +834,18 @@ class TicketValidation  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>";
-         $users_id_validate = array();
+         
          if ($ID > 0) {
-            $users_id_validate = self::getUsersDataValidation($ID);
+            echo getUserName($this->fields["users_id_validate"]);
+            echo "<input type='hidden' name='users_id_validate' value='".$this->fields['users_id_validate']."'>";
+         } else {
+            $users_id_validate = array();
+            $params = array('id'                 => $this->fields["id"],
+                               'entity'             => $this->getEntityID(),
+                               'right'              => $validation_right,
+                               'users_id_validate'  => $users_id_validate);
+            self::dropdownValidator($params);
          }
-         $params = array('id'                 => $this->fields["id"],
-                            'entity'             => $this->getEntityID(),
-                            'right'              => $validation_right,
-                            'users_id_validate'  => $users_id_validate);
-         self::dropdownValidator($params);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -1164,39 +1174,10 @@ class TicketValidation  extends CommonDBChild {
       return $users;
    }
    
-   
-      /**
-    * Get users data for a ticketvalidation
-    *
-    * @param $ticketvalidations_id ID of the ticketvalidation
-    *
-    * @return array of users linked to a ticketvalidation
-   **/
-   static function getUsersDataValidation($ticketvalidations_id) {
-      global $DB;
-
-      $users = array();
-      $query = "SELECT `glpi_ticketvalidations`.`users_id_validate` as id, 
-                       `glpi_ticketvalidations`.`status`,
-                       `glpi_ticketvalidations`.`comment_validation`,
-                       `glpi_users`.`name`,
-                       `glpi_users`.`realname`,
-                       `glpi_users`.`firstname`
-                   FROM `glpi_ticketvalidations`
-                   LEFT JOIN `glpi_users`
-                     ON(`glpi_ticketvalidations`.`users_id_validate` = `glpi_users`.`id`)
-                   WHERE `glpi_ticketvalidations`.`id` = '".$ticketvalidations_id."'";
-
-      foreach ($DB->request($query) as $data) {
-         $users[$data['id']] = $data;
-      }
-      return $users;
-   }
 
    /**
     * Get the validation status
     *
-    * @param $ticketvalidations_id    ID of the ticketvalidation
     * @param $job Ticket Class for id & $validation_percent      validation mode for the group (default 0):
     *                                                             0 - first user validate or reject
     *                                                             1 - 50% of user validate
@@ -1204,7 +1185,7 @@ class TicketValidation  extends CommonDBChild {
     *
     * @return validation status
    **/
-   static function getValidationStatus($ticketvalidations_id, Ticket $job) {
+   static function getValidationStatus(Ticket $job) {
 
       $validation_status = 'waiting';
 
@@ -1267,6 +1248,45 @@ class TicketValidation  extends CommonDBChild {
       }
 
       return $validation_status;
+   }
+   
+   /**
+    * Get the validation statistics
+    *
+    * @param $IDt tickets id
+    *
+    * @return statistics array
+   **/
+   static function getValidationStats($tID) {
+
+      $tab = array('waiting'  => __('Waiting for approval'),
+                   'rejected' => __('Refused'),
+                   'accepted' => __('Granted'));
+      
+      $nb = countElementsInTable('glpi_ticketvalidations',"`tickets_id` = ".$tID);
+            
+      $stats = array();
+      foreach ($tab as $status => $name) {
+         $restrict = "`tickets_id` = '".$tID."' AND `status` = '".$status."'";
+         $validations = countElementsInTable('glpi_ticketvalidations',$restrict);
+         if ($validations > 0) {
+            if (!isset($stats[$status])) {
+               $stats[$status] = 0;
+            }
+            $stats[$status] = $validations;
+         }
+      }
+
+      $i = 0;
+      $list = "";
+      foreach ($stats as $stat => $val) {
+         $i++;
+         $list.= $tab[$stat];
+         $list.= sprintf(__('%1$s (%2$d%%) '), " " ,
+                                     HTml::formatNumber($val*100/$nb));
+      }
+
+      return $list;
    }
 }
 ?>

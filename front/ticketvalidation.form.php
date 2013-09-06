@@ -61,18 +61,10 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    
    $validation->check($_POST['id'], UPDATE);
-   if (isset($_POST['users_id_validate']) 
-      && count($_POST['users_id_validate']) > 0) {
-      
-      $users = $_POST['users_id_validate'];
-      foreach ($users as $user) {
-         $_POST['users_id_validate'] = $user;
-         $validation->update($_POST);
-         Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an approval'), $_SESSION["glpiname"]));
-      }
-   }
+   $validation->update($_POST);
+   Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an approval'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["purge"])) {
@@ -84,11 +76,6 @@ if (isset($_POST["add"])) {
               sprintf(__('%s purges an approval'), $_SESSION["glpiname"]));
    Html::back();
    
-} else if (isset($_POST["update_percent"])) {
-   $ticket->check($_POST['id'], UPDATE);
-   $ticket->update($_POST);
-   Html::back();
 }
-
 Html::displayErrorAndDie('Lost');
 ?>
