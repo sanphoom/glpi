@@ -272,10 +272,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
          $query = $this->getDistinctUserSql()."
                   FROM `$validationtable`
-                  LEFT JOIN `glpi_ticketvalidations_users`
-                        ON (`$validationtable`.`id` = `glpi_ticketvalidations_users`.`ticketvalidations_id`)
                   LEFT JOIN `glpi_users`
-                        ON (`glpi_users`.`id` = `glpi_ticketvalidations_users`.`users_id_validate`) ".
+                        ON (`glpi_users`.`id` = `$validationtable`.`users_id_validate`)".
                   $this->getProfileJoinSql()."
                   WHERE `$validationtable`.`id` = '".$options['validation_id']."'";
 

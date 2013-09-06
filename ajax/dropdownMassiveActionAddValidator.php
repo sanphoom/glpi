@@ -56,16 +56,12 @@ if (isset($_POST["validatortype"])) {
 
       case 'group' :
          echo "<input type='hidden' name='users_id_validate' value=0 />";
-         $condition = "(SELECT count(`users_id`)
-                        FROM `glpi_groups_users`
-                        WHERE `groups_id` = `glpi_groups`.`id`)";
          $rand = Group::dropdown(array('name'      => 'groups_id',
-                                       'condition' => $condition,
-                                       'entity'    => $_SESSION["glpiactive_entity"],
-                                       'right'     => array('validate_request', 'validate_incident')));
+                                       'entity'    => $_SESSION["glpiactive_entity"]));
 
          $param = array('validatortype'      => 'group_user',
-                        'groups_id' =>'__VALUE__');
+                        'groups_id' =>'__VALUE__',
+                        'right'     => array('validate_request', 'validate_incident'));
 
          Ajax::updateItemOnSelectEvent("dropdown_groups_id$rand", "show_groups_users",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAddValidator.php",
@@ -75,7 +71,13 @@ if (isset($_POST["validatortype"])) {
          break;
 
       case 'group_user' :
-         $groups_users    = Group_user::getGroupUsers($_POST['groups_id']);
+         
+         $opt = array('groups_id'   => $_POST["groups_id"], 
+                           'right'     => $_POST['right'],
+                           'entity'    => $_SESSION["glpiactive_entity"]);
+                           
+         $groups_users = TicketValidation::getGroupUserHaveRights($opt);
+
          $users           = array();
          $param['values'] =  array();
          foreach ($groups_users as $data){
@@ -97,24 +99,22 @@ if (isset($_POST["validatortype"])) {
           // Display all/none buttons to select all or no users in group
          if (!empty($_POST['groups_id'])){
             echo "<a id='all_users' class='vsubmit'>".__('All')."</a>";
-            $param_button['validatortype']     = 'group_user';
-            $param_button['users_id_validate'] = '';
-            $param_button['all_users']         = 1;
-            $param_button['groups_id']         = $_POST['groups_id'];
+            $param_button['validatortype']      = 'group_user';
+            $param_button['users_id_validate']  = '';
+            $param_button['all_users']          = 1;
+            $param_button['groups_id']          = $_POST['groups_id'];
+            $param_button['right']              = array('validate_request', 'validate_incident');
+            $param_button['entity']             = $_SESSION["glpiactive_entity"];
             Ajax::updateItemOnEvent('all_users', 'show_groups_users',
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAddValidator.php",
                                     $param_button, array('click'));
 
-            echo "&nbsp;<a id='no_users' class='vsubmit'>".__('None')."</a>";;
+            echo "&nbsp;<a id='no_users' class='vsubmit'>".__('None')."</a>";
             $param_button['all_users'] = 0;
             Ajax::updateItemOnEvent('no_users', 'show_groups_users',
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAddValidator.php",
                                     $param_button, array('click'));
          }
-
-         echo "<br><br>&nbsp;".__('Minimum validation required')."&nbsp;";
-         TicketValidation_User::dropdownValidationRequired(array('value' => '__VALUE__',
-                                                                 'name' => 'validation_percent'));
 
          echo "<br><br>".__('Comments')." ";
          echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";

@@ -5823,7 +5823,9 @@ CREATE TABLE `glpi_ticketvalidations` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `users_id` int(11) NOT NULL DEFAULT '0',
   `tickets_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_validate` int(11) NOT NULL DEFAULT '0',
   `comment_submission` text COLLATE utf8_unicode_ci,
+  `comment_validation` text COLLATE utf8_unicode_ci,
   `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'waiting',
   `submission_date` datetime DEFAULT NULL,
   `validation_date` datetime DEFAULT NULL,
@@ -5834,26 +5836,6 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-### Dump table glpi_ticketvalidations_users
-
-DROP TABLE IF EXISTS `glpi_ticketvalidations_users`;
-CREATE TABLE `glpi_ticketvalidations_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `users_id_validate` int(11) NOT NULL DEFAULT '0',
-  `tickets_id` int(11) NOT NULL DEFAULT '0',
-  `ticketvalidations_id` int(11) NOT NULL DEFAULT '0',
-  `comment_validation` text COLLATE utf8_unicode_ci,
-  `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `validation_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `users_id_validate` (`users_id_validate`),
-  KEY `tickets_id` (`tickets_id`),
-  KEY `ticketvalidations_id` (`ticketvalidations_id`),
-  KEY `status` (`status`),
-  KEY `validation_date` (`validation_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

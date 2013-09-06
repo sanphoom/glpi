@@ -2607,7 +2607,7 @@ class Search {
 
                if (Session::haveRightsOr('validation', array(TicketValidation::VALIDATEINCIDENT,
                                                              TicketValidation::VALIDATEREQUEST))) {
-                  $condition .= " OR `glpi_ticketvalidations_users`.`users_id_validate`
+                  $condition .= " OR `glpi_ticketvalidations`.`users_id_validate`
                                           = '".Session::getLoginUserID()."'";
                }
                $condition .= ") ";

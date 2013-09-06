@@ -139,7 +139,7 @@ class RuleTicket extends Rule {
                         break;
 
                      case 'validation_percent' :
-                        $output['_add_validation']['validation_users']['validation'][] = $action->fields["value"];
+                        $output[$action->fields["field"]] = $action->fields["value"];
                         break;
 
                      default :

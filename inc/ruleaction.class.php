@@ -548,6 +548,7 @@ class RuleAction extends CommonDBChild {
                      $rule_data = getAllDatasFromTable('glpi_ruleactions',
                                                        "action_type = 'add_validation'
                                                         AND field = 'users_id_validate'");
+                     $used = array();
                      foreach ($rule_data as $data) {
                         $used[] = $data['value'];
                      }
@@ -562,6 +563,7 @@ class RuleAction extends CommonDBChild {
                      $condition = "(SELECT count(`users_id`)
                                     FROM `glpi_groups_users`
                                     WHERE `groups_id` = `glpi_groups`.`id`)";
+                     $used = array();
                      $rule_data = getAllDatasFromTable('glpi_ruleactions',
                                                        "action_type = 'add_validation'
                                                         AND field = 'groups_id_validate'");
@@ -578,7 +580,7 @@ class RuleAction extends CommonDBChild {
 
                   case "dropdown_validation_percent" :
                      $param['name'] = 'value';
-                     TicketValidation_User::dropdownValidationRequired($param);
+                     TicketValidation::dropdownValidationRequired($param);
                      $display       = true;
                      break;
 

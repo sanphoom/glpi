@@ -1259,65 +1259,6 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 add table glpi_changetasks");
    }
 
-   if (FieldExists('glpi_ticketvalidations', 'users_id_validate')) {
-      if (!TableExists('glpi_ticketvalidations_users')) {
-         $query = "CREATE TABLE `glpi_ticketvalidations_users` (
-                     `id` int(11) NOT NULL AUTO_INCREMENT,
-                     `users_id_validate` int(11) NOT NULL DEFAULT '0',
-                     `tickets_id` int(11) NOT NULL DEFAULT '0',
-                     `ticketvalidations_id` int(11) NOT NULL DEFAULT '0',
-                     `comment_validation` text COLLATE utf8_unicode_ci,
-                     `status` varchar(255) DEFAULT NULL,
-                     `validation_date` datetime DEFAULT NULL,
-                     PRIMARY KEY (`id`),
-                     KEY `users_id_validate` (`users_id_validate`),
-                     KEY `tickets_id` (`tickets_id`),
-                     KEY `ticketvalidations_id` (`ticketvalidations_id`),
-                     KEY `status` (`status`),
-                     KEY `validation_date` (`validation_date`)
-                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-         $DB->queryOrDie($query, "0.85 add table glpi_ticketvalidations_users");
-      }
-
-      if (!TableExists('origin_glpi_ticketvalidations')) {
-         $migration->copyTable('glpi_ticketvalidations', 'origin_glpi_ticketvalidations');
-      }
-
-      $query  = "SELECT *
-                 FROM `glpi_ticketvalidations`";
-      $result_of_ticketvalidations = $DB->query($query);
-
-      // Update glpi_ticketvalidations
-      if ($DB->numrows($result_of_ticketvalidations) > 0) {
-         // Then insert new values
-         $count = 0;
-         while ($value = $DB->fetch_assoc($result_of_ticketvalidations)) {
-            $value['validation_date'] = ($value['validation_date'] == '')
-               ? 'NULL':"'".$value['validation_date']."'";
-            $query = "INSERT INTO `glpi_ticketvalidations_users`
-                             (`id`,
-                             `users_id_validate`,
-                             `tickets_id`,
-                             `ticketvalidations_id`,
-                             `comment_validation`,
-                             `status`,
-                             `validation_date`)
-                      VALUES ('$count',
-                              '".$value['users_id_validate']."',
-                              '".$value['tickets_id']."',
-                              '".$value['id']."',
-                              '".addslashes($value['comment_validation'])."',
-                              '".$value['status']."',
-                              ".$value['validation_date'].");";
-            $DB->query($query);
-            $count++;
-         }
-      }
-      $migration->dropField('glpi_ticketvalidations', 'users_id_validate');
-      $migration->dropField('glpi_ticketvalidations', 'comment_validation');
-      $migration->migrationOneTable('glpi_ticketvalidations');
-      $migration->dropTable('origin_glpi_ticketvalidations');
-   }
    $migration->addField('glpi_tickets', 'validation_percent', 'integer', array('value' => 0));
 
    /// TODO add changetasktypes table as dropdown

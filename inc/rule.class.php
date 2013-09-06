@@ -2139,7 +2139,7 @@ class Rule extends CommonDBTM {
                return Dropdown::getDropdownName('glpi_groups', $value);
 
             case "dropdown_validation_percent" :
-               return TicketValidation_User::showValidationRequired($value, false);
+               return TicketValidation::showValidationRequired($value, false);
 
             case "yesonly" :
             case "yesno" :
