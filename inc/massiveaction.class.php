@@ -87,6 +87,8 @@ class MassiveAction {
                case 'initial':
 
                   $POST['action_filter'] = array();
+                  // 'specific_actions': restrict all possible actions or introduce new ones
+                  // thus, don't try to load other actions and don't filter any item
                   if (isset($POST['specific_actions'])) {
                      $POST['actions']  = $POST['specific_actions'];
                      $specific_action = 1;
@@ -109,7 +111,7 @@ class MassiveAction {
                   $remove_from_post[] = 'specific_actions';
                   $remove_from_post[] = 'add_actions';
 
-                  $POST['items']         = array();
+                  $POST['items'] = array();
                   foreach ($POST['item'] as $itemtype => $ids) {
                      // initial are raw checkboxes: 0=unchecked or 1=checked
                      $items = array();
@@ -146,10 +148,11 @@ class MassiveAction {
                      throw new Exception(__('Implementation error !'));
                   }
                   if ($POST['action'] == -1) {
+                     // Case when no action is choosen
                      exit();
                   }
                   if (isset($POST['actions'])) {
-                     // First, get the name of the action !
+                     // First, get the name of current action !
                      if (!isset($POST['actions'][$POST['action']])) {
                         Toolbox::logDebug('Implementation error !');
                         throw new Exception(__('Implementation error !'));
@@ -187,6 +190,7 @@ class MassiveAction {
                      $remove_from_post[] = 'action_filter';
                   }
 
+                  // Some action works for only one itemtype. Then, we filter items.
                   if (isset($POST['specialize_itemtype'])) {
                      $itemtype = $POST['specialize_itemtype'];
                      if (isset($POST['items'][$itemtype])) {
@@ -197,6 +201,7 @@ class MassiveAction {
                      $remove_from_post[] = 'specialize_itemtype';
                   }
 
+                  // Extract processor of the action
                   if (!isset($POST['processor'])) {
                      $action = explode(self::CLASS_ACTION_SEPARATOR, $POST['action']);
                      if (count($action) == 2) {
@@ -242,9 +247,8 @@ class MassiveAction {
                      $this->redirect = $CFG_GLPI['root_doc']."/front/central.php";
                   }
 
-                  $this->display_progress_bars = (isset($POST['display_progress_bars'])
-                                                && ($POST['display_progress_bars']));
-                  $remove_from_post[] = 'display_progress_bars';
+                  // Don't display progress bars if delay is less than 1 second
+                  $this->display_progress_bars = false;
 
                  break;
             }
@@ -306,6 +310,12 @@ class MassiveAction {
    }
 
 
+   /**
+    * Get the fields provided by previous stage through $_POST.
+    * Beware that the fields that are common (items, action ...) are not provided
+    *
+    * @return array of the elements
+   **/
    function getInput() {
       if (isset($this->POST)) {
          return $this->POST;
@@ -314,6 +324,11 @@ class MassiveAction {
    }
 
 
+   /**
+    * Get current action
+    *
+    * @return a string with the current action or NULL if we are at initial stage 
+   **/
    function getAction() {
       if (isset($this->action)) {
          return $this->action;
@@ -322,6 +337,11 @@ class MassiveAction {
    }
 
 
+   /**
+    * Get all items on which this action must work
+    *
+    * @return array of the items (empty if initial state)
+   **/
    function getItems() {
       if (isset($this->items)) {
          return $this->items;
@@ -330,6 +350,11 @@ class MassiveAction {
    }
 
 
+   /**
+    * Get remaining items
+    *
+    * @return array of the remaining items (empty if not in process state)
+   **/
    function getRemainings() {
       if (isset($this->remainings)) {
          return $this->remainings;
@@ -338,6 +363,10 @@ class MassiveAction {
    }
 
 
+   /**
+    * Destructor of the object
+    * It is used when reloading the page during process to store informations in $_SESSION.
+   **/
    function __destruct() {
       if (isset($this->identifier)) {
          // $this->identifier is unset by self::process() when the massive actions are finished
@@ -442,7 +471,7 @@ class MassiveAction {
 
 
    /**
-    *
+    * Get 'add to transfer list' action when needed
    **/
    static function getAddTransferList(array &$actions) {
 
@@ -752,7 +781,20 @@ class MassiveAction {
    }
 
 
+   /**
+    * Update the progress bar
+    *
+    * Display and update the progress bar. If the delay is more than 1 second, then activate it
+    *
+    * @return nothing (display only)
+   **/
    function updateProgressBars() {
+
+      if ($this->timer->getTime() > 1) {
+         // If the action's delay is more than one second, the display progress bars
+         $this->display_progress_bars = true;
+      }
+
       if ($this->display_progress_bars) {
          if (!isset($this->progress_bar_displayed)) {
             Html::progressBar('main_'.$this->identifier, array('create'  => true,
@@ -1081,16 +1123,43 @@ class MassiveAction {
    }
 
 
+   /**
+    * Set the page to redirect for specific actions. By default, call previous page.
+    * This should be call once for the given action.
+    *
+    * @param $redirect link to the page
+    *
+    * @return nothing
+   **/
    function setRedirect($redirect) {
       $this->redirect = $redirect;
    }
 
 
+   /**
+    * add a message to display when action is done.
+    *
+    * @param $message the message to add
+    *
+    * @return nothing
+   **/
    function addMessage($message) {
       $this->messages[] = $message;
    }
 
 
+   /**
+    * Set an item as done. If the delay is too long, then reload the page to continue the action.
+    * Update the progress if necessary.
+    *
+    * @param $itemtype the type of the item that has been done
+    * @param $id id or array of ids of the item(s) that have been done.
+    * @param $result:
+    *                self::NO_ACTION      in case of no specific action (used internally for older actions)
+    *                self::ACTION_OK      everything is OK for the action
+    *                self::ACTION_KO      something went wrong for the action
+    *                self::ACTION_NORIGHT not anough right for the action
+   **/
    function itemDone($itemtype, $id, $result) {
 
       $this->current_itemtype = $itemtype;
