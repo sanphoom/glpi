@@ -1588,12 +1588,6 @@ class CommonDBTM extends CommonGLPI {
       if (static::$rightname) {
          return Session::haveRight(static::$rightname, DELETE);
       }
-      /// hack for old right management to avoid put $rightname in each class
-      $class = get_called_class();
-      $tmp = new ReflectionMethod($class, 'canCreate');
-      if ($tmp->getDeclaringClass()->name == $class) {
-         return $class::canCreate();
-      }
       return false;
    }
 
@@ -1638,15 +1632,12 @@ class CommonDBTM extends CommonGLPI {
     * May be overloaded if needed
     *
     * @return booleen
-   **/
+    **/
    function canCreateItem() {
 
-      // Is an item assign to an entity
-      if ($this->isEntityAssign()) {
-         // Have access to entity
-         return Session::haveAccessToEntity($this->getEntityID());
+      if (!$this->checkEntity()) {
+         return false;
       }
-      // else : Global item
       return true;
    }
 
@@ -1654,13 +1645,17 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Have I the right to "update" the Object
     *
-    * Default is calling canCreateItem
+    * Default is true and check entity if the objet is entity assign
+    *
     * May be overloaded if needed
     *
     * @return booleen
-    * @see canCreate
    **/
    function canUpdateItem() {
+
+      if (!$this->checkEntity()) {
+         return false;
+      }
       return true;
    }
 
@@ -1668,14 +1663,18 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Have I the right to "delete" the Object
     *
-    * Default is calling canCreateItem
+    * Default is true and check entity if the objet is entity assign
+    *
     * May be overloaded if needed
     *
     * @return booleen
-    * @see canCreate
    **/
    function canDeleteItem() {
       global $CFG_GLPI;
+
+      if (!$this->checkEntity()) {
+         return false;
+      }
 
       // Can delete an object with Infocom only if can delete Infocom
       if (in_array($this->getType(), $CFG_GLPI['infocom_types'])) {
@@ -1684,9 +1683,7 @@ class CommonDBTM extends CommonGLPI {
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
             return $infocom->canDelete();
          }
-
       }
-
       return true;
    }
 
@@ -1694,12 +1691,18 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Have I the right to "purge" the Object
     *
+    * Default is true and check entity if the objet is entity assign
+    *
     * @since version 0.85
     *
     * @return booleen
    **/
    function canPurgeItem() {
       global $CFG_GLPI;
+
+      if (!$this->checkEntity()) {
+         return false;
+      }
 
       // Can delete an object with Infocom only if can delete Infocom
       if (in_array($this->getType(), $CFG_GLPI['infocom_types'])) {
@@ -1709,7 +1712,6 @@ class CommonDBTM extends CommonGLPI {
             return $infocom->canPurge();
          }
       }
-
       return true;
    }
 
@@ -1740,16 +1742,9 @@ class CommonDBTM extends CommonGLPI {
    **/
    function canViewItem() {
 
-      // Is an item assign to an entity
-      if ($this->isEntityAssign()) {
-         // Can be recursive check
-         if ($this->maybeRecursive()) {
-            return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
-         }
-         //  else : No recursive item
-         return Session::haveAccessToEntity($this->getEntityID());
+      if (!$this->checkEntity()) {
+         return false;
       }
-      //  else : Global item
       return true;
    }
 
@@ -2434,6 +2429,27 @@ class CommonDBTM extends CommonGLPI {
             Html::displayRightError();
          }
       }
+   }
+
+
+   /**
+    * Check if have right on this entity
+    *
+    * @return booleen
+   **/
+   function checkEntity() {
+
+      // Is an item assign to an entity
+      if ($this->isEntityAssign()) {
+         // Can be recursive check
+         if ($this->maybeRecursive()) {
+            return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
+         }
+         //  else : No recursive item
+         return Session::haveAccessToEntity($this->getEntityID());
+      }
+      // else : Global item
+      return true;
    }
 
 
