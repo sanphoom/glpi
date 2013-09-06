@@ -350,7 +350,8 @@ class TicketValidation  extends CommonDBChild {
          }
          
           //Set global validation to accepted to define one
-         if ($job->fields['global_validation'] == 'waiting') {
+         if ($job->fields['global_validation'] == 'waiting'
+               && in_array("status", $this->updates)) {
 
             $input['id']                = $this->fields["tickets_id"];
             $input['global_validation'] = self::computeValidationStatus($job);
@@ -672,8 +673,7 @@ class TicketValidation  extends CommonDBChild {
       echo "</td></tr>";
       } else {
          echo "<td colspan='2'>";
-         echo self::showValidationRequired($ticket->fields["validation_percent"],
-                                                            false);
+         echo $ticket->fields["validation_percent"]."%";
          echo "</td>";
       }
       echo "</tr>";
@@ -1077,39 +1077,23 @@ class TicketValidation  extends CommonDBChild {
          echo "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
       }
    }
-   
-   /**
-    * Show group validation value
-    *
-    * @param $validation_percent
-    * @param $integer               (true by default)
-   **/
-   static function showValidationRequired($validation_percent, $integer=true) {
-
-      $validation = self::getValidationRequired($integer);
-      return array_key_exists($validation_percent, $validation) ? $validation[$validation_percent]:'';
-   }
-
 
    /**
-    * Get group validation values
+    * Get all percentages availables
     *
-    * @param $integer by default
+    * @param $integer boolean return interger / return percent string if false
     *
-    * @return array
+    * @return an array
    **/
-   static function getValidationRequired($integer=true) {
-
-      $validation = array(0, 50, 100);
-      if (!$integer) {
-         foreach ($validation as &$value) {
-            $value = $value.'%';
-         }
+   static function getAllPercentArray($integer=true) {
+      $values = array(0, 50, 100);
+      $tab = array();
+      foreach ($values as $val) {
+         $tab[$val] = $integer ? $val:$val.'%';
       }
-      return $validation;
+      return $tab;
    }
-
-
+   
    /**
     * Get validation percent required
     *
@@ -1129,7 +1113,7 @@ class TicketValidation  extends CommonDBChild {
       }
 
       Dropdown::showFromArray($params['name'],
-                              self::getValidationRequired(false),
+                              self::getAllPercentArray(false),
                               array('value' => $params['value']));
    }
    
@@ -1230,9 +1214,7 @@ class TicketValidation  extends CommonDBChild {
    **/
    static function getValidationStats($tID) {
 
-      $tab = array('waiting'  => __('Waiting for approval'),
-                   'rejected' => __('Refused'),
-                   'accepted' => __('Granted'));
+      $tab = self::getAllStatusArray();
       
       $nb = countElementsInTable('glpi_ticketvalidations',"`tickets_id` = ".$tID);
             
