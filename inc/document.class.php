@@ -947,7 +947,7 @@ class Document extends CommonDBTM {
       $input['sha1sum']  = $sha1sum;
       return true;
    }
-   
+
 
    /**
     * Upload a new file
@@ -1264,7 +1264,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
+      if ((is_a($itemtype, __CLASS__)) && (static::canUpdate())) {
          $actions[$action_prefix.'add_item']    = _x('button', 'Add an item');
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }
