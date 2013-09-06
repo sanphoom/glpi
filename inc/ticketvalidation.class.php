@@ -349,7 +349,7 @@ class TicketValidation  extends CommonDBChild {
             NotificationEvent::raiseEvent('validation_answer', $job, $options);
          }
          
-         $this->fields["status"] = self::getValidationStatus($job);
+         $this->fields["status"] = self::getValidationStatus($this->fields["id"], $job);
 
           //Set global validation to accepted to define one
          if (($job->fields['global_validation'] == 'waiting')
@@ -1178,6 +1178,7 @@ class TicketValidation  extends CommonDBChild {
    /**
     * Get the validation status
     *
+    * @param $ID validation id
     * @param $job Ticket Class for id & $validation_percent      validation mode for the group (default 0):
     *                                                             0 - first user validate or reject
     *                                                             1 - 50% of user validate
@@ -1185,61 +1186,51 @@ class TicketValidation  extends CommonDBChild {
     *
     * @return validation status
    **/
-   static function getValidationStatus(Ticket $job) {
+   static function getValidationStatus($ID, Ticket $job) {
 
       $validation_status = 'waiting';
 
       $accepted          = 0;
       $rejected          = 0;
-      $waiting           = 0;
+
+      // Percent of validation
+      $validation_percent = $job->fields['validation_percent'];
       
       $statuses = array();
       $restrict = "`tickets_id` = '".$job->getID()."'";
+      if ($ID > 0 && $validation_percent == 0) {
+         $restrict = "`id` = '".$ID."'";
+      }
       $validations = getAllDatasFromTable('glpi_ticketvalidations', $restrict);
       if (count($validations)) {
          foreach ($validations as $validation) {
             $statuses[$validation['id']]['status'] = $validation['status'];
          }
       }
+      
+      foreach ($statuses as $data) {
+         switch ($data['status']) {
+            case 'accepted' :
+               $accepted++;
+               break;
 
-      // Percent of validation
-      $validation_percent = $job->fields['validation_percent'];
-      if ($validation_percent > 0) {
-         $percent = self::showValidationRequired($validation_percent);
-         foreach ($statuses as $data) {
-            switch ($data['status']) {
-               case 'accepted' :
-                  $accepted++;
-                  break;
-
-               case 'rejected' :
-                  $rejected++;
-                  break;
-
-               case 'waiting' :
-                  $waiting++;
-                  break;
-            }
+            case 'rejected' :
+               $rejected++;
+               break;
          }
+      }
+
+      if ($validation_percent > 0) {
+      
+         $percent = self::showValidationRequired($validation_percent);
+
          if (($accepted/count($statuses)*100) >= $percent) {
             $validation_status = 'accepted';
          } else if (($rejected/count($statuses)*100) >= $percent) {
             $validation_status = 'rejected';
          }
       } else {
-         // One user validate, we get the last validation
-         $data = reset($statuses);
-         switch ($data['status']) {
-            case 'accepted' :
-               $accepted++;
-               break;
-            case 'rejected' :
-               $rejected++;
-               break;
-            case 'waiting' :
-               $waiting++;
-               break;
-         }
+
          if ($accepted) {
             $validation_status = 'accepted';
          } else if ($rejected) {
@@ -1277,10 +1268,8 @@ class TicketValidation  extends CommonDBChild {
          }
       }
 
-      $i = 0;
       $list = "";
       foreach ($stats as $stat => $val) {
-         $i++;
          $list.= $tab[$stat];
          $list.= sprintf(__('%1$s (%2$d%%) '), " " ,
                                      HTml::formatNumber($val*100/$nb));
