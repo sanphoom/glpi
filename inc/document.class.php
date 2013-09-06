@@ -1264,7 +1264,7 @@ class Document extends CommonDBTM {
          }
       }
 
-      if ((is_a($itemtype, __CLASS__)) && (static::canUpdate())) {
+      if ((Toolbox::is_a($itemtype, __CLASS__)) && (static::canUpdate())) {
          $actions[$action_prefix.'add_item']    = _x('button', 'Add an item');
          $actions[$action_prefix.'remove_item'] = _x('button', 'Remove an item');
       }
