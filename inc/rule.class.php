@@ -94,6 +94,24 @@ class Rule extends CommonDBTM {
 
 
 
+   /**
+    * Have I the right to update the Object
+    *
+    * Default is true and check entity if the objet is entity assign
+    *
+    * @return booleen
+   **/
+   function canUpdateItem() {
+
+      if ($this->isEntityAssign()) {
+         // Have access to entity
+         return Session::haveAccessToEntity($this->getEntityID());
+      }
+      // else : Global item
+      return true;
+   }
+
+
    // Temproray hack for this class
    static function getTable() {
       return 'glpi_rules';
@@ -739,7 +757,7 @@ class Rule extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
-
+      toolbox::logdebug($options);
       if (!$this->isNewID($ID)) {
          $this->check($ID, READ);
       } else {
