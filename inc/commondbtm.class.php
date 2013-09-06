@@ -2435,6 +2435,8 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Check if have right on this entity
     *
+    * @since version 0.85
+    *
     * @return booleen
    **/
    function checkEntity() {
