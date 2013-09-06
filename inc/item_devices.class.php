@@ -297,6 +297,8 @@ class Item_Devices extends CommonDBRelation {
                                                 Html::getCheckAllAsCheckbox("form_device_action$rand",
                                                 '__RAND__'));
          $delete_all_column->setHTMLClass('center');
+      } else {
+         $delete_all_column = NULL;
       }
 
       $column_label    = ($is_device ? _n('Item', 'Items', 2) : __('Type of component'));
@@ -318,6 +320,8 @@ class Item_Devices extends CommonDBRelation {
                                 'parameters' => array($massiveactionparams)));
          $delete_column = $table->addHeader('delete one', $content);
          $delete_column->setHTMLClass('center');
+      } else {
+         $delete_column = NULL;
       }
 
       $table_options = array('canedit' => $canedit,
@@ -398,10 +402,10 @@ class Item_Devices extends CommonDBRelation {
     * @param $dynamic_column
    **/
    static function getTableGroup(CommonDBTM $item, HTMLTableMain $table, array $options,
-                                 HTMLTableSuperHeader $delete_all_column,
+                                 HTMLTableSuperHeader $delete_all_column = NULL,
                                  HTMLTableSuperHeader $common_column,
                                  HTMLTableSuperHeader $specific_column,
-                                 HTMLTableSuperHeader $delete_column,
+                                 HTMLTableSuperHeader $delete_column = NULL,
                                  $dynamic_column) {
       global $DB;
 
