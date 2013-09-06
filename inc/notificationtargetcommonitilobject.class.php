@@ -806,6 +806,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.solution.description##"]
                      = Toolbox::unclean_cross_side_scripting_deep($item->getField('solution'));
 
+      $datas['log'] = array();
       // Use list_limit_max or load the full history ?
       foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $data) {
          $tmp                               = array();
@@ -816,10 +817,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas['log'][]                    = $tmp;
       }
 
-      $datas["##$objettype.numberoflogs##"] = 0;
-      if (isset($datas['log'])) {
-         $datas["##$objettype.numberoflogs##"] = count($datas['log']);
-      }
+      $datas["##$objettype.numberoflogs##"] = count($datas['log']);
 
       // Get unresolved items
       $restrict = "`".$item->getTable()."`.`status`
