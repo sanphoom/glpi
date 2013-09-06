@@ -505,7 +505,7 @@ class Document_Item extends CommonDBRelation{
          $sort = "`assocdate`";
       }
 
-      $canedit       =  $item->canadditem('Document');
+      $canedit       =  $item->canAddItem('Document');
       $rand          = mt_rand();
       $is_recursive  = $item->isRecursive();
 

@@ -1742,15 +1742,10 @@ class CommonDBTM extends CommonGLPI {
    **/
    function canViewItem() {
 
-      // Is an item assign to an entity
-      if ($this->isEntityAssign()) {
-         // Can be recursive check
-         if ($this->maybeRecursive()) {
-            return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
-         }
-         //  else : No recursive item
-         return Session::haveAccessToEntity($this->getEntityID());
+      if (!$this->checkEntity(true)) {
+         return false;
       }
+
       // else : Global item
       return true;
    }
@@ -2442,15 +2437,20 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Check if have right on this entity
     *
+    * @param $recursive boolean set true to accpet recursive items of ancestors of active entities (View case for example)
     * @since version 0.85
     *
     * @return booleen
    **/
-   function checkEntity() {
+   function checkEntity($recursive = false) {
 
       // Is an item assign to an entity
       if ($this->isEntityAssign()) {
-         // Have access to entity
+         // Can be recursive check
+         if ($recursive && $this->maybeRecursive()) {
+            return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
+         }
+         //  else : No recursive item         // Have access to entity
          return Session::haveAccessToEntity($this->getEntityID());
       }
       // else : Global item
