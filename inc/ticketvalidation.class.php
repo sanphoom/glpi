@@ -1117,6 +1117,22 @@ class TicketValidation  extends CommonDBChild {
                               array('value' => $params['value']));
    }
    
+   
+   /**
+    * Show validation percent required
+    *
+    * @param $validation_percent
+   **/
+   static function showValidationRequired($validation_percent) {
+
+      $percents = self::getAllPercentArray(false);
+      if (array_key_exists($validation_percent, $percents)) {
+         return $percents[$validation_percent];
+      }
+      return "";
+   }
+
+
    /**
     * @since version 0.85
     * Get list of users from a group which have validation rights

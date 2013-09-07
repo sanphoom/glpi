@@ -2671,7 +2671,7 @@ class Ticket extends CommonITILObject {
             return TicketValidation::getStatus($values[$field]);
 
          case 'validation_percent' :
-            return TicketValidation::showValidationRequired($values[$field], false);
+            return TicketValidation::showValidationRequired($values[$field]);
 
          case 'type':
             return self::getTicketTypeName($values[$field]);
