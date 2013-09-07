@@ -452,7 +452,7 @@ class RuleAction extends CommonDBChild {
       if (isset($options['value'])) {
          $param['value'] = $options['value'];
       }
-
+      
       switch ($options["action_type"]) {
          //If a regex value is used, then always display an autocompletiontextfield
          case "regex_result" :
@@ -579,8 +579,8 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_validation_percent" :
-                     $param['name'] = 'value';
-                     TicketValidation::dropdownValidationRequired($param);
+                     $ticket = new Ticket();
+                     echo $ticket->getValueToSelect('validation_percent', 'value', $param['value']);
                      $display       = true;
                      break;
 

@@ -662,15 +662,14 @@ class TicketValidation  extends CommonDBChild {
       echo "<td>".__('Minimum validation required')."</td>";
       if ($canadd) {
          echo "<td>";
-         TicketValidation::dropdownValidationRequired(array('value' => $ticket->fields["validation_percent"],
-                                                            'name' => 'validation_percent'));
-      echo "</td>";
-      echo "<td><input type='submit' name='update' class='submit' value='".
-                           _sx('button','Save')."'>";
-      if (!empty($tID)) {
-         echo "<input type='hidden' name='id' value='$tID'>";
-      }
-      echo "</td></tr>";
+         echo $ticket->getValueToSelect('validation_percent', 'validation_percent', $ticket->fields["validation_percent"]);
+         echo "</td>";
+         echo "<td><input type='submit' name='update' class='submit' value='".
+                              _sx('button','Save')."'>";
+         if (!empty($tID)) {
+            echo "<input type='hidden' name='id' value='$tID'>";
+         }
+         echo "</td></tr>";
       } else {
          echo "<td colspan='2'>";
          echo Dropdown::getValueWithUnit($ticket->fields["validation_percent"],"%");
@@ -1077,62 +1076,7 @@ class TicketValidation  extends CommonDBChild {
          echo "<br><span id='".$params['applyto']."'>&nbsp;</span>\n";
       }
    }
-
-   /**
-    * Get all percentages availables
-    *
-    * @param $integer boolean return interger / return percent string if false
-    *
-    * @return an array
-   **/
-   static function getAllPercentArray($integer=true) {
-      $values = array(0, 50, 100);
-      $tab = array();
-      foreach ($values as $val) {
-         $tab[$val] = $integer ? $val:Dropdown::getValueWithUnit($val,'%');
-      }
-      return $tab;
-   }
    
-   /**
-    * Get validation percent required
-    *
-    * @param $options   array   possible:
-    *       name  - name of the dropdown
-    *       value - preselected value
-    *
-    * @return array
-   **/
-   static function dropdownValidationRequired(array $options=array()) {
-
-      $params['name']  = 'validation_percent';
-      $params['value'] = '';
-
-      foreach ($options as $key => $val) {
-         $params[$key] = $val;
-      }
-
-      Dropdown::showFromArray($params['name'],
-                              self::getAllPercentArray(false),
-                              array('value' => $params['value']));
-   }
-   
-   
-   /**
-    * Show validation percent required
-    *
-    * @param $validation_percent
-   **/
-   static function showValidationRequired($validation_percent) {
-
-      $percents = self::getAllPercentArray(false);
-      if (array_key_exists($validation_percent, $percents)) {
-         return $percents[$validation_percent];
-      }
-      return "";
-   }
-
-
    /**
     * @since version 0.85
     * Get list of users from a group which have validation rights

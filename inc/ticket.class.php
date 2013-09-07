@@ -2207,8 +2207,11 @@ class Ticket extends CommonITILObject {
       $tab[51]['table']             = $this->getTable();
       $tab[51]['field']             = 'validation_percent';
       $tab[51]['name']              = __('Minimum validation required');
-      $tab[51]['searchtype']        = 'equals';
-      $tab[51]['datatype']          = 'specific';
+      $tab[51]['datatype']          = 'number';
+      $tab[51]['unit']              = '%';
+      $tab[51]['min']               = 0;
+      $tab[51]['max']               = 100;
+      $tab[51]['step']               = 50;
 
       $tab[52]['table']             = $this->getTable();
       $tab[52]['field']             = 'global_validation';
@@ -2669,9 +2672,6 @@ class Ticket extends CommonITILObject {
 
          case 'global_validation' :
             return TicketValidation::getStatus($values[$field]);
-
-         case 'validation_percent' :
-            return TicketValidation::showValidationRequired($values[$field]);
 
          case 'type':
             return self::getTicketTypeName($values[$field]);
