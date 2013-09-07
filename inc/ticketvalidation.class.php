@@ -673,7 +673,7 @@ class TicketValidation  extends CommonDBChild {
       echo "</td></tr>";
       } else {
          echo "<td colspan='2'>";
-         echo $ticket->fields["validation_percent"]."%";
+         echo Dropdown::getValueWithUnit($ticket->fields["validation_percent"],"%");
          echo "</td>";
       }
       echo "</tr>";
@@ -1089,7 +1089,7 @@ class TicketValidation  extends CommonDBChild {
       $values = array(0, 50, 100);
       $tab = array();
       foreach ($values as $val) {
-         $tab[$val] = $integer ? $val:$val.'%';
+         $tab[$val] = $integer ? $val:Dropdown::getValueWithUnit($val,'%');
       }
       return $tab;
    }
