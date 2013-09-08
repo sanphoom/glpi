@@ -223,6 +223,59 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      global $CFG_GLPI;
+
+      $input = $ma->getInput();
+
+      switch ($ma->getAction()) {
+         case 'import_group':
+            $group = new Group;
+            if (!Session::haveRight("user", User::UPDATEAUTHENT) ||
+               !$group->canGlobal(UPDATE)) {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+               $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               break;
+            }
+            $done = array();
+            foreach ($ids as $id) {
+               if (isset($input["dn"][$id])) {
+                  $group_dn = $input["dn"][$id];
+
+                  if (isset($input["ldap_import_entities"][$id])) {
+                     $entity = $input["ldap_import_entities"][$id];
+                  } else {
+                     $entity = $_SESSION["glpiactive_entity"];
+                  }
+
+                  // Is recursive is in the main form and thus, don't pass through
+                  // zero_on_empty mechanism inside massive action form ...
+                  $is_recursive = (empty($input['ldap_import_recursive'][$id]) ? 0 : 1);
+
+                  $options = array('authldaps_id' => $_SESSION['ldap_server'],
+                                   'entities_id'  => $entity,
+                                   'is_recursive' => $is_recursive,
+                                   'type'         => $input['ldap_import_type'][$id]);
+                  if (AuthLdap::ldapImportGroup($group_dn,$options)) {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                  }  else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION,$group_dn));
+                  }
+               }
+               $_SESSION['glpimassiveactionselected'] = array();
+            }
+            return;
+      }
+
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+
+
+   /**
     * @since version 0.84
     *
     * @see CommonDBTM::doSpecificMassiveActions()
@@ -291,78 +344,6 @@ class AuthLDAP extends CommonDBTM {
                }
             }
             $res['REDIRECT'] = $CFG_GLPI['root_doc']."/front/ldap.import.php";
-            break;
-
-         case "import_group" :
-            $group = new Group;
-            if (!Session::haveRight("user", User::UPDATEAUTHENT) ||
-               !$group->canGlobal('UPDATE')) {
-               $res['noright']++;
-            } else if (isset($_GET['multiple_actions'])
-                       && isset($_SESSION["glpi_massiveaction"])) {
-
-               if ($count = count($input["item"])) {
-                  $i = $input["ldap_process_count"]-$count+1;
-                  Html::createProgressBar();
-                  Html::changeProgressBarPosition($i, $input["ldap_process_count"],
-                                                  sprintf(__('%1$s/%2$s'),
-                                                          $i, $input["ldap_process_count"]));
-                  $key = key($input["item"]);
-                  unset($input["item"][$key]);
-                  if (isset($input["ldap_import_entities"][$key])) {
-                     $entity = $input["ldap_import_entities"][$key];
-                  } else {
-                     $entity = $_SESSION["glpiactive_entity"];
-                  }
-
-                  if (AuthLdap::ldapImportGroup($key,
-                                                array("authldaps_id"
-                                                         => $input["authldaps_id"],
-                                                      "entities_id"
-                                                         => $entity,
-                                                      "is_recursive"
-                                                         => $input["ldap_import_recursive"][$key],
-                                                      "type"
-                                                         => $input["ldap_import_type"][$key]))) {
-                     $input['res']['ok']++;
-                  }  else {
-                     $input['res']['ko']++;
-                     $input['res']['messages'][] = $this->getErrorMessage(ERROR_ON_ACTION,$key);
-                  }
-                  if (count($input["item"])) {
-                     // more to do -> redirect
-                     $_SESSION['glpi_massiveaction']['POST'] = $input;
-                     Html::redirect($CFG_GLPI['root_doc'].'/front/massiveaction.php?multiple_actions=1');
-                  } else { // Nothing to do redirect
-                     Html::changeProgressBarPosition(100, 100, __('Successful importation'));
-                     $res                               = $input['res'];
-                     $_SESSION['ldap_import']['action'] = 'show';
-                  }
-
-               }
-            } else {
-               if (count($input['item']) > 0) {
-                  $input["ldap_process_count"]  = 0;
-                  $input["authldaps_id"]        = $_SESSION['ldap_server'];
-                  $input['res']                 = array('ok'       => 0,
-                                                        'ko'       => 0,
-                                                        'noright'  => 0,
-                                                        'messages' => array());
-                  foreach ($input['item'] as $key => $val) {
-                     if ($val) {
-                        $input["ldap_process_count"]++;
-                        $input["ldap_import_entities"][$key]  = $input["ldap_import_entities"][$key];
-                        $input["ldap_import_type"][$key]      = $input["ldap_import_type"][$key];
-                        $input["ldap_import_recursive"][$key] = $input["ldap_import_recursive"][$key];
-                     }
-                  }
-                  $_SESSION['glpi_massiveaction']['POST'] = $input;
-                  Html::redirect($CFG_GLPI['root_doc'].'/front/massiveaction.php?multiple_actions=1');
-               } else {
-                  $res['ko'] ++;
-               }
-            }
-            $res['REDIRECT'] = $CFG_GLPI['root_doc']."/front/ldap.group.import.php";
             break;
 
          default :
@@ -1701,13 +1682,18 @@ class AuthLDAP extends CommonDBTM {
             $paramsma = array('num_displayed'    => min($_SESSION['glpilist_limit'],
                                                         count($ldap_groups)),
                               'container'        => 'mass'.__CLASS__.$rand,
-                              'specific_actions' => array('import_group' => _sx('button','Import')));
+                              'specific_actions' => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'import_group' => _sx('button','Import')),
+                              'extraparams'
+                                   => array('massive_action_fields'
+                                                => array('dn', 'ldap_import_type',
+                                                         'ldap_import_entities',
+                                                         'ldap_import_recursive')));
             Html::showMassiveActions($paramsma);
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
             echo "<th width='10'>";
-            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            Html::showCheckbox(array('criterion' => array('tag_for_massive' => 'select_item')));
             echo "</th>";
             $header_num = 0;
             echo Search::showHeaderItem(Search::HTML_OUTPUT, __('Group'), $header_num,
@@ -1720,30 +1706,40 @@ class AuthLDAP extends CommonDBTM {
             }
             echo "</tr>";
 
+            $dn_index = 0;
             foreach ($ldap_groups as $groupinfos) {
                $group       = $groupinfos["cn"];
                $group_dn    = $groupinfos["dn"];
                $search_type = $groupinfos["search_type"];
 
                echo "<tr class='tab_bg_2 center'>";
-               //Need to use " instead of ' because it doesn't work with names with ' inside !
-               echo "<td><input type='checkbox' name=\"item[".__CLASS__."][" .$group_dn. "]\"></td>";
+               echo "<td>";
+               echo Html::hidden("dn[$dn_index]", array('value'                 => $group_dn,
+                                                        'data-glpicore-ma-tags' => 'common'));
+               echo Html::hidden("ldap_import_type[$dn_index]", array('value'                 => $search_type,
+                                                                      'data-glpicore-ma-tags' => 'common'));
+               Html::showMassiveActionCheckBox(__CLASS__, $dn_index,
+                                               array('massive_tags' => 'select_item'));
+               echo "</td>";
                echo "<td>" . $group . "</td>";
                echo "<td>" .$group_dn. "</td>";
                echo "<td>";
-               Entity::dropdown(array('value'  => $entity,
-                                      'name'   => "ldap_import_entities[" .$group_dn . "]=".$entity));
+               Entity::dropdown(array('value'         => $entity,
+                                      'name'          => "ldap_import_entities[$dn_index]",
+                                      'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
                echo "</td>";
                if (Session::isMultiEntitiesMode()) {
                   echo "<td>";
-                  Dropdown::showYesNo("ldap_import_recursive[" .$group_dn . "]", 0);
+                  Html::showCheckbox(array('name'          => "ldap_import_recursive[$dn_index]",
+                                           'value'         => '1',
+                                           'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
+                  echo "</td>";
+               } else {
+                  echo Html::hidden("ldap_import_recursive[$dn_index]", array('value'                 => 0,
+                                                                              'data-glpicore-ma-tags' => 'common'));
                }
-               else {
-                  echo "<td><input type='hidden' name=\"ldap_import_recursive[".$group_dn."]\"
-                             value='0'>";
-               }
-               echo "<input type='hidden' name=\"ldap_import_type[".$group_dn."]\" value=\"".
-                      $search_type."\"></td></tr>";
+               echo "</tr>\n";
+               $dn_index++;
             }
 
             $paramsma['ontop'] = false;
