@@ -1424,12 +1424,14 @@ abstract class CommonITILObject extends CommonDBTM {
     * create link from document to ITIL object
     *
     * @param $donotif   Boolean  if we want to raise notification (default 1)
+    * @param $disable
     *
     * @return array of doc added name
    **/
    function addFiles($donotif=1, $disablenotif=0) {
       global $CFG_GLPI;
-      if (!isset($this->input['_filename']) || count($this->input['_filename'])==0) {
+
+      if (!isset($this->input['_filename']) || (count($this->input['_filename']) == 0)) {
          return array();
       }
       $docadded  = array();
@@ -1450,8 +1452,8 @@ abstract class CommonITILObject extends CommonDBTM {
             if (isset($this->input['_tag'][$key])
                 && ($docID > 0)) {
                $this->input['content'] = preg_replace('/'.$this->input['_tag'][$key].'/',
-                       $doc->fields["tag"],
-                       $this->input['content']);
+                                                      $doc->fields["tag"],
+                                                      $this->input['content']);
 
                $docadded[$docID]['tag'] = $doc->fields["tag"];
             }
@@ -1481,8 +1483,9 @@ abstract class CommonITILObject extends CommonDBTM {
                                     '_disablenotif' => $disablenotif,
                                     'itemtype'      => $this->getType(),
                                     'items_id'      => $this->getID()))) {
-               $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'), stripslashes($doc->fields["name"]),
-                                       stripslashes($doc->fields["filename"]));
+               $docadded[$docID]['data'] = sprintf(__('%1$s - %2$s'),
+                                                   stripslashes($doc->fields["name"]),
+                                                   stripslashes($doc->fields["filename"]));
 
                if (isset($input2["tag"])) {
                   $docadded[$docID]['tag'] = $input2["tag"];
@@ -1496,7 +1499,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if ($CFG_GLPI["use_rich_text"]) {
-         $this->input['content'] = $this->convertTagToImage($this->input['content'], true, $docadded);
+         $this->input['content'] = $this->convertTagToImage($this->input['content'], true,
+                                                            $docadded);
       }
 
       return $docadded;

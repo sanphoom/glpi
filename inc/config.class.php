@@ -706,7 +706,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Use rich text for helpdesk') . "</td><td>";
-      $id = 'alert'.mt_rand();
+      $id                 = 'alert'.mt_rand();
       $param['on_change'] = '$("#'.$id.'").html("");
             if ($(this).val() == 0) {
                $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
@@ -716,7 +716,8 @@ class Config extends CommonDBTM {
       echo "</td>";
 
       echo "<td>" . __('Add documents into ticket notifications') . "</td><td>";
-      Dropdown::showYesNo("attach_ticket_documents_to_mail", $CFG_GLPI["attach_ticket_documents_to_mail"]);
+      Dropdown::showYesNo("attach_ticket_documents_to_mail",
+                          $CFG_GLPI["attach_ticket_documents_to_mail"]);
       echo "</td></tr>";
 
       echo "</table>";

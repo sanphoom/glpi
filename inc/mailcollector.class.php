@@ -663,8 +663,9 @@ class MailCollector  extends CommonDBTM {
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max'] > 0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
-            $tkt['_filename'] = $this->getAttached($i, GLPI_DOC_DIR."/_tmp/", $this->fields['filesize_max']);
-            $tkt['_tag'] = $this->tags;
+            $tkt['_filename'] = $this->getAttached($i, GLPI_DOC_DIR."/_tmp/",
+                                                   $this->fields['filesize_max']);
+            $tkt['_tag']      = $this->tags;
          } else {
             //TRANS: %s is a directory
             Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'),
@@ -748,7 +749,7 @@ class MailCollector  extends CommonDBTM {
       //If files are present and content is html
       if (isset($this->files)
           && count($this->files)
-          && $tkt['content'] != strip_tags($tkt['content'])) {
+          && ($tkt['content'] != strip_tags($tkt['content']))) {
 
          $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
                                                            $this->files, $this->tags);
@@ -785,10 +786,12 @@ class MailCollector  extends CommonDBTM {
             // Move requester to author of followup :
             $tkt['users_id'] = $tkt['_users_id_requester'];
 
-            $begin_strip = -1;
-            $end_strip = -1;
-            $begin_match = "/".NotificationTargetTicket::HEADERTAG.".*".NotificationTargetTicket::HEADERTAG."/";
-            $end_match = "/".NotificationTargetTicket::FOOTERTAG.".*".NotificationTargetTicket::FOOTERTAG."/";
+            $begin_strip     = -1;
+            $end_strip       = -1;
+            $begin_match     = "/".NotificationTargetTicket::HEADERTAG.".*".
+                                 NotificationTargetTicket::HEADERTAG."/";
+            $end_match       = "/".NotificationTargetTicket::FOOTERTAG.".*".
+                                 NotificationTargetTicket::FOOTERTAG."/";
             foreach ($content as $ID => $val) {
                // Get first tag for begin
                if ($begin_strip < 0) {
@@ -1384,7 +1387,8 @@ class MailCollector  extends CommonDBTM {
             if (file_put_contents($path.$filename, $message)) {
                $this->files[] = $filename;
                // If embeded image, we add a tag
-               if (($structure->type == 5) && $structure->subtype) {
+               if (($structure->type == 5)
+                   && $structure->subtype) {
                   end($this->files);
                   $this->tags[key($this->files)]  = '#'.Toolbox::getRandomString(8);
                }

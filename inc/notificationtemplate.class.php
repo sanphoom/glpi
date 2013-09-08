@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class Notification
+/**
+ * NotificationTemplate Class
+**/
 class NotificationTemplate extends CommonDBTM {
 
    // From CommonDBTM
@@ -213,9 +215,10 @@ class NotificationTemplate extends CommonDBTM {
       } else {
          $additionnaloption =  array();
       }
-      $tid = $language;
+      $tid  = $language;
       $tid .= serialize($additionnaloption);
-      $tid = sha1($tid);
+
+      $tid  = sha1($tid);
 
       if (!isset($this->templates_by_languages[$tid])) {
          //Switch to the desired language
@@ -244,18 +247,18 @@ class NotificationTemplate extends CommonDBTM {
 
             // Decode html chars to have clean text
             $template_datas['content_text']
-                       = Html::entity_decode_deep($template_datas['content_text']);
-            $save_data = $data;
-            $data      = Html::entity_decode_deep($data);
+                                       = Html::entity_decode_deep($template_datas['content_text']);
+            $save_data                 = $data;
+            $data                      = Html::entity_decode_deep($data);
 
             $template_datas['subject'] = Html::entity_decode_deep($template_datas['subject']);
             $this->signature           = Html::entity_decode_deep($this->signature);
 
-            $lang['subject']     = $target->getSubjectPrefix($event) .
-                                    self::process($template_datas['subject'], $data);
-            $lang['content_html'] = '';
-            $add_header = $target->getContentHeader();
-            $add_footer = $target->getContentFooter();
+            $lang['subject']           = $target->getSubjectPrefix($event) .
+                                          self::process($template_datas['subject'], $data);
+            $lang['content_html']      = '';
+            $add_header                = $target->getContentHeader();
+            $add_footer                = $target->getContentFooter();
 
             //If no html content, then send only in text
             if (!empty($template_datas['content_html'])) {

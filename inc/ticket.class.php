@@ -1506,7 +1506,7 @@ class Ticket extends CommonITILObject {
                   break;
 
                default :
-                     $validations_to_send[] = $validation;
+                  $validations_to_send[] = $validation;
             }
 
          }
@@ -1523,18 +1523,18 @@ class Ticket extends CommonITILObject {
                   switch ($type) {
                      case 'group' :
                         foreach ($array_id as $groups_id) {
-                           
+
                            $validation_right = 'validate_incident';
                            if ($this->input['type'] == Ticket::DEMAND_TYPE) {
                               $validation_right = 'validate_request';
                            }
-                           
-                           $opt = array('groups_id'   => $groups_id, 
+
+                           $opt = array('groups_id'   => $groups_id,
                                           'right'     => $validation_right,
                                           'entity'    => $this->input['entities_id']);
-                                          
+
                            $data_users = TicketValidation::getGroupUserHaveRights($opt);
-            
+
                            foreach ($data_users as $user) {
                               $values["users_id_validate"][] = $user['id'];
                            }
@@ -1569,7 +1569,7 @@ class Ticket extends CommonITILObject {
                    || isset($this->input["_auto_import"])
                    || isset($this->input["_rule_process"])
                    || $validation->can(-1, CREATE, $values)) { // cron or allowed user
-                  
+
                   $users = $values["users_id_validate"];
                   foreach ($users as $user) {
                      $values["users_id_validate"] = $user;
@@ -1959,8 +1959,8 @@ class Ticket extends CommonITILObject {
                                  $res['messages'][] = $ticket->getErrorMessage(ERROR_ON_ACTION);
                            }
                         }
-                  
-                        
+
+
                      } else {
                         $res['noright']++;
                         $res['messages'][] = $ticket->getErrorMessage(ERROR_RIGHT);
@@ -2713,7 +2713,6 @@ class Ticket extends CommonITILObject {
       switch ($field) {
          case 'content' :
             return "<textarea cols='90' rows='6' name='$name'>".$values['content']."</textarea>";
-            break;
 
          case 'items_id' :
             if (isset($values['itemtype']) && !empty($values['itemtype'])) {
@@ -3598,11 +3597,11 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".sprintf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content')).
               "</td><td>";
-         $rand = mt_rand();
+         $rand      = mt_rand();
          $rand_text = mt_rand();
 
-         $cols = 90;
-         $rows = 6;
+         $cols      = 90;
+         $rows      = 6;
          if ($CFG_GLPI["use_rich_text"]) {
             $cols = 110;
             $rows = 20;
@@ -3868,12 +3867,8 @@ class Ticket extends CommonITILObject {
 
       if (isset($values['content'])) {
          // Clean new lines to be fix encoding
-         $order   = array('\\r',
-                       '\\n',
-                       "\\");
-         $replace = array("",
-                          "",
-                          "");
+         $order            = array('\\r', '\\n', "\\");
+         $replace          = array("", "", "");
 
          $values['content'] = str_replace($order,$replace,$values['content']);
       }
@@ -4508,7 +4503,8 @@ class Ticket extends CommonITILObject {
          echo "<span id='$idajax'>".parent::getPriorityName($this->fields["priority"])."</span>";
       }
 
-      if ($canupdate || $canupdate_descr) {
+      if ($canupdate
+          || $canupdate_descr) {
          $params = array('urgency'  => '__VALUE0__',
                          'impact'   => '__VALUE1__',
                          'priority' => 'dropdown_priority'.$idpriority);
@@ -4565,7 +4561,8 @@ class Ticket extends CommonITILObject {
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
       echo $tt->getEndHiddenFieldText('name')."</th>";
       echo "<td width='".(100-$colsize1)."%' colspan='3'>";
-      if (!$ID || $canupdate_descr) {
+      if (!$ID
+          || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldValue('name');
          echo "<input type='text' size='90' maxlength=250 name='name' ".
                 " value=\"".Html::cleanInputText($this->fields["name"])."\">";
@@ -4583,22 +4580,25 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
-      if (!$ID || $canupdate_descr) {
+      if (!$ID
+          || $canupdate_descr) {
          $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
          Html::showTooltip(nl2br(Html::Clean($content)));
       }
       echo $tt->getEndHiddenFieldText('content')."</th>";
       echo "<td width='".(100-$colsize1)."%' colspan='3'>";
-      if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
+      if (!$ID
+          || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          echo $tt->getBeginHiddenFieldValue('content');
          echo "<div></div>";
-         $rand = mt_rand();
+         $rand      = mt_rand();
          $rand_text = mt_rand();
 
-         $cols = 90;
-         $rows = 6;
+         $cols      = 90;
+         $rows      = 6;
          if ($CFG_GLPI["use_rich_text"]) {
-            $this->fields["content"] = $this->setRichTextContent("content$rand", $this->fields["content"]);
+            $this->fields["content"] = $this->setRichTextContent("content$rand",
+                                                                 $this->fields["content"]);
             $cols = 110;
             $rows = 20;
          } else {
@@ -5608,17 +5608,18 @@ class Ticket extends CommonITILObject {
          if ($forcetab != '') {
             $link .= "&amp;forcetab=".$forcetab;
          }
-         $link .= "'>";
-         $link .= "<span class='b'>".$job->getNameID()."</span></a>";
-         $link = sprintf(__('%1$s (%2$s)'), $link,
-                         sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
-                                 $job->numberOfTasks($showprivate)));
-         $content=Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($job->fields['content'],ENT_QUOTES,
-                                                                                               "UTF-8"));
-         $link = printf(__('%1$s %2$s'), $link,
-                        Html::showToolTip(nl2br(Html::Clean($content)),
-                                          array('applyto' => 'ticket'.$job->fields["id"].$rand,
-                                                'display' => false)));
+         $link   .= "'>";
+         $link   .= "<span class='b'>".$job->getNameID()."</span></a>";
+         $link    = sprintf(__('%1$s (%2$s)'), $link,
+                            sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
+                                    $job->numberOfTasks($showprivate)));
+         $content = Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($job->fields['content'],
+                                                                                  ENT_QUOTES,
+                                                                                  "UTF-8"));
+         $link    = printf(__('%1$s %2$s'), $link,
+                           Html::showToolTip(nl2br(Html::Clean($content)),
+                                             array('applyto' => 'ticket'.$job->fields["id"].$rand,
+                                                   'display' => false)));
          echo "</td>";
 
          // Finish Line
@@ -6156,7 +6157,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Get only body content
-      $doc = new DOMDocument();
+      $doc  = new DOMDocument();
       $body = $dom->getElementsByTagName('body')->item(0);
       foreach ($body->childNodes as $child)
          $doc->appendChild($doc->importNode($child, true));
@@ -6255,7 +6256,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-
    /**
     * Convert rich text content to simple text content
     *
@@ -6276,7 +6276,6 @@ class Ticket extends CommonITILObject {
 
       return $content;
    }
-
 
 
    /**

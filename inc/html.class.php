@@ -2877,7 +2877,8 @@ class Html {
     *   - display    : boolean display or get string (default true)
     *   - rand       : specific random value (default generated one)
    **/
-   static function showColorField($name, $options = array()) {
+   static function showColorField($name, $options=array()) {
+
       $p['value']      = '';
       $p['rand']       = mt_rand();
       $p['display']    = true;
@@ -2888,9 +2889,9 @@ class Html {
          }
       }
       $field_id = Html::cleanId("color_".$name.$p['rand']);
-      $output = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
-      $js = "$('#$field_id').spectrum();";
-      $output .= Html::scriptBlock($js);
+      $output   = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
+      $js       = "$('#$field_id').spectrum();";
+      $output  .= Html::scriptBlock($js);
 
 
       if ($p['display']) {
@@ -2899,6 +2900,7 @@ class Html {
       }
       return $output;
    }
+
 
    /**
     * Display DateTime form with calendar
@@ -3019,7 +3021,7 @@ class Html {
       if ($p['maybeempty']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' id='resetdate".$p['rand']."'>";
       }
-      
+
       $js = "";
       if ($p['maybeempty']) {
          $js .= "$('#resetdate".$p['rand']."').click(function(){
@@ -3616,12 +3618,12 @@ class Html {
    /**
     * Init the Editor System to a textarea
     *
-    * @param $name name of the html textarea where to used
-    * @param $itemtype type of the item
+    * @param $name          name of the html textarea where to used
+    * @param $itemtype      type of the item (default '')
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $itemtype = '') {
+   static function initEditorSystem($name, $itemtype='') {
       global $CFG_GLPI;
 
       Html::scriptStart();
@@ -3691,11 +3693,13 @@ class Html {
    /**
     * Init the Image paste System for tiny mce
     *
-    * @param params params used for image paste :
-    *                            - image_name : Upload image name
-    *                            - image_paste : Name of the image uploaded successfully
-    *                            - initMsg : Message to display on init
-    *                            - errorMsg : Message to display on error
+    * @since version 0.85
+    *
+    * @param $params params used for image paste:
+    *                            - image_name    : Upload image name
+    *                            - image_paste   : Name of the image uploaded successfully
+    *                            - initMsg       : Message to display on init
+    *                            - errorMsg      : Message to display on error
     *
     * @return nothing
    **/
@@ -3712,6 +3716,7 @@ class Html {
                }
             </script>";
    }
+
 
    /**
     * Print Ajax pager for list in tab panel
@@ -4485,9 +4490,9 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $text              The content to be wrapped by <a> tags.
+    * @param $text               The content to be wrapped by <a> tags.
     * @param $url                URL parameter
-    * @param $options   Array    of HTML attributes.
+    * @param $options   Array    of HTML attributes:
     *     - `confirm` JavaScript confirmation message.
     *     - `confirmaction` optional action to do on confirmation
     * @return string An `<a />` element.
@@ -4513,7 +4518,6 @@ class Html {
       if (!preg_match('/^<img.*/', $text)) {
          $text = Html::cleanInputText($text);
       }
-
 
       return sprintf('<a href="%1$s" %2$s>%3$s</a>', Html::cleanInputText($url),
                      Html::parseAttributes($options), $text);

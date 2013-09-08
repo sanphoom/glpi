@@ -151,6 +151,8 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
     *
+    * @since version 0.84 (new parameter)
+    *
     * @param $event     string   notification event
     * @param $infos     array    of destination of the notification
     * @param $notify_me boolean  notify me on my action ?
@@ -593,7 +595,7 @@ class NotificationTarget extends CommonDBChild {
                INNER JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
                WHERE `glpi_groups_users`.`groups_id` = '$group_id'
                      AND `glpi_groups`.`is_notify`";
-                     
+
       if ($manager == 1) {
          $query .= " AND `glpi_groups_users`.`is_manager` ";
       } else if ($manager == 2) {

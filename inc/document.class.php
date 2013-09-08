@@ -1219,11 +1219,14 @@ class Document extends CommonDBTM {
    /**
     * showImagePaste : Show the popup of image paste for an item
     *
-    * @param $name              text  Name of the textarea
+    * @since version 0.85
+    *
+    * @param $name   text  Name of the textarea
     *
     * @return nothing (print the image paste)
    **/
    function showImagePaste($name) {
+
       if (!self::canCreate()) {
          return false;
       }
@@ -1231,7 +1234,9 @@ class Document extends CommonDBTM {
       // Init the image paste system
       echo "<div id='image_paste'>";
       // Upload and clear buttons (and paste button for IE)
-      echo "<div id='paste_image_menu' class='center'><a id='paste_image' class='vsubmit' style='display:none'>"._sx('button', 'Paste image')."</a>";
+      echo "<div id='paste_image_menu' class='center'>";
+      echo "<a id='paste_image' class='vsubmit' style='display:none'>"._sx('button', 'Paste image').
+           "</a>";
       echo "<a id='upload_image' class='vsubmit' style='display:none'>"._sx('button', 'Save')."</a>";
       echo "<a id='clear_image' class='vsubmit' style='display:none'>"._sx('button', 'Cancel')."</a>";
       echo "</div>";

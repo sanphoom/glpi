@@ -4427,8 +4427,7 @@ class Search {
                $out   = '';
                foreach ($split as $val) {
                   if (!empty($val)) {
-                     $split2 = self::explodeWithID("$$", $val);
-
+                     $split2  = self::explodeWithID("$$", $val);
                      $status  = TicketValidation::getStatus($split2[0]);
                      $bgcolor = TicketValidation::getStatusColor($split2[0]);
                      $out    .= (empty($out)?'':self::LBBR).

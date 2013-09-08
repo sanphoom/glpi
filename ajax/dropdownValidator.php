@@ -45,7 +45,7 @@ if (isset($_POST["validatortype"])) {
                                                                  :'users_id_validate[]',
                               'entity' => $_POST['entity'],
                               'right'  => $_POST['right']));
-         
+
          break;
 
       case 'group' :
@@ -71,11 +71,11 @@ if (isset($_POST["validatortype"])) {
 
       case 'list_users' :
          if(!empty($_POST['groups_id'])) {
-            
-            $opt = array('groups_id'   => $_POST["groups_id"], 
+
+            $opt = array('groups_id'   => $_POST["groups_id"],
                            'right'     => $_POST['right'],
                            'entity'    => $_POST["entity"]);
-                           
+
             $data_users = TicketValidation::getGroupUserHaveRights($opt);
 
          } else {
@@ -116,12 +116,12 @@ if (isset($_POST["validatortype"])) {
          $param['multiple']= true;
          $param['display'] = true;
          $param['size']    = count($users);
-         $users = Toolbox::stripslashes_deep($users);
 
-         $rand = Dropdown::showFromArray(
-                 !empty($_POST['name']) ? $_POST['name']:'users_id_validate',
-                 $users,
-                 $param);
+         $users            = Toolbox::stripslashes_deep($users);
+
+         $rand             = Dropdown::showFromArray(!empty($_POST['name']) ? $_POST['name']
+                                                                            :'users_id_validate',
+                                                     $users, $param);
 
          // Display all/none buttons to select all or no users in group
          if (!empty($_POST['groups_id'])){

@@ -85,8 +85,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          // Private object and no right to see private items : do not send
          if ($this->isPrivate()
-            && (!isset($infos['additionnaloption']['show_private'])
-               || !$infos['additionnaloption']['show_private'])) {
+             && (!isset($infos['additionnaloption']['show_private'])
+                 || !$infos['additionnaloption']['show_private'])) {
             return false;
          }
       }

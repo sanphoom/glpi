@@ -372,10 +372,10 @@ class ReservationItem extends CommonDBChild {
          echo __('Find a free item in a specific period')."</a></div>\n";
 
          echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
-         $begin_time = time();
-         $begin_time -= ($begin_time%HOUR_TIMESTAMP);
-         $_POST['reserve']["begin"] = date("Y-m-d H:i:s",$begin_time);
-         $_POST['reserve']["end"]   = date("Y-m-d H:i:s",$begin_time+HOUR_TIMESTAMP);
+         $begin_time                 = time();
+         $begin_time                -= ($begin_time%HOUR_TIMESTAMP);
+         $_POST['reserve']["begin"]  = date("Y-m-d H:i:s",$begin_time);
+         $_POST['reserve']["end"]    = date("Y-m-d H:i:s",$begin_time+HOUR_TIMESTAMP);
          $_POST['reservation_types'] = '';
       }
       echo "<form method='post' name='form' action='".Toolbox::getItemTypeSearchURL(__CLASS__)."'>";
@@ -537,7 +537,7 @@ class ReservationItem extends CommonDBChild {
             echo Html::hidden('end', array('value'   => $_POST['reserve']["end"]));
          }
          echo "<input type='submit' value=\""._sx('button','Add')."\" class='submit'></td></tr>\n";
-         
+
       }
       echo "</table>\n";
       echo "<input type='hidden' name='id' value=''>";
