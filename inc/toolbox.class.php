@@ -389,7 +389,7 @@ class Toolbox {
       for ($i = 0; $i < $count; ++$i) {
          $complete       = $matches[0][$i];
          $cleaned        = self::clean_cross_side_scripting_deep($matches[2][$i]);
-         $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];;
+         $cleancomplete  = $matches[1][$i].$cleaned.$matches[3][$i];
          $value          = str_replace($complete, $cleancomplete, $value);
       }
 
@@ -2376,7 +2376,7 @@ class Toolbox {
     * @param $class_name the name of the class to compare
     *
     * @return true if $object is an instance of $class_name
-    * 
+    *
    **/
    static function is_a($object, $class_name) {
       if (is_object($object)) {

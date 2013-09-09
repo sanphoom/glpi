@@ -166,7 +166,7 @@ class Calendar extends CommonDropdown {
     *
     * @param $options array of new values to set
    **/
-   function duplicate ($options=array()) {
+   function duplicate($options=array()) {
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

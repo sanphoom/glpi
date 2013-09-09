@@ -172,7 +172,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
 
    /**
-    * Duplicate all holidays from a calendar to his clone
+    * Duplicate all holidays from a calendar to its clone
     *
     * @param $oldid
     * @param $newid
