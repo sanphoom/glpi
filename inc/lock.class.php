@@ -495,7 +495,7 @@ class Lock {
                                           'size'     => 5,
                                           'values'   => array_keys($types)));
 
-            echo "<br><br>".Html::submit(__s('Post'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_sx('button','Post'), array('name' => 'massiveaction'));
 
             return true;
       }
