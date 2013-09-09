@@ -144,7 +144,7 @@ define("ERROR_ALREADY_DEFINED",5);
 // For plugins
 $PLUGIN_HOOKS     = array();
 $CFG_GLPI_PLUGINS = array();
-
+$LANG             = array();
 
 $CFG_GLPI["unicity_types"]                = array('Budget', 'Computer', 'Contact', 'Contract',
                                                   'Infocom', 'Monitor', 'NetworkEquipment',
@@ -278,8 +278,8 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter',
                                      'duedatecritical_unit', 'duedateok_color',
                                      'duedatewarning_color','duedatewarning_less',
                                      'duedatewarning_unit',
-                                     'followup_private', 
-                                     'is_ids_visible', 
+                                     'followup_private',
+                                     'is_ids_visible',
                                      'keep_devices_when_purging_item',
                                      'language', 'list_limit', 'names_format',
                                      'notification_to_myself', 'number_format', 'pdffont', 'priority_1',
