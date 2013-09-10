@@ -416,9 +416,12 @@ function step7() {
    require_once (GLPI_CONFIG_DIR . "/config_db.php");
    $DB = new DB();
 
+
+   $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
    $query = "UPDATE `glpi_configs`
-             SET `url_base` = '".str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER'])."'
-             WHERE `id` = '1'";
+             SET `value`     = '$url_base'
+             WHERE `context` = 'core'
+               AND `name`    = 'url_base'";
    $DB->query($query);
 
    echo "<h2>".__('The installation is finished')."</h2>";
